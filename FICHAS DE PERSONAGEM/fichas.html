@@ -412,6 +412,8 @@ function attacks(c,d){
 }
 function avgDie(e){ const m=/^(\d+)d(\d+)$/.exec(e||''); return m ? +m[1]*(+m[2]+1)/2 : +e||0; }
 function est(c){ const e=S.estado[c.ownerId]?.chars?.[c.id]; const base=ESTADO_PADRAO(); return e ? {...base, ...clone(e), morte:{...base.morte, ...(e.morte||{})}} : base; }
+/* rolagem do dado de vida feita no app para o próximo nível (fica no estado do personagem; uma por nível) */
+function lvlRollFor(c){ const r=est(c).lvlRoll; return r && r.nivel===c.nivel+1 && +r.v>=1 ? r : null; }
 function pvAtual(c,d){ return Math.max(0, (d||derive(c)).max - est(c).dano); }
 function spellWarnings(c){
   const d=derive(c); if(!d.magia) return (c.magias||[]).length ? ['Esta classe não conjura magias por conta própria.'] : [];
@@ -516,7 +518,7 @@ function describe(type,p,c){
     case 'magia_rem': return `Esquecer ${p.nomeRef||'?'}`;
     case 'nivel': {
       const dv=CLASSES[c?.classe]?.dado; const dd=dv?`d${dv}`:'dado de vida';
-      let s=`Subir para o nível ${(c?.nivel||0)+1}, ${p.hp==='rolado'?`PV: rolou ${p.rolado} no ${dd}`:`PV pela média${dv?` (${dv/2+1})`:''}`}`;
+      let s=`Subir para o nível ${(c?.nivel||0)+1}, ${p.hp==='rolado'?`PV: rolou ${p.rolado} no ${dd}${p.rolApp?' (rolado no app)':''}`:`PV pela média${dv?` (${dv/2+1})`:''}`}`;
       if (p.ajusteMestre) s+=` (ajustado pelo mestre; o jogador ${p.ajusteMestre})`;
       if (p.asiModo==='2') s+=`, +2 ${p.a1}`; else if (p.asiModo==='11') s+=`, +1 ${p.a1} e +1 ${p.a2}`; else if (p.asiModo==='talento') s+=`, talento: ${p.talento}`;
       if (p.subclasse) s+=`, subclasse: ${p.subclasse}`; return s;
@@ -623,6 +625,7 @@ async function submitAction(form){
   if (type==='equip') p.escudo = fd.get('escudo')==='on';
   if (type==='arma_rem') p.nomeRef = (c.armas||[]).find(w=>w.id===p.ref)?.nome;
   if (type==='magia_prep' || type==='magia_rem') p.nomeRef = (c.magias||[]).find(x=>x.id===p.ref)?.nome;
+  if (type==='nivel'){ const lr=lvlRollFor(c); if (lr){ p.hp='rolado'; p.rolado=String(lr.v); p.rolApp='1'; } else delete p.rolApp; }
   const motivo=String(p.motivo||'').slice(0,200); delete p.motivo;
   try {
     applyChange(c, type, p); // valida antes de enviar
@@ -658,7 +661,7 @@ async function approve(owner, id){
       const c=S.chars.find(x=>x.id===item.charId); if(!c) throw new Error('Personagem não encontrado.');
       const payload=levelHpOverride(item, c);
       const n=applyChange(c,item.type,payload); addLog(n, describe(item.type,payload,c), owner, item.motivo); await store.saveCharacter(n);
-      if (payload!==item.payload){ await store.resolveRequest(owner,id,{status:'aprovado', resolvedAt:nowIso(), resolvedBy:S.myId, payload:{hp:payload.hp, rolado:payload.rolado, ajusteMestre:payload.ajusteMestre}}); return true; }
+      if (payload!==item.payload){ await store.resolveRequest(owner,id,{status:'aprovado', resolvedAt:nowIso(), resolvedBy:S.myId, payload:{hp:payload.hp, rolado:payload.rolado, rolApp:'', ajusteMestre:payload.ajusteMestre}}); return true; }
     }
     await store.resolveRequest(owner,id,{status:'aprovado', resolvedAt:nowIso(), resolvedBy:S.myId, ...stripImg(item)});
     return true;
@@ -673,7 +676,7 @@ function levelHpOverride(item, c){
   const v=Math.floor(+inp.value);
   if (!Number.isFinite(v) || v<1 || v>dv) throw new Error(`PV do nível: use um valor entre 1 e ${dv}.`);
   if (v===pedido) return p;
-  return {...p, hp:'rolado', rolado:String(v), ajusteMestre:p.hp==='rolado'?`rolou ${pedido}`:`pediu a média (${pedido})`};
+  return {...p, hp:'rolado', rolado:String(v), rolApp:'', ajusteMestre:p.hp==='rolado'?`rolou ${pedido}`:`pediu a média (${pedido})`};
 }
 async function reject(owner,id,motivo){
   const item=S.reqDocs[owner]?.items?.[id];
@@ -899,7 +902,12 @@ function actionForm(c,d){
     else { const nl=c.nivel+1; const asi=isAsiLevel(d.cls,nl); const media=d.cls.dado/2+1;
       const nd = d.magia ? derive({...c, nivel:nl}).magia : null;
       body=`<div class="small muted" style="margin-bottom:8px">Nível ${c.nivel} → ${nl}. Proficiência ${sg(profBonus(nl))}.${nl===3?' Escolha da subclasse.':''}${asi?(nl===19?' Dádiva épica ou Melhoria de Atributo.':' Melhoria de Atributo ou talento.'):''}${nd?` Magia: ${nd.truques} truques, ${nd.preparadas} preparadas, até ${nd.maxCirc}º círculo.`:''}</div>
-      <div class="cols2"><div class="f"><label>Pontos de vida</label><select name="hp"><option value="media">Média (${media} + CON)</option><option value="rolado">Rolado no d${d.cls.dado}</option></select></div><div class="f"><label>Valor rolado</label><input name="rolado" type="number" min="1" max="${d.cls.dado}"></div></div>
+      ${(()=>{ const lr=lvlRollFor(c);
+        if (lr) return `<input type="hidden" name="hp" value="rolado"><input type="hidden" name="rolado" value="${lr.v}">
+        <div class="lvl-box" style="margin:0 0 12px"><b>Pontos de vida: rolou ${lr.v} no d${d.cls.dado}</b> <span class="small muted">· rolado no app em ${fmtDate(lr.at)}</span>
+        <div class="small muted">Esse valor vale para o nível ${nl} e não pode ser rolado de novo. O mestre ainda pode ajustá-lo ao aprovar.</div></div>`;
+        return `<div class="cols2"><div class="f"><label>Pontos de vida</label><select name="hp"><option value="media">Média (${media} + CON)</option><option value="rolado">Rolado no d${d.cls.dado}</option></select></div><div class="f"><label>Valor rolado</label><input name="rolado" type="number" min="1" max="${d.cls.dado}"></div></div>
+        <div class="row" style="margin:-4px 0 12px;gap:8px"><button type="button" class="btn sm" data-act="lvl-roll">Rolar aqui (d${d.cls.dado})</button><span class="small muted">O app rola o dado e o mestre vê que o valor veio daqui. Só dá para rolar uma vez por nível.</span></div>`; })()}
       ${nl===3?`<div class="f"><label>Subclasse</label><input name="subclasse" maxlength="60" required></div>`:''}
       ${asi?`<div class="f"><label>Melhoria</label><select name="asiModo"><option value="2">+2 em um atributo</option><option value="11">+1 em dois atributos</option><option value="talento">Talento</option></select></div>
       <div class="cols3"><div class="f"><label>Atributo 1</label><select name="a1"><option value="">—</option>${AB.map(a=>`<option value="${a}">${a} (${c.atributos[a]})</option>`).join('')}</select></div><div class="f"><label>Atributo 2</label><select name="a2"><option value="">—</option>${AB.map(a=>`<option value="${a}">${a} (${c.atributos[a]})</option>`).join('')}</select></div><div class="f"><label>Talento</label><input name="talento" maxlength="80"></div></div>`:''}`; }
@@ -1053,6 +1061,10 @@ function viewApprovals(){
         if (i.type==='nivel'){ const d0=derive(c), d1=derive(n), dv=d0.cls.dado, media=dv/2+1, pedido=i.payload.hp==='rolado'?Math.floor(+i.payload.rolado):media, extraNv=d1.max-d0.max-pedido;
           extra+=`<div class="lvl-box"><div><b>PV máximo: ${d0.max} → ${d1.max}</b> <span class="muted">(+${d1.max-d0.max})</span></div>
           <div class="small muted">${i.payload.hp==='rolado'?`Rolou ${pedido} no d${dv} (a média seria ${media})`:`Escolheu a média do d${dv} (${media})`}${extraNv?`, ${sg(extraNv)} de Constituição${d0.sp.pvExtra?' e espécie':''}`:''}.</div>
+          ${i.payload.hp!=='rolado'?'':(()=>{ const lr=lvlRollFor(c);
+            if (i.payload.rolApp && lr && lr.v===pedido) return `<div class="ok-t">✓ Rolado no app em ${fmtDate(lr.at)}.</div>`;
+            if (i.payload.rolApp) return `<div class="err">Diz que foi rolado no app, mas o valor não confere com a rolagem registrada${lr?` (${lr.v})`:''}.</div>`;
+            return `<div class="small muted">Valor digitado pelo jogador (rolado fora do app).</div>`; })()}
           <div class="row" style="margin-top:8px;gap:8px;align-items:center"><label class="small" style="margin:0">Valor do dado aprovado</label>
           <input class="lvl-hp" data-for="${h(i.id)}" type="number" min="1" max="${dv}" value="${pedido}" style="width:80px">
           <button type="button" class="btn sm" data-act="lvl-media" data-for="${h(i.id)}" data-v="${media}">Usar média (${media})</button>
@@ -1083,6 +1095,14 @@ document.addEventListener('click', async e=>{
   else if (a==='role'){ S.isMaster = t.dataset.role==='mestre'; S.myId = S.isMaster?'demo-mestre':'demo-jogador'; if(S.tab==='aprovacoes'||S.tab==='solicitacoes') S.tab='personagens'; render(true); }
   else if (a==='pb'){ const ab=t.dataset.ab; S.draft.compra[ab]=Math.max(8,Math.min(15,S.draft.compra[ab]+(+t.dataset.d))); render(true); }
   else if (a==='reset-draft'){ S.draft=newDraft(); render(true); }
+  else if (a==='lvl-roll'){ const c=S.chars.find(x=>x.id===S.charId); if(!c) return;
+    if (lvlRollFor(c)){ toast('O dado de vida deste nível já foi rolado.'); return; }
+    const form=t.closest('form'); const keep=form?Object.fromEntries(new FormData(form).entries()):{};
+    t.disabled=true; const nl=c.nivel+1; const v=rollExpr('1d'+CLASSES[c.classe].dado).total;
+    await changeEstado(c,e=>{ e.lvlRoll={nivel:nl, v, at:nowIso()}; });
+    render(true); toast(`Rolou ${v} no d${CLASSES[c.classe].dado}.`);
+    const nf=document.querySelector('form[data-form="acao"][data-type="nivel"]');
+    if (nf) Object.entries(keep).forEach(([k,val])=>{ if(k==='hp'||k==='rolado') return; const el=nf.elements[k]; if(el && 'value' in el) el.value=val; }); }
   else if (a==='lvl-media'){ const inp=document.querySelector(`.lvl-hp[data-for="${CSS.escape(t.dataset.for)}"]`); if(inp) inp.value=t.dataset.v; }
   else if (a==='img-clear-draft'){ S.draft.retrato=''; render(true); }
   else if (a==='img-remove'){ const c=S.chars.find(x=>x.id===S.charId); if(!c) return;
