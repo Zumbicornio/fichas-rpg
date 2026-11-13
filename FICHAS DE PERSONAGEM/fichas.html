@@ -82,6 +82,12 @@ textarea{min-height:70px;resize:vertical}
 .chip.pendente{color:var(--gold2);border-color:var(--gold)}
 .chip.aprovado{color:#b6e0ae;border-color:#3f6b3a}
 .chip.rejeitado{color:#f0a492;border-color:#6b3528}
+.chip.st-ativo{color:#b6e0ae;border-color:#3f6b3a}
+.chip.st-espera{color:var(--gold2);border-color:var(--gold)}
+.chip.st-aposentado{color:#a9c6e4;border-color:#3d5a78}
+.chip.st-falecido{color:var(--muted);border-color:var(--line2)}
+.card.st-card-falecido .portrait{filter:grayscale(1);opacity:.75}
+.card.st-card-falecido h2,.card.st-card-aposentado h2{color:var(--muted)}
 .req{border:1px solid var(--line);border-radius:var(--r);padding:12px;background:var(--panel2);margin-bottom:10px}
 .err{color:#f0a492;font-size:12px;margin:2px 0}
 .ok-t{color:#b6e0ae;font-size:12px}
@@ -297,7 +303,7 @@ function portrait(img, nome, cls=''){
 const S = {
   mode:'carregando', isMaster:false, myId:null, user:null,
   chars:[], reqDocs:{}, estado:{}, rolls:[], tab:'personagens', charId:null, actionType:'item',
-  draft:null, names:{}, namesPending:new Set(), notice:'', loaded:false, delArm:null, deferred:false
+  draft:null, names:{}, namesPending:new Set(), notice:'', loaded:false, delArm:null, deferred:false, filtro:{status:'',campanha:''}
 };
 let store = null;
 
@@ -431,7 +437,7 @@ function newDraft(){
   const z = v => Object.fromEntries(AB.map(a=>[a,v]));
   return {nome:'', especie:'humano', classe:'guerreiro', antecedente:'soldado', bonusModo:'2-1', b2:'', b1:'',
     customAbs:['','',''], customSkills:['',''], customTalento:'', metodo:'padrao', padrao:z(''), compra:z(8), manual:z(10),
-    classSkills:[], extraSkill:'', armadura:'nenhuma', escudo:false, arma1:'', arma2:'', ouro:0, alinhamento:'', historia:'', retrato:''};
+    classSkills:[], extraSkill:'', armadura:'nenhuma', escudo:false, arma1:'', arma2:'', ouro:0, alinhamento:'', historia:'', retrato:'', campanha:''};
 }
 function draftCompute(d){
   const cls=CLASSES[d.classe], sp=SPECIES[d.especie], bg=BACKGROUNDS[d.antecedente];
@@ -480,6 +486,7 @@ function buildCharacter(d, ownerId){
     armas:[d.arma1,d.arma2].filter(k=>WEAPONS[k]).map(k=>newWeapon(k)), magias:[],
     inventario:[], moedas:{pl:0,po:Math.floor(+d.ouro||0),pe:0,pp:0,pc:0},
     retrato: imgOk(d.retrato) ? d.retrato : '',
+    status: {tipo:'ativo', campanha:String(d.campanha||'').trim().replace(/\s+/g,' ').slice(0,60)},
     alinhamento:String(d.alinhamento||'').slice(0,40), notas:String(d.historia||'').slice(0,4000), criadoEm:nowIso(), log:[]
   };
   return c;
@@ -503,11 +510,16 @@ function newWeapon(base, p={}){
 /* ============ MUDANÇAS (propostas e aplicação) ============ */
 const ACTIONS = {item:'Itens', moedas:'Dinheiro e tesouro', arma_add:'Adicionar arma', arma_rem:'Remover arma',
   magia_nova:'Aprender magia', magia_prep:'Preparar / despreparar magia', magia_rem:'Esquecer magia',
-  nivel:'Subir de nível', equip:'Armadura e escudo', nota:'Anotação'};
+  nivel:'Subir de nível', equip:'Armadura e escudo', status:'Status e campanha', nota:'Anotação'};
+/* status do personagem na mesa; fichas antigas sem o campo contam como "Ativo" */
+const STATUS = {ativo:{nome:'Ativo'}, espera:{nome:'Em espera'}, aposentado:{nome:'Aposentado'}, falecido:{nome:'Falecido'}};
+function statusOf(c){ const s=c?.status||{}; return {tipo:STATUS[s.tipo]?s.tipo:'ativo', campanha:String(s.campanha||'')}; }
+function statusChip(c){ const s=statusOf(c); return `<span class="chip st-${s.tipo}">${s.tipo==='falecido'?'✝ ':''}${STATUS[s.tipo].nome}${s.campanha?` · ${h(s.campanha)}`:''}</span>`; }
+function campaigns(list){ return [...new Set(list.map(c=>statusOf(c).campanha).filter(Boolean))].sort((a,b)=>a.localeCompare(b)); }
 
 function describe(type,p,c){
   switch(type){
-    case 'criar': { const sp=SPECIES[p.especie], cl=CLASSES[p.classe], bg=BACKGROUNDS[p.antecedente]; return `Novo personagem: ${p.nome||'(sem nome)'}, ${sp?.nome} ${cl?.nome} (${bg?.nome})`; }
+    case 'criar': { const sp=SPECIES[p.especie], cl=CLASSES[p.classe], bg=BACKGROUNDS[p.antecedente]; return `Novo personagem: ${p.nome||'(sem nome)'}, ${sp?.nome} ${cl?.nome} (${bg?.nome})${String(p.campanha||'').trim()?`, campanha ${String(p.campanha).trim()}`:''}`; }
     case 'moedas': return 'Moedas: '+COINS.filter(([k])=>+p[k]).map(([k,ab])=>`${sg(+p[k])} ${ab}`).join(', ');
     case 'item': return `${p.acao==='add'?'Adicionar':'Remover'} ${p.qtd}× ${p.nome}${p.obs?` (${p.obs})`:''}`;
     case 'arma_add': { const base=p.base==='custom'?`personalizada, ${p.dado} ${p.dano}`:WEAPONS[p.base]?.nome; const nome=String(p.nome||'').trim();
@@ -525,6 +537,7 @@ function describe(type,p,c){
     }
     case 'equip': return `Equipar: ${ARMORS[p.armadura]?.nome}${p.escudo?' + escudo':''}${+p.caBonus?`, bônus mágico ${sg(+p.caBonus)} CA`:''}`;
     case 'nota': return `Anotação: ${p.texto}`;
+    case 'status': return `Status: ${STATUS[p.tipo]?.nome||'?'}${String(p.campanha||'').trim()?`, campanha ${String(p.campanha).trim()}`:', sem campanha'}`;
     case 'retrato': return p.acao==='remover' ? 'Remover a imagem do personagem' : 'Nova imagem do personagem';
     case 'clonar': return `Clonar a ficha${c?` de ${c.nome}`:''} como "${p.nome}"`;
   }
@@ -600,6 +613,12 @@ function applyChange(c0, type, p){
       if(!ARMORS[p.armadura]) throw new Error('Armadura inválida.');
       c.armadura=p.armadura; c.escudo=!!p.escudo; c.caBonus=Math.max(-5,Math.min(5,Math.floor(+p.caBonus||0)));
       break;
+    }
+    case 'status': {
+      if (!STATUS[p.tipo]) throw new Error('Escolha um status.');
+      const campanha=String(p.campanha||'').trim().replace(/\s+/g,' ').slice(0,60); const s=statusOf(c);
+      if (s.tipo===p.tipo && s.campanha===campanha) throw new Error('O status e a campanha já são esses.');
+      c.status={tipo:p.tipo, campanha}; break;
     }
     case 'nota': {
       const t=String(p.texto||'').trim(); if(!t) throw new Error('Escreva a anotação.');
@@ -790,13 +809,22 @@ function hpColor(r){ return r>.5?'var(--green)':r>.25?'var(--gold)':'var(--red)'
 function pendingFor(charId){ return pendingList().filter(r=>r.charId===charId).length + (S.isMaster?0:myRequests().filter(r=>r.charId===charId&&r.status==='pendente').length); }
 
 function viewList(){
-  const list=visibleChars();
-  if (!list.length) return `<div class="empty"><h2 style="margin-bottom:8px">Nenhum personagem ainda</h2><p>${S.isMaster?'Crie um personagem ou aguarde os jogadores enviarem fichas para aprovação.':'Crie seu personagem. Ele aparece aqui quando o mestre aprovar.'}</p><button class="btn pri" data-act="tab" data-tab="criar">Criar personagem</button></div>`;
-  return `<div class="grid-cards">${list.map(c=>{
+  const all=visibleChars();
+  if (!all.length) return `<div class="empty"><h2 style="margin-bottom:8px">Nenhum personagem ainda</h2><p>${S.isMaster?'Crie um personagem ou aguarde os jogadores enviarem fichas para aprovação.':'Crie seu personagem. Ele aparece aqui quando o mestre aprovar.'}</p><button class="btn pri" data-act="tab" data-tab="criar">Criar personagem</button></div>`;
+  const camps=campaigns(all);
+  const fs=S.filtro.status, fc=S.filtro.campanha;
+  const list=all.filter(c=>{ const s=statusOf(c); return (!fs||s.tipo===fs) && (!fc || (fc==='__sem'?!s.campanha:s.campanha===fc)); });
+  const filtros=`<div class="row" style="margin-bottom:14px;gap:8px">
+    <select data-filter="status" style="width:auto" aria-label="Filtrar por status">${opt('','Todos os status',fs)}${Object.entries(STATUS).map(([k,v])=>opt(k,v.nome,fs)).join('')}</select>
+    ${camps.length?`<select data-filter="campanha" style="width:auto" aria-label="Filtrar por campanha">${opt('','Todas as campanhas',fc)}${camps.map(n=>opt(n,n,fc)).join('')}${opt('__sem','Sem campanha',fc)}</select>`:''}
+    <span class="small muted">${list.length} de ${all.length}</span></div>`;
+  if (!list.length) return filtros+`<div class="empty">Nenhum personagem com esse filtro.</div>`;
+  return filtros+`<div class="grid-cards">${list.map(c=>{
     const d=derive(c); const e=est(c); const pv=pvAtual(c,d); const r=Math.max(0,Math.min(1,pv/d.max)); const pend=pendingFor(c.id);
-    return `<div class="card" data-act="open" data-id="${h(c.id)}">${portrait(c.retrato, c.nome)}<div class="card-body">
+    return `<div class="card st-card-${statusOf(c).tipo}" data-act="open" data-id="${h(c.id)}">${portrait(c.retrato, c.nome)}<div class="card-body">
       <div class="row between"><h2>${h(c.nome)}</h2>${pend?`<span class="chip pendente">${pend} pendente${pend>1?'s':''}</span>`:''}</div>
       <div class="muted">${h(d.sp.nome)} · ${h(d.cls.nome)}${c.subclasse?` (${h(c.subclasse)})`:''} · nível ${c.nivel}</div>
+      <div style="margin-top:6px">${statusChip(c)}</div>
       <div class="hpbar"><i style="width:${r*100}%;background:${hpColor(r)}"></i></div>
       <div class="row between small"><span>PV ${pv}/${d.max}${e.temp?` (+${e.temp})`:''}</span><span>CA ${d.ac}</span><span>Iniciativa ${sg(d.init)}</span></div>
       ${S.isMaster?`<div class="small muted" style="margin-top:6px">Jogador: ${h(nameOf(c.ownerId))}</div>`:''}
@@ -842,6 +870,7 @@ function viewCreate(){
         </div>
         <div class="cols2"><div class="f"><label>Nome do personagem</label><input data-f="nome" data-live value="${h(d.nome)}" maxlength="60" placeholder="Ex.: Lyra Ventoalto"></div>
         <div class="f"><label>Alinhamento (opcional)</label><input data-f="alinhamento" data-live value="${h(d.alinhamento)}" maxlength="40"></div></div>
+        <div class="f"><label>Campanha (opcional)</label><input data-f="campanha" data-live value="${h(d.campanha||'')}" maxlength="60" list="camp-list-criar" placeholder="Em qual campanha o personagem vai jogar"><datalist id="camp-list-criar">${campaigns(S.chars).map(n=>`<option value="${h(n)}">`).join('')}</datalist></div>
         <div class="cols3">
           <div class="f"><label>Espécie</label><select data-f="especie">${Object.entries(SPECIES).map(([k,v])=>opt(k,v.nome,d.especie)).join('')}</select></div>
           <div class="f"><label>Classe</label><select data-f="classe">${Object.entries(CLASSES).map(([k,v])=>opt(k,v.nome,d.classe)).join('')}</select></div>
@@ -938,6 +967,10 @@ function actionForm(c,d){
   }
   else if (t==='equip') body=`<div class="f"><label>Armadura</label><select name="armadura">${Object.entries(ARMORS).map(([k,v])=>opt(k,v.nome,c.armadura)).join('')}</select></div>
       <div class="cols2"><div class="f">${chk('escudo','Escudo',c.escudo)}</div><div class="f"><label>Bônus mágico de CA</label><input name="caBonus" type="number" min="-5" max="5" value="${+c.caBonus||0}"></div></div>`;
+  else if (t==='status'){ const s=statusOf(c);
+    body=`<div class="small muted" style="margin-bottom:8px">Status atual: ${STATUS[s.tipo].nome}${s.campanha?`, campanha ${h(s.campanha)}`:''}.</div>
+      <div class="cols2"><div class="f"><label>Status</label><select name="tipo">${Object.entries(STATUS).map(([k,v])=>opt(k,v.nome,s.tipo)).join('')}</select></div>
+      <div class="f"><label>Campanha (opcional)</label><input name="campanha" maxlength="60" list="camp-list" value="${h(s.campanha)}" placeholder="Ex.: A Maldição de Strahd"><datalist id="camp-list">${campaigns(S.chars).map(n=>`<option value="${h(n)}">`).join('')}</datalist></div></div>`; }
   else if (t==='nota') body=`<div class="f"><label>Anotação</label><textarea name="texto" maxlength="500" required placeholder="Ex.: prometeu ajudar o ferreiro de Vila Alta"></textarea></div>`;
   return `<form data-form="acao" data-type="${t}">${body}${bloqueia?'':motivo+`<button class="btn pri" style="width:100%">${btn}</button>`}</form>`;
 }
@@ -1030,7 +1063,7 @@ function viewSheet(){
           : `<button class="btn sm" data-act="clone">Clonar ficha</button>`}</div>
       ${S.isMaster?`<button class="btn sm danger" data-act="del" data-id="${h(c.id)}">${S.delArm===c.id?'Clique de novo para excluir':'Excluir personagem'}</button>`:''}
     </div>
-    <div style="margin-bottom:14px"><h2 style="font-size:26px;color:var(--gold2)">${h(c.nome)}</h2>
+    <div style="margin-bottom:14px"><div class="row" style="gap:12px"><h2 style="font-size:26px;color:var(--gold2)">${h(c.nome)}</h2>${statusChip(c)}</div>
       <div class="muted">${h(d.sp.nome)} · ${h(d.cls.nome)}${c.subclasse?` (${h(c.subclasse)})`:''} · nível ${c.nivel} · ${h(c.antecedenteNome)}${c.alinhamento?` · ${h(c.alinhamento)}`:''}${S.isMaster?` · jogador: ${h(nameOf(c.ownerId))}`:''}</div></div>
     <div class="sheet">
       <div class="stack">
@@ -1166,6 +1199,7 @@ document.addEventListener('change', async e=>{
     else { const c=S.chars.find(x=>x.id===S.charId); if(c){ await submitPortrait(c,img); render(true); } }
     return;
   }
+  if (el.matches('[data-filter]')){ S.filtro[el.dataset.filter]=el.value; render(true); return; }
   if (el.matches('[data-act-type]')){ S.actionType=el.value; render(true); return; }
   if (!S.draft || !el.closest('form[data-form="criar"]')) return;
   if (el.dataset.skill){ const k=el.dataset.skill; const s=new Set(S.draft.classSkills); el.checked?s.add(k):s.delete(k); S.draft.classSkills=[...s]; render(true); return; }
