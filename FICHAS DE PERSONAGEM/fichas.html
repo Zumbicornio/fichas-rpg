@@ -97,6 +97,13 @@ textarea{min-height:70px;resize:vertical}
 .skills-pick{display:grid;grid-template-columns:repeat(2,1fr);gap:4px 12px}
 .skills-pick label{display:flex;gap:8px;align-items:center;color:var(--text);font-size:13px;margin:0}
 .skills-pick label.dis{color:var(--muted)}
+.card{display:flex;gap:12px;align-items:flex-start}
+.card-body{flex:1;min-width:0}
+.portrait{width:72px;height:96px;flex:none;border-radius:8px;border:1px solid var(--line2);background:var(--panel2);object-fit:cover;object-position:50% 20%;display:flex;align-items:center;justify-content:center;font-family:Cinzel,serif;font-size:28px;color:var(--gold)}
+.portrait.md{width:120px;height:160px;font-size:44px}
+.portrait.lg{width:100%;max-width:260px;height:auto;aspect-ratio:3/4;margin:0 auto;font-size:64px}
+.img-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:10px}
+.img-actions input[type=file]{display:none}
 #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#2a2117;border:1px solid var(--gold);padding:10px 16px;border-radius:8px;display:none;z-index:9;max-width:90vw}
 @media (max-width:1150px){.sheet{grid-template-columns:220px minmax(0,1fr)}.sheet .c3{grid-column:1/-1}}
 @media (max-width:820px){.sheet,.create{grid-template-columns:1fr}.create .side{position:static}.stats{grid-template-columns:repeat(3,1fr)}.cols6{grid-template-columns:repeat(3,1fr)}.abil{grid-template-columns:repeat(2,1fr)}main{padding:14px}}
@@ -260,6 +267,31 @@ const fmtDate = iso => { try { return new Date(iso).toLocaleString('pt-BR',{day:
 function toast(msg){ const t=$('#toast'); t.textContent=msg; t.style.display='block'; clearTimeout(t._t); t._t=setTimeout(()=>t.style.display='none',3800); }
 const isAsiLevel = (cls,l) => [4,8,12,16,19,...(cls.asiExtra||[])].includes(l);
 
+/* ============ IMAGEM DO PERSONAGEM ============ */
+/* A imagem é reduzida no navegador (lado maior até 400 px, JPEG) e guardada como texto na própria ficha. */
+const IMG_MAX = 90000;
+const IMG_RE = /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/;
+const imgOk = s => typeof s==='string' && s.length<=IMG_MAX && IMG_RE.test(s);
+async function fileToPortrait(file){
+  if (!file || !/^image\//.test(file.type)) throw new Error('Escolha um arquivo de imagem (JPG, PNG, WEBP…).');
+  if (file.size > 20e6) throw new Error('Imagem grande demais (máximo 20 MB).');
+  let bmp;
+  try { bmp = await createImageBitmap(file); } catch { throw new Error('Não foi possível ler essa imagem.'); }
+  const esc = Math.min(1, 400/Math.max(bmp.width, bmp.height));
+  const cv = document.createElement('canvas');
+  cv.width = Math.max(1, Math.round(bmp.width*esc)); cv.height = Math.max(1, Math.round(bmp.height*esc));
+  const ctx = cv.getContext('2d'); ctx.fillStyle = '#1d1915'; ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.drawImage(bmp, 0, 0, cv.width, cv.height); bmp.close?.();
+  let q = .85, url;
+  do { url = cv.toDataURL('image/jpeg', q); q -= .1; } while (url.length > IMG_MAX && q > .25);
+  if (!imgOk(url)) throw new Error('Não foi possível reduzir a imagem o bastante. Tente outra.');
+  return url;
+}
+function portrait(img, nome, cls=''){
+  return imgOk(img) ? `<img class="portrait ${cls}" src="${h(img)}" alt="Imagem de ${h(nome)}">`
+    : `<div class="portrait ${cls}" aria-hidden="true">${h((String(nome||'?').trim()[0]||'?').toUpperCase())}</div>`;
+}
+
 /* ============ ESTADO ============ */
 const S = {
   mode:'carregando', isMaster:false, myId:null, user:null,
@@ -282,7 +314,7 @@ function makeLocalStore(){
     async saveCharacter(c){ mem.chars[c.id]=clone(c); emitC(); },
     async deleteCharacter(id){ delete mem.chars[id]; emitC(); },
     async addRequest(item){ (mem.reqs[S.myId] ||= {items:{}}).items[item.id]=clone(item); emitR(); },
-    async resolveRequest(owner,id,patch){ Object.assign(mem.reqs[owner].items[id],patch); emitR(); }
+    async resolveRequest(owner,id,patch){ const it=mem.reqs[owner].items[id]; const {payload,...rest}=patch; Object.assign(it,rest); if(payload) Object.assign(it.payload,payload); emitR(); }
   };
 }
 function makeDbStore(db){
@@ -396,7 +428,7 @@ function newDraft(){
   const z = v => Object.fromEntries(AB.map(a=>[a,v]));
   return {nome:'', especie:'humano', classe:'guerreiro', antecedente:'soldado', bonusModo:'2-1', b2:'', b1:'',
     customAbs:['','',''], customSkills:['',''], customTalento:'', metodo:'padrao', padrao:z(''), compra:z(8), manual:z(10),
-    classSkills:[], extraSkill:'', armadura:'nenhuma', escudo:false, arma1:'', arma2:'', ouro:0, alinhamento:'', historia:''};
+    classSkills:[], extraSkill:'', armadura:'nenhuma', escudo:false, arma1:'', arma2:'', ouro:0, alinhamento:'', historia:'', retrato:''};
 }
 function draftCompute(d){
   const cls=CLASSES[d.classe], sp=SPECIES[d.especie], bg=BACKGROUNDS[d.antecedente];
@@ -444,6 +476,7 @@ function buildCharacter(d, ownerId){
     pvBase:r.cls.dado, armadura:d.armadura, escudo:!!d.escudo, caBonus:0,
     armas:[d.arma1,d.arma2].filter(k=>WEAPONS[k]).map(k=>newWeapon(k)), magias:[],
     inventario:[], moedas:{pl:0,po:Math.floor(+d.ouro||0),pe:0,pp:0,pc:0},
+    retrato: imgOk(d.retrato) ? d.retrato : '',
     alinhamento:String(d.alinhamento||'').slice(0,40), notas:String(d.historia||'').slice(0,4000), criadoEm:nowIso(), log:[]
   };
   return c;
@@ -487,6 +520,7 @@ function describe(type,p,c){
     }
     case 'equip': return `Equipar: ${ARMORS[p.armadura]?.nome}${p.escudo?' + escudo':''}${+p.caBonus?`, bônus mágico ${sg(+p.caBonus)} CA`:''}`;
     case 'nota': return `Anotação: ${p.texto}`;
+    case 'retrato': return p.acao==='remover' ? 'Remover a imagem do personagem' : 'Nova imagem do personagem';
   }
   return 'Mudança: '+type;
 }
@@ -562,6 +596,11 @@ function applyChange(c0, type, p){
       c.notas = (c.notas ? c.notas+'\n' : '') + `[${new Date().toLocaleDateString('pt-BR')}] ` + t.slice(0,500);
       break;
     }
+    case 'retrato': {
+      if (p.acao==='remover'){ if(!c.retrato) throw new Error('O personagem não tem imagem.'); c.retrato=''; }
+      else { if(!imgOk(p.img)) throw new Error('A imagem foi descartada ou é inválida. Envie de novo.'); c.retrato=p.img; }
+      break;
+    }
     default: throw new Error('Este tipo de mudança não é mais usado.');
   }
   return c;
@@ -612,13 +651,34 @@ async function approve(owner, id){
       const c=S.chars.find(x=>x.id===item.charId); if(!c) throw new Error('Personagem não encontrado.');
       const n=applyChange(c,item.type,item.payload); addLog(n, describe(item.type,item.payload,c), owner, item.motivo); await store.saveCharacter(n);
     }
-    await store.resolveRequest(owner,id,{status:'aprovado', resolvedAt:nowIso(), resolvedBy:S.myId});
+    await store.resolveRequest(owner,id,{status:'aprovado', resolvedAt:nowIso(), resolvedBy:S.myId, ...stripImg(item)});
     return true;
   } catch(e){ toast(`${item.charNome||''}: ${e.message||'erro ao aprovar'}`); return false; }
 }
 async function reject(owner,id,motivo){
-  try { await store.resolveRequest(owner,id,{status:'rejeitado', motivoRejeicao:String(motivo||'').slice(0,200), resolvedAt:nowIso(), resolvedBy:S.myId}); toast('Solicitação rejeitada.'); }
+  const item=S.reqDocs[owner]?.items?.[id];
+  try { await store.resolveRequest(owner,id,{status:'rejeitado', motivoRejeicao:String(motivo||'').slice(0,200), resolvedAt:nowIso(), resolvedBy:S.myId, ...stripImg(item)}); toast('Solicitação rejeitada.'); }
   catch(e){ toast('Não foi possível rejeitar ('+(e.code||'erro')+').'); }
+}
+/* depois de resolvida, a imagem sai da solicitação (ela já está na ficha ou foi recusada) para não encher o documento */
+function stripImg(item){
+  if (item?.type==='retrato' && item.payload?.img) return {payload:{img:''}};
+  if (item?.type==='criar' && item.payload?.retrato) return {payload:{retrato:''}};
+  return {};
+}
+async function submitPortrait(c, img){
+  const p = img ? {acao:'trocar', img} : {acao:'remover', img:''};
+  try {
+    applyChange(c,'retrato',p); // valida antes de enviar
+    if (S.isMaster){
+      const n=applyChange(c,'retrato',p); addLog(n, describe('retrato',p,c), S.myId, '');
+      await store.saveCharacter(n); toast(img?'Imagem atualizada.':'Imagem removida.');
+    } else {
+      if (myRequests().some(r=>r.charId===c.id && r.type==='retrato' && r.status==='pendente')) throw new Error('Já existe uma imagem aguardando o mestre. Espere a aprovação antes de enviar outra.');
+      await store.addRequest({id:newId(), charId:c.id, charNome:c.nome, type:'retrato', payload:p, motivo:'', by:S.myId, at:nowIso(), status:'pendente'});
+      toast('Enviado ao mestre para aprovação.');
+    }
+  } catch(e){ toast(e.message || ('Não foi possível salvar ('+(e.code||'erro')+').')); }
 }
 function pendingList(){
   const out=[]; Object.entries(S.reqDocs).forEach(([owner,doc])=>Object.values(doc.items||{}).forEach(i=>{ if(i.status==='pendente') out.push({owner,...i}); }));
@@ -687,13 +747,13 @@ function viewList(){
   if (!list.length) return `<div class="empty"><h2 style="margin-bottom:8px">Nenhum personagem ainda</h2><p>${S.isMaster?'Crie um personagem ou aguarde os jogadores enviarem fichas para aprovação.':'Crie seu personagem. Ele aparece aqui quando o mestre aprovar.'}</p><button class="btn pri" data-act="tab" data-tab="criar">Criar personagem</button></div>`;
   return `<div class="grid-cards">${list.map(c=>{
     const d=derive(c); const e=est(c); const pv=pvAtual(c,d); const r=Math.max(0,Math.min(1,pv/d.max)); const pend=pendingFor(c.id);
-    return `<div class="card" data-act="open" data-id="${h(c.id)}">
+    return `<div class="card" data-act="open" data-id="${h(c.id)}">${portrait(c.retrato, c.nome)}<div class="card-body">
       <div class="row between"><h2>${h(c.nome)}</h2>${pend?`<span class="chip pendente">${pend} pendente${pend>1?'s':''}</span>`:''}</div>
       <div class="muted">${h(d.sp.nome)} · ${h(d.cls.nome)}${c.subclasse?` (${h(c.subclasse)})`:''} · nível ${c.nivel}</div>
       <div class="hpbar"><i style="width:${r*100}%;background:${hpColor(r)}"></i></div>
       <div class="row between small"><span>PV ${pv}/${d.max}${e.temp?` (+${e.temp})`:''}</span><span>CA ${d.ac}</span><span>Iniciativa ${sg(d.init)}</span></div>
       ${S.isMaster?`<div class="small muted" style="margin-top:6px">Jogador: ${h(nameOf(c.ownerId))}</div>`:''}
-    </div>`;}).join('')}</div>`;
+    </div></div>`;}).join('')}</div>`;
 }
 
 function opt(v,l,sel){ return `<option value="${h(v)}" ${String(sel)===String(v)?'selected':''}>${h(l)}</option>`; }
@@ -726,6 +786,13 @@ function viewCreate(){
   return `<form data-form="criar" class="create">
     <div class="stack">
       <div class="panel"><h3>Identidade</h3>
+        <div class="row" style="align-items:flex-start;gap:14px;margin-bottom:12px;flex-wrap:nowrap">
+          ${portrait(d.retrato, d.nome, 'md')}
+          <div><label>Imagem do personagem (opcional)</label>
+            <div class="small muted" style="margin-bottom:8px">Uma foto ou ilustração. Ela é reduzida automaticamente antes de ser salva.</div>
+            <div class="img-actions" style="justify-content:flex-start;margin:0"><label class="btn sm" style="color:var(--text);margin:0">${d.retrato?'Trocar imagem':'Escolher imagem'}<input type="file" accept="image/*" data-img="draft"></label>
+            ${d.retrato?`<button type="button" class="btn sm" data-act="img-clear-draft">Remover</button>`:''}</div></div>
+        </div>
         <div class="cols2"><div class="f"><label>Nome do personagem</label><input data-f="nome" data-live value="${h(d.nome)}" maxlength="60" placeholder="Ex.: Lyra Ventoalto"></div>
         <div class="f"><label>Alinhamento (opcional)</label><input data-f="alinhamento" data-live value="${h(d.alinhamento)}" maxlength="40"></div></div>
         <div class="cols3">
@@ -911,6 +978,11 @@ function viewSheet(){
       <div class="muted">${h(d.sp.nome)} · ${h(d.cls.nome)}${c.subclasse?` (${h(c.subclasse)})`:''} · nível ${c.nivel} · ${h(c.antecedenteNome)}${c.alinhamento?` · ${h(c.alinhamento)}`:''}${S.isMaster?` · jogador: ${h(nameOf(c.ownerId))}`:''}</div></div>
     <div class="sheet">
       <div class="stack">
+        <div class="panel">${portrait(c.retrato, c.nome, 'lg')}
+          <div class="img-actions"><label class="btn sm" style="color:var(--text);margin:0">${c.retrato?'Trocar imagem':'Enviar imagem'}<input type="file" accept="image/*" data-img="sheet"></label>
+          ${c.retrato?`<button class="btn sm" data-act="img-remove">${S.delArm==='img:'+c.id?'Confirmar remoção':'Remover'}</button>`:''}</div>
+          ${!S.isMaster?'<div class="small muted" style="margin-top:8px;text-align:center">A imagem entra na ficha depois que o mestre aprovar.</div>':''}
+        </div>
         <div class="abil">${AB.map(a=>{ const s=d.saves.find(x=>x.a===a); return `<div class="ab"><div><div class="n">${AB_NOME[a]}</div><div class="s">valor ${c.atributos[a]} · <span class="dot ${s.prof?'on':''}"></span>resist. ${sg(s.v)}</div></div><div class="m">${sg(d.m[a])}</div></div>`; }).join('')}</div>
         <div class="panel"><h3>Perícias</h3><div class="list">${d.skills.map(s=>`<div class="li small"><span><span class="dot ${s.prof?'on':''}"></span>${s.n}</span><b>${sg(s.v)}</b></div>`).join('')}</div></div>
       </div>
@@ -955,10 +1027,11 @@ function viewApprovals(){
   return `<div class="row between" style="margin-bottom:12px"><span class="muted">${list.length} solicitação(ões) pendente(s)</span><button class="btn ok" data-act="approve-all">Aprovar todas</button></div>
   ${list.map(i=>{ const c=S.chars.find(x=>x.id===i.charId);
     let extra='';
-    if (i.type==='criar'){ const r=draftCompute(i.payload); extra=`<div class="small muted" style="margin-top:6px">${AB.map(a=>`${a} ${r.final[a]}`).join(' · ')} · Perícias: ${[...r.skills].map(k=>SKILL_NOME[k]).join(', ')}</div>${r.errors.length?`<div class="err">Problemas: ${r.errors.map(h).join(' ')}</div>`:''}`; }
-    else { try{ const n=applyChange(c,i.type,i.payload); if(/^magia|nivel/.test(i.type)){ const w=spellWarnings(n); if(w.length) extra=`<div class="err">Atenção, as regras indicam: ${w.map(h).join(' ')} Aprove só se houver um motivo (característica, item, decisão da mesa).</div>`; } }
+    if (i.type==='retrato'){ extra = i.payload.acao!=='remover' && imgOk(i.payload.img) ? `<div class="row" style="margin-top:8px;align-items:flex-start">${c?`<div class="small muted" style="text-align:center">Atual<br>${portrait(c.retrato,c.nome,'md')}</div>`:''}<div class="small muted" style="text-align:center">Nova<br>${portrait(i.payload.img,'','md')}</div></div>` : ''; }
+    if (i.type==='criar'){ const r=draftCompute(i.payload); extra=`${imgOk(i.payload.retrato)?`<div style="margin-top:8px">${portrait(i.payload.retrato,i.payload.nome,'md')}</div>`:''}<div class="small muted" style="margin-top:6px">${AB.map(a=>`${a} ${r.final[a]}`).join(' · ')} · Perícias: ${[...r.skills].map(k=>SKILL_NOME[k]).join(', ')}</div>${r.errors.length?`<div class="err">Problemas: ${r.errors.map(h).join(' ')}</div>`:''}`; }
+    if (i.type!=='criar'){ try{ const n=applyChange(c,i.type,i.payload); if(/^magia|nivel/.test(i.type)){ const w=spellWarnings(n); if(w.length) extra=`<div class="err">Atenção, as regras indicam: ${w.map(h).join(' ')} Aprove só se houver um motivo (característica, item, decisão da mesa).</div>`; } }
       catch(e){ extra=`<div class="err">Não pode ser aplicada agora: ${h(e.message)}</div>`; } }
-    return `<div class="req"><div class="row between"><div><b>${h(c?.nome||i.charNome||'Novo personagem')}</b> <span class="muted small">· ${h(nameOf(i.owner))} · ${fmtDate(i.at)}</span></div><span class="chip pendente">${h(ACTIONS[i.type]||'Criação de ficha')}</span></div>
+    return `<div class="req"><div class="row between"><div><b>${h(c?.nome||i.charNome||'Novo personagem')}</b> <span class="muted small">· ${h(nameOf(i.owner))} · ${fmtDate(i.at)}</span></div><span class="chip pendente">${h(ACTIONS[i.type]||{retrato:'Imagem'}[i.type]||'Criação de ficha')}</span></div>
       <div style="margin-top:6px">${h(describe(i.type,i.payload,c))}${i.motivo?` <span class="muted">· ${h(i.motivo)}</span>`:''}</div>${extra}
       <div class="row" style="margin-top:10px"><button class="btn sm ok" data-act="approve" data-owner="${h(i.owner)}" data-id="${h(i.id)}">Aprovar</button>
       <input class="rej-motivo" data-for="${h(i.id)}" placeholder="Motivo da rejeição (opcional)" style="flex:1;min-width:160px">
@@ -969,7 +1042,7 @@ function viewMine(){
   if (!list.length) return `<div class="empty">Você ainda não enviou solicitações.</div>`;
   return list.map(i=>{ const c=S.chars.find(x=>x.id===i.charId);
     return `<div class="req"><div class="row between"><b>${h(c?.nome||i.charNome||'Novo personagem')}</b><span class="chip ${i.status}">${i.status}</span></div>
-    <div style="margin-top:6px">${h(describe(i.type,i.payload,c))}</div><div class="small muted">${fmtDate(i.at)}${i.motivoRejeicao?` · motivo: ${h(i.motivoRejeicao)}`:''}</div></div>`; }).join('');
+    <div style="margin-top:6px">${h(describe(i.type,i.payload,c))}</div>${i.type==='retrato'&&imgOk(i.payload.img)?`<div style="margin:6px 0">${portrait(i.payload.img,'')}</div>`:''}<div class="small muted">${fmtDate(i.at)}${i.motivoRejeicao?` · motivo: ${h(i.motivoRejeicao)}`:''}</div></div>`; }).join('');
 }
 
 /* ============ EVENTOS ============ */
@@ -982,6 +1055,10 @@ document.addEventListener('click', async e=>{
   else if (a==='role'){ S.isMaster = t.dataset.role==='mestre'; S.myId = S.isMaster?'demo-mestre':'demo-jogador'; if(S.tab==='aprovacoes'||S.tab==='solicitacoes') S.tab='personagens'; render(true); }
   else if (a==='pb'){ const ab=t.dataset.ab; S.draft.compra[ab]=Math.max(8,Math.min(15,S.draft.compra[ab]+(+t.dataset.d))); render(true); }
   else if (a==='reset-draft'){ S.draft=newDraft(); render(true); }
+  else if (a==='img-clear-draft'){ S.draft.retrato=''; render(true); }
+  else if (a==='img-remove'){ const c=S.chars.find(x=>x.id===S.charId); if(!c) return;
+    if (S.delArm!=='img:'+c.id){ S.delArm='img:'+c.id; render(true); return; }
+    S.delArm=null; await submitPortrait(c,''); render(true); }
   else if (a==='del'){ const id=t.dataset.id; if(S.delArm!==id){ S.delArm=id; render(true); return; }
     try{ await store.deleteCharacter(id); S.delArm=null; S.tab='personagens'; toast('Personagem excluído.'); render(true); } catch(err){ toast('Não foi possível excluir ('+(err.code||'erro')+').'); } }
   else if (a==='approve'){ t.disabled=true; if(await approve(t.dataset.owner,t.dataset.id)) toast('Aprovado.'); else t.disabled=false; }
@@ -998,8 +1075,15 @@ document.addEventListener('click', async e=>{
   else if (a==='atk'){ const c=S.chars.find(x=>x.id===S.charId); if(c) doAttack(c,t.dataset.id,t.dataset.vers==='1'); }
   else if (a==='approve-all'){ t.disabled=true; let ok=0; for (const i of pendingList()){ if(await approve(i.owner,i.id)) ok++; } toast(`${ok} solicitação(ões) aprovada(s).`); t.disabled=false; }
 });
-document.addEventListener('change', e=>{
+document.addEventListener('change', async e=>{
   const el=e.target;
+  if (el.matches('input[type=file][data-img]')){
+    const file=el.files&&el.files[0]; el.value=''; if(!file) return;
+    let img; try { img=await fileToPortrait(file); } catch(err){ toast(err.message); return; }
+    if (el.dataset.img==='draft'){ if(S.draft){ S.draft.retrato=img; render(true); } }
+    else { const c=S.chars.find(x=>x.id===S.charId); if(c){ await submitPortrait(c,img); render(true); } }
+    return;
+  }
   if (el.matches('[data-act-type]')){ S.actionType=el.value; render(true); return; }
   if (!S.draft || !el.closest('form[data-form="criar"]')) return;
   if (el.dataset.skill){ const k=el.dataset.skill; const s=new Set(S.draft.classSkills); el.checked?s.add(k):s.delete(k); S.draft.classSkills=[...s]; render(true); return; }
