@@ -1060,7 +1060,7 @@ function viewSheet(){
         ${S.cloneArm===c.id
           ? `<input id="clone-nome" maxlength="60" value="${h((c.nome+' (cópia)').slice(0,60))}" style="width:220px" aria-label="Nome da cópia">
              <button class="btn sm ok" data-act="clone-ok">${S.isMaster?'Criar cópia':'Pedir cópia ao mestre'}</button><button class="btn sm" data-act="clone-cancel">Cancelar</button>`
-          : `<button class="btn sm" data-act="clone">Clonar ficha</button>`}</div>
+          : `<button class="btn sm" data-act="clone">Clonar ficha</button><button class="btn sm" data-act="export">Exportar ficha</button>`}</div>
       ${S.isMaster?`<button class="btn sm danger" data-act="del" data-id="${h(c.id)}">${S.delArm===c.id?'Clique de novo para excluir':'Excluir personagem'}</button>`:''}
     </div>
     <div style="margin-bottom:14px"><div class="row" style="gap:12px"><h2 style="font-size:26px;color:var(--gold2)">${h(c.nome)}</h2>${statusChip(c)}</div>
@@ -1147,6 +1147,143 @@ function viewMine(){
     <div style="margin-top:6px">${h(describe(i.type,i.payload,c))}</div>${i.type==='retrato'&&imgOk(i.payload.img)?`<div style="margin:6px 0">${portrait(i.payload.img,'')}</div>`:''}<div class="small muted">${fmtDate(i.at)}${i.motivoRejeicao?` · motivo: ${h(i.motivoRejeicao)}`:''}</div></div>`; }).join('');
 }
 
+/* ============ EXPORTAR FICHA ============ */
+/* Gera um HTML independente com as seções da ficha do jogador do Livro do Jogador 2024 (duas páginas A4, pronto para imprimir/salvar em PDF).
+   Os dados da ficha vão embutidos no arquivo (bloco JSON) para servir de backup. */
+const TREINO_ARMADURA = {barbaro:'Leves, médias e escudos', bardo:'Leves', bruxo:'Leves', clerigo:'Leves, médias e escudos', druida:'Leves, médias e escudos',
+  feiticeiro:'Nenhuma', guerreiro:'Leves, médias, pesadas e escudos', ladino:'Leves', mago:'Nenhuma', monge:'Nenhuma', paladino:'Leves, médias, pesadas e escudos', patrulheiro:'Leves, médias e escudos'};
+const TREINO_ARMAS = {sm:'Simples e marciais', s:'Simples', ladino:'Simples e marciais com Acuidade ou Leve', monge:'Simples e marciais com a propriedade Leve'};
+function sheetHtml(c){
+  const d=derive(c), e=est(c), s=statusOf(c), pv=pvAtual(c,d);
+  const box=(label,val,cls='')=>`<div class="bx ${cls}"><div class="v">${val}</div><div class="l">${label}</div></div>`;
+  const line=(label,val)=>`<div class="ln"><span class="lv">${val||'&nbsp;'}</span><span class="ll">${label}</span></div>`;
+  const dot=on=>`<i class="d ${on?'on':''}"></i>`;
+  const abil=a=>{ const sv=d.saves.find(x=>x.a===a); const sk=d.skills.filter(x=>x.a===a);
+    return `<div class="ab"><div class="abh"><div class="abn">${AB_NOME[a]}</div><div class="abm">${sg(d.m[a])}</div><div class="abs">${c.atributos[a]}</div></div>
+      <div class="sk sv">${dot(sv.prof)}<b>${sg(sv.v)}</b> Teste de resistência</div>
+      ${sk.map(x=>`<div class="sk">${dot(x.prof)}<b>${sg(x.v)}</b> ${x.n}</div>`).join('')}</div>`; };
+  const rows=(n,arr,fn,cols)=>{ const out=arr.map(fn); while(out.length<n) out.push(`<tr>${'<td>&nbsp;</td>'.repeat(cols)}</tr>`); return out.join(''); };
+  const armas=rows(6,d.ataques,a=>`<tr><td>${h(a.nome)}${a.bonus?` +${a.bonus}`:''}</td><td>${sg(a.atk)}</td><td>${/d/.test(a.dado)?h(a.dado)+(a.mod?sg(a.mod):''):Math.max(1,+a.dado+a.mod)} ${h(a.dano)}</td><td>${[...a.props, a.alc?`${a.alc} pés`:'', a.obs||'', a.prof?'':'sem proficiência'].filter(Boolean).map(h).join(', ')}</td></tr>`,4);
+  const ms=(c.magias||[]);
+  const magias=rows(22,ms,m=>`<tr><td>${+m.circ===0?'T':m.circ}</td><td>${h(m.nome)}</td><td class="c">${+m.circ===0||m.prep?'●':'○'}</td><td>${[m.extra?'fora do limite':'',m.obs||''].filter(Boolean).map(h).join(' · ')}</td></tr>`,4);
+  let slots='';
+  if (d.magia?.pacto) slots=`<div class="slot"><b>Pacto (${d.magia.pacto.circ}º)</b> ${Array.from({length:d.magia.pacto.qtd},(_,i)=>dot(i<e.pacto)).join('')}</div>`;
+  else slots=[1,2,3,4,5,6,7,8,9].map(n=>{ const tot=d.magia?.slots?.[n-1]||0; return `<div class="slot"><b>${n}º</b> ${tot?Array.from({length:tot},(_,i)=>dot(i<(e.espacos[n-1]||0))).join(''):'<span class="mut">—</span>'}</div>`; }).join('');
+  const inv=(c.inventario||[]).map(i=>`${h(i.nome)}${i.qtd>1?` ×${i.qtd}`:''}${i.obs?` (${h(i.obs)})`:''}`);
+  const equip=[h(ARMORS[c.armadura]?.nome||''), c.escudo?'Escudo':'', ...inv].filter(Boolean);
+  const dados=JSON.stringify({formato:'fichas-dnd55', versao:1, exportadoEm:nowIso(), ficha:c}).replace(/</g,'\\u003c');
+  return `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${h(c.nome)} · Ficha de Personagem</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+@page{size:A4;margin:9mm}
+*{box-sizing:border-box}
+body{margin:0;background:#e9e6e0;color:#1d1a16;font:10.5px/1.35 Inter,Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pg{width:210mm;min-height:297mm;margin:12px auto;padding:9mm;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.15);display:flex;flex-direction:column;gap:7px}
+@media print{body{background:#fff}.pg{margin:0;box-shadow:none;width:auto;min-height:278mm;padding:0;page-break-after:always}.pg:last-of-type{page-break-after:auto}.noprint{display:none}}
+.bx.sm .v{font-size:12px;padding:4px 0}
+h1,h2,h3{font-family:Cinzel,Georgia,serif;margin:0}
+.sec{border:1.5px solid #3a332b;border-radius:7px;padding:6px 8px;position:relative}
+.sec>h3{font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;text-align:center;color:#5a2a1c;margin:-1px 0 5px}
+.row{display:flex;gap:7px}.grow{flex:1;min-width:0}
+.ln{display:flex;flex-direction:column;border-bottom:1px solid #8b8075;padding:2px 2px 1px}
+.lv{font-weight:600;font-size:11.5px;min-height:15px}.ll{font-size:7.5px;text-transform:uppercase;letter-spacing:.06em;color:#6b6157}
+.top{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:4px 10px}
+.bx{border:1.5px solid #3a332b;border-radius:7px;text-align:center;padding:4px 3px;min-width:58px}
+.bx .v{font-size:17px;font-weight:700}.bx .l{font-size:7.5px;text-transform:uppercase;letter-spacing:.05em;color:#6b6157}
+.ca{border-radius:7px 7px 50% 50%/7px 7px 32% 32%;padding-bottom:10px;min-width:64px}
+.d{display:inline-block;width:8px;height:8px;border:1.3px solid #3a332b;border-radius:50%;margin:0 3px 0 0;vertical-align:-1px}.d.on{background:#3a332b}
+.cols{display:grid;grid-template-columns:2.15fr 3fr;gap:7px;flex:1}
+.abgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;align-content:start}
+.ab{border:1.5px solid #3a332b;border-radius:7px;padding:4px 6px 5px}
+.abh{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:6px;border-bottom:1px solid #b9afa4;margin-bottom:3px;padding-bottom:2px}
+.abn{font-family:Cinzel,Georgia,serif;font-weight:700;font-size:10px;text-transform:uppercase}
+.abm{font-size:17px;font-weight:700}.abs{font-size:10px;border:1.3px solid #3a332b;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center}
+.sk{font-size:9.5px;padding:1px 0}.sk b{display:inline-block;min-width:20px}.sv{border-bottom:1px dotted #b9afa4;margin-bottom:1px}
+table{width:100%;border-collapse:collapse}th{font-size:7.5px;text-transform:uppercase;letter-spacing:.05em;color:#6b6157;text-align:left;padding:2px 3px;border-bottom:1px solid #3a332b}
+td{padding:2.5px 3px;border-bottom:1px solid #d3cbc1;font-size:9.5px;vertical-align:top}td.c{text-align:center}
+.txt{white-space:pre-wrap;font-size:9.5px;min-height:40px}
+.blank{border-bottom:1px solid #d3cbc1;height:15px}
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:3px 10px}.slot{font-size:9.5px}.slot b{display:inline-block;min-width:22px}
+.mut{color:#9a9086}.portrait{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:5px;display:block}
+.noprint{text-align:center;margin:10px;font:13px Inter,Arial,sans-serif}.noprint button{font:inherit;padding:7px 14px;border-radius:7px;border:1px solid #3a332b;background:#fff;cursor:pointer}
+.foot{font-size:8px;color:#8b8075;text-align:right}
+</style></head><body>
+<div class="noprint"><button onclick="window.print()">Imprimir ou salvar em PDF</button></div>
+<section class="pg">
+  <div class="row">
+    <div class="sec grow"><div class="top">
+      ${line('Nome do personagem', `<span style="font-family:Cinzel,Georgia,serif;font-size:15px">${h(c.nome)}</span>`)}${line('Antecedente',h(c.antecedenteNome))}${line('Classe',h(d.cls.nome))}
+      ${line('Espécie',h(d.sp.nome))}${line('Subclasse',h(c.subclasse))}${line('Nível · XP',`${c.nivel} · &nbsp;`)}
+    </div></div>
+    ${box('Classe de armadura',d.ac,'ca')}
+    <div class="sec" style="min-width:205px"><h3>Pontos de vida</h3>
+      <div class="row" style="justify-content:space-between">${box('Atuais',pv)}${box('Temporários',e.temp||'&nbsp;')}${box('Máximo',d.max)}</div>
+      <div class="row" style="margin-top:5px;justify-content:space-between;font-size:9px">
+        <span><b>Dados de vida:</b> ${c.nivel}d${d.cls.dado} · gastos ___</span>
+        <span><b>Morte:</b> ✓ ${[1,2,3].map(n=>dot(e.morte.s>=n)).join('')} ✗ ${[1,2,3].map(n=>dot(e.morte.f>=n)).join('')}</span></div></div>
+  </div>
+  <div class="row">${box('Bônus de proficiência','+'+d.P)}${box('Iniciativa',sg(d.init))}${box('Deslocamento',`${d.desl} pés`)}${box('Tamanho','&nbsp;')}${box('Percepção passiva',d.passiva)}${box('Inspiração heroica','○')}
+    <div class="sec grow" style="padding:4px 8px">${line('Status e campanha', `${STATUS[s.tipo].nome}${s.campanha?` · ${h(s.campanha)}`:''}`)}</div></div>
+  <div class="cols">
+    <div style="display:flex;flex-direction:column;gap:7px">
+      <div class="abgrid">${AB.map(abil).join('')}</div>
+      <div class="sec"><h3>Treinamento e proficiências em equipamentos</h3>
+        <div class="sk"><b style="min-width:0">Armaduras:</b> ${TREINO_ARMADURA[c.classe]||''}</div>
+        <div class="sk"><b style="min-width:0">Armas:</b> ${TREINO_ARMAS[CLASS_ARMAS[c.classe]]||''}</div>
+        <div class="sk"><b style="min-width:0">Ferramentas:</b></div><div class="blank"></div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:7px">
+      <div class="sec"><h3>Armas e truques de dano</h3><table><tr><th>Nome</th><th>Bônus / CD</th><th>Dano e tipo</th><th>Notas</th></tr>${armas}</table></div>
+      <div class="sec grow"><h3>Características de classe</h3><div class="txt">${c.subclasse?`Subclasse: ${h(c.subclasse)}\n`:''}</div>${'<div class="blank"></div>'.repeat(6)}</div>
+      <div class="row">
+        <div class="sec grow"><h3>Traços da espécie</h3><div class="txt">${d.sp.tracos.map(t=>'• '+h(t)).join('\n')}</div></div>
+        <div class="sec grow"><h3>Talentos</h3><div class="txt">${(c.talentos||[]).map(t=>'• '+h(t)).join('\n')||'&nbsp;'}</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">Fichas de Personagem · D&amp;D 5.5 · exportada em ${h(new Date().toLocaleString('pt-BR'))}</div>
+</section>
+<section class="pg">
+  <div class="row">
+    <div class="sec grow"><h3>Conjuração</h3>
+      ${d.magia?`<div class="row" style="justify-content:space-between">${box('Habilidade',AB_NOME[d.magia.ab],'sm')}${box('Modificador',sg(d.m[d.magia.ab]))}${box('CD de resistência',d.magia.cd)}${box('Bônus de ataque',sg(d.magia.atk))}${box('Truques / preparadas',`${d.magia.truques} / ${d.magia.preparadas}`)}</div>`
+        :`<div class="mut" style="text-align:center">Esta classe não conjura magias por conta própria.</div>`}</div>
+    <div class="sec" style="min-width:250px"><h3>Espaços de magia (● gasto)</h3><div class="slots">${slots}</div></div>
+  </div>
+  <div class="cols" style="grid-template-columns:3fr 2fr">
+    <div class="sec"><h3>Truques e magias preparadas</h3><table><tr><th style="width:24px">Círc.</th><th>Nome</th><th style="width:30px">Prep.</th><th>Notas</th></tr>${magias}</table></div>
+    <div style="display:flex;flex-direction:column;gap:7px">
+      <div class="sec"><h3>Aparência</h3>${imgOk(c.retrato)?`<img class="portrait" src="${c.retrato}" alt="">`:'<div style="height:140px"></div>'}</div>
+      <div class="sec grow"><h3>História e personalidade</h3><div class="txt">${h(c.notas)}</div></div>
+      <div class="row"><div class="sec grow">${line('Alinhamento',h(c.alinhamento))}</div><div class="sec grow">${line('Idiomas','')}</div></div>
+      <div class="sec"><h3>Equipamento</h3><div class="txt">${equip.join('\n')||'&nbsp;'}</div></div>
+      <div class="sec"><h3>Sintonização com itens mágicos</h3>${'<div class="blank"></div>'.repeat(3)}</div>
+      <div class="sec"><h3>Moedas</h3><div class="row" style="justify-content:space-between">${COINS.map(([k,ab])=>box(ab,c.moedas?.[k]||0)).join('')}</div></div>
+    </div>
+  </div>
+</section>
+<script type="application/json" id="dados-da-ficha">${dados}<\/script>
+</body></html>`;
+}
+async function exportSheet(c){
+  const nome=String(c.nome||'personagem').replace(/[\\/:*?"<>|]+/g,'').trim()||'personagem';
+  const filename=`Ficha - ${nome} - nivel ${c.nivel}.html`;
+  const data=sheetHtml(c);
+  let dl=null;
+  if (window.claude && typeof window.claude.use==='function'){ try { dl=await window.claude.use('downloads'); } catch { dl=null; } }
+  if (dl){
+    try { await dl.save({filename, data}); toast('Ficha exportada. Abra o arquivo e use "Imprimir ou salvar em PDF".'); }
+    catch(err){ if (err?.code!=='declined') toast('Não foi possível salvar o arquivo ('+(err?.code||'erro')+').'); }
+    return;
+  }
+  try {
+    const url=URL.createObjectURL(new Blob([data],{type:'text/html'}));
+    const a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),10000); toast('Ficha exportada. Abra o arquivo e use "Imprimir ou salvar em PDF".');
+  } catch { toast('Não foi possível exportar a ficha neste navegador.'); }
+}
+
 /* ============ EVENTOS ============ */
 function setPath(obj,path,val){ const ks=path.split('.'); let o=obj; ks.slice(0,-1).forEach(k=>o=o[k]); o[ks.at(-1)]=val; }
 document.addEventListener('click', async e=>{
@@ -1167,6 +1304,7 @@ document.addEventListener('click', async e=>{
     if (nf) Object.entries(keep).forEach(([k,val])=>{ if(k==='hp'||k==='rolado') return; const el=nf.elements[k]; if(el && 'value' in el) el.value=val; }); }
   else if (a==='lvl-media'){ const inp=document.querySelector(`.lvl-hp[data-for="${CSS.escape(t.dataset.for)}"]`); if(inp) inp.value=t.dataset.v; }
   else if (a==='img-clear-draft'){ S.draft.retrato=''; render(true); }
+  else if (a==='export'){ const c=S.chars.find(x=>x.id===S.charId); if(!c) return; t.disabled=true; try{ await exportSheet(c); } finally { t.disabled=false; } }
   else if (a==='clone'){ S.cloneArm=S.charId; render(true); const i=$('#clone-nome'); if(i){ i.focus(); i.select(); } }
   else if (a==='clone-cancel'){ S.cloneArm=null; render(true); }
   else if (a==='clone-ok'){ const c=S.chars.find(x=>x.id===S.charId); if(!c) return; t.disabled=true;
