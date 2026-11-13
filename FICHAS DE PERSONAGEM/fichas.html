@@ -111,6 +111,18 @@ textarea{min-height:70px;resize:vertical}
 .img-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:10px}
 .img-actions input[type=file]{display:none}
 .lvl-box{margin-top:8px;padding:10px;border:1px solid var(--line2);border-radius:8px;background:var(--panel2)}
+.rl{background:none;border:0;padding:0;margin:0;font:inherit;color:inherit;text-align:left;cursor:pointer;text-decoration:underline dotted var(--muted);text-underline-offset:3px}
+.rl:hover,.rl:focus-visible{color:var(--gold2);text-decoration-color:var(--gold);outline:none}
+#pop{position:fixed;inset:0;z-index:8;display:flex;align-items:center;justify-content:center;padding:16px}
+#pop[hidden]{display:none}
+.pop-bg{position:absolute;inset:0;background:rgba(8,6,4,.72)}
+.pop-box{position:relative;background:var(--panel);border:1px solid var(--gold);border-radius:var(--r);padding:16px 18px;width:min(520px,100%);max-height:min(80vh,640px);overflow:auto;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.pop-box h3{font-size:18px;color:var(--gold2);margin-top:2px}
+.pop-body{margin-top:10px;font-size:13.5px}
+.pop-body p{margin:0 0 8px}
+.pop-body h4{font-size:13px;color:var(--gold);margin:10px 0 4px}
+.pop-stats{display:flex;flex-wrap:wrap;gap:6px 14px;padding:8px 10px;margin-bottom:10px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;font-size:13px}
+.pop-sec{margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
 #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#2a2117;border:1px solid var(--gold);padding:10px 16px;border-radius:8px;display:none;z-index:9;max-width:90vw}
 @media (max-width:1150px){.sheet{grid-template-columns:220px minmax(0,1fr)}.sheet .c3{grid-column:1/-1}}
 @media (max-width:820px){.sheet,.create{grid-template-columns:1fr}.create .side{position:static}.stats{grid-template-columns:repeat(3,1fr)}.cols6{grid-template-columns:repeat(3,1fr)}.abil{grid-template-columns:repeat(2,1fr)}main{padding:14px}}
@@ -126,6 +138,7 @@ textarea{min-height:70px;resize:vertical}
 </header>
 <nav id="nav"></nav>
 <main id="app"></main>
+<div id="pop" hidden></div>
 <div id="toast"></div>
 
 <script>
@@ -261,6 +274,91 @@ const PREP = {bardo:PREP_A,clerigo:PREP_A,druida:PREP_A,
 const circLabel = n => +n===0 ? 'truque' : `${n}º círculo`;
 const ESTADO_PADRAO = () => ({dano:0,temp:0,espacos:[0,0,0,0,0,0,0,0,0],pacto:0,morte:{s:0,f:0}});
 
+/* ============ TEXTOS DE REGRAS (janela ao clicar) ============
+   Resumos próprios em português, baseados no SRD 5.2 (CC BY 4.0, Wizards of the Coast).
+   Chave = nome normalizado (sem acento, minúsculo, sem parênteses e sem o que vem depois de ":").
+   "nome|contexto" desempata nomes iguais (ex.: Habilidoso traço × talento). */
+const RULES = {
+  'visao no escuro':['Traço de espécie','Você enxerga na penumbra, dentro do alcance indicado, como se fosse luz plena, e no escuro como se fosse penumbra. No escuro, porém, não distingue cores, só tons de cinza. Anões e orcs: 36 m (120 pés). Draconatos, elfos, gnomos e tieflings: 18 m (60 pés).'],
+  'resiliencia ana':['Traço de espécie · Anão','Você tem resistência a dano de veneno. Também tem vantagem nos testes de resistência para evitar ou encerrar a condição Envenenado.'],
+  'robustez ana':['Traço de espécie · Anão','Seu máximo de pontos de vida aumenta em 1, e aumenta em mais 1 a cada nível que você ganha. A ficha já soma esse valor.'],
+  'ancestralidade draconica':['Traço de espécie · Draconato','Escolha o tipo de dragão do seu ancestral. Ele define o tipo de dano da sua Arma de Sopro e da sua resistência: Azul ou Bronze, elétrico; Branco ou Prata, frio; Latão, Ouro ou Vermelho, fogo; Negro ou Cobre, ácido; Verde, veneno.'],
+  'arma de sopro':['Traço de espécie · Draconato','Quando faz a ação de Ataque, você pode trocar um dos ataques por uma baforada em cone de 4,5 m (15 pés) ou em linha de 9 m (30 pés) por 1,5 m de largura. Cada criatura na área faz um teste de resistência de Destreza (CD 8 + mod. de Constituição + bônus de proficiência). Quem falha sofre 1d10 de dano do tipo do seu ancestral; quem passa sofre metade. O dano sobe para 2d10 no nível 5, 3d10 no 11 e 4d10 no 17. Você pode usar o sopro um número de vezes igual ao seu bônus de proficiência e recupera todos os usos num descanso longo.'],
+  'resistencia a dano do ancestral':['Traço de espécie · Draconato','Você tem resistência ao tipo de dano definido pela sua Ancestralidade Dracônica.'],
+  'ancestralidade feerica':['Traço de espécie · Elfo','Você tem vantagem nos testes de resistência para evitar ou encerrar a condição Enfeitiçado.'],
+  'linhagem elfica':['Traço de espécie · Elfo','Escolha uma linhagem. Ela concede um truque no nível 1 e uma magia nos níveis 3 e 5.\n• Drow: visão no escuro de 36 m; Luzes Dançantes; Fogo das Fadas (nível 3); Escuridão (nível 5).\n• Alto elfo: Prestidigitação (pode trocar por outro truque de mago ao fim de um descanso longo); Detectar Magia (nível 3); Passo Nebuloso (nível 5).\n• Elfo silvestre: deslocamento de 10,5 m (35 pés); Arte Druídica; Passos Longos (nível 3); Passos sem Pegadas (nível 5).\nCada magia de 1º círculo ou maior pode ser conjurada uma vez sem gastar espaço, e você recupera esse uso num descanso longo. Também pode conjurá-las com espaços de magia. A habilidade de conjuração é Inteligência, Sabedoria ou Carisma, escolhida junto com a linhagem.'],
+  'sentidos agucados':['Traço de espécie · Elfo','Você ganha proficiência em uma destas perícias: Intuição, Percepção ou Sobrevivência.'],
+  'transe':['Traço de espécie · Elfo','Você não precisa dormir, e magias não podem fazê-lo dormir. Você completa um descanso longo em 4 horas, desde que passe esse tempo em meditação, como num transe, e continua consciente durante ele.'],
+  'astucia gnomica':['Traço de espécie · Gnomo','Você tem vantagem nos testes de resistência de Inteligência, Sabedoria e Carisma.'],
+  'linhagem gnomica':['Traço de espécie · Gnomo','Escolha uma linhagem:\n• Gnomo da floresta: você conhece o truque Ilusão Menor e tem sempre preparada a magia Falar com Animais. Pode conjurá-la sem gastar espaço um número de vezes igual ao seu bônus de proficiência, e recupera esses usos num descanso longo.\n• Gnomo das rochas: você conhece os truques Consertar e Prestidigitação. Gastando 10 minutos conjurando Prestidigitação, cria um pequeno dispositivo mecânico Miúdo (CA 5, 1 PV) que produz um efeito simples desse truque, como luz, som ou cheiro. Pode ter até três dispositivos ao mesmo tempo, e cada um funciona por 8 horas.\nA habilidade de conjuração é Inteligência, Sabedoria ou Carisma, escolhida junto com a linhagem.'],
+  'ancestralidade gigante':['Traço de espécie · Golias','Escolha um benefício. Você pode usá-lo um número de vezes igual ao seu bônus de proficiência e recupera os usos num descanso longo.\n• Nuvem: como ação bônus, teleporta-se até 9 m para um espaço desocupado que consiga ver.\n• Fogo: quando acerta um alvo com uma jogada de ataque, causa +1d10 de dano de fogo.\n• Gelo: quando acerta com uma jogada de ataque, causa +1d6 de dano de frio, e o deslocamento do alvo cai 3 m até o início do seu próximo turno.\n• Colina: quando acerta uma criatura Grande ou menor, você a derruba (condição Caído).\n• Pedra: quando sofre dano, usa sua reação para rolar 1d12 + mod. de Constituição e reduz o dano nesse valor.\n• Tempestade: quando uma criatura a até 18 m causa dano a você, usa sua reação para causar 1d8 de dano trovejante a ela.'],
+  'forma grande':['Traço de espécie · Golias','A partir do nível 5, você pode usar uma ação bônus para ficar Grande, se houver espaço, por 10 minutos ou até encerrar o efeito (sem precisar de ação). Enquanto estiver Grande, tem vantagem em testes de Força e seu deslocamento aumenta em 3 m. Você só pode usar este traço uma vez por descanso longo.'],
+  'constituicao poderosa':['Traço de espécie · Golias','Você tem vantagem nos testes de atributo para encerrar a condição Agarrado. Também conta como um tamanho maior para calcular quanto peso consegue carregar.'],
+  'bravura':['Traço de espécie · Halfling','Você tem vantagem nos testes de resistência para evitar ou encerrar a condição Amedrontado.'],
+  'agilidade halfling':['Traço de espécie · Halfling','Você pode atravessar o espaço de qualquer criatura de tamanho maior que o seu, mas não pode parar nesse espaço.'],
+  'sortudo':['Traço de espécie · Halfling','Quando tira 1 no d20 de um Teste de D20 (ataque, teste de atributo ou de resistência), você pode rolar o dado de novo, e precisa usar o novo resultado.'],
+  'furtividade natural':['Traço de espécie · Halfling','Você pode fazer a ação de Esconder mesmo quando está encoberto apenas por uma criatura pelo menos um tamanho maior que você.'],
+  'engenhoso':['Traço de espécie · Humano','Você ganha Inspiração Heroica sempre que termina um descanso longo. Com ela, pode rolar de novo qualquer dado logo depois de rolá-lo, e precisa usar o novo resultado. Depois disso, perde a inspiração.'],
+  'habilidoso':['Traço de espécie · Humano','Você ganha proficiência em uma perícia à sua escolha.'],
+  'versatil':['Traço de espécie · Humano','Você ganha um talento de Origem à sua escolha, como Habilidoso, Alerta, Iniciado em Magia ou Atacante Selvagem. Combine qual com o mestre.'],
+  'surto de adrenalina':['Traço de espécie · Orc','Você pode fazer a ação de Disparada como ação bônus. Quando faz isso, ganha pontos de vida temporários iguais ao seu bônus de proficiência. Pode usar este traço um número de vezes igual ao seu bônus de proficiência e recupera os usos num descanso curto ou longo.'],
+  'resistencia implacavel':['Traço de espécie · Orc','Quando seus pontos de vida caem a 0 e você não morre na hora, pode ficar com 1 PV em vez disso. Depois de usar este traço, só pode usá-lo de novo após um descanso longo.'],
+  'legado infero':['Traço de espécie · Tiefling','Escolha um legado. Ele concede uma resistência, um truque no nível 1 e uma magia nos níveis 3 e 5.\n• Abissal: resistência a veneno; Rajada de Veneno; Raio Nauseante (nível 3); Imobilizar Pessoa (nível 5).\n• Ctônico: resistência a necrótico; Toque Arrepiante; Vida Falsa (nível 3); Raio do Enfraquecimento (nível 5).\n• Infernal: resistência a fogo; Raio de Fogo; Repreensão Infernal (nível 3); Escuridão (nível 5).\nCada magia de 1º círculo ou maior pode ser conjurada uma vez sem gastar espaço, e você recupera esse uso num descanso longo. Também pode conjurá-las com espaços de magia. A habilidade de conjuração é Inteligência, Sabedoria ou Carisma, escolhida junto com o legado.'],
+  'presenca sobrenatural':['Traço de espécie · Tiefling','Você conhece o truque Taumaturgia e o conjura com a mesma habilidade escolhida para o Legado Ínfero.'],
+  'alerta':['Talento de origem','Proficiência em iniciativa: ao rolar iniciativa, você soma seu bônus de proficiência (a ficha já faz isso).\nTroca de iniciativa: logo depois de rolar iniciativa, você pode trocar o seu resultado com o de um aliado disposto no mesmo combate. Nenhum dos dois pode estar Incapacitado.'],
+  'iniciado em magia':['Talento de origem','Escolha uma lista de magias: Clérigo, Druida ou Mago.\n• Você aprende dois truques dessa lista.\n• Escolha uma magia de 1º círculo da mesma lista. Ela fica sempre preparada. Você pode conjurá-la uma vez sem gastar espaço, e recupera esse uso num descanso longo. Também pode conjurá-la com espaços de magia que tiver.\n• A habilidade de conjuração é Inteligência, Sabedoria ou Carisma, escolhida quando você pega o talento.\n• Sempre que subir de nível, pode trocar uma dessas magias por outra do mesmo círculo e da mesma lista.\nVocê pode pegar este talento mais de uma vez, desde que escolha uma lista diferente a cada vez.'],
+  'atacante selvagem':['Talento de origem','Uma vez por turno, quando acerta um alvo com uma arma, você pode rolar os dados de dano da arma duas vezes e usar qualquer um dos dois resultados.'],
+  'habilidoso|talento':['Talento de origem','Você ganha proficiência em qualquer combinação de três perícias ou ferramentas. Pode pegar este talento mais de uma vez.'],
+  'talento de origem extra':['Traço de espécie · Humano','Pelo traço Versátil, você ganha um talento de Origem à sua escolha, como Habilidoso, Alerta, Iniciado em Magia ou Atacante Selvagem. Combine qual com o mestre e peça para trocar esta linha pelo talento escolhido.'],
+  'aumento no valor de atributo':['Talento geral','Aumente um valor de atributo em 2, ou dois valores de atributo em 1 cada. Nenhum valor pode passar de 20 por meio deste talento.'],
+  'acuidade|prop':['Propriedade de arma','Nos ataques com esta arma, você escolhe usar Força ou Destreza, tanto na jogada de ataque quanto no dano. A ficha já usa o maior dos dois.'],
+  'leve|prop':['Propriedade de arma','Quando faz a ação de Ataque e ataca com uma arma Leve, você pode fazer um ataque extra como ação bônus, com outra arma Leve na outra mão. Nesse ataque extra, você não soma o modificador de atributo ao dano, a menos que ele seja negativo.'],
+  'arremesso|prop':['Propriedade de arma','Você pode arremessar a arma para fazer um ataque à distância e sacá-la como parte do ataque. Use o mesmo atributo que usaria num ataque corpo a corpo com ela. O alcance mostra a distância normal e a máxima, em pés. Além da distância normal, o ataque tem desvantagem.'],
+  'versatil|prop':['Propriedade de arma','A arma pode ser usada com uma ou com duas mãos. Com as duas, causa o dano maior indicado (use o botão "2 mãos").'],
+  'duas maos|prop':['Propriedade de arma','Você precisa das duas mãos para atacar com esta arma.'],
+  'municao|prop':['Propriedade de arma','Você só ataca à distância se tiver a munição certa, como flechas, virotes, balas ou agulhas, e cada ataque gasta uma. Sacar a munição faz parte do ataque. Depois de uma luta, você pode gastar 1 minuto para recuperar metade da munição usada (arredondando para baixo).'],
+  'recarga|prop':['Propriedade de arma','Você só pode disparar uma munição desta arma por ação, ação bônus ou reação, mesmo que normalmente pudesse fazer mais de um ataque.'],
+  'pesada|prop':['Propriedade de arma','Você tem desvantagem nos ataques com esta arma se tiver Força abaixo de 13 (armas corpo a corpo) ou Destreza abaixo de 13 (armas à distância).'],
+  'alcance|prop':['Propriedade de arma','A arma soma 1,5 m (5 pés) ao seu alcance: você ataca criaturas a até 3 m (10 pés). Isso também vale para ataques de oportunidade.'],
+  'artes marciais|prop':['Característica do Monge','Seus ataques desarmados usam o dado de Artes Marciais e podem usar Destreza no lugar de Força. O dado aumenta com o nível: d6 até o 4, d8 do 5 ao 10, d10 do 11 ao 16 e d12 a partir do 17. Quando faz a ação de Ataque, você pode fazer um ataque desarmado como ação bônus.'],
+  'escudo':['Armadura · escudo','Dá +2 na CA. Para colocar ou tirar, gaste uma ação. Você só aproveita o bônus se tiver treinamento com escudos.'],
+  'ataque com magia':['Conjuração','Algumas magias pedem uma jogada de ataque com magia: d20 + bônus de proficiência + modificador da sua habilidade de conjuração. Se o resultado igualar ou passar a CA do alvo, a magia acerta. Já as magias que pedem teste de resistência usam a sua CD de magia: 8 + bônus de proficiência + modificador de conjuração.'],
+  'ataque desarmado':['Ataque','Um soco, chute, cabeçada ou golpe parecido. Você soma o bônus de proficiência ao ataque e, se acertar, causa dano de concussão igual a 1 + seu modificador de Força. No lugar do dano, pode tentar agarrar o alvo ou empurrá-lo 1,5 m (ou derrubá-lo): ele faz um teste de resistência de Força ou Destreza (à escolha dele) contra CD 8 + mod. de Força + bônus de proficiência.']
+};
+const ARMOR_INFO = {
+  acolchoada:{cat:'leve',furt:1}, couro:{cat:'leve'}, couro_batido:{cat:'leve'},
+  gibao:{cat:'média'}, camisao:{cat:'média'}, brunea:{cat:'média',furt:1}, peitoral:{cat:'média'}, meia:{cat:'média',furt:1},
+  aneis:{cat:'pesada',furt:1}, malha:{cat:'pesada',furt:1,for:13}, talas:{cat:'pesada',furt:1,for:15}, placas:{cat:'pesada',furt:1,for:15}
+};
+const ARMOR_CAT_TXT = {
+  'leve':'Armadura leve: leva 1 minuto para vestir e 1 minuto para tirar.',
+  'média':'Armadura média: leva 5 minutos para vestir e 1 minuto para tirar.',
+  'pesada':'Armadura pesada: leva 10 minutos para vestir e 5 minutos para tirar.'
+};
+const SKILL_TXT = {
+  acrobacia:'Manter o equilíbrio em situações difíceis, como gelo, corda bamba ou um convés balançando, e fazer cambalhotas, saltos e manobras acrobáticas.',
+  adestrar:'Acalmar ou treinar um animal, perceber as intenções dele e controlar uma montaria numa manobra arriscada.',
+  arcanismo:'Lembrar conhecimentos sobre magias, itens mágicos, símbolos arcanos, tradições mágicas e planos de existência.',
+  atletismo:'Escalar, saltar, nadar e outros feitos de força física. Também é usada para agarrar e para escapar de agarrões.',
+  atuacao:'Entreter uma plateia com música, dança, teatro, poesia ou outra forma de apresentação.',
+  enganacao:'Mentir de forma convincente, seja por palavras ou por ações, com disfarces, blefes e histórias falsas.',
+  furtividade:'Passar sem ser notado, esconder-se e mover-se em silêncio.',
+  historia:'Lembrar fatos sobre eventos históricos, pessoas lendárias, reinos antigos, guerras e civilizações perdidas.',
+  intimidacao:'Influenciar alguém com ameaças, hostilidade ou demonstrações de força.',
+  intuicao:'Perceber as verdadeiras intenções de alguém, notar mentiras e prever o próximo passo de uma pessoa.',
+  investigacao:'Procurar pistas, deduzir a partir delas, achar objetos escondidos e descobrir pontos fracos.',
+  medicina:'Estabilizar um companheiro que está morrendo ou diagnosticar uma doença.',
+  natureza:'Lembrar conhecimentos sobre terreno, plantas, animais, clima e ciclos naturais.',
+  percepcao:'Notar, ouvir ou perceber de outra forma a presença de algo. Mede o quanto você está atento ao redor. A Percepção passiva (10 + bônus) vale quando você não está procurando ativamente.',
+  persuasao:'Convencer alguém de boa-fé, com tato, educação e boa índole.',
+  prestidigitacao:'Truques de mão: bater carteiras, plantar um objeto em alguém ou esconder algo na própria roupa.',
+  religiao:'Lembrar conhecimentos sobre divindades, ritos, orações, hierarquias religiosas, símbolos sagrados e cultos.',
+  sobrevivencia:'Seguir rastros, caçar, orientar-se em terreno selvagem, prever o tempo e evitar perigos naturais.'
+};
+const ruleKey = n => String(n||'').split(':')[0].replace(/\([^)]*\)/g,'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+const ruleSlug = n => ruleKey(n).replace(/ /g,'-').slice(0,80) || 'x';
+const ruleBuiltin = (n,ctx) => RULES[ruleKey(n)+'|'+ctx] || RULES[ruleKey(n)] || null;
+
 /* ============ UTILITÁRIOS ============ */
 const $ = s => document.querySelector(s);
 const h = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -303,13 +401,14 @@ function portrait(img, nome, cls=''){
 const S = {
   mode:'carregando', isMaster:false, myId:null, user:null,
   chars:[], reqDocs:{}, estado:{}, rolls:[], tab:'personagens', charId:null, actionType:'item',
-  draft:null, names:{}, namesPending:new Set(), notice:'', loaded:false, delArm:null, deferred:false, filtro:{status:'',campanha:''}
+  draft:null, names:{}, namesPending:new Set(), notice:'', loaded:false, delArm:null, deferred:false, regras:{}, pop:null, filtro:{status:'',campanha:''}
 };
 let store = null;
 
 /* ============ ARMAZENAMENTO ============ */
 function makeLocalStore(){
-  const mem = {chars:{}, reqs:{}, est:{}}; const cc=[], rc=[], ec=[];
+  const mem = {chars:{}, reqs:{}, est:{}, regras:{}}; const cc=[], rc=[], ec=[], gc=[];
+  const emitG = () => gc.forEach(f=>f(clone(mem.regras)));
   const emitC = () => cc.forEach(f=>f(Object.values(mem.chars).map(clone)));
   const emitR = () => rc.forEach(f=>f(clone(mem.reqs)));
   const emitE = () => ec.forEach(f=>f(clone(mem.est)));
@@ -318,6 +417,9 @@ function makeLocalStore(){
     onEstado(cb){ ec.push(cb); setTimeout(emitE); },
     async setEstado(owner,charId,e){ (mem.est[owner] ||= {chars:{}}).chars[charId]=clone(e); emitE(); },
     onRequests(cb){ rc.push(cb); setTimeout(emitR); },
+    onRegras(cb){ gc.push(cb); setTimeout(emitG); },
+    async saveRegra(slug,r){ mem.regras[slug]=clone(r); emitG(); },
+    async deleteRegra(slug){ delete mem.regras[slug]; emitG(); },
     async saveCharacter(c){ mem.chars[c.id]=clone(c); emitC(); },
     async deleteCharacter(id){ delete mem.chars[id]; emitC(); },
     async addRequest(item){ (mem.reqs[S.myId] ||= {items:{}}).items[item.id]=clone(item); emitR(); },
@@ -362,6 +464,9 @@ function makeDbStore(db){
         return ref.update({items:{[item.id]:item}});
       });
     },
+    onRegras(cb,err){ return db.collection('regras').onSnapshot(s => { const m={}; s.docs.forEach(d=>{ if(d.exists) m[d.id]=clone(d.data()); }); cb(m); }, err); },
+    saveRegra(slug,r){ return q('regras/'+slug, ()=>db.doc('regras/'+slug).set(clone(r))); },
+    deleteRegra(slug){ return q('regras/'+slug, ()=>db.doc('regras/'+slug).delete()); },
     resolveRequest(owner,id,patch){ const p='requests/'+owner; return q(p, ()=>db.doc(p).update({items:{[id]:patch}})); }
   };
 }
@@ -412,7 +517,7 @@ function attacks(c,d){
     const b = +w.bonus||0;
     let dado = w.dado;
     if (mongeArma && artes && avgDie(artes)>avgDie(w.dado)) dado=artes;
-    out.push({id:w.id, nome:w.nome, dist:w.dist, ab, prof, atk:d.m[ab]+(prof?d.P:0)+b, dado, vers:w.vers, mod:d.m[ab]+b, dano:w.dano, props:w.props, alc:w.alc, obs:w.obs, bonus:b});
+    out.push({id:w.id, nome:w.nome, dist:w.dist, ab, prof, atk:d.m[ab]+(prof?d.P:0)+b, dado, vers:w.vers, mod:d.m[ab]+b, dano:w.dano, props:w.props, alc:w.alc, obs:w.obs, bonus:b, base:w.base, cat:w.cat});
   });
   return out;
 }
@@ -787,6 +892,8 @@ function render(force){
   else if (S.tab==='aprovacoes') html += viewApprovals();
   else if (S.tab==='solicitacoes') html += viewMine();
   app.innerHTML = html;
+  if (S.pop && S.tab!=='ficha') S.pop=null;
+  renderPop();
 }
 function renderChrome(){
   const b=[];
@@ -1008,17 +1115,17 @@ function spellPanel(c,d){
     ${d.magia?`<div class="small muted" style="margin-bottom:8px">${AB_NOME[d.magia.ab]} · CD ${d.magia.cd} · ataque ${sg(d.magia.atk)} · até ${d.magia.maxCirc}º círculo<br>Truques ${tr}/${d.magia.truques} · Preparadas ${pr}/${d.magia.preparadas}</div>
       ${warns.map(w=>`<div class="err">${h(w)}</div>`).join('')}
       <div class="small muted" style="margin:8px 0 4px">Espaços de magia${pode?' (clique para gastar ou recuperar)':''}</div><div class="list" style="margin-bottom:10px">${slots}</div>`:''}
-    ${ms.length?grupos.map(g=>`<div class="small" style="margin-top:6px;color:var(--gold)">${g===0?'Truques':g+'º círculo'}</div>${ms.filter(s=>+s.circ===g).map(s=>`<div class="li small"><span>${g>0?`<span class="dot ${s.prep?'on':''}" title="${s.prep?'Preparada':'Não preparada'}"></span>`:''}${h(s.nome)}${s.extra?' <span class="muted">(fora do limite)</span>':''}${s.obs?` <span class="muted">· ${h(s.obs)}</span>`:''}</span></div>`).join('')}`).join('')
+    ${ms.length?grupos.map(g=>`<div class="small" style="margin-top:6px;color:var(--gold)">${g===0?'Truques':g+'º círculo'}</div>${ms.filter(s=>+s.circ===g).map(s=>`<div class="li small"><span>${g>0?`<span class="dot ${s.prep?'on':''}" title="${s.prep?'Preparada':'Não preparada'}"></span>`:''}${ruleLink(s.nome,'magia')}${s.extra?' <span class="muted">(fora do limite)</span>':''}${s.obs?` <span class="muted">· ${h(s.obs)}</span>`:''}</span></div>`).join('')}`).join('')
       :'<div class="muted small">Nenhuma magia registrada. Use "Aprender magia" ao lado.</div>'}
   </div>`;
 }
 
 function attackPanel(c,d){
   const linhas = d.ataques.map(a=>`<div class="li" style="align-items:center">
-      <span><b>${h(a.nome)}</b>${a.bonus?` <span class="muted small">+${a.bonus}</span>`:''}<br><span class="small muted">${a.dist?'à distância':''}${a.props.length?a.props.map(h).join(', '):''}${a.alc?` · ${h(a.alc)} pés`:''}${a.obs?` · ${h(a.obs)}`:''}${!a.prof?' · <span style="color:#f0a492">sem proficiência</span>':''}</span></span>
+      <span><b>${ruleLink(a.nome,'arma',` data-w="${h(a.id)}"`)}</b>${a.bonus?` <span class="muted small">+${a.bonus}</span>`:''}<br><span class="small muted">${[a.dist?'à distância':'', ...a.props.map(p=>ruleBuiltin(p,'prop')?ruleLink(p,'prop'):h(p))].filter(Boolean).join(', ')}${a.alc?` · ${h(a.alc)} pés`:''}${a.obs?` · ${h(a.obs)}`:''}${!a.prof?' · <span style="color:#f0a492">sem proficiência</span>':''}</span></span>
       <span class="row" style="gap:6px;flex-wrap:nowrap"><span class="small" style="text-align:right">${sg(a.atk)} · ${a.dado}${a.mod?sg(a.mod):''} ${h(a.dano)}</span>
       <button class="btn sm" data-act="atk" data-id="${h(a.id)}">Rolar</button>${a.vers?`<button class="btn sm" data-act="atk" data-id="${h(a.id)}" data-vers="1" title="Duas mãos (${a.vers})">2 mãos</button>`:''}</span></div>`).join('');
-  const magia = d.magia ? `<div class="li" style="align-items:center"><span><b>Ataque com magia</b><br><span class="small muted">${AB_NOME[d.magia.ab]}</span></span><span class="row" style="gap:6px;flex-wrap:nowrap"><span class="small">${sg(d.magia.atk)}</span><button class="btn sm" data-act="atk" data-id="_magia">Rolar</button></span></div>` : '';
+  const magia = d.magia ? `<div class="li" style="align-items:center"><span><b>${ruleLink('Ataque com magia','regra')}</b><br><span class="small muted">${AB_NOME[d.magia.ab]}</span></span><span class="row" style="gap:6px;flex-wrap:nowrap"><span class="small">${sg(d.magia.atk)}</span><button class="btn sm" data-act="atk" data-id="_magia">Rolar</button></span></div>` : '';
   const rolls = S.rolls.filter(r=>r.charId===c.id).slice(0,6);
   return `<div class="panel"><h3>Ataques</h3><div class="list">${linhas}${magia}</div>
     ${rolls.length?`<div style="margin-top:10px">${rolls.map(r=>`<div class="small" style="padding:4px 0;border-top:1px solid var(--line)">${h(r.texto)}</div>`).join('')}</div>`:''}
@@ -1073,7 +1180,7 @@ function viewSheet(){
           ${!S.isMaster?'<div class="small muted" style="margin-top:8px;text-align:center">A imagem entra na ficha depois que o mestre aprovar.</div>':''}
         </div>
         <div class="abil">${AB.map(a=>{ const s=d.saves.find(x=>x.a===a); return `<div class="ab"><div><div class="n">${AB_NOME[a]}</div><div class="s">valor ${c.atributos[a]} · <span class="dot ${s.prof?'on':''}"></span>resist. ${sg(s.v)}</div></div><div class="m">${sg(d.m[a])}</div></div>`; }).join('')}</div>
-        <div class="panel"><h3>Perícias</h3><div class="list">${d.skills.map(s=>`<div class="li small"><span><span class="dot ${s.prof?'on':''}"></span>${s.n}</span><b>${sg(s.v)}</b></div>`).join('')}</div></div>
+        <div class="panel"><h3>Perícias</h3><div class="list">${d.skills.map(s=>`<div class="li small"><span><span class="dot ${s.prof?'on':''}"></span>${ruleLink(s.n,'pericia',` data-sk="${s.k}"`)}</span><b>${sg(s.v)}</b></div>`).join('')}</div></div>
       </div>
       <div class="stack">
         <div class="stats">
@@ -1088,12 +1195,12 @@ function viewSheet(){
         <div class="cols2">
           <div class="stack">
             ${spellPanel(c,d)}
-            <div class="panel"><h3>Traços e talentos</h3><div class="small">${[...d.sp.tracos,...(c.talentos||[])].map(t=>`<div>• ${h(t)}</div>`).join('')}</div></div>
+            <div class="panel"><h3>Traços e talentos</h3><div class="small">${d.sp.tracos.map(t=>`<div>• ${ruleLink(t,'traco')}</div>`).join('')}${(c.talentos||[]).map(t=>`<div>• ${ruleLink(t,'talento')}</div>`).join('')}</div></div>
           </div>
           <div class="stack">
-            <div class="panel"><h3>Equipamento</h3><div class="small">${h(ARMORS[c.armadura]?.nome)}${c.escudo?' · escudo':''}${+c.caBonus?` · bônus ${sg(+c.caBonus)} CA`:''}</div></div>
+            <div class="panel"><h3>Equipamento</h3><div class="small">${ARMORS[c.armadura]?ruleLink(ARMORS[c.armadura].nome,'armadura',` data-arm="${h(c.armadura)}"`):''}${c.escudo?` · ${ruleLink('Escudo','armadura')}`:''}${+c.caBonus?` · bônus ${sg(+c.caBonus)} CA`:''}</div></div>
             <div class="panel"><h3>Moedas</h3><div class="row" style="gap:14px">${COINS.map(([k,ab])=>`<span><b>${c.moedas[k]||0}</b> <span class="muted small">${ab}</span></span>`).join('')}</div></div>
-            <div class="panel"><h3>Inventário</h3>${c.inventario.length?`<div class="list">${c.inventario.map(i=>`<div class="li small"><span>${h(i.nome)}${i.obs?` <span class="muted">· ${h(i.obs)}</span>`:''}</span><b>×${i.qtd}</b></div>`).join('')}</div>`:'<div class="muted small">Vazio.</div>'}</div>
+            <div class="panel"><h3>Inventário</h3>${c.inventario.length?`<div class="list">${c.inventario.map(i=>`<div class="li small"><span>${ruleLink(i.nome,'item')}${i.obs?` <span class="muted">· ${h(i.obs)}</span>`:''}</span><b>×${i.qtd}</b></div>`).join('')}</div>`:'<div class="muted small">Vazio.</div>'}</div>
           </div>
         </div>
       </div>
@@ -1285,10 +1392,97 @@ async function exportSheet(c){
 }
 
 /* ============ EVENTOS ============ */
+/* ============ JANELA DE REGRAS ============ */
+const ruleLink = (nome, ctx, attrs='') => `<button type="button" class="rl" data-act="regra" data-n="${h(nome)}" data-ctx="${h(ctx)}"${attrs}>${h(nome)}</button>`;
+const para = t => String(t).split('\n').map(l=>`<p>${h(l)}</p>`).join('');
+function popData(p){
+  const c=S.chars.find(x=>x.id===S.charId);
+  let titulo=p.n, tipo='', corpo='', srd=false, comp=p.n;
+  const add = r => { if(!r) return; tipo = tipo || r[0]; corpo += para(r[1]); srd=true; };
+  if (p.ctx==='arma' && c){
+    const d=derive(c); const a=d.ataques.find(x=>x.id===p.w);
+    if (a){
+      titulo=a.nome; comp=a.nome;
+      tipo = a.id==='_desarmado' ? 'Ataque' : `Arma ${a.base==='custom'?'personalizada':a.cat==='m'?'marcial':'simples'}${a.dist?' à distância':' corpo a corpo'}`;
+      corpo += `<div class="pop-stats"><span>Ataque <b>${sg(a.atk)}</b></span><span>Dano <b>${/d/.test(a.dado)?h(a.dado)+(a.mod?sg(a.mod):''):Math.max(1,+a.dado+a.mod)}</b> ${h(a.dano)}</span>${a.vers?`<span>Duas mãos <b>${h(a.vers)}${a.mod?sg(a.mod):''}</b></span>`:''}${a.alc?`<span>Alcance <b>${h(a.alc)}</b> pés</span>`:''}</div>
+        <p class="muted small">Usa ${AB_NOME[a.ab]}${a.prof?' + proficiência':' (sem proficiência)'}${a.bonus?`, com bônus mágico +${a.bonus}`:''}.</p>`;
+      if (a.id==='_desarmado') add(RULES['ataque desarmado']);
+      a.props.forEach(pr=>{ const r=ruleBuiltin(pr,'prop'); if(r){ corpo+=`<h4>${h(pr[0].toUpperCase()+pr.slice(1))}</h4>${para(r[1])}`; srd=true; } });
+    }
+  } else if (p.ctx==='armadura'){
+    const k=p.arm, A=ARMORS[k], I=ARMOR_INFO[k];
+    if (A){ titulo=A.nome.replace(/ \(.*\)$/,''); comp=titulo;
+      if (k==='nenhuma'){ tipo='Armadura'; corpo+=para('Sem armadura, sua CA é 10 + seu modificador de Destreza. Bárbaros (somando Constituição) e monges (somando Sabedoria) têm Defesa sem Armadura, e a ficha já faz essa conta.'); }
+      else { tipo=`Armadura ${I.cat}`;
+        corpo += `<div class="pop-stats"><span>CA <b>${A.base}${A.dex==='full'?' + mod. Des':A.dex?' + mod. Des (máx. 2)':''}</b></span>${I.for?`<span>Força mínima <b>${I.for}</b></span>`:''}${I.furt?'<span>Furtividade <b>desvantagem</b></span>':''}</div>`;
+        corpo += para(ARMOR_CAT_TXT[I.cat] + (I.for?` Se sua Força for menor que ${I.for}, seu deslocamento cai 3 m.`:'') + (I.furt?' Você tem desvantagem em testes de Destreza (Furtividade) usando esta armadura.':'') + ' Sem treinamento nessa categoria, você tem desvantagem em qualquer teste de Força ou Destreza e não pode conjurar magias.');
+      }
+      srd=true; }
+    else add(ruleBuiltin(p.n, p.ctx));
+  } else if (p.ctx==='pericia'){
+    const sk=SKILLS.find(s=>s[0]===p.sk);
+    if (sk){ titulo=sk[1]; comp=sk[1]; tipo=`Perícia · ${AB_NOME[sk[2]]}`;
+      const v = c ? derive(c).skills.find(s=>s.k===sk[0]) : null;
+      if (v) corpo += `<div class="pop-stats"><span>Bônus <b>${sg(v.v)}</b></span><span>${v.prof?'Com proficiência':'Sem proficiência'}</span></div>`;
+      corpo += para(SKILL_TXT[sk[0]]) + para(`Teste: d20 ${v?sg(v.v):'+ mod. de '+AB_NOME[sk[2]]} contra a CD que o mestre definir.`); srd=true; }
+  } else add(ruleBuiltin(p.n, p.ctx));
+  if (p.ctx==='prop') titulo = titulo.charAt(0).toUpperCase()+titulo.slice(1);
+  if (!tipo) tipo = {magia:'Magia', item:'Item', talento:'Talento', traco:'Traço'}[p.ctx] || 'Regra';
+  return {titulo, tipo, corpo, srd, comp, slug:ruleSlug(comp)};
+}
+function renderPop(force){
+  const el=$('#pop'); if(!el) return;
+  const p=S.pop;
+  if (!p){ el.innerHTML=''; el.hidden=true; return; }
+  if (!force && p.edit) return;
+  const r=popData(p); const g=S.regras[r.slug];
+  const nada = !r.corpo && !g;
+  const sc = el.querySelector('.pop-box')?.scrollTop || 0;
+  el.hidden=false;
+  el.innerHTML = `<div class="pop-bg" data-act="pop-close"></div>
+    <div class="pop-box" role="dialog" aria-modal="true" aria-labelledby="pop-t">
+      <div class="row between" style="align-items:flex-start;flex-wrap:nowrap"><div><div class="small muted">${h(r.tipo)}</div><h3 id="pop-t">${h(r.titulo)}</h3></div>
+        <button class="btn sm" data-act="pop-close" aria-label="Fechar">✕</button></div>
+      <div class="pop-body">
+        ${r.corpo}
+        ${g && !p.edit?`<div class="pop-sec">${r.corpo?'<div class="small muted">Texto do mestre</div>':''}${para(g.texto)}</div>`:''}
+        ${nada && !p.edit?`<p class="muted">Ainda não há texto de regras para isto.${S.isMaster?' Use o botão abaixo para escrever. O texto vale para toda ficha que tiver algo com este nome.':' Peça ao mestre para cadastrar.'}</p>`:''}
+        ${p.edit?`<div class="pop-sec"><label class="small muted" for="pop-txt">${r.corpo?'Texto extra do mestre (aparece abaixo do texto acima)':'Texto de regras'}</label>
+          <textarea id="pop-txt" maxlength="4000" style="min-height:160px">${h(g?.texto||'')}</textarea>
+          <div class="small muted" style="margin-top:4px">Vale para toda ficha que tiver algo chamado “${h(r.comp)}”.</div>
+          <div class="row" style="gap:8px;margin-top:8px"><button class="btn sm pri" data-act="pop-save">Salvar</button><button class="btn sm" data-act="pop-edit-cancel">Cancelar</button>
+          ${g?`<button class="btn sm danger" data-act="pop-del">${S.delArm==='regra:'+r.slug?'Confirmar exclusão':'Excluir texto'}</button>`:''}</div></div>`:''}
+      </div>
+      <div class="row between" style="margin-top:12px">
+        <span class="small muted">${r.srd?'Resumo baseado no SRD 5.2 (CC BY 4.0).':''}</span>
+        ${S.isMaster && !p.edit?`<button class="btn sm" data-act="pop-edit">${g?'Editar texto do mestre':r.corpo?'Acrescentar texto':'Escrever texto'}</button>`:''}
+      </div>
+    </div>`;
+  if (sc) el.querySelector('.pop-box').scrollTop = sc;
+}
+function openPop(t){
+  S.pop={n:t.dataset.n||'', ctx:t.dataset.ctx||'', w:t.dataset.w, arm:t.dataset.arm, sk:t.dataset.sk, edit:false, from:t};
+  renderPop(true); $('#pop .pop-box [data-act="pop-close"]')?.focus();
+}
+function closePop(){ const from=S.pop?.from; S.pop=null; renderPop(true); if(from && document.contains(from)) from.focus(); }
+async function savePop(){
+  const r=popData(S.pop); const texto=String($('#pop-txt')?.value||'').trim().slice(0,4000);
+  if (!texto){ toast('Escreva o texto antes de salvar.'); return; }
+  try { await store.saveRegra(r.slug,{nome:r.comp, texto, by:S.myId, at:nowIso()}); S.pop.edit=false; renderPop(true); toast('Texto salvo.'); }
+  catch(err){ toast('Não foi possível salvar ('+(err.code||'erro')+').'); }
+}
+
 function setPath(obj,path,val){ const ks=path.split('.'); let o=obj; ks.slice(0,-1).forEach(k=>o=o[k]); o[ks.at(-1)]=val; }
 document.addEventListener('click', async e=>{
   const t=e.target.closest('[data-act]'); if(!t || t.tagName==='SELECT') return;
   const a=t.dataset.act;
+  if (a==='regra'){ openPop(t); return; }
+  if (a==='pop-close'){ closePop(); return; }
+  if (a==='pop-edit'){ S.pop.edit=true; renderPop(true); $('#pop-txt')?.focus(); return; }
+  if (a==='pop-edit-cancel'){ S.pop.edit=false; S.delArm=null; renderPop(true); return; }
+  if (a==='pop-save'){ t.disabled=true; await savePop(); t.disabled=false; return; }
+  if (a==='pop-del'){ const r=popData(S.pop); if(S.delArm!=='regra:'+r.slug){ S.delArm='regra:'+r.slug; const v=$('#pop-txt')?.value; renderPop(true); if(v!=null) $('#pop-txt').value=v; return; }
+    S.delArm=null; try{ await store.deleteRegra(r.slug); S.pop.edit=false; renderPop(true); toast('Texto excluído.'); }catch(err){ toast('Não foi possível excluir ('+(err.code||'erro')+').'); } return; }
   if (a==='tab'){ S.tab=t.dataset.tab; S.delArm=null; S.cloneArm=null; if(S.tab==='criar'&&!S.draft) S.draft=newDraft(); render(true); }
   else if (a==='open'){ S.charId=t.dataset.id; S.tab='ficha'; S.delArm=null; S.cloneArm=null; render(true); window.scrollTo(0,0); }
   else if (a==='role'){ S.isMaster = t.dataset.role==='mestre'; S.myId = S.isMaster?'demo-mestre':'demo-jogador'; if(S.tab==='aprovacoes'||S.tab==='solicitacoes') S.tab='personagens'; render(true); }
@@ -1354,6 +1548,7 @@ document.addEventListener('input', e=>{
   const el=e.target; if(!S.draft || !el.hasAttribute('data-live') || !el.closest('form[data-form="criar"]')) return;
   setPath(S.draft, el.dataset.f, el.value);
 });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && S.pop) closePop(); });
 document.addEventListener('focusout', ()=>setTimeout(()=>{ if(S.deferred) render(); },0));
 document.addEventListener('submit', async e=>{
   e.preventDefault(); const f=e.target;
@@ -1373,6 +1568,7 @@ function subscribe(){
     loadNames(); render();
   }, err=>{ clearTimeout(timer); S.loaded=true; S.notice='Não foi possível carregar as fichas ('+h(err.code)+').'; render(); });
   store.onEstado(m=>{ S.estado=m||{}; render(); }, err=>{ S.notice='Não foi possível carregar os pontos de vida ('+h(err.code)+').'; render(); });
+  store.onRegras(m=>{ S.regras=m||{}; renderPop(); }, ()=>{});
   store.onRequests(m=>{ S.reqDocs=m||{}; loadNames(); render(); }, err=>{ S.notice='Não foi possível carregar as solicitações ('+h(err.code)+').'; render(); });
 }
 async function init(){
