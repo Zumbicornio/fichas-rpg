@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fichas de Personagem · D&amp;D 5.5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#13100d; --panel:#1d1915; --panel2:#251f1a; --line:#3a3027; --line2:#4b3e32;
+  --text:#eee5d3; --muted:#a8998a; --gold:#d1a84e; --gold2:#f0cd7a; --red:#cf5b43; --green:#74a96d; --blue:#6f9cc9;
+  --r:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Inter,system-ui,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3{font-family:Cinzel,serif;letter-spacing:.02em;margin:0}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--line);background:linear-gradient(#1b1611,#13100d)}
+header h1{font-size:20px;color:var(--gold2)}
+header .sub{color:var(--muted);font-size:12px}
+.badges{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.badge{padding:3px 10px;border-radius:99px;border:1px solid var(--line2);font-size:12px;color:var(--muted)}
+.badge.gold{color:var(--gold2);border-color:var(--gold)}
+nav{display:flex;gap:4px;padding:10px 20px 0;border-bottom:1px solid var(--line);overflow-x:auto}
+nav button{background:none;border:0;border-bottom:2px solid transparent;padding:10px 14px;color:var(--muted);cursor:pointer;white-space:nowrap}
+nav button.on{color:var(--gold2);border-color:var(--gold)}
+nav .count{background:var(--red);color:#fff;border-radius:99px;padding:0 7px;margin-left:6px;font-size:11px}
+main{padding:20px;max-width:1400px;margin:0 auto}
+.notice{background:#2a2117;border:1px solid var(--line2);border-radius:var(--r);padding:10px 14px;margin-bottom:16px;color:var(--muted)}
+.notice b{color:var(--text)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.panel h3{font-size:14px;color:var(--gold);margin-bottom:10px}
+.grid-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;cursor:pointer;transition:border-color .15s}
+.card:hover{border-color:var(--gold)}
+.card h2{font-size:17px;margin-bottom:2px}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.between{justify-content:space-between}
+.hpbar{height:8px;background:#2c241d;border-radius:99px;overflow:hidden;margin:10px 0 6px}
+.hpbar i{display:block;height:100%;border-radius:99px}
+.btn{background:var(--panel2);border:1px solid var(--line2);border-radius:8px;padding:8px 14px;cursor:pointer}
+.btn:hover{border-color:var(--gold)}
+.btn.pri{background:var(--gold);color:#1b140b;border-color:var(--gold);font-weight:600}
+.btn.pri:hover{background:var(--gold2)}
+.btn.danger{border-color:#6b3528;color:#f0a492}
+.btn.ok{border-color:#3f6b3a;color:#b6e0ae}
+.btn.sm{padding:4px 10px;font-size:12px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+input,select,textarea{background:#16120f;border:1px solid var(--line2);border-radius:8px;padding:7px 10px;width:100%}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold)}
+input[type=checkbox],input[type=radio]{width:auto;accent-color:var(--gold)}
+textarea{min-height:70px;resize:vertical}
+.f{margin-bottom:12px}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cols6{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.create{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(300px,1fr);gap:16px;align-items:start}
+.create .side{position:sticky;top:12px}
+.sheet{display:grid;grid-template-columns:240px minmax(0,1fr) minmax(300px,380px);gap:14px;align-items:start}
+.abil{display:grid;gap:8px}
+.ab{background:var(--panel2);border:1px solid var(--line);border-radius:var(--r);padding:8px 12px;display:grid;grid-template-columns:1fr auto;align-items:center}
+.ab .n{font-size:11px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.ab .m{font-size:22px;font-weight:700;color:var(--gold2)}
+.ab .s{font-size:12px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px}
+.stat{background:var(--panel2);border:1px solid var(--line);border-radius:var(--r);padding:8px;text-align:center}
+.stat .v{font-size:20px;font-weight:700}
+.stat .l{font-size:11px;color:var(--muted)}
+.list{display:grid;gap:2px}
+.li{display:flex;justify-content:space-between;padding:4px 6px;border-radius:6px}
+.li:nth-child(odd){background:#1a1612}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;border:1px solid var(--muted);margin-right:8px;vertical-align:middle}
+.dot.on{background:var(--gold);border-color:var(--gold)}
+.pips{display:flex;gap:4px;flex-wrap:wrap}
+.pip{width:14px;height:14px;border-radius:50%;border:1px solid var(--gold)}
+.pip.on{background:var(--gold)}
+.chip{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;border:1px solid var(--line2)}
+.chip.pendente{color:var(--gold2);border-color:var(--gold)}
+.chip.aprovado{color:#b6e0ae;border-color:#3f6b3a}
+.chip.rejeitado{color:#f0a492;border-color:#6b3528}
+.req{border:1px solid var(--line);border-radius:var(--r);padding:12px;background:var(--panel2);margin-bottom:10px}
+.err{color:#f0a492;font-size:12px;margin:2px 0}
+.ok-t{color:#b6e0ae;font-size:12px}
+.log{max-height:260px;overflow:auto}
+.log .e{padding:6px 0;border-bottom:1px solid var(--line);font-size:12px}
+.empty{text-align:center;padding:50px 20px;color:var(--muted)}
+.stack>*+*{margin-top:14px}
+.pb-ctl{display:flex;align-items:center;gap:6px;justify-content:center}
+.pb-ctl b{min-width:22px;text-align:center;font-size:16px}
+.abcell{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px;text-align:center}
+.abcell .t{font-size:11px;color:var(--muted);letter-spacing:.06em}
+.abcell .fin{font-size:20px;font-weight:700;color:var(--gold2)}
+.skills-pick{display:grid;grid-template-columns:repeat(2,1fr);gap:4px 12px}
+.skills-pick label{display:flex;gap:8px;align-items:center;color:var(--text);font-size:13px;margin:0}
+.skills-pick label.dis{color:var(--muted)}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#2a2117;border:1px solid var(--gold);padding:10px 16px;border-radius:8px;display:none;z-index:9;max-width:90vw}
+@media (max-width:1150px){.sheet{grid-template-columns:220px minmax(0,1fr)}.sheet .c3{grid-column:1/-1}}
+@media (max-width:820px){.sheet,.create{grid-template-columns:1fr}.create .side{position:static}.stats{grid-template-columns:repeat(3,1fr)}.cols6{grid-template-columns:repeat(3,1fr)}.abil{grid-template-columns:repeat(2,1fr)}main{padding:14px}}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Fichas de Personagem</h1>
+    <div class="sub">D&amp;D 5.5 · regras do SRD 5.2 · mudanças aprovadas pelo mestre</div>
+  </div>
+  <div class="badges" id="badges"></div>
+</header>
+<nav id="nav"></nav>
+<main id="app"></main>
+<div id="toast"></div>
+
+<script>
+/* ============ DADOS DE REGRAS (mecânicas do D&D 5.5 / SRD 5.2) ============ */
+const AB = ['FOR','DES','CON','INT','SAB','CAR'];
+const AB_NOME = {FOR:'Força',DES:'Destreza',CON:'Constituição',INT:'Inteligência',SAB:'Sabedoria',CAR:'Carisma'};
+const SKILLS = [
+  ['acrobacia','Acrobacia','DES'],['adestrar','Adestrar Animais','SAB'],['arcanismo','Arcanismo','INT'],
+  ['atletismo','Atletismo','FOR'],['atuacao','Atuação','CAR'],['enganacao','Enganação','CAR'],
+  ['furtividade','Furtividade','DES'],['historia','História','INT'],['intimidacao','Intimidação','CAR'],
+  ['intuicao','Intuição','SAB'],['investigacao','Investigação','INT'],['medicina','Medicina','SAB'],
+  ['natureza','Natureza','INT'],['percepcao','Percepção','SAB'],['persuasao','Persuasão','CAR'],
+  ['prestidigitacao','Prestidigitação','DES'],['religiao','Religião','INT'],['sobrevivencia','Sobrevivência','SAB']
+];
+const SKILL_NOME = Object.fromEntries(SKILLS.map(s=>[s[0],s[1]]));
+const ALL_SKILLS = SKILLS.map(s=>s[0]);
+
+const CLASSES = {
+  barbaro:{nome:'Bárbaro',dado:12,saves:['FOR','CON'],n:2,skills:['adestrar','atletismo','intimidacao','natureza','percepcao','sobrevivencia'],magia:null,sem:'CON'},
+  bardo:{nome:'Bardo',dado:8,saves:['DES','CAR'],n:3,skills:ALL_SKILLS,magia:{tipo:'total',ab:'CAR'}},
+  bruxo:{nome:'Bruxo',dado:8,saves:['SAB','CAR'],n:2,skills:['arcanismo','enganacao','historia','intimidacao','investigacao','natureza','religiao'],magia:{tipo:'pacto',ab:'CAR'}},
+  clerigo:{nome:'Clérigo',dado:8,saves:['SAB','CAR'],n:2,skills:['historia','intuicao','medicina','persuasao','religiao'],magia:{tipo:'total',ab:'SAB'}},
+  druida:{nome:'Druida',dado:8,saves:['INT','SAB'],n:2,skills:['arcanismo','adestrar','intuicao','medicina','natureza','percepcao','religiao','sobrevivencia'],magia:{tipo:'total',ab:'SAB'}},
+  feiticeiro:{nome:'Feiticeiro',dado:6,saves:['CON','CAR'],n:2,skills:['arcanismo','enganacao','intuicao','intimidacao','persuasao','religiao'],magia:{tipo:'total',ab:'CAR'}},
+  guerreiro:{nome:'Guerreiro',dado:10,saves:['FOR','CON'],n:2,skills:['acrobacia','adestrar','atletismo','historia','intuicao','intimidacao','persuasao','percepcao','sobrevivencia'],magia:null,asiExtra:[6,14]},
+  ladino:{nome:'Ladino',dado:8,saves:['DES','INT'],n:4,skills:['acrobacia','atletismo','enganacao','intuicao','intimidacao','investigacao','percepcao','persuasao','prestidigitacao','furtividade'],magia:null,asiExtra:[10]},
+  mago:{nome:'Mago',dado:6,saves:['INT','SAB'],n:2,skills:['arcanismo','historia','intuicao','investigacao','medicina','natureza','religiao'],magia:{tipo:'total',ab:'INT'}},
+  monge:{nome:'Monge',dado:8,saves:['FOR','DES'],n:2,skills:['acrobacia','atletismo','historia','intuicao','religiao','furtividade'],magia:null,sem:'SAB'},
+  paladino:{nome:'Paladino',dado:10,saves:['SAB','CAR'],n:2,skills:['atletismo','intuicao','intimidacao','medicina','persuasao','religiao'],magia:{tipo:'meia',ab:'CAR'}},
+  patrulheiro:{nome:'Patrulheiro',dado:10,saves:['FOR','DES'],n:3,skills:['adestrar','atletismo','intuicao','investigacao','natureza','percepcao','furtividade','sobrevivencia'],magia:{tipo:'meia',ab:'SAB'}}
+};
+const SPECIES = {
+  anao:{nome:'Anão',desl:30,pvExtra:1,tracos:['Visão no escuro (36 m)','Resiliência anã: resistência a veneno','Robustez anã: +1 PV por nível']},
+  draconato:{nome:'Draconato',desl:30,tracos:['Ancestralidade dracônica','Arma de sopro','Resistência a dano do ancestral','Visão no escuro (18 m)']},
+  elfo:{nome:'Elfo',desl:30,extraSkill:['intuicao','percepcao','sobrevivencia'],tracos:['Visão no escuro (18 m)','Ancestralidade feérica','Linhagem élfica','Sentidos aguçados (+1 perícia)','Transe']},
+  gnomo:{nome:'Gnomo',desl:30,tracos:['Visão no escuro (18 m)','Astúcia gnômica','Linhagem gnômica']},
+  golias:{nome:'Golias',desl:35,tracos:['Ancestralidade gigante','Forma grande (nível 5)','Constituição poderosa']},
+  halfling:{nome:'Halfling',desl:30,tracos:['Bravura','Agilidade halfling','Sortudo','Furtividade natural']},
+  humano:{nome:'Humano',desl:30,extraSkill:ALL_SKILLS,tracos:['Engenhoso: Inspiração heroica a cada descanso longo','Habilidoso (+1 perícia)','Versátil (talento de origem)']},
+  orc:{nome:'Orc',desl:30,tracos:['Surto de adrenalina','Visão no escuro (36 m)','Resistência implacável']},
+  tiefling:{nome:'Tiefling',desl:30,tracos:['Legado ínfero','Presença sobrenatural','Visão no escuro (18 m)']}
+};
+const BACKGROUNDS = {
+  acolito:{nome:'Acólito',abs:['INT','SAB','CAR'],skills:['intuicao','religiao'],talento:'Iniciado em Magia (Clérigo)'},
+  criminoso:{nome:'Criminoso',abs:['DES','CON','INT'],skills:['prestidigitacao','furtividade'],talento:'Alerta'},
+  sabio:{nome:'Sábio',abs:['CON','INT','SAB'],skills:['arcanismo','historia'],talento:'Iniciado em Magia (Mago)'},
+  soldado:{nome:'Soldado',abs:['FOR','DES','CON'],skills:['atletismo','intimidacao'],talento:'Atacante Selvagem'},
+  custom:{nome:'Personalizado (de outro livro)',custom:true}
+};
+const ARMORS = {
+  nenhuma:{nome:'Sem armadura',base:10,dex:'full'},
+  acolchoada:{nome:'Acolchoada (leve)',base:11,dex:'full'},
+  couro:{nome:'Couro (leve)',base:11,dex:'full'},
+  couro_batido:{nome:'Couro batido (leve)',base:12,dex:'full'},
+  gibao:{nome:'Gibão de peles (média)',base:12,dex:2},
+  camisao:{nome:'Camisão de malha (média)',base:13,dex:2},
+  brunea:{nome:'Brunea (média)',base:14,dex:2},
+  peitoral:{nome:'Peitoral (média)',base:14,dex:2},
+  meia:{nome:'Meia-armadura (média)',base:15,dex:2},
+  aneis:{nome:'Cota de anéis (pesada)',base:14,dex:0},
+  malha:{nome:'Cota de malha (pesada)',base:16,dex:0},
+  talas:{nome:'Cota de talas (pesada)',base:17,dex:0},
+  placas:{nome:'Placas (pesada)',base:18,dex:0}
+};
+const FULL_SLOTS = [null,[2],[3],[4,2],[4,3],[4,3,2],[4,3,3],[4,3,3,1],[4,3,3,2],[4,3,3,3,1],[4,3,3,3,2],
+  [4,3,3,3,2,1],[4,3,3,3,2,1],[4,3,3,3,2,1,1],[4,3,3,3,2,1,1],[4,3,3,3,2,1,1,1],[4,3,3,3,2,1,1,1],
+  [4,3,3,3,2,1,1,1,1],[4,3,3,3,3,1,1,1,1],[4,3,3,3,3,2,1,1,1],[4,3,3,3,3,2,2,1,1]];
+const PACT = l => ({qtd: l===1?1 : l<=10?2 : l<=16?3 : 4, circ: Math.min(5, Math.ceil(l/2))});
+const PB_COST = {8:0,9:1,10:2,11:3,12:4,13:5,14:7,15:9};
+const STD_ARRAY = [15,14,13,12,10,8];
+const COINS = [['pl','PL','platina'],['po','PO','ouro'],['pe','PE','electro'],['pp','PP','prata'],['pc','PC','cobre']];
+
+/* Armas (SRD 5.2). cat: s = simples, m = marcial · dist: 1 = à distância · alcance em pés */
+const W = (nome,cat,dist,dado,dano,props='',extra={}) => ({nome,cat,dist,dado,dano,props:props?props.split(','):[],...extra});
+const WEAPONS = {
+  adaga:W('Adaga','s',0,'1d4','perfurante','acuidade,leve,arremesso',{alc:'20/60'}),
+  azagaia:W('Azagaia','s',0,'1d6','perfurante','arremesso',{alc:'30/120'}),
+  bordao:W('Bordão','s',0,'1d6','concussão','versátil',{vers:'1d8'}),
+  clava:W('Clava','s',0,'1d4','concussão','leve'),
+  clava_grande:W('Clava grande','s',0,'1d8','concussão','duas mãos'),
+  foice_curta:W('Foice curta','s',0,'1d4','cortante','leve'),
+  lanca:W('Lança','s',0,'1d6','perfurante','arremesso,versátil',{vers:'1d8',alc:'20/60'}),
+  maca:W('Maça','s',0,'1d6','concussão'),
+  machadinha:W('Machadinha','s',0,'1d6','cortante','leve,arremesso',{alc:'20/60'}),
+  martelo_leve:W('Martelo leve','s',0,'1d4','concussão','leve,arremesso',{alc:'20/60'}),
+  arco_curto:W('Arco curto','s',1,'1d6','perfurante','munição,duas mãos',{alc:'80/320'}),
+  besta_leve:W('Besta leve','s',1,'1d8','perfurante','munição,recarga,duas mãos',{alc:'80/320'}),
+  dardo:W('Dardo','s',1,'1d4','perfurante','acuidade,arremesso',{alc:'20/60'}),
+  funda:W('Funda','s',1,'1d4','concussão','munição',{alc:'30/120'}),
+  alabarda:W('Alabarda','m',0,'1d10','cortante','pesada,alcance,duas mãos'),
+  chicote:W('Chicote','m',0,'1d4','cortante','acuidade,alcance'),
+  cimitarra:W('Cimitarra','m',0,'1d6','cortante','acuidade,leve'),
+  espada_curta:W('Espada curta','m',0,'1d6','perfurante','acuidade,leve'),
+  espada_grande:W('Espada grande','m',0,'2d6','cortante','pesada,duas mãos'),
+  espada_longa:W('Espada longa','m',0,'1d8','cortante','versátil',{vers:'1d10'}),
+  glaive:W('Glaive','m',0,'1d10','cortante','pesada,alcance,duas mãos'),
+  lanca_montaria:W('Lança de montaria','m',0,'1d10','perfurante','pesada,alcance'),
+  maca_estrela:W('Maça-estrela','m',0,'1d8','perfurante'),
+  machado_batalha:W('Machado de batalha','m',0,'1d8','cortante','versátil',{vers:'1d10'}),
+  machado_grande:W('Machado grande','m',0,'1d12','cortante','pesada,duas mãos'),
+  malho:W('Malho','m',0,'2d6','concussão','pesada,duas mãos'),
+  mangual:W('Mangual','m',0,'1d8','concussão'),
+  martelo_guerra:W('Martelo de guerra','m',0,'1d8','concussão','versátil',{vers:'1d10'}),
+  picareta:W('Picareta de guerra','m',0,'1d8','perfurante','versátil',{vers:'1d10'}),
+  pique:W('Pique','m',0,'1d10','perfurante','pesada,alcance,duas mãos'),
+  rapieira:W('Rapieira','m',0,'1d8','perfurante','acuidade'),
+  tridente:W('Tridente','m',0,'1d8','perfurante','arremesso,versátil',{vers:'1d10',alc:'20/60'}),
+  arco_longo:W('Arco longo','m',1,'1d8','perfurante','munição,pesada,duas mãos',{alc:'150/600'}),
+  besta_mao:W('Besta de mão','m',1,'1d6','perfurante','munição,leve,recarga',{alc:'30/120'}),
+  besta_pesada:W('Besta pesada','m',1,'1d10','perfurante','munição,pesada,recarga,duas mãos',{alc:'100/400'}),
+  zarabatana:W('Zarabatana','m',1,'1','perfurante','munição,recarga',{alc:'25/100'}),
+  mosquete:W('Mosquete','m',1,'1d12','perfurante','munição,recarga,duas mãos',{alc:'40/120'}),
+  pistola:W('Pistola','m',1,'1d10','perfurante','munição,recarga',{alc:'30/90'})
+};
+const DANO_TIPOS = ['cortante','perfurante','concussão','ácido','elétrico','fogo','frio','necrótico','psíquico','radiante','trovejante','veneno','energia'];
+/* proficiência com armas por classe: sm = simples e marciais, s = simples, monge/ladino = simples + marciais específicas */
+const CLASS_ARMAS = {barbaro:'sm',bardo:'s',bruxo:'s',clerigo:'s',druida:'s',feiticeiro:'s',guerreiro:'sm',ladino:'ladino',mago:'s',monge:'monge',paladino:'sm',patrulheiro:'sm'};
+function weaponProf(classe,w){
+  const k=CLASS_ARMAS[classe]; if (k==='sm' || w.cat==='s') return true;
+  if (k==='monge') return w.props.includes('leve');
+  if (k==='ladino') return w.props.includes('leve') || w.props.includes('acuidade');
+  return false;
+}
+/* Magias: truques conhecidos e magias preparadas por nível (tabelas das classes, PHB 2024) */
+const truquesDe = (classe,l) => ({bardo:[2,3,4],druida:[2,3,4],bruxo:[2,3,4],clerigo:[3,4,5],mago:[3,4,5],feiticeiro:[4,5,6]}[classe]||[0,0,0])[l<4?0:l<10?1:2];
+const PREP_A=[4,5,6,7,9,10,11,12,14,15,16,16,17,17,18,18,19,20,21,22];
+const PREP = {bardo:PREP_A,clerigo:PREP_A,druida:PREP_A,
+  feiticeiro:[2,4,6,7,9,10,11,12,14,15,16,16,17,17,18,18,19,20,21,22],
+  mago:[4,5,6,7,9,10,11,12,14,15,16,16,17,18,19,21,22,23,24,25],
+  bruxo:[2,3,4,5,6,7,8,9,10,10,11,11,12,12,13,13,14,14,15,15],
+  paladino:[2,3,4,5,6,6,7,7,9,9,10,10,11,11,12,12,14,14,15,15],
+  patrulheiro:[2,3,4,5,6,6,7,7,9,9,10,10,11,11,12,12,14,14,15,15]};
+const circLabel = n => +n===0 ? 'truque' : `${n}º círculo`;
+const ESTADO_PADRAO = () => ({dano:0,temp:0,espacos:[0,0,0,0,0,0,0,0,0],pacto:0,morte:{s:0,f:0}});
+
+/* ============ UTILITÁRIOS ============ */
+const $ = s => document.querySelector(s);
+const h = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const mod = s => Math.floor((s-10)/2);
+const sg = n => (n>=0?'+':'')+n;
+const profBonus = l => 2 + Math.floor((l-1)/4);
+const newId = () => Math.random().toString(36).slice(2,9) + Date.now().toString(36);
+const nowIso = () => new Date().toISOString();
+const clone = o => JSON.parse(JSON.stringify(o));
+const fmtDate = iso => { try { return new Date(iso).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}); } catch { return ''; } };
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.style.display='block'; clearTimeout(t._t); t._t=setTimeout(()=>t.style.display='none',3800); }
+const isAsiLevel = (cls,l) => [4,8,12,16,19,...(cls.asiExtra||[])].includes(l);
+
+/* ============ ESTADO ============ */
+const S = {
+  mode:'carregando', isMaster:false, myId:null, user:null,
+  chars:[], reqDocs:{}, estado:{}, rolls:[], tab:'personagens', charId:null, actionType:'item',
+  draft:null, names:{}, namesPending:new Set(), notice:'', loaded:false, delArm:null, deferred:false
+};
+let store = null;
+
+/* ============ ARMAZENAMENTO ============ */
+function makeLocalStore(){
+  const mem = {chars:{}, reqs:{}, est:{}}; const cc=[], rc=[], ec=[];
+  const emitC = () => cc.forEach(f=>f(Object.values(mem.chars).map(clone)));
+  const emitR = () => rc.forEach(f=>f(clone(mem.reqs)));
+  const emitE = () => ec.forEach(f=>f(clone(mem.est)));
+  return {
+    onCharacters(cb){ cc.push(cb); setTimeout(emitC); },
+    onEstado(cb){ ec.push(cb); setTimeout(emitE); },
+    async setEstado(owner,charId,e){ (mem.est[owner] ||= {chars:{}}).chars[charId]=clone(e); emitE(); },
+    onRequests(cb){ rc.push(cb); setTimeout(emitR); },
+    async saveCharacter(c){ mem.chars[c.id]=clone(c); emitC(); },
+    async deleteCharacter(id){ delete mem.chars[id]; emitC(); },
+    async addRequest(item){ (mem.reqs[S.myId] ||= {items:{}}).items[item.id]=clone(item); emitR(); },
+    async resolveRequest(owner,id,patch){ Object.assign(mem.reqs[owner].items[id],patch); emitR(); }
+  };
+}
+function makeDbStore(db){
+  const chain = {};
+  const q = (path,fn) => (chain[path] = (chain[path]||Promise.resolve()).catch(()=>{}).then(fn));
+  return {
+    onCharacters(cb,err){
+      return db.collection('characters').onSnapshot(s => cb(s.docs.filter(d=>d.exists).map(d=>({...clone(d.data()), id:d.id})), s.metadata), err);
+    },
+    onRequests(cb,err){
+      if (S.isMaster) return db.collection('requests').onSnapshot(s => { const m={}; s.docs.forEach(d=>{ if(d.exists) m[d.id]=clone(d.data()); }); cb(m); }, err);
+      return db.doc('requests/'+S.myId).onSnapshot(d => cb(d.exists ? {[S.myId]:clone(d.data())} : {}), err);
+    },
+    saveCharacter(c){ const {id,...rest}=clone(c); return q('characters/'+id, ()=>db.doc('characters/'+id).set(rest)); },
+    deleteCharacter(id){ return q('characters/'+id, ()=>db.doc('characters/'+id).delete()); },
+    onEstado(cb,err){
+      if (S.isMaster) return db.collection('estado').onSnapshot(s => { const m={}; s.docs.forEach(d=>{ if(d.exists) m[d.id]=clone(d.data()); }); cb(m); }, err);
+      return db.doc('estado/'+S.myId).onSnapshot(d => cb(d.exists ? {[S.myId]:clone(d.data())} : {}), err);
+    },
+    setEstado(owner,charId,e){
+      const p='estado/'+owner; e=clone(e);
+      return q(p, async ()=>{ const ref=db.doc(p); const snap=await ref.get();
+        if (!snap.exists) return ref.set({chars:{[charId]:e}});
+        return ref.update({chars:{[charId]:e}}); });
+    },
+    addRequest(item){
+      const p='requests/'+S.myId; item=clone(item);
+      return q(p, async ()=>{
+        const ref=db.doc(p); const snap=await ref.get();
+        if (!snap.exists) return ref.set({items:{[item.id]:item}});
+        const items = snap.data().items || {};
+        const done = Object.values(items).filter(i=>i.status!=='pendente').sort((a,b)=>a.at<b.at?1:-1);
+        if (done.length > 40) {
+          const keep = {}; Object.values(items).forEach(i=>{ if(i.status==='pendente') keep[i.id]=i; });
+          done.slice(0,20).forEach(i=>keep[i.id]=i); keep[item.id]=item;
+          return ref.set({items:keep});
+        }
+        return ref.update({items:{[item.id]:item}});
+      });
+    },
+    resolveRequest(owner,id,patch){ const p='requests/'+owner; return q(p, ()=>db.doc(p).update({items:{[id]:patch}})); }
+  };
+}
+
+/* ============ REGRAS: CÁLCULOS DA FICHA ============ */
+function hpMax(c){
+  const sp=SPECIES[c.especie]||{};
+  return Math.max(c.nivel, c.pvBase + c.nivel*mod(c.atributos.CON) + (sp.pvExtra ? sp.pvExtra*c.nivel : 0));
+}
+function derive(c){
+  const cls=CLASSES[c.classe], sp=SPECIES[c.especie];
+  const m={}; AB.forEach(a=>m[a]=mod(c.atributos[a]));
+  const P=profBonus(c.nivel);
+  const ar=ARMORS[c.armadura]||ARMORS.nenhuma;
+  let ac;
+  if (c.armadura==='nenhuma' && cls.sem && !(c.classe==='monge' && c.escudo)) ac = 10 + m.DES + m[cls.sem];
+  else ac = ar.base + (ar.dex==='full' ? m.DES : ar.dex===0 ? 0 : Math.min(m.DES, ar.dex));
+  if (c.escudo) ac += 2;
+  ac += (+c.caBonus||0);
+  const alerta = (c.talentos||[]).some(t=>/alerta/i.test(t));
+  const saves = AB.map(a=>{ const prof=cls.saves.includes(a); return {a, prof, v:m[a]+(prof?P:0)}; });
+  const skills = SKILLS.map(([k,n,a])=>{ const prof=(c.pericias||[]).includes(k); return {k,n,a,prof,v:m[a]+(prof?P:0)}; });
+  const perc = skills.find(s=>s.k==='percepcao').v;
+  let magia=null;
+  if (cls.magia){
+    const ab=cls.magia.ab;
+    const slots = cls.magia.tipo==='total' ? FULL_SLOTS[c.nivel] : cls.magia.tipo==='meia' ? FULL_SLOTS[Math.ceil(c.nivel/2)] : null;
+    const pacto = cls.magia.tipo==='pacto' ? PACT(c.nivel) : null;
+    magia = {ab, cd:8+P+m[ab], atk:P+m[ab], tipo:cls.magia.tipo, slots, pacto,
+      truques: truquesDe(c.classe,c.nivel), preparadas: PREP[c.classe][c.nivel-1], maxCirc: pacto ? pacto.circ : slots.length};
+  }
+  const d = {cls, sp, m, P, max:hpMax(c), ac, init:m.DES+(alerta?P:0), desl:sp.desl, saves, skills, passiva:10+perc, magia};
+  d.ataques = attacks(c,d);
+  return d;
+}
+function attacks(c,d){
+  const out=[];
+  const monge = c.classe==='monge';
+  const artes = monge ? (c.nivel<5?'1d6':c.nivel<11?'1d8':c.nivel<17?'1d10':'1d12') : null;
+  const abU = monge && d.m.DES>d.m.FOR ? 'DES' : 'FOR';
+  out.push({id:'_desarmado', nome:'Ataque desarmado', ab:abU, prof:true, atk:d.m[abU]+d.P, dado:artes||'1', mod:d.m[abU], dano:'concussão', props:monge?['artes marciais']:[], fixo:true});
+  (c.armas||[]).forEach(w=>{
+    const fin = w.props.includes('acuidade');
+    const mongeArma = monge && !w.dist && (w.cat==='s' || w.props.includes('leve'));
+    let ab = w.dist ? 'DES' : 'FOR';
+    if ((fin || mongeArma) && d.m.DES > d.m.FOR) ab='DES';
+    const prof = w.base==='custom' ? !!w.prof : weaponProf(c.classe,w);
+    const b = +w.bonus||0;
+    let dado = w.dado;
+    if (mongeArma && artes && avgDie(artes)>avgDie(w.dado)) dado=artes;
+    out.push({id:w.id, nome:w.nome, dist:w.dist, ab, prof, atk:d.m[ab]+(prof?d.P:0)+b, dado, vers:w.vers, mod:d.m[ab]+b, dano:w.dano, props:w.props, alc:w.alc, obs:w.obs, bonus:b});
+  });
+  return out;
+}
+function avgDie(e){ const m=/^(\d+)d(\d+)$/.exec(e||''); return m ? +m[1]*(+m[2]+1)/2 : +e||0; }
+function est(c){ const e=S.estado[c.ownerId]?.chars?.[c.id]; const base=ESTADO_PADRAO(); return e ? {...base, ...clone(e), morte:{...base.morte, ...(e.morte||{})}} : base; }
+function pvAtual(c,d){ return Math.max(0, (d||derive(c)).max - est(c).dano); }
+function spellWarnings(c){
+  const d=derive(c); if(!d.magia) return (c.magias||[]).length ? ['Esta classe não conjura magias por conta própria.'] : [];
+  const w=[], ms=c.magias||[];
+  const tr=ms.filter(s=>+s.circ===0 && !s.extra).length, pr=ms.filter(s=>+s.circ>0 && s.prep && !s.extra).length;
+  if (tr>d.magia.truques) w.push(`Truques acima do limite (${tr}/${d.magia.truques}).`);
+  if (pr>d.magia.preparadas) w.push(`Magias preparadas acima do limite (${pr}/${d.magia.preparadas}).`);
+  const alto=ms.filter(s=>+s.circ>d.magia.maxCirc && !s.extra);
+  if (alto.length) w.push(`Acima do círculo máximo (${d.magia.maxCirc}º): ${alto.map(s=>s.nome).join(', ')}.`);
+  return w;
+}
+
+/* ============ CRIAÇÃO ============ */
+function newDraft(){
+  const z = v => Object.fromEntries(AB.map(a=>[a,v]));
+  return {nome:'', especie:'humano', classe:'guerreiro', antecedente:'soldado', bonusModo:'2-1', b2:'', b1:'',
+    customAbs:['','',''], customSkills:['',''], customTalento:'', metodo:'padrao', padrao:z(''), compra:z(8), manual:z(10),
+    classSkills:[], extraSkill:'', armadura:'nenhuma', escudo:false, arma1:'', arma2:'', ouro:0, alinhamento:'', historia:''};
+}
+function draftCompute(d){
+  const cls=CLASSES[d.classe], sp=SPECIES[d.especie], bg=BACKGROUNDS[d.antecedente];
+  const errors=[]; const base={};
+  AB.forEach(a=>{ base[a] = d.metodo==='padrao' ? (+d.padrao[a]||0) : d.metodo==='compra' ? +d.compra[a] : (+d.manual[a]||0); });
+  let spent=0;
+  if (d.metodo==='padrao'){
+    const used=AB.map(a=>d.padrao[a]).filter(v=>v!=='').map(Number);
+    if (used.length<6) errors.push('Distribua todos os valores do conjunto padrão (15, 14, 13, 12, 10, 8).');
+    else if ([...used].sort().join()!==[...STD_ARRAY].sort().join()) errors.push('Cada valor do conjunto padrão deve ser usado uma única vez.');
+  }
+  if (d.metodo==='compra'){ spent=AB.reduce((s,a)=>s+PB_COST[d.compra[a]],0); if (spent>27) errors.push(`Compra de pontos: ${spent}/27 pontos gastos.`); }
+  if (d.metodo==='manual') AB.forEach(a=>{ if(!(base[a]>=3 && base[a]<=18)) errors.push(`${AB_NOME[a]}: o valor rolado deve ficar entre 3 e 18.`); });
+  const bgAbs = bg.custom ? d.customAbs : bg.abs;
+  if (bg.custom && (bgAbs.some(v=>!v) || new Set(bgAbs).size<3)) errors.push('Antecedente: escolha três atributos diferentes.');
+  const bonus=Object.fromEntries(AB.map(a=>[a,0]));
+  if (d.bonusModo==='2-1'){
+    if (!d.b2 || !d.b1 || d.b2===d.b1 || !bgAbs.includes(d.b2) || !bgAbs.includes(d.b1)) errors.push('Antecedente: escolha +2 e +1 em atributos diferentes da lista do antecedente.');
+    else { bonus[d.b2]+=2; bonus[d.b1]+=1; }
+  } else bgAbs.filter(Boolean).forEach(a=>bonus[a]+=1);
+  const final={}; AB.forEach(a=>{ final[a]=base[a]+bonus[a]; if(final[a]>20) errors.push(`${AB_NOME[a]} não pode passar de 20.`); });
+  const bgSkills = bg.custom ? d.customSkills.filter(Boolean) : bg.skills;
+  if (bg.custom && (bgSkills.length<2 || bgSkills[0]===bgSkills[1])) errors.push('Antecedente: escolha duas perícias diferentes.');
+  const skills=new Set(bgSkills);
+  const cs=d.classSkills.filter(s=>!skills.has(s) && cls.skills.includes(s));
+  if (cs.length!==cls.n) errors.push(`Perícias da classe: escolha ${cls.n} (${cs.length}/${cls.n}).`);
+  cs.forEach(s=>skills.add(s));
+  if (sp.extraSkill){
+    if (!d.extraSkill) errors.push(`Escolha a perícia extra de ${sp.nome}.`);
+    else if (skills.has(d.extraSkill)) errors.push('A perícia extra da espécie repete outra já escolhida.');
+    else skills.add(d.extraSkill);
+  }
+  if (!String(d.nome).trim()) errors.push('Dê um nome ao personagem.');
+  if (!(+d.ouro>=0)) errors.push('O ouro inicial não pode ser negativo.');
+  const talentos=[]; const t = bg.custom ? String(d.customTalento).trim() : bg.talento; if (t) talentos.push(t);
+  if (d.especie==='humano') talentos.push('Talento de origem extra (Versátil): definir com o mestre');
+  return {cls,sp,bg,base,bonus,final,skills,errors,spent,bgAbs,bgSkills,talentos};
+}
+function buildCharacter(d, ownerId){
+  const r=draftCompute(d);
+  if (r.errors.length) throw new Error('Ficha inválida: '+r.errors[0]);
+  const c = {
+    id:newId(), ownerId, nome:String(d.nome).trim().slice(0,60), especie:d.especie, classe:d.classe, subclasse:'',
+    antecedente:d.antecedente, antecedenteNome: r.bg.nome, nivel:1, atributos:r.final, pericias:[...r.skills], talentos:r.talentos,
+    pvBase:r.cls.dado, armadura:d.armadura, escudo:!!d.escudo, caBonus:0,
+    armas:[d.arma1,d.arma2].filter(k=>WEAPONS[k]).map(k=>newWeapon(k)), magias:[],
+    inventario:[], moedas:{pl:0,po:Math.floor(+d.ouro||0),pe:0,pp:0,pc:0},
+    alinhamento:String(d.alinhamento||'').slice(0,40), notas:String(d.historia||'').slice(0,4000), criadoEm:nowIso(), log:[]
+  };
+  return c;
+}
+function newWeapon(base, p={}){
+  let w;
+  if (base==='custom'){
+    const dado=String(p.dado||'').trim();
+    if (!/^(\d+d\d+|\d+)$/.test(dado)) throw new Error('Dado de dano inválido (use o formato 1d8).');
+    w = {nome:'Arma', cat:'m', dist:p.dist?1:0, dado, dano:DANO_TIPOS.includes(p.dano)?p.dano:'cortante',
+      props:[p.acuidade?'acuidade':null, p.leve?'leve':null].filter(Boolean), prof:!!p.prof};
+  } else {
+    if (!WEAPONS[base]) throw new Error('Escolha uma arma.');
+    w = clone(WEAPONS[base]);
+  }
+  const nome = String(p.nome||'').trim() || w.nome;
+  if (base==='custom' && !String(p.nome||'').trim()) throw new Error('Dê um nome à arma personalizada.');
+  return {...w, id:newId(), base, nome:nome.slice(0,60), bonus:Math.max(0,Math.min(3,Math.floor(+p.bonus||0))), obs:String(p.obs||'').slice(0,120)};
+}
+
+/* ============ MUDANÇAS (propostas e aplicação) ============ */
+const ACTIONS = {item:'Itens', moedas:'Dinheiro e tesouro', arma_add:'Adicionar arma', arma_rem:'Remover arma',
+  magia_nova:'Aprender magia', magia_prep:'Preparar / despreparar magia', magia_rem:'Esquecer magia',
+  nivel:'Subir de nível', equip:'Armadura e escudo', nota:'Anotação'};
+
+function describe(type,p,c){
+  switch(type){
+    case 'criar': { const sp=SPECIES[p.especie], cl=CLASSES[p.classe], bg=BACKGROUNDS[p.antecedente]; return `Novo personagem: ${p.nome||'(sem nome)'}, ${sp?.nome} ${cl?.nome} (${bg?.nome})`; }
+    case 'moedas': return 'Moedas: '+COINS.filter(([k])=>+p[k]).map(([k,ab])=>`${sg(+p[k])} ${ab}`).join(', ');
+    case 'item': return `${p.acao==='add'?'Adicionar':'Remover'} ${p.qtd}× ${p.nome}${p.obs?` (${p.obs})`:''}`;
+    case 'arma_add': { const base=p.base==='custom'?`personalizada, ${p.dado} ${p.dano}`:WEAPONS[p.base]?.nome; const nome=String(p.nome||'').trim();
+      return `Adicionar arma: ${nome||base}${nome&&p.base!=='custom'?` (${base})`:p.base==='custom'?` (${base})`:''}${+p.bonus?` +${+p.bonus}`:''}${p.obs?` · ${p.obs}`:''}`; }
+    case 'arma_rem': return `Remover arma: ${p.nomeRef||'?'}`;
+    case 'magia_nova': return `Aprender ${p.nome} (${circLabel(p.circ)})${+p.circ>0&&p.prep?', já preparada':''}${p.extra?', não conta no limite':''}`;
+    case 'magia_prep': return `${p.prep==='1'?'Preparar':'Despreparar'} ${p.nomeRef||'?'}`;
+    case 'magia_rem': return `Esquecer ${p.nomeRef||'?'}`;
+    case 'nivel': {
+      let s=`Subir para o nível ${(c?.nivel||0)+1}, ${p.hp==='rolado'?`PV rolado: ${p.rolado}`:'PV pela média'}`;
+      if (p.asiModo==='2') s+=`, +2 ${p.a1}`; else if (p.asiModo==='11') s+=`, +1 ${p.a1} e +1 ${p.a2}`; else if (p.asiModo==='talento') s+=`, talento: ${p.talento}`;
+      if (p.subclasse) s+=`, subclasse: ${p.subclasse}`; return s;
+    }
+    case 'equip': return `Equipar: ${ARMORS[p.armadura]?.nome}${p.escudo?' + escudo':''}${+p.caBonus?`, bônus mágico ${sg(+p.caBonus)} CA`:''}`;
+    case 'nota': return `Anotação: ${p.texto}`;
+  }
+  return 'Mudança: '+type;
+}
+
+function applyChange(c0, type, p){
+  const c=clone(c0); const cls=CLASSES[c.classe];
+  c.armas ||= []; c.magias ||= [];
+  const int = (v,min=0) => { const n=Math.floor(+v); if(!Number.isFinite(n) || n<min) throw new Error('Valor inválido.'); return n; };
+  switch(type){
+    case 'moedas': {
+      if (!COINS.some(([k])=>Math.floor(+p[k]||0))) throw new Error('Informe algum valor.');
+      COINS.forEach(([k,ab])=>{ const d=Math.floor(+p[k]||0); const v=(c.moedas[k]||0)+d; if(v<0) throw new Error(`Moedas insuficientes de ${ab}.`); c.moedas[k]=v; });
+      break;
+    }
+    case 'item': {
+      const n=int(p.qtd,1); const nome=String(p.nome||'').trim(); if(!nome) throw new Error('Informe o item.');
+      const i=c.inventario.findIndex(x=>x.nome.toLowerCase()===nome.toLowerCase());
+      if (p.acao==='add'){ if(i>=0){ c.inventario[i].qtd+=n; if(p.obs) c.inventario[i].obs=p.obs; } else c.inventario.push({nome:nome.slice(0,80),qtd:n,obs:String(p.obs||'').slice(0,120)}); }
+      else { if(i<0) throw new Error('Item não está no inventário.'); if(c.inventario[i].qtd<n) throw new Error('Quantidade maior que a disponível.'); c.inventario[i].qtd-=n; if(!c.inventario[i].qtd) c.inventario.splice(i,1); }
+      break;
+    }
+    case 'arma_add': {
+      if (c.armas.length>=12) throw new Error('Limite de 12 armas na ficha.');
+      c.armas.push(newWeapon(p.base, p));
+      break;
+    }
+    case 'arma_rem': {
+      const i=c.armas.findIndex(w=>w.id===p.ref); if(i<0) throw new Error('Arma não encontrada na ficha.');
+      c.armas.splice(i,1); break;
+    }
+    case 'magia_nova': {
+      if (!cls.magia && !p.extra) throw new Error('Esta classe não conjura magias. Marque "não conta no limite" para magias vindas de talento ou item.');
+      const nome=String(p.nome||'').trim().slice(0,60); if(!nome) throw new Error('Informe o nome da magia.');
+      const circ=int(p.circ,0); if(circ>9) throw new Error('Círculo inválido.');
+      if (c.magias.some(s=>s.nome.toLowerCase()===nome.toLowerCase())) throw new Error('Essa magia já está na ficha.');
+      if (c.magias.length>=80) throw new Error('Limite de magias na ficha.');
+      c.magias.push({id:newId(), nome, circ, prep: circ===0 || !!p.prep, extra:!!p.extra, obs:String(p.obs||'').slice(0,120)});
+      c.magias.sort((a,b)=>a.circ-b.circ || a.nome.localeCompare(b.nome));
+      break;
+    }
+    case 'magia_prep': {
+      const s=c.magias.find(x=>x.id===p.ref); if(!s) throw new Error('Magia não encontrada na ficha.');
+      if (+s.circ===0) throw new Error('Truques estão sempre disponíveis.');
+      const want = p.prep==='1'; if (s.prep===want) throw new Error(want?'A magia já está preparada.':'A magia já não está preparada.');
+      s.prep=want; break;
+    }
+    case 'magia_rem': {
+      const i=c.magias.findIndex(x=>x.id===p.ref); if(i<0) throw new Error('Magia não encontrada na ficha.');
+      c.magias.splice(i,1); break;
+    }
+    case 'nivel': {
+      const nl=c.nivel+1; if (nl>20) throw new Error('O personagem já está no nível 20.');
+      const ganho = p.hp==='rolado' ? int(p.rolado,1) : cls.dado/2+1;
+      if (ganho>cls.dado) throw new Error(`O dado de vida é d${cls.dado}.`);
+      c.nivel=nl; c.pvBase+=ganho;
+      if (isAsiLevel(cls,nl)){
+        if (p.asiModo==='2'){ if(!p.a1) throw new Error('Escolha o atributo.'); c.atributos[p.a1]+=2; }
+        else if (p.asiModo==='11'){ if(!p.a1||!p.a2||p.a1===p.a2) throw new Error('Escolha dois atributos diferentes.'); c.atributos[p.a1]+=1; c.atributos[p.a2]+=1; }
+        else if (p.asiModo==='talento'){ if(!String(p.talento||'').trim()) throw new Error('Informe o talento.'); c.talentos.push(String(p.talento).trim().slice(0,80)); }
+        else throw new Error('Este nível concede Melhoria de Atributo ou talento: escolha uma opção.');
+        AB.forEach(a=>{ if(c.atributos[a]>20) throw new Error(`${AB_NOME[a]} não pode passar de 20.`); });
+      }
+      if (nl===3){ if(!String(p.subclasse||'').trim()) throw new Error('No nível 3 o personagem escolhe a subclasse.'); c.subclasse=String(p.subclasse).trim().slice(0,60); }
+      break;
+    }
+    case 'equip': {
+      if(!ARMORS[p.armadura]) throw new Error('Armadura inválida.');
+      c.armadura=p.armadura; c.escudo=!!p.escudo; c.caBonus=Math.max(-5,Math.min(5,Math.floor(+p.caBonus||0)));
+      break;
+    }
+    case 'nota': {
+      const t=String(p.texto||'').trim(); if(!t) throw new Error('Escreva a anotação.');
+      c.notas = (c.notas ? c.notas+'\n' : '') + `[${new Date().toLocaleDateString('pt-BR')}] ` + t.slice(0,500);
+      break;
+    }
+    default: throw new Error('Este tipo de mudança não é mais usado.');
+  }
+  return c;
+}
+function addLog(c, text, by, motivo){
+  c.log = [{at:nowIso(), text, by, approvedBy:S.myId, motivo:motivo||''}, ...(c.log||[])].slice(0,80);
+}
+
+/* ============ AÇÕES ============ */
+async function submitAction(form){
+  const c=S.chars.find(x=>x.id===S.charId); if(!c) return;
+  const fd=new FormData(form); const p=Object.fromEntries(fd.entries()); const type=form.dataset.type;
+  if (type==='equip') p.escudo = fd.get('escudo')==='on';
+  if (type==='arma_rem') p.nomeRef = (c.armas||[]).find(w=>w.id===p.ref)?.nome;
+  if (type==='magia_prep' || type==='magia_rem') p.nomeRef = (c.magias||[]).find(x=>x.id===p.ref)?.nome;
+  const motivo=String(p.motivo||'').slice(0,200); delete p.motivo;
+  try {
+    applyChange(c, type, p); // valida antes de enviar
+    if (S.isMaster){
+      const n=applyChange(c,type,p); addLog(n, describe(type,p,c), S.myId, motivo);
+      await store.saveCharacter(n); toast('Mudança aplicada.');
+    } else {
+      await store.addRequest({id:newId(), charId:c.id, charNome:c.nome, type, payload:p, motivo, by:S.myId, at:nowIso(), status:'pendente'});
+      toast('Enviado ao mestre para aprovação.');
+    }
+    form.reset();
+  } catch(e){ toast(e.message || ('Não foi possível salvar ('+(e.code||'erro')+').')); }
+}
+async function submitCreate(){
+  const r=draftCompute(S.draft); if (r.errors.length){ toast(r.errors[0]); return; }
+  try {
+    if (S.isMaster){
+      const c=buildCharacter(S.draft, S.myId); addLog(c,'Personagem criado',S.myId,'');
+      await store.saveCharacter(c); toast('Personagem criado.'); S.charId=c.id; S.tab='ficha';
+    } else {
+      await store.addRequest({id:newId(), charId:null, charNome:S.draft.nome, type:'criar', payload:clone(S.draft), motivo:'', by:S.myId, at:nowIso(), status:'pendente'});
+      toast('Ficha enviada ao mestre para aprovação.'); S.tab='solicitacoes';
+    }
+    S.draft=newDraft(); render(true);
+  } catch(e){ toast(e.message || ('Não foi possível salvar ('+(e.code||'erro')+').')); }
+}
+async function approve(owner, id){
+  const item=S.reqDocs[owner]?.items?.[id]; if(!item || item.status!=='pendente') return;
+  try {
+    if (item.type==='criar'){
+      const c=buildCharacter(item.payload, owner); addLog(c,'Personagem criado',owner,''); await store.saveCharacter(c);
+    } else {
+      const c=S.chars.find(x=>x.id===item.charId); if(!c) throw new Error('Personagem não encontrado.');
+      const n=applyChange(c,item.type,item.payload); addLog(n, describe(item.type,item.payload,c), owner, item.motivo); await store.saveCharacter(n);
+    }
+    await store.resolveRequest(owner,id,{status:'aprovado', resolvedAt:nowIso(), resolvedBy:S.myId});
+    return true;
+  } catch(e){ toast(`${item.charNome||''}: ${e.message||'erro ao aprovar'}`); return false; }
+}
+async function reject(owner,id,motivo){
+  try { await store.resolveRequest(owner,id,{status:'rejeitado', motivoRejeicao:String(motivo||'').slice(0,200), resolvedAt:nowIso(), resolvedBy:S.myId}); toast('Solicitação rejeitada.'); }
+  catch(e){ toast('Não foi possível rejeitar ('+(e.code||'erro')+').'); }
+}
+function pendingList(){
+  const out=[]; Object.entries(S.reqDocs).forEach(([owner,doc])=>Object.values(doc.items||{}).forEach(i=>{ if(i.status==='pendente') out.push({owner,...i}); }));
+  return out.sort((a,b)=>a.at<b.at?-1:1);
+}
+function myRequests(){ return Object.values(S.reqDocs[S.myId]?.items||{}).sort((a,b)=>a.at<b.at?1:-1); }
+
+/* ============ NOMES ============ */
+function nameOf(id){
+  if (!id) return '—';
+  if (S.mode==='local') return {'demo-mestre':'Mestre (demo)','demo-jogador':'Jogador (demo)'}[id]||'—';
+  if (id===S.myId) return 'Você';
+  return S.names[id] || '…';
+}
+async function loadNames(){
+  if (S.mode!=='db' || !S.user?.profiles) return;
+  const ids=new Set();
+  S.chars.forEach(c=>{ ids.add(c.ownerId); (c.log||[]).forEach(l=>{ ids.add(l.by); ids.add(l.approvedBy); }); });
+  Object.keys(S.reqDocs).forEach(i=>ids.add(i));
+  const need=[...ids].filter(i=>i && i!==S.myId && !(i in S.names) && !S.namesPending.has(i));
+  if (!need.length) return;
+  need.forEach(i=>S.namesPending.add(i));
+  try { const ps=await S.user.profiles(need); need.forEach(i=>S.names[i]=(ps&&ps[i]&&ps[i].name)||'Jogador'); }
+  catch { need.forEach(i=>S.names[i]='Jogador'); }
+  render();
+}
+
+/* ============ RENDERIZAÇÃO ============ */
+function render(force){
+  const a=document.activeElement;
+  if (!force && a && a.closest && a.closest('#app') && /INPUT|TEXTAREA|SELECT/.test(a.tagName)){ S.deferred=true; renderChrome(); return; }
+  S.deferred=false;
+  renderChrome();
+  const app=$('#app');
+  let html = S.notice ? `<div class="notice">${S.notice}</div>` : '';
+  if (S.mode==='carregando') html += `<div class="empty">Carregando…</div>`;
+  else if (S.tab==='personagens') html += viewList();
+  else if (S.tab==='criar') html += viewCreate();
+  else if (S.tab==='ficha') html += viewSheet();
+  else if (S.tab==='aprovacoes') html += viewApprovals();
+  else if (S.tab==='solicitacoes') html += viewMine();
+  app.innerHTML = html;
+}
+function renderChrome(){
+  const b=[];
+  if (S.mode==='local'){
+    b.push(`<span class="badge">Demonstração: dados só nesta aba</span>`);
+    b.push(`<span class="muted small">Ver como:</span><button class="btn sm ${S.isMaster?'pri':''}" data-act="role" data-role="mestre">Mestre</button><button class="btn sm ${!S.isMaster?'pri':''}" data-act="role" data-role="jogador">Jogador</button>`);
+  } else if (S.mode==='db'){
+    b.push(`<span class="badge gold">${S.isMaster?'Mestre':'Jogador'}</span>`);
+    b.push(`<span class="badge">${S.loaded?'Sincronizado':'Conectando…'}</span>`);
+  }
+  $('#badges').innerHTML=b.join('');
+  const pend=pendingList().length;
+  const tabs=[['personagens',S.isMaster?'Todos os personagens':'Meus personagens'],['criar','Criar personagem']];
+  if (S.isMaster) tabs.push(['aprovacoes',`Aprovações${pend?`<span class="count">${pend}</span>`:''}`]);
+  else tabs.push(['solicitacoes','Minhas solicitações']);
+  $('#nav').innerHTML = tabs.map(([k,l])=>`<button class="${S.tab===k||(S.tab==='ficha'&&k==='personagens')?'on':''}" data-act="tab" data-tab="${k}">${l}</button>`).join('');
+}
+function visibleChars(){ return S.chars.filter(c=>S.isMaster || c.ownerId===S.myId).sort((a,b)=>a.nome.localeCompare(b.nome)); }
+function hpColor(r){ return r>.5?'var(--green)':r>.25?'var(--gold)':'var(--red)'; }
+function pendingFor(charId){ return pendingList().filter(r=>r.charId===charId).length + (S.isMaster?0:myRequests().filter(r=>r.charId===charId&&r.status==='pendente').length); }
+
+function viewList(){
+  const list=visibleChars();
+  if (!list.length) return `<div class="empty"><h2 style="margin-bottom:8px">Nenhum personagem ainda</h2><p>${S.isMaster?'Crie um personagem ou aguarde os jogadores enviarem fichas para aprovação.':'Crie seu personagem. Ele aparece aqui quando o mestre aprovar.'}</p><button class="btn pri" data-act="tab" data-tab="criar">Criar personagem</button></div>`;
+  return `<div class="grid-cards">${list.map(c=>{
+    const d=derive(c); const e=est(c); const pv=pvAtual(c,d); const r=Math.max(0,Math.min(1,pv/d.max)); const pend=pendingFor(c.id);
+    return `<div class="card" data-act="open" data-id="${h(c.id)}">
+      <div class="row between"><h2>${h(c.nome)}</h2>${pend?`<span class="chip pendente">${pend} pendente${pend>1?'s':''}</span>`:''}</div>
+      <div class="muted">${h(d.sp.nome)} · ${h(d.cls.nome)}${c.subclasse?` (${h(c.subclasse)})`:''} · nível ${c.nivel}</div>
+      <div class="hpbar"><i style="width:${r*100}%;background:${hpColor(r)}"></i></div>
+      <div class="row between small"><span>PV ${pv}/${d.max}${e.temp?` (+${e.temp})`:''}</span><span>CA ${d.ac}</span><span>Iniciativa ${sg(d.init)}</span></div>
+      ${S.isMaster?`<div class="small muted" style="margin-top:6px">Jogador: ${h(nameOf(c.ownerId))}</div>`:''}
+    </div>`;}).join('')}</div>`;
+}
+
+function opt(v,l,sel){ return `<option value="${h(v)}" ${String(sel)===String(v)?'selected':''}>${h(l)}</option>`; }
+function weaponOptions(classe,sel){
+  const grp=(cat,dist,label)=>`<optgroup label="${label}">${Object.entries(WEAPONS).filter(([k,w])=>w.cat===cat&&w.dist===dist).map(([k,w])=>opt(k,`${w.nome} (${w.dado} ${w.dano})${weaponProf(classe,w)?'':' · sem proficiência'}`,sel)).join('')}</optgroup>`;
+  return grp('s',0,'Simples corpo a corpo')+grp('s',1,'Simples à distância')+grp('m',0,'Marciais corpo a corpo')+grp('m',1,'Marciais à distância');
+}
+function viewCreate(){
+  const d=S.draft; const r=draftCompute(d); const {cls,sp,bg}=r;
+  const abilityInputs = AB.map(a=>{
+    let ctl='';
+    if (d.metodo==='padrao') ctl=`<select data-f="padrao.${a}">${opt('','—',d.padrao[a])}${STD_ARRAY.map(v=>opt(v,v,d.padrao[a])).join('')}</select>`;
+    else if (d.metodo==='compra') ctl=`<div class="pb-ctl"><button type="button" class="btn sm" data-act="pb" data-ab="${a}" data-d="-1" ${d.compra[a]<=8?'disabled':''}>−</button><b>${d.compra[a]}</b><button type="button" class="btn sm" data-act="pb" data-ab="${a}" data-d="1" ${d.compra[a]>=15?'disabled':''}>+</button></div>`;
+    else ctl=`<input type="number" min="3" max="18" value="${h(d.manual[a])}" data-f="manual.${a}">`;
+    return `<div class="abcell"><div class="t">${a}</div>${ctl}<div class="small muted" style="margin-top:4px">${r.bonus[a]?`+${r.bonus[a]} antecedente`:'&nbsp;'}</div><div class="fin">${r.final[a]||'—'}</div><div class="small">${r.final[a]?sg(mod(r.final[a])):''}</div></div>`;
+  }).join('');
+  const bgAbsSel = bg.custom ? `<div class="cols3">${[0,1,2].map(i=>`<select data-f="customAbs.${i}">${opt('','Atributo…',d.customAbs[i])}${AB.map(a=>opt(a,AB_NOME[a],d.customAbs[i])).join('')}</select>`).join('')}</div>
+      <div class="cols2" style="margin-top:8px">${[0,1].map(i=>`<select data-f="customSkills.${i}">${opt('','Perícia…',d.customSkills[i])}${SKILLS.map(s=>opt(s[0],s[1],d.customSkills[i])).join('')}</select>`).join('')}</div>
+      <div class="f" style="margin-top:8px"><label>Talento de origem</label><input data-f="customTalento" data-live value="${h(d.customTalento)}" placeholder="Ex.: Alerta"></div>`
+    : `<div class="small muted">Atributos: ${bg.abs.map(a=>AB_NOME[a]).join(', ')} · Perícias: ${bg.skills.map(s=>SKILL_NOME[s]).join(', ')} · Talento: ${h(bg.talento)}</div>`;
+  const absForBonus = r.bgAbs.filter(Boolean);
+  const bonusCtl = d.bonusModo==='2-1' ? `<div class="cols2"><div><label>+2 em</label><select data-f="b2">${opt('','—',d.b2)}${absForBonus.map(a=>opt(a,AB_NOME[a],d.b2)).join('')}</select></div><div><label>+1 em</label><select data-f="b1">${opt('','—',d.b1)}${absForBonus.map(a=>opt(a,AB_NOME[a],d.b1)).join('')}</select></div></div>` : `<div class="small muted">+1 em ${absForBonus.map(a=>AB_NOME[a]).join(', ')||'—'}</div>`;
+  const chosenCls=d.classSkills.filter(s=>!r.bgSkills.includes(s));
+  const clsSkills = cls.skills.map(k=>{ const fromBg=r.bgSkills.includes(k); const on=fromBg||d.classSkills.includes(k); const full=chosenCls.length>=cls.n && !on;
+    return `<label class="${fromBg||full?'dis':''}"><input type="checkbox" data-skill="${k}" ${on?'checked':''} ${fromBg||full?'disabled':''}> ${SKILL_NOME[k]}${fromBg?' <span class="small">(antecedente)</span>':''}</label>`; }).join('');
+  const extra = sp.extraSkill ? `<div class="f"><label>Perícia extra (${h(sp.nome)})</label><select data-f="extraSkill">${opt('','—',d.extraSkill)}${sp.extraSkill.map(k=>opt(k,SKILL_NOME[k],d.extraSkill)).join('')}</select></div>` : '';
+  // pré-visualização
+  const prev = {nivel:1, armas:[d.arma1,d.arma2].filter(k=>WEAPONS[k]).map(k=>({...WEAPONS[k],id:k,base:k,bonus:0})), especie:d.especie, classe:d.classe, atributos:Object.fromEntries(AB.map(a=>[a,r.final[a]||10])), pericias:[...r.skills], talentos:r.talentos, pvBase:cls.dado, armadura:d.armadura, escudo:d.escudo, caBonus:0};
+  const pd=derive(prev);
+  return `<form data-form="criar" class="create">
+    <div class="stack">
+      <div class="panel"><h3>Identidade</h3>
+        <div class="cols2"><div class="f"><label>Nome do personagem</label><input data-f="nome" data-live value="${h(d.nome)}" maxlength="60" placeholder="Ex.: Lyra Ventoalto"></div>
+        <div class="f"><label>Alinhamento (opcional)</label><input data-f="alinhamento" data-live value="${h(d.alinhamento)}" maxlength="40"></div></div>
+        <div class="cols3">
+          <div class="f"><label>Espécie</label><select data-f="especie">${Object.entries(SPECIES).map(([k,v])=>opt(k,v.nome,d.especie)).join('')}</select></div>
+          <div class="f"><label>Classe</label><select data-f="classe">${Object.entries(CLASSES).map(([k,v])=>opt(k,v.nome,d.classe)).join('')}</select></div>
+          <div class="f"><label>Antecedente</label><select data-f="antecedente">${Object.entries(BACKGROUNDS).map(([k,v])=>opt(k,v.nome,d.antecedente)).join('')}</select></div>
+        </div>
+        <div class="small muted">${h(sp.nome)}: ${sp.tracos.map(h).join(' · ')}</div>
+      </div>
+      <div class="panel"><h3>Antecedente</h3>${bgAbsSel}
+        <div class="f" style="margin-top:10px"><label>Aumento de atributos do antecedente</label>
+          <select data-f="bonusModo">${opt('2-1','+2 em um e +1 em outro',d.bonusModo)}${opt('1-1-1','+1 nos três',d.bonusModo)}</select></div>
+        ${bonusCtl}
+      </div>
+      <div class="panel"><h3>Atributos</h3>
+        <div class="f"><label>Método</label><select data-f="metodo">${opt('padrao','Conjunto padrão (15, 14, 13, 12, 10, 8)',d.metodo)}${opt('compra','Compra de pontos (27 pontos)',d.metodo)}${opt('manual','Rolados na mesa (digitar valores)',d.metodo)}</select></div>
+        ${d.metodo==='compra'?`<div class="small ${r.spent>27?'err':'muted'}" style="margin-bottom:8px">Pontos gastos: ${r.spent}/27</div>`:''}
+        <div class="cols6">${abilityInputs}</div>
+      </div>
+      <div class="panel"><h3>Perícias</h3>
+        <div class="small muted" style="margin-bottom:8px">${h(cls.nome)}: escolha ${cls.n} (${chosenCls.length}/${cls.n})</div>
+        <div class="skills-pick">${clsSkills}</div>
+        <div style="margin-top:12px">${extra}</div>
+      </div>
+      <div class="panel"><h3>Equipamento inicial</h3>
+        <div class="cols3">
+          <div class="f"><label>Armadura</label><select data-f="armadura">${Object.entries(ARMORS).map(([k,v])=>opt(k,v.nome,d.armadura)).join('')}</select></div>
+          <div class="f"><label>&nbsp;</label><label style="display:flex;gap:8px;align-items:center;color:var(--text)"><input type="checkbox" data-f="escudo" ${d.escudo?'checked':''}> Escudo (+2 CA)</label></div>
+          <div class="f"><label>Ouro inicial (PO)</label><input type="number" min="0" data-f="ouro" value="${h(d.ouro)}"></div>
+        </div>
+        <div class="cols2">${['arma1','arma2'].map((k,i)=>`<div class="f"><label>Arma ${i?'secundária':'principal'}</label><select data-f="${k}">${opt('','Nenhuma',d[k])}${weaponOptions(d.classe,d[k])}</select></div>`).join('')}</div>
+        <div class="f"><label>História e anotações</label><textarea data-f="historia" data-live maxlength="4000">${h(d.historia)}</textarea></div>
+      </div>
+    </div>
+    <div class="side panel">
+      <h3>Pré-visualização · nível 1</h3>
+      <div class="stats" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stat"><div class="v">${pd.max}</div><div class="l">PV máx.</div></div>
+        <div class="stat"><div class="v">${pd.ac}</div><div class="l">CA</div></div>
+        <div class="stat"><div class="v">${sg(pd.init)}</div><div class="l">Iniciativa</div></div>
+        <div class="stat"><div class="v">+${pd.P}</div><div class="l">Proficiência</div></div>
+        <div class="stat"><div class="v">${pd.desl}</div><div class="l">Desloc. (pés)</div></div>
+        <div class="stat"><div class="v">${pd.passiva}</div><div class="l">Perc. passiva</div></div>
+      </div>
+      <div class="small muted" style="margin-bottom:6px">Testes de resistência: ${pd.saves.filter(s=>s.prof).map(s=>`${AB_NOME[s.a]} ${sg(s.v)}`).join(', ')}</div>
+      <div class="small muted" style="margin-bottom:6px">Perícias: ${[...r.skills].map(k=>SKILL_NOME[k]).join(', ')||'—'}</div>
+      <div class="small muted" style="margin-bottom:6px">Ataques: ${pd.ataques.map(a=>`${h(a.nome)} ${sg(a.atk)} (${a.dado}${a.mod?sg(a.mod):''})`).join(' · ')}</div>
+      ${pd.magia?`<div class="small muted" style="margin-bottom:6px">Conjuração (${AB_NOME[pd.magia.ab]}): CD ${pd.magia.cd}, ataque ${sg(pd.magia.atk)}, ${pd.magia.truques} truques e ${pd.magia.preparadas} magias preparadas no nível 1. As magias são adicionadas depois, com aprovação do mestre.</div>`:''}
+      <div class="small muted" style="margin-bottom:12px">Talentos: ${r.talentos.map(h).join('; ')||'—'}</div>
+      ${r.errors.length?`<div style="margin-bottom:12px">${r.errors.map(e=>`<div class="err">• ${h(e)}</div>`).join('')}</div>`:`<div class="ok-t" style="margin-bottom:12px">Ficha válida pelas regras.</div>`}
+      <button class="btn pri" style="width:100%" ${r.errors.length?'disabled':''}>${S.isMaster?'Criar personagem':'Enviar ao mestre para aprovação'}</button>
+      <button type="button" class="btn" style="width:100%;margin-top:8px" data-act="reset-draft">Limpar formulário</button>
+    </div>
+  </form>`;
+}
+
+function actionForm(c,d){
+  const t=S.actionType; const btn=S.isMaster?'Aplicar':'Enviar ao mestre';
+  const motivo=`<div class="f"><label>Motivo (opcional)</label><input name="motivo" maxlength="200" placeholder="Ex.: recompensa da missão do moinho"></div>`;
+  const chk=(name,label,on)=>`<label style="display:flex;gap:8px;align-items:center;color:var(--text);margin-bottom:8px"><input type="checkbox" name="${name}" ${on?'checked':''}> ${label}</label>`;
+  let body='', bloqueia=false;
+  if (t==='moedas') body=`<div class="small muted" style="margin-bottom:6px">Use números negativos para gastar.</div><div class="cols3">${COINS.map(([k,ab,n])=>`<div class="f"><label>${ab} (${n})</label><input name="${k}" type="number" value="0"></div>`).join('')}</div>`;
+  else if (t==='item') body=`<div class="cols2"><div class="f"><label>Ação</label><select name="acao"><option value="add">Adicionar</option><option value="rem">Remover / usar</option></select></div><div class="f"><label>Quantidade</label><input name="qtd" type="number" min="1" value="1" required></div></div>
+      <div class="f"><label>Item</label><input name="nome" list="inv-list" maxlength="80" required placeholder="Ex.: Poção de cura"><datalist id="inv-list">${c.inventario.map(i=>`<option value="${h(i.nome)}">`).join('')}</datalist></div>
+      <div class="f"><label>Observação</label><input name="obs" maxlength="120" placeholder="Ex.: achado na cripta"></div>`;
+  else if (t==='arma_add') body=`<div class="f"><label>Arma</label><select name="base">${weaponOptions(c.classe,'espada_longa')}<option value="custom">Personalizada…</option></select></div>
+      <div class="cols2"><div class="f"><label>Nome próprio (opcional)</label><input name="nome" maxlength="60" placeholder="Ex.: Lâmina da Aurora"></div><div class="f"><label>Bônus mágico</label><select name="bonus"><option value="0">Nenhum</option><option value="1">+1</option><option value="2">+2</option><option value="3">+3</option></select></div></div>
+      <div class="f"><label>Observação</label><input name="obs" maxlength="120" placeholder="Ex.: +1d6 de fogo contra mortos-vivos"></div>
+      <details class="small" style="margin-bottom:10px"><summary class="muted" style="cursor:pointer">Campos da arma personalizada</summary>
+        <div class="cols2" style="margin-top:8px"><div class="f"><label>Dado de dano</label><input name="dado" placeholder="1d8"></div><div class="f"><label>Tipo de dano</label><select name="dano">${DANO_TIPOS.map(x=>opt(x,x,'cortante')).join('')}</select></div></div>
+        ${chk('dist','À distância')}${chk('acuidade','Acuidade (usa Força ou Destreza)')}${chk('leve','Leve')}${chk('prof','Personagem é proficiente',true)}
+      </details>`;
+  else if (t==='arma_rem'){ if(!(c.armas||[]).length){ body='<div class="muted">Nenhuma arma na ficha.</div>'; bloqueia=true; } else body=`<div class="f"><label>Arma</label><select name="ref">${c.armas.map(w=>opt(w.id,w.nome,'')).join('')}</select></div>`; }
+  else if (t==='magia_nova') body=`${!d.magia?'<div class="small muted" style="margin-bottom:8px">Esta classe não conjura. Use para magias vindas de talento, espécie ou item, marcando "não conta no limite".</div>':''}
+      <div class="cols2"><div class="f"><label>Nome da magia</label><input name="nome" maxlength="60" required placeholder="Ex.: Mísseis Mágicos"></div><div class="f"><label>Círculo</label><select name="circ">${[0,1,2,3,4,5,6,7,8,9].map(n=>opt(n,circLabel(n)+(d.magia&&n>d.magia.maxCirc?' (acima do seu máximo)':''),1)).join('')}</select></div></div>
+      <div class="f"><label>Observação</label><input name="obs" maxlength="120" placeholder="Ex.: concentração, ritual, fonte"></div>
+      ${chk('prep','Já entra preparada',true)}${chk('extra','Não conta no limite (sempre preparada por característica, talento ou item)')}`;
+  else if (t==='magia_prep'){ const ms=(c.magias||[]).filter(s=>+s.circ>0);
+    if(!ms.length){ body='<div class="muted">Nenhuma magia de 1º círculo ou acima na ficha.</div>'; bloqueia=true; }
+    else body=`<div class="cols2"><div class="f"><label>Magia</label><select name="ref">${ms.map(s=>opt(s.id,`${s.nome} (${s.circ}º)${s.prep?' · preparada':''}`,'')).join('')}</select></div><div class="f"><label>Ação</label><select name="prep"><option value="1">Preparar</option><option value="0">Despreparar</option></select></div></div>`; }
+  else if (t==='magia_rem'){ if(!(c.magias||[]).length){ body='<div class="muted">Nenhuma magia na ficha.</div>'; bloqueia=true; } else body=`<div class="f"><label>Magia</label><select name="ref">${c.magias.map(s=>opt(s.id,`${s.nome} (${circLabel(s.circ)})`,'')).join('')}</select></div>`; }
+  else if (t==='nivel'){
+    if (c.nivel>=20){ body=`<div class="muted">Nível máximo atingido.</div>`; bloqueia=true; }
+    else { const nl=c.nivel+1; const asi=isAsiLevel(d.cls,nl); const media=d.cls.dado/2+1;
+      const nd = d.magia ? derive({...c, nivel:nl}).magia : null;
+      body=`<div class="small muted" style="margin-bottom:8px">Nível ${c.nivel} → ${nl}. Proficiência ${sg(profBonus(nl))}.${nl===3?' Escolha da subclasse.':''}${asi?(nl===19?' Dádiva épica ou Melhoria de Atributo.':' Melhoria de Atributo ou talento.'):''}${nd?` Magia: ${nd.truques} truques, ${nd.preparadas} preparadas, até ${nd.maxCirc}º círculo.`:''}</div>
+      <div class="cols2"><div class="f"><label>Pontos de vida</label><select name="hp"><option value="media">Média (${media} + CON)</option><option value="rolado">Rolado no d${d.cls.dado}</option></select></div><div class="f"><label>Valor rolado</label><input name="rolado" type="number" min="1" max="${d.cls.dado}"></div></div>
+      ${nl===3?`<div class="f"><label>Subclasse</label><input name="subclasse" maxlength="60" required></div>`:''}
+      ${asi?`<div class="f"><label>Melhoria</label><select name="asiModo"><option value="2">+2 em um atributo</option><option value="11">+1 em dois atributos</option><option value="talento">Talento</option></select></div>
+      <div class="cols3"><div class="f"><label>Atributo 1</label><select name="a1"><option value="">—</option>${AB.map(a=>`<option value="${a}">${a} (${c.atributos[a]})</option>`).join('')}</select></div><div class="f"><label>Atributo 2</label><select name="a2"><option value="">—</option>${AB.map(a=>`<option value="${a}">${a} (${c.atributos[a]})</option>`).join('')}</select></div><div class="f"><label>Talento</label><input name="talento" maxlength="80"></div></div>`:''}`; }
+  }
+  else if (t==='equip') body=`<div class="f"><label>Armadura</label><select name="armadura">${Object.entries(ARMORS).map(([k,v])=>opt(k,v.nome,c.armadura)).join('')}</select></div>
+      <div class="cols2"><div class="f">${chk('escudo','Escudo',c.escudo)}</div><div class="f"><label>Bônus mágico de CA</label><input name="caBonus" type="number" min="-5" max="5" value="${+c.caBonus||0}"></div></div>`;
+  else if (t==='nota') body=`<div class="f"><label>Anotação</label><textarea name="texto" maxlength="500" required placeholder="Ex.: prometeu ajudar o ferreiro de Vila Alta"></textarea></div>`;
+  return `<form data-form="acao" data-type="${t}">${body}${bloqueia?'':motivo+`<button class="btn pri" style="width:100%">${btn}</button>`}</form>`;
+}
+
+function hpPanel(c,d){
+  const e=est(c); const pv=pvAtual(c,d); const r=Math.max(0,Math.min(1,pv/d.max));
+  const pode = S.isMaster || c.ownerId===S.myId;
+  const morte = pv===0 ? `<div class="row" style="margin-top:10px;gap:18px">
+      <span class="small"><b>Testes contra a morte</b></span>
+      <span class="small muted">Sucessos</span><span class="pips">${[1,2,3].map(n=>`<i class="pip ${e.morte.s>=n?'on':''}" ${pode?`data-act="ds" data-k="s" data-n="${n}" style="cursor:pointer"`:''}></i>`).join('')}</span>
+      <span class="small muted">Falhas</span><span class="pips">${[1,2,3].map(n=>`<i class="pip ${e.morte.f>=n?'on':''}" style="border-color:var(--red);${e.morte.f>=n?'background:var(--red);':''}${pode?'cursor:pointer':''}" ${pode?`data-act="ds" data-k="f" data-n="${n}"`:''}></i>`).join('')}</span>
+      ${e.morte.s>=3?'<span class="chip aprovado">Estável</span>':e.morte.f>=3?'<span class="chip rejeitado">Morto</span>':''}</div>` : '';
+  return `<div class="panel"><div class="row between"><h3 style="margin:0">Pontos de vida</h3><span class="small muted">Dados de vida: ${c.nivel}d${d.cls.dado} · editável durante o jogo</span></div>
+    <div class="hpbar" style="height:12px"><i style="width:${r*100}%;background:${hpColor(r)}"></i></div>
+    <div class="row" style="gap:20px"><span style="font-size:22px;font-weight:700">${pv} / ${d.max}</span>${e.temp?`<span class="chip" style="color:var(--blue);border-color:var(--blue)">+${e.temp} temporários</span>`:''}${pv===0?'<span class="chip rejeitado">Caído</span>':''}</div>
+    ${pode?`<div class="row" style="margin-top:10px"><input id="hp-n" type="number" min="1" placeholder="Qtd." style="width:90px">
+      <button class="btn sm danger" data-act="hp" data-mode="dano">Dano</button><button class="btn sm ok" data-act="hp" data-mode="cura">Cura</button><button class="btn sm" data-act="hp" data-mode="temp">Temporários</button>
+      <span style="flex:1"></span><button class="btn sm" data-act="rest" data-tipo="curto">Descanso curto</button><button class="btn sm" data-act="rest" data-tipo="longo">Descanso longo</button></div>`:''}
+    ${morte}</div>`;
+}
+
+function spellPanel(c,d){
+  const ms=c.magias||[]; if(!d.magia && !ms.length) return '';
+  const e=est(c); const pode = S.isMaster || c.ownerId===S.myId;
+  let slots='';
+  if (d.magia){
+    slots = d.magia.pacto
+      ? `<div class="li"><span>Pacto · ${d.magia.pacto.circ}º círculo</span><span class="pips">${Array.from({length:d.magia.pacto.qtd},(_,i)=>{ const on=i<d.magia.pacto.qtd-e.pacto; return `<i class="pip ${on?'on':''}" ${pode?`data-act="slot" data-i="pacto" data-on="${on?1:0}" style="cursor:pointer"`:''}></i>`; }).join('')}</span></div>`
+      : (d.magia.slots||[]).map((n,i)=>`<div class="li"><span>${i+1}º círculo</span><span class="pips">${Array.from({length:n},(_,j)=>{ const on=j<n-(e.espacos[i]||0); return `<i class="pip ${on?'on':''}" ${pode?`data-act="slot" data-i="${i}" data-on="${on?1:0}" style="cursor:pointer"`:''}></i>`; }).join('')}</span></div>`).join('');
+  }
+  const tr=ms.filter(s=>+s.circ===0 && !s.extra).length, pr=ms.filter(s=>+s.circ>0 && s.prep && !s.extra).length;
+  const grupos=[...new Set(ms.map(s=>+s.circ))].sort((a,b)=>a-b);
+  const warns=spellWarnings(c);
+  return `<div class="panel"><h3>Magias</h3>
+    ${d.magia?`<div class="small muted" style="margin-bottom:8px">${AB_NOME[d.magia.ab]} · CD ${d.magia.cd} · ataque ${sg(d.magia.atk)} · até ${d.magia.maxCirc}º círculo<br>Truques ${tr}/${d.magia.truques} · Preparadas ${pr}/${d.magia.preparadas}</div>
+      ${warns.map(w=>`<div class="err">${h(w)}</div>`).join('')}
+      <div class="small muted" style="margin:8px 0 4px">Espaços de magia${pode?' (clique para gastar ou recuperar)':''}</div><div class="list" style="margin-bottom:10px">${slots}</div>`:''}
+    ${ms.length?grupos.map(g=>`<div class="small" style="margin-top:6px;color:var(--gold)">${g===0?'Truques':g+'º círculo'}</div>${ms.filter(s=>+s.circ===g).map(s=>`<div class="li small"><span>${g>0?`<span class="dot ${s.prep?'on':''}" title="${s.prep?'Preparada':'Não preparada'}"></span>`:''}${h(s.nome)}${s.extra?' <span class="muted">(fora do limite)</span>':''}${s.obs?` <span class="muted">· ${h(s.obs)}</span>`:''}</span></div>`).join('')}`).join('')
+      :'<div class="muted small">Nenhuma magia registrada. Use "Aprender magia" ao lado.</div>'}
+  </div>`;
+}
+
+function attackPanel(c,d){
+  const linhas = d.ataques.map(a=>`<div class="li" style="align-items:center">
+      <span><b>${h(a.nome)}</b>${a.bonus?` <span class="muted small">+${a.bonus}</span>`:''}<br><span class="small muted">${a.dist?'à distância':''}${a.props.length?a.props.map(h).join(', '):''}${a.alc?` · ${h(a.alc)} pés`:''}${a.obs?` · ${h(a.obs)}`:''}${!a.prof?' · <span style="color:#f0a492">sem proficiência</span>':''}</span></span>
+      <span class="row" style="gap:6px;flex-wrap:nowrap"><span class="small" style="text-align:right">${sg(a.atk)} · ${a.dado}${a.mod?sg(a.mod):''} ${h(a.dano)}</span>
+      <button class="btn sm" data-act="atk" data-id="${h(a.id)}">Rolar</button>${a.vers?`<button class="btn sm" data-act="atk" data-id="${h(a.id)}" data-vers="1" title="Duas mãos (${a.vers})">2 mãos</button>`:''}</span></div>`).join('');
+  const magia = d.magia ? `<div class="li" style="align-items:center"><span><b>Ataque com magia</b><br><span class="small muted">${AB_NOME[d.magia.ab]}</span></span><span class="row" style="gap:6px;flex-wrap:nowrap"><span class="small">${sg(d.magia.atk)}</span><button class="btn sm" data-act="atk" data-id="_magia">Rolar</button></span></div>` : '';
+  const rolls = S.rolls.filter(r=>r.charId===c.id).slice(0,6);
+  return `<div class="panel"><h3>Ataques</h3><div class="list">${linhas}${magia}</div>
+    ${rolls.length?`<div style="margin-top:10px">${rolls.map(r=>`<div class="small" style="padding:4px 0;border-top:1px solid var(--line)">${h(r.texto)}</div>`).join('')}</div>`:''}
+    <div class="small muted" style="margin-top:8px">Rolagens rápidas, visíveis só para você.</div></div>`;
+}
+
+function rollExpr(expr, crit){
+  const m=/^(\d+)d(\d+)$/.exec(expr||''); if(!m) return {total:+expr||0, dados:[]};
+  const n=+m[1]*(crit?2:1), f=+m[2]; const buf=new Uint32Array(n); crypto.getRandomValues(buf);
+  const dados=[...buf].map(x=>1+(x%f)); return {total:dados.reduce((a,b)=>a+b,0), dados};
+}
+function doAttack(c, id, vers){
+  const d=derive(c); const buf=new Uint32Array(1); crypto.getRandomValues(buf); const nat=1+(buf[0]%20);
+  let texto;
+  if (id==='_magia'){
+    texto=`Ataque com magia: d20 (${nat}) ${sg(d.magia.atk)} = ${nat+d.magia.atk}${nat===20?' · CRÍTICO':nat===1?' · falha automática':''}`;
+  } else {
+    const a=d.ataques.find(x=>x.id===id); if(!a) return;
+    const crit=nat===20; const dado=vers&&a.vers?a.vers:a.dado; const r=rollExpr(dado,crit); const dano=Math.max(1,r.total+a.mod);
+    texto=`${a.nome}${vers?' (2 mãos)':''}: d20 (${nat}) ${sg(a.atk)} = ${nat+a.atk}${crit?' · CRÍTICO':nat===1?' · falha automática':''} → dano ${r.dados.length?`${dado}${crit?' ×2':''} [${r.dados.join(', ')}]`:dado}${a.mod?sg(a.mod):''} = ${dano} ${a.dano}`;
+  }
+  S.rolls.unshift({charId:c.id, texto, at:Date.now()}); S.rolls=S.rolls.slice(0,30); render(true);
+}
+
+async function changeEstado(c, fn){
+  const d=derive(c); const e=est(c); fn(e,d);
+  e.dano=Math.max(0,Math.min(d.max,Math.floor(e.dano))); e.temp=Math.max(0,Math.floor(e.temp));
+  if (d.max-e.dano>0) e.morte={s:0,f:0};
+  try { await store.setEstado(c.ownerId,c.id,e); } catch(err){ toast('Não foi possível salvar ('+(err.code||'erro')+').'); }
+}
+
+function viewSheet(){
+  const c=S.chars.find(x=>x.id===S.charId);
+  if (!c || (!S.isMaster && c.ownerId!==S.myId)) return `<div class="empty">Personagem não encontrado. <button class="btn" data-act="tab" data-tab="personagens">Voltar</button></div>`;
+  const d=derive(c);
+  const mine = S.isMaster ? pendingList().filter(x=>x.charId===c.id) : myRequests().filter(x=>x.charId===c.id&&x.status==='pendente');
+  return `<div class="row between" style="margin-bottom:14px">
+      <div><button class="btn sm" data-act="tab" data-tab="personagens">← Voltar</button></div>
+      ${S.isMaster?`<button class="btn sm danger" data-act="del" data-id="${h(c.id)}">${S.delArm===c.id?'Clique de novo para excluir':'Excluir personagem'}</button>`:''}
+    </div>
+    <div style="margin-bottom:14px"><h2 style="font-size:26px;color:var(--gold2)">${h(c.nome)}</h2>
+      <div class="muted">${h(d.sp.nome)} · ${h(d.cls.nome)}${c.subclasse?` (${h(c.subclasse)})`:''} · nível ${c.nivel} · ${h(c.antecedenteNome)}${c.alinhamento?` · ${h(c.alinhamento)}`:''}${S.isMaster?` · jogador: ${h(nameOf(c.ownerId))}`:''}</div></div>
+    <div class="sheet">
+      <div class="stack">
+        <div class="abil">${AB.map(a=>{ const s=d.saves.find(x=>x.a===a); return `<div class="ab"><div><div class="n">${AB_NOME[a]}</div><div class="s">valor ${c.atributos[a]} · <span class="dot ${s.prof?'on':''}"></span>resist. ${sg(s.v)}</div></div><div class="m">${sg(d.m[a])}</div></div>`; }).join('')}</div>
+        <div class="panel"><h3>Perícias</h3><div class="list">${d.skills.map(s=>`<div class="li small"><span><span class="dot ${s.prof?'on':''}"></span>${s.n}</span><b>${sg(s.v)}</b></div>`).join('')}</div></div>
+      </div>
+      <div class="stack">
+        <div class="stats">
+          <div class="stat"><div class="v">${d.ac}</div><div class="l">CA</div></div>
+          <div class="stat"><div class="v">${sg(d.init)}</div><div class="l">Iniciativa</div></div>
+          <div class="stat"><div class="v">${d.desl}</div><div class="l">Desloc. (pés)</div></div>
+          <div class="stat"><div class="v">+${d.P}</div><div class="l">Proficiência</div></div>
+          <div class="stat"><div class="v">${d.passiva}</div><div class="l">Perc. passiva</div></div>
+        </div>
+        ${hpPanel(c,d)}
+        ${attackPanel(c,d)}
+        <div class="cols2">
+          <div class="stack">
+            ${spellPanel(c,d)}
+            <div class="panel"><h3>Traços e talentos</h3><div class="small">${[...d.sp.tracos,...(c.talentos||[])].map(t=>`<div>• ${h(t)}</div>`).join('')}</div></div>
+          </div>
+          <div class="stack">
+            <div class="panel"><h3>Equipamento</h3><div class="small">${h(ARMORS[c.armadura]?.nome)}${c.escudo?' · escudo':''}${+c.caBonus?` · bônus ${sg(+c.caBonus)} CA`:''}</div></div>
+            <div class="panel"><h3>Moedas</h3><div class="row" style="gap:14px">${COINS.map(([k,ab])=>`<span><b>${c.moedas[k]||0}</b> <span class="muted small">${ab}</span></span>`).join('')}</div></div>
+            <div class="panel"><h3>Inventário</h3>${c.inventario.length?`<div class="list">${c.inventario.map(i=>`<div class="li small"><span>${h(i.nome)}${i.obs?` <span class="muted">· ${h(i.obs)}</span>`:''}</span><b>×${i.qtd}</b></div>`).join('')}</div>`:'<div class="muted small">Vazio.</div>'}</div>
+          </div>
+        </div>
+      </div>
+      <div class="stack c3">
+        <div class="panel"><h3>${S.isMaster?'Alterar ficha':'Propor mudança'}</h3>
+          <div class="f"><select data-act-type>${Object.entries(ACTIONS).map(([k,l])=>opt(k,l,S.actionType)).join('')}</select></div>
+          ${actionForm(c,d)}
+          ${!S.isMaster?'<div class="small muted" style="margin-top:8px">Essas mudanças só entram na ficha depois que o mestre aprovar.</div>':''}
+        </div>
+        ${mine.length?`<div class="panel"><h3>Aguardando aprovação</h3>${mine.map(m=>`<div class="small" style="margin-bottom:6px">• ${h(describe(m.type,m.payload,c))}</div>`).join('')}${S.isMaster?`<button class="btn sm" data-act="tab" data-tab="aprovacoes">Ver aprovações</button>`:''}</div>`:''}
+        <div class="panel"><h3>Anotações</h3>${S.isMaster?`<form data-form="notas"><textarea name="notas" maxlength="4000" style="min-height:110px">${h(c.notas)}</textarea><button class="btn sm" style="margin-top:8px">Salvar anotações</button></form>`:`<div class="small" style="white-space:pre-wrap">${h(c.notas)||'<span class="muted">Sem anotações.</span>'}</div>`}</div>
+        <div class="panel"><h3>Histórico de mudanças</h3><div class="log">${(c.log||[]).map(l=>`<div class="e"><div>${h(l.text)}${l.motivo?` <span class="muted">· ${h(l.motivo)}</span>`:''}</div><div class="muted">${fmtDate(l.at)} · por ${h(nameOf(l.by))}${l.approvedBy&&l.approvedBy!==l.by?`, aprovado por ${h(nameOf(l.approvedBy))}`:''}</div></div>`).join('')||'<div class="muted small">Sem registros.</div>'}</div></div>
+      </div>
+    </div>`;
+}
+
+function viewApprovals(){
+  const list=pendingList();
+  if (!list.length) return `<div class="empty">Nenhuma solicitação pendente.</div>`;
+  return `<div class="row between" style="margin-bottom:12px"><span class="muted">${list.length} solicitação(ões) pendente(s)</span><button class="btn ok" data-act="approve-all">Aprovar todas</button></div>
+  ${list.map(i=>{ const c=S.chars.find(x=>x.id===i.charId);
+    let extra='';
+    if (i.type==='criar'){ const r=draftCompute(i.payload); extra=`<div class="small muted" style="margin-top:6px">${AB.map(a=>`${a} ${r.final[a]}`).join(' · ')} · Perícias: ${[...r.skills].map(k=>SKILL_NOME[k]).join(', ')}</div>${r.errors.length?`<div class="err">Problemas: ${r.errors.map(h).join(' ')}</div>`:''}`; }
+    else { try{ const n=applyChange(c,i.type,i.payload); if(/^magia|nivel/.test(i.type)){ const w=spellWarnings(n); if(w.length) extra=`<div class="err">Atenção, as regras indicam: ${w.map(h).join(' ')} Aprove só se houver um motivo (característica, item, decisão da mesa).</div>`; } }
+      catch(e){ extra=`<div class="err">Não pode ser aplicada agora: ${h(e.message)}</div>`; } }
+    return `<div class="req"><div class="row between"><div><b>${h(c?.nome||i.charNome||'Novo personagem')}</b> <span class="muted small">· ${h(nameOf(i.owner))} · ${fmtDate(i.at)}</span></div><span class="chip pendente">${h(ACTIONS[i.type]||'Criação de ficha')}</span></div>
+      <div style="margin-top:6px">${h(describe(i.type,i.payload,c))}${i.motivo?` <span class="muted">· ${h(i.motivo)}</span>`:''}</div>${extra}
+      <div class="row" style="margin-top:10px"><button class="btn sm ok" data-act="approve" data-owner="${h(i.owner)}" data-id="${h(i.id)}">Aprovar</button>
+      <input class="rej-motivo" data-for="${h(i.id)}" placeholder="Motivo da rejeição (opcional)" style="flex:1;min-width:160px">
+      <button class="btn sm danger" data-act="reject" data-owner="${h(i.owner)}" data-id="${h(i.id)}">Rejeitar</button></div></div>`; }).join('')}`;
+}
+function viewMine(){
+  const list=myRequests();
+  if (!list.length) return `<div class="empty">Você ainda não enviou solicitações.</div>`;
+  return list.map(i=>{ const c=S.chars.find(x=>x.id===i.charId);
+    return `<div class="req"><div class="row between"><b>${h(c?.nome||i.charNome||'Novo personagem')}</b><span class="chip ${i.status}">${i.status}</span></div>
+    <div style="margin-top:6px">${h(describe(i.type,i.payload,c))}</div><div class="small muted">${fmtDate(i.at)}${i.motivoRejeicao?` · motivo: ${h(i.motivoRejeicao)}`:''}</div></div>`; }).join('');
+}
+
+/* ============ EVENTOS ============ */
+function setPath(obj,path,val){ const ks=path.split('.'); let o=obj; ks.slice(0,-1).forEach(k=>o=o[k]); o[ks.at(-1)]=val; }
+document.addEventListener('click', async e=>{
+  const t=e.target.closest('[data-act]'); if(!t || t.tagName==='SELECT') return;
+  const a=t.dataset.act;
+  if (a==='tab'){ S.tab=t.dataset.tab; S.delArm=null; if(S.tab==='criar'&&!S.draft) S.draft=newDraft(); render(true); }
+  else if (a==='open'){ S.charId=t.dataset.id; S.tab='ficha'; S.delArm=null; render(true); window.scrollTo(0,0); }
+  else if (a==='role'){ S.isMaster = t.dataset.role==='mestre'; S.myId = S.isMaster?'demo-mestre':'demo-jogador'; if(S.tab==='aprovacoes'||S.tab==='solicitacoes') S.tab='personagens'; render(true); }
+  else if (a==='pb'){ const ab=t.dataset.ab; S.draft.compra[ab]=Math.max(8,Math.min(15,S.draft.compra[ab]+(+t.dataset.d))); render(true); }
+  else if (a==='reset-draft'){ S.draft=newDraft(); render(true); }
+  else if (a==='del'){ const id=t.dataset.id; if(S.delArm!==id){ S.delArm=id; render(true); return; }
+    try{ await store.deleteCharacter(id); S.delArm=null; S.tab='personagens'; toast('Personagem excluído.'); render(true); } catch(err){ toast('Não foi possível excluir ('+(err.code||'erro')+').'); } }
+  else if (a==='approve'){ t.disabled=true; if(await approve(t.dataset.owner,t.dataset.id)) toast('Aprovado.'); else t.disabled=false; }
+  else if (a==='reject'){ const inp=document.querySelector(`.rej-motivo[data-for="${CSS.escape(t.dataset.id)}"]`); t.disabled=true; await reject(t.dataset.owner,t.dataset.id,inp?.value); }
+  else if (a==='hp'){ const c=S.chars.find(x=>x.id===S.charId); const n=Math.floor(+($('#hp-n')?.value)||0); if(!c) return; if(n<1){ toast('Digite a quantidade.'); return; }
+    const modo=t.dataset.mode;
+    await changeEstado(c,(e,d)=>{ if(modo==='dano'){ const t2=Math.min(e.temp,n); e.temp-=t2; const resto=n-t2; if(d.max-e.dano<=0 && resto>0) e.morte.f=Math.min(3,e.morte.f+1); e.dano+=resto; } else if(modo==='cura') e.dano-=n; else e.temp=Math.max(e.temp,n); }); }
+  else if (a==='rest'){ const c=S.chars.find(x=>x.id===S.charId); if(!c) return; const longo=t.dataset.tipo==='longo';
+    await changeEstado(c,e=>{ e.pacto=0; if(longo){ e.dano=0; e.temp=0; e.espacos=[0,0,0,0,0,0,0,0,0]; } }); toast(longo?'Descanso longo: PV e espaços de magia restaurados.':'Descanso curto feito. Gaste dados de vida curando pelo campo de PV.'); }
+  else if (a==='slot'){ const c=S.chars.find(x=>x.id===S.charId); if(!c) return; const gastar=t.dataset.on==='1'; const i=t.dataset.i;
+    await changeEstado(c,(e,d)=>{ if(i==='pacto'){ e.pacto=Math.max(0,Math.min(d.magia.pacto.qtd,e.pacto+(gastar?1:-1))); } else { const k=+i; const tot=d.magia.slots[k]||0; e.espacos[k]=Math.max(0,Math.min(tot,(e.espacos[k]||0)+(gastar?1:-1))); } }); }
+  else if (a==='ds'){ const c=S.chars.find(x=>x.id===S.charId); if(!c) return; const k=t.dataset.k, n=+t.dataset.n;
+    await changeEstado(c,e=>{ e.morte[k] = e.morte[k]===n ? n-1 : n; }); }
+  else if (a==='atk'){ const c=S.chars.find(x=>x.id===S.charId); if(c) doAttack(c,t.dataset.id,t.dataset.vers==='1'); }
+  else if (a==='approve-all'){ t.disabled=true; let ok=0; for (const i of pendingList()){ if(await approve(i.owner,i.id)) ok++; } toast(`${ok} solicitação(ões) aprovada(s).`); t.disabled=false; }
+});
+document.addEventListener('change', e=>{
+  const el=e.target;
+  if (el.matches('[data-act-type]')){ S.actionType=el.value; render(true); return; }
+  if (!S.draft || !el.closest('form[data-form="criar"]')) return;
+  if (el.dataset.skill){ const k=el.dataset.skill; const s=new Set(S.draft.classSkills); el.checked?s.add(k):s.delete(k); S.draft.classSkills=[...s]; render(true); return; }
+  const f=el.dataset.f; if(!f) return;
+  const val = el.type==='checkbox' ? el.checked : el.value;
+  setPath(S.draft,f,val);
+  if (f==='classe') S.draft.classSkills=[];
+  if (f==='especie') S.draft.extraSkill='';
+  if (f==='antecedente'){ S.draft.b2=''; S.draft.b1=''; }
+  if (f==='metodo' && val==='padrao') AB.forEach(a=>S.draft.padrao[a]='');
+  if (!el.hasAttribute('data-live')) render(true);
+});
+document.addEventListener('input', e=>{
+  const el=e.target; if(!S.draft || !el.hasAttribute('data-live') || !el.closest('form[data-form="criar"]')) return;
+  setPath(S.draft, el.dataset.f, el.value);
+});
+document.addEventListener('focusout', ()=>setTimeout(()=>{ if(S.deferred) render(); },0));
+document.addEventListener('submit', async e=>{
+  e.preventDefault(); const f=e.target;
+  if (f.dataset.form==='acao') await submitAction(f);
+  else if (f.dataset.form==='criar') { document.activeElement?.blur?.(); await submitCreate(); }
+  else if (f.dataset.form==='notas'){ const c=S.chars.find(x=>x.id===S.charId); if(!c) return; const n=clone(c); n.notas=String(new FormData(f).get('notas')||'').slice(0,4000);
+    if (n.notas===c.notas) return; try{ await store.saveCharacter(n); toast('Anotações salvas.'); }catch(err){ toast('Não foi possível salvar ('+(err.code||'erro')+').'); } }
+  render(true);
+});
+
+/* ============ INICIALIZAÇÃO ============ */
+function subscribe(){
+  const timer=setTimeout(()=>{ if(!S.loaded){ S.notice='Não foi possível alcançar os dados ainda. Verifique sua conexão; a página continua tentando.'; render(); } },10000);
+  store.onCharacters((list,meta)=>{
+    S.chars=list;
+    if (!meta || !meta.fromCache){ S.loaded=true; clearTimeout(timer); if(S.notice.startsWith('Não foi possível alcançar')) S.notice=''; }
+    loadNames(); render();
+  }, err=>{ clearTimeout(timer); S.loaded=true; S.notice='Não foi possível carregar as fichas ('+h(err.code)+').'; render(); });
+  store.onEstado(m=>{ S.estado=m||{}; render(); }, err=>{ S.notice='Não foi possível carregar os pontos de vida ('+h(err.code)+').'; render(); });
+  store.onRequests(m=>{ S.reqDocs=m||{}; loadNames(); render(); }, err=>{ S.notice='Não foi possível carregar as solicitações ('+h(err.code)+').'; render(); });
+}
+async function init(){
+  S.draft=newDraft(); render();
+  let db=null, user=null;
+  if (window.claude && typeof window.claude.use==='function'){
+    try {
+      const timeout=new Promise(r=>setTimeout(()=>r([null,null]),10000));
+      [db,user] = await Promise.race([Promise.all([window.claude.use('db'), window.claude.use('user')]), timeout]);
+    } catch { db=null; user=null; }
+  }
+  let id=null;
+  if (db && user){ try { id=await user.id(); } catch {} }
+  if (db && user && id){
+    S.mode='db'; S.user=user; S.myId=id;
+    try { S.isMaster = !!(await user.canEdit()); } catch { S.isMaster=false; }
+    store=makeDbStore(db);
+  } else {
+    S.mode='local'; S.myId='demo-mestre'; S.isMaster=true; S.loaded=true;
+    S.notice='<b>Modo demonstração.</b> O banco compartilhado não está disponível nesta visualização, então os dados ficam só nesta aba. Use "Ver como" para testar o fluxo de jogador e mestre.';
+    store=makeLocalStore();
+  }
+  subscribe(); render();
+}
+init();
+</script>
+</body>
+</html>
