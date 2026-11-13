@@ -526,6 +526,7 @@ function describe(type,p,c){
     case 'equip': return `Equipar: ${ARMORS[p.armadura]?.nome}${p.escudo?' + escudo':''}${+p.caBonus?`, bônus mágico ${sg(+p.caBonus)} CA`:''}`;
     case 'nota': return `Anotação: ${p.texto}`;
     case 'retrato': return p.acao==='remover' ? 'Remover a imagem do personagem' : 'Nova imagem do personagem';
+    case 'clonar': return `Clonar a ficha${c?` de ${c.nome}`:''} como "${p.nome}"`;
   }
   return 'Mudança: '+type;
 }
@@ -655,7 +656,10 @@ async function submitCreate(){
 async function approve(owner, id){
   const item=S.reqDocs[owner]?.items?.[id]; if(!item || item.status!=='pendente') return;
   try {
-    if (item.type==='criar'){
+    if (item.type==='clonar'){
+      const c=S.chars.find(x=>x.id===item.charId); if(!c) throw new Error('A ficha original não existe mais.');
+      await store.saveCharacter(cloneCharacter(c, owner, item.payload.nome, owner));
+    } else if (item.type==='criar'){
       const c=buildCharacter(item.payload, owner); addLog(c,'Personagem criado',owner,''); await store.saveCharacter(c);
     } else {
       const c=S.chars.find(x=>x.id===item.charId); if(!c) throw new Error('Personagem não encontrado.');
@@ -677,6 +681,26 @@ function levelHpOverride(item, c){
   if (!Number.isFinite(v) || v<1 || v>dv) throw new Error(`PV do nível: use um valor entre 1 e ${dv}.`);
   if (v===pedido) return p;
   return {...p, hp:'rolado', rolado:String(v), rolApp:'', ajusteMestre:p.hp==='rolado'?`rolou ${pedido}`:`pediu a média (${pedido})`};
+}
+/* cópia completa da ficha (nível, atributos, itens, magias, imagem); vida cheia e histórico novo */
+function cloneName(n){ const s=String(n||'').trim().replace(/\s+/g,' ').slice(0,60); if(!s) throw new Error('Dê um nome à cópia.'); return s; }
+function cloneCharacter(c, ownerId, nome, by){
+  const n=clone(c); n.id=newId(); n.ownerId=ownerId; n.nome=cloneName(nome); n.criadoEm=nowIso(); n.log=[];
+  addLog(n, `Ficha clonada de ${c.nome}`, by, ''); return n;
+}
+async function submitClone(c, nome){
+  try {
+    nome=cloneName(nome);
+    if (S.isMaster){
+      const n=cloneCharacter(c, c.ownerId, nome, S.myId); await store.saveCharacter(n);
+      S.charId=n.id; toast('Ficha clonada. Você está vendo a cópia.');
+    } else {
+      if (myRequests().some(r=>r.charId===c.id && r.type==='clonar' && r.status==='pendente')) throw new Error('Já existe um pedido de cópia desta ficha aguardando o mestre.');
+      await store.addRequest({id:newId(), charId:c.id, charNome:c.nome, type:'clonar', payload:{nome}, motivo:'', by:S.myId, at:nowIso(), status:'pendente'});
+      toast('Pedido de cópia enviado ao mestre.');
+    }
+    S.cloneArm=null; return true;
+  } catch(e){ toast(e.message || ('Não foi possível clonar ('+(e.code||'erro')+').')); return false; }
 }
 async function reject(owner,id,motivo){
   const item=S.reqDocs[owner]?.items?.[id];
@@ -999,7 +1023,11 @@ function viewSheet(){
   const d=derive(c);
   const mine = S.isMaster ? pendingList().filter(x=>x.charId===c.id) : myRequests().filter(x=>x.charId===c.id&&x.status==='pendente');
   return `<div class="row between" style="margin-bottom:14px">
-      <div><button class="btn sm" data-act="tab" data-tab="personagens">← Voltar</button></div>
+      <div class="row" style="gap:8px"><button class="btn sm" data-act="tab" data-tab="personagens">← Voltar</button>
+        ${S.cloneArm===c.id
+          ? `<input id="clone-nome" maxlength="60" value="${h((c.nome+' (cópia)').slice(0,60))}" style="width:220px" aria-label="Nome da cópia">
+             <button class="btn sm ok" data-act="clone-ok">${S.isMaster?'Criar cópia':'Pedir cópia ao mestre'}</button><button class="btn sm" data-act="clone-cancel">Cancelar</button>`
+          : `<button class="btn sm" data-act="clone">Clonar ficha</button>`}</div>
       ${S.isMaster?`<button class="btn sm danger" data-act="del" data-id="${h(c.id)}">${S.delArm===c.id?'Clique de novo para excluir':'Excluir personagem'}</button>`:''}
     </div>
     <div style="margin-bottom:14px"><h2 style="font-size:26px;color:var(--gold2)">${h(c.nome)}</h2>
@@ -1057,7 +1085,8 @@ function viewApprovals(){
     let extra='';
     if (i.type==='retrato'){ extra = i.payload.acao!=='remover' && imgOk(i.payload.img) ? `<div class="row" style="margin-top:8px;align-items:flex-start">${c?`<div class="small muted" style="text-align:center">Atual<br>${portrait(c.retrato,c.nome,'md')}</div>`:''}<div class="small muted" style="text-align:center">Nova<br>${portrait(i.payload.img,'','md')}</div></div>` : ''; }
     if (i.type==='criar'){ const r=draftCompute(i.payload); extra=`${imgOk(i.payload.retrato)?`<div style="margin-top:8px">${portrait(i.payload.retrato,i.payload.nome,'md')}</div>`:''}<div class="small muted" style="margin-top:6px">${AB.map(a=>`${a} ${r.final[a]}`).join(' · ')} · Perícias: ${[...r.skills].map(k=>SKILL_NOME[k]).join(', ')}</div>${r.errors.length?`<div class="err">Problemas: ${r.errors.map(h).join(' ')}</div>`:''}`; }
-    if (i.type!=='criar'){ try{ const n=applyChange(c,i.type,i.payload);
+    if (i.type==='clonar'){ extra = c ? `<div class="small muted" style="margin-top:6px">Cópia completa: nível ${c.nivel}, itens, magias e imagem. A cópia fica com ${h(nameOf(i.owner))}, com vida cheia e histórico novo.</div>` : `<div class="err">A ficha original não existe mais.</div>`; }
+    else if (i.type!=='criar'){ try{ const n=applyChange(c,i.type,i.payload);
         if (i.type==='nivel'){ const d0=derive(c), d1=derive(n), dv=d0.cls.dado, media=dv/2+1, pedido=i.payload.hp==='rolado'?Math.floor(+i.payload.rolado):media, extraNv=d1.max-d0.max-pedido;
           extra+=`<div class="lvl-box"><div><b>PV máximo: ${d0.max} → ${d1.max}</b> <span class="muted">(+${d1.max-d0.max})</span></div>
           <div class="small muted">${i.payload.hp==='rolado'?`Rolou ${pedido} no d${dv} (a média seria ${media})`:`Escolheu a média do d${dv} (${media})`}${extraNv?`, ${sg(extraNv)} de Constituição${d0.sp.pvExtra?' e espécie':''}`:''}.</div>
@@ -1071,7 +1100,7 @@ function viewApprovals(){
           <span class="small muted">Mude antes de aprovar se a mesa permitir rolar de novo ou usar a média.</span></div></div>`; }
         if(/^magia|nivel/.test(i.type)){ const w=spellWarnings(n); if(w.length) extra+=`<div class="err">Atenção, as regras indicam: ${w.map(h).join(' ')} Aprove só se houver um motivo (característica, item, decisão da mesa).</div>`; } }
       catch(e){ extra=`<div class="err">Não pode ser aplicada agora: ${h(e.message)}</div>`; } }
-    return `<div class="req"><div class="row between"><div><b>${h(c?.nome||i.charNome||'Novo personagem')}</b> <span class="muted small">· ${h(nameOf(i.owner))} · ${fmtDate(i.at)}</span></div><span class="chip pendente">${h(ACTIONS[i.type]||{retrato:'Imagem'}[i.type]||'Criação de ficha')}</span></div>
+    return `<div class="req"><div class="row between"><div><b>${h(c?.nome||i.charNome||'Novo personagem')}</b> <span class="muted small">· ${h(nameOf(i.owner))} · ${fmtDate(i.at)}</span></div><span class="chip pendente">${h(ACTIONS[i.type]||{retrato:'Imagem',clonar:'Clonar ficha'}[i.type]||'Criação de ficha')}</span></div>
       <div style="margin-top:6px">${h(describe(i.type,i.payload,c))}${i.motivo?` <span class="muted">· ${h(i.motivo)}</span>`:''}</div>${extra}
       <div class="row" style="margin-top:10px"><button class="btn sm ok" data-act="approve" data-owner="${h(i.owner)}" data-id="${h(i.id)}">Aprovar</button>
       <input class="rej-motivo" data-for="${h(i.id)}" placeholder="Motivo da rejeição (opcional)" style="flex:1;min-width:160px">
@@ -1090,8 +1119,8 @@ function setPath(obj,path,val){ const ks=path.split('.'); let o=obj; ks.slice(0,
 document.addEventListener('click', async e=>{
   const t=e.target.closest('[data-act]'); if(!t || t.tagName==='SELECT') return;
   const a=t.dataset.act;
-  if (a==='tab'){ S.tab=t.dataset.tab; S.delArm=null; if(S.tab==='criar'&&!S.draft) S.draft=newDraft(); render(true); }
-  else if (a==='open'){ S.charId=t.dataset.id; S.tab='ficha'; S.delArm=null; render(true); window.scrollTo(0,0); }
+  if (a==='tab'){ S.tab=t.dataset.tab; S.delArm=null; S.cloneArm=null; if(S.tab==='criar'&&!S.draft) S.draft=newDraft(); render(true); }
+  else if (a==='open'){ S.charId=t.dataset.id; S.tab='ficha'; S.delArm=null; S.cloneArm=null; render(true); window.scrollTo(0,0); }
   else if (a==='role'){ S.isMaster = t.dataset.role==='mestre'; S.myId = S.isMaster?'demo-mestre':'demo-jogador'; if(S.tab==='aprovacoes'||S.tab==='solicitacoes') S.tab='personagens'; render(true); }
   else if (a==='pb'){ const ab=t.dataset.ab; S.draft.compra[ab]=Math.max(8,Math.min(15,S.draft.compra[ab]+(+t.dataset.d))); render(true); }
   else if (a==='reset-draft'){ S.draft=newDraft(); render(true); }
@@ -1105,6 +1134,10 @@ document.addEventListener('click', async e=>{
     if (nf) Object.entries(keep).forEach(([k,val])=>{ if(k==='hp'||k==='rolado') return; const el=nf.elements[k]; if(el && 'value' in el) el.value=val; }); }
   else if (a==='lvl-media'){ const inp=document.querySelector(`.lvl-hp[data-for="${CSS.escape(t.dataset.for)}"]`); if(inp) inp.value=t.dataset.v; }
   else if (a==='img-clear-draft'){ S.draft.retrato=''; render(true); }
+  else if (a==='clone'){ S.cloneArm=S.charId; render(true); const i=$('#clone-nome'); if(i){ i.focus(); i.select(); } }
+  else if (a==='clone-cancel'){ S.cloneArm=null; render(true); }
+  else if (a==='clone-ok'){ const c=S.chars.find(x=>x.id===S.charId); if(!c) return; t.disabled=true;
+    if (await submitClone(c, $('#clone-nome')?.value)) render(true); else t.disabled=false; }
   else if (a==='img-remove'){ const c=S.chars.find(x=>x.id===S.charId); if(!c) return;
     if (S.delArm!=='img:'+c.id){ S.delArm='img:'+c.id; render(true); return; }
     S.delArm=null; await submitPortrait(c,''); render(true); }
