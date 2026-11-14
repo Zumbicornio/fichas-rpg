@@ -58,6 +58,7 @@ textarea{min-height:70px;resize:vertical}
 .cols2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .cols6{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.cols2>*,.cols3>*,.cols6>*{min-width:0}
 .create{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(300px,1fr);gap:16px;align-items:start}
 .create .side{position:sticky;top:12px}
 .sheet{display:grid;grid-template-columns:240px minmax(0,1fr) minmax(300px,380px);gap:14px;align-items:start}
@@ -934,7 +935,8 @@ function newDraft(){
   const z = v => Object.fromEntries(AB.map(a=>[a,v]));
   return {nome:'', especie:'humano', classe:'guerreiro', antecedente:'soldado', bonusModo:'2-1', b2:'', b1:'',
     customAbs:['','',''], customSkills:['',''], customTalento:'', metodo:'padrao', padrao:z(''), compra:z(8), manual:z(10),
-    classSkills:[], extraSkill:'', armadura:'nenhuma', escudo:false, arma1:'', arma2:'', ouro:0, alinhamento:'', historia:'', retrato:'', campanha:''};
+    classSkills:[], extraSkill:'', armadura:'nenhuma', escudo:false, arma1:'', arma2:'', ouro:0, alinhamento:'', historia:'', retrato:'', campanha:'',
+    nivel:1, hpModo:'media', hpRolls:{}, subclasse:'', melhorias:{}};
 }
 function draftCompute(d){
   const cls=CLASSES[d.classe], sp=SPECIES[d.especie], bg=BACKGROUNDS[d.antecedente];
@@ -971,11 +973,27 @@ function draftCompute(d){
   if (!(+d.ouro>=0)) errors.push('O ouro inicial não pode ser negativo.');
   const talentos=[]; const t = bg.custom ? String(d.customTalento).trim() : bg.talento; if (t) talentos.push(t);
   if (d.especie==='humano') talentos.push('Talento de origem extra (Versátil): definir com o mestre');
-  return {cls,sp,bg,base,bonus,final,skills,errors,spent,bgAbs,bgSkills,talentos};
+  const r={cls,sp,bg,base,bonus,final,skills,errors,spent,bgAbs,bgSkills,talentos,nivel:draftLevel(d),sim:null};
+  if (!errors.length && r.nivel>1){ try { r.sim=applyLevels(baseCharacter(d,r,'x'), d); } catch(e){ errors.push(e.message); } }
+  return r;
+}
+/* Criação em nível alto: a ficha nasce no nível 1 e sobe nível a nível com as mesmas regras do pedido "Subir de nível". */
+const draftLevel = d => Math.max(1, Math.min(20, Math.floor(+d.nivel||1)));
+function levelPayload(d, l){
+  const m=(d.melhorias||{})[l]||{};
+  return {hp:d.hpModo==='rolado'?'rolado':'media', rolado:(d.hpRolls||{})[l], subclasse:d.subclasse, asiModo:m.modo||'2', a1:m.a1||'', a2:m.a2||'', talento:m.talento||''};
+}
+function applyLevels(c, d){
+  const alvo=draftLevel(d);
+  for (let l=2; l<=alvo; l++){ try { c=applyChange(c,'nivel',levelPayload(d,l)); } catch(e){ throw new Error(`Nível ${l}: ${e.message}`); } }
+  return c;
 }
 function buildCharacter(d, ownerId){
   const r=draftCompute(d);
   if (r.errors.length) throw new Error('Ficha inválida: '+r.errors[0]);
+  const c=applyLevels(baseCharacter(d,r,ownerId), d); c.id=newId(); return c;
+}
+function baseCharacter(d, r, ownerId){
   const c = {
     id:newId(), ownerId, nome:String(d.nome).trim().slice(0,60), especie:d.especie, classe:d.classe, subclasse:'',
     antecedente:d.antecedente, antecedenteNome: r.bg.nome, nivel:1, atributos:r.final, pericias:[...r.skills], talentos:r.talentos,
@@ -1016,7 +1034,7 @@ function campaigns(list){ return [...new Set(list.map(c=>statusOf(c).campanha).f
 
 function describe(type,p,c){
   switch(type){
-    case 'criar': { const sp=SPECIES[p.especie], cl=CLASSES[p.classe], bg=BACKGROUNDS[p.antecedente]; return `Novo personagem: ${p.nome||'(sem nome)'}, ${sp?.nome} ${cl?.nome} (${bg?.nome})${String(p.campanha||'').trim()?`, campanha ${String(p.campanha).trim()}`:''}`; }
+    case 'criar': { const sp=SPECIES[p.especie], cl=CLASSES[p.classe], bg=BACKGROUNDS[p.antecedente]; return `Novo personagem: ${p.nome||'(sem nome)'}, ${sp?.nome} ${cl?.nome}${draftLevel(p)>1?` nível ${draftLevel(p)}`:''} (${bg?.nome})${String(p.campanha||'').trim()?`, campanha ${String(p.campanha).trim()}`:''}`; }
     case 'moedas': return 'Moedas: '+COINS.filter(([k])=>+p[k]).map(([k,ab])=>`${sg(+p[k])} ${ab}`).join(', ');
     case 'item': return `${p.acao==='add'?'Adicionar':'Remover'} ${p.qtd}× ${p.nome}${p.obs?` (${p.obs})`:''}`;
     case 'arma_add': { const base=p.base==='custom'?`personalizada, ${p.dado} ${p.dano}`:WEAPONS[p.base]?.nome; const nome=String(p.nome||'').trim();
@@ -1161,7 +1179,7 @@ async function submitCreate(){
   try {
     if (S.isMaster){
       const dono=S.draft.dono||S.myId; if(!knownPeople().some(p=>p.id===dono)) throw new Error('Escolha o dono da ficha.');
-      const c=buildCharacter(S.draft, dono); addLog(c,'Personagem criado',S.myId,''); if(dono!==S.myId) c.log[0].dono=dono;
+      const c=buildCharacter(S.draft, dono); addLog(c,'Personagem criado'+(c.nivel>1?` no nível ${c.nivel}`:''),S.myId,''); if(dono!==S.myId) c.log[0].dono=dono;
       await store.saveCharacter(c); toast('Personagem criado.'); S.charId=c.id; S.tab='ficha';
     } else {
       await store.addRequest({id:newId(), charId:null, charNome:S.draft.nome, type:'criar', payload:clone(S.draft), motivo:'', by:S.myId, at:nowIso(), status:'pendente'});
@@ -1177,7 +1195,7 @@ async function approve(owner, id){
       const c=S.chars.find(x=>x.id===item.charId); if(!c) throw new Error('A ficha original não existe mais.');
       await store.saveCharacter(cloneCharacter(c, owner, item.payload.nome, owner));
     } else if (item.type==='criar'){
-      const c=buildCharacter(item.payload, owner); addLog(c,'Personagem criado',owner,''); await store.saveCharacter(c);
+      const c=buildCharacter(item.payload, owner); addLog(c,'Personagem criado'+(c.nivel>1?` no nível ${c.nivel}`:''),owner,''); await store.saveCharacter(c);
     } else {
       const c=S.chars.find(x=>x.id===item.charId); if(!c) throw new Error('Personagem não encontrado.');
       const payload=levelHpOverride(item, c);
@@ -1369,6 +1387,24 @@ function weaponOptions(classe,sel){
   const grp=(cat,dist,label)=>`<optgroup label="${label}">${Object.entries(WEAPONS).filter(([k,w])=>w.cat===cat&&w.dist===dist).map(([k,w])=>opt(k,`${w.nome} (${w.dado} ${w.dano})${weaponProf(classe,w)?'':' · sem proficiência'}`,sel)).join('')}</optgroup>`;
   return grp('s',0,'Simples corpo a corpo')+grp('s',1,'Simples à distância')+grp('m',0,'Marciais corpo a corpo')+grp('m',1,'Marciais à distância');
 }
+function levelPanel(d, r){
+  const lv=r.nivel, cls=r.cls, media=cls.dado/2+1;
+  const asis=[]; for(let l=2;l<=lv;l++) if(isAsiLevel(cls,l)) asis.push(l);
+  const abOpts = sel => opt('','—',sel)+AB.map(a=>opt(a,AB_NOME[a],sel)).join('');
+  return `<div class="panel"><h3>Nível inicial</h3>
+    <div class="cols2"><div class="f"><label>Nível</label><select data-f="nivel">${Array.from({length:20},(_,i)=>opt(i+1,'Nível '+(i+1),lv)).join('')}</select></div>
+    ${lv>1?`<div class="f"><label>Pontos de vida dos níveis 2 a ${lv}</label><select data-f="hpModo">${opt('media',`Média (${media} + CON por nível)`,d.hpModo)}${opt('rolado',`Rolados no d${cls.dado}`,d.hpModo)}</select></div>`:''}</div>
+    ${lv===1?'<div class="small muted">Para começar acima do nível 1, escolha o nível: a ficha aplica cada subida de nível com as mesmas regras do pedido "Subir de nível".</div>':''}
+    ${lv>1 && d.hpModo==='rolado'?`<div class="f"><label>Valor rolado em cada nível (1 a ${cls.dado})</label><div class="cols6">${Array.from({length:lv-1},(_,i)=>i+2).map(l=>`<div><div class="small muted">Nível ${l}</div><input type="number" min="1" max="${cls.dado}" data-f="hpRolls.${l}" data-live value="${h((d.hpRolls||{})[l]??'')}" aria-label="PV rolado no nível ${l}"></div>`).join('')}</div></div>`:''}
+    ${lv>=3?`<div class="f"><label>Subclasse (nível 3)</label><input data-f="subclasse" data-live maxlength="60" value="${h(d.subclasse||'')}" placeholder="Ex.: Campeão"></div>`:''}
+    ${asis.map(l=>{ const m=(d.melhorias||{})[l]||{}; const modo=m.modo||'2';
+      return `<div class="f"><label>Nível ${l}: ${l===19?'Dádiva épica ou Melhoria de Atributo':'Melhoria de Atributo ou talento'}</label>
+      <div class="cols3"><select data-f="melhorias.${l}.modo" aria-label="Tipo de melhoria no nível ${l}">${opt('2','+2 em um atributo',modo)}${opt('11','+1 em dois atributos',modo)}${opt('talento','Talento',modo)}</select>
+      ${modo==='talento'?`<input data-f="melhorias.${l}.talento" data-live maxlength="80" value="${h(m.talento||'')}" placeholder="Nome do talento" style="grid-column:span 2" aria-label="Talento no nível ${l}">`
+        :`<select data-f="melhorias.${l}.a1" aria-label="Atributo no nível ${l}">${abOpts(m.a1)}</select>${modo==='11'?`<select data-f="melhorias.${l}.a2" aria-label="Segundo atributo no nível ${l}">${abOpts(m.a2)}</select>`:''}`}</div></div>`; }).join('')}
+    ${lv>1?'<div class="small muted">As magias entram depois, pelo pedido "Aprender magia", já com os espaços do nível escolhido.</div>':''}
+  </div>`;
+}
 function viewCreate(){
   const d=S.draft; const r=draftCompute(d); const {cls,sp,bg}=r;
   const abilityInputs = AB.map(a=>{
@@ -1390,7 +1426,7 @@ function viewCreate(){
   const extra = sp.extraSkill ? `<div class="f"><label>Perícia extra (${h(sp.nome)})</label><select data-f="extraSkill">${opt('','—',d.extraSkill)}${sp.extraSkill.map(k=>opt(k,SKILL_NOME[k],d.extraSkill)).join('')}</select></div>` : '';
   // pré-visualização
   const prev = {nivel:1, armas:[d.arma1,d.arma2].filter(k=>WEAPONS[k]).map(k=>({...WEAPONS[k],id:k,base:k,bonus:0})), especie:d.especie, classe:d.classe, atributos:Object.fromEntries(AB.map(a=>[a,r.final[a]||10])), pericias:[...r.skills], talentos:r.talentos, pvBase:cls.dado, armadura:d.armadura, escudo:d.escudo, caBonus:0};
-  const pd=derive(prev);
+  const pd=derive(r.sim||prev);
   return `<form data-form="criar" class="create">
     <div class="stack">
       <div class="panel"><h3>Identidade</h3>
@@ -1427,6 +1463,7 @@ function viewCreate(){
         <div class="skills-pick">${clsSkills}</div>
         <div style="margin-top:12px">${extra}</div>
       </div>
+      ${levelPanel(d, r)}
       <div class="panel"><h3>Equipamento inicial</h3>
         <div class="cols3">
           <div class="f"><label>Armadura</label><select data-f="armadura">${Object.entries(ARMORS).map(([k,v])=>opt(k,v.nome,d.armadura)).join('')}</select></div>
@@ -1438,7 +1475,7 @@ function viewCreate(){
       </div>
     </div>
     <div class="side panel">
-      <h3>Pré-visualização · nível 1</h3>
+      <h3>Pré-visualização · nível ${r.nivel}</h3>
       <div class="stats" style="grid-template-columns:repeat(3,1fr)">
         <div class="stat"><div class="v">${pd.max}</div><div class="l">PV máx.</div></div>
         <div class="stat"><div class="v">${pd.ac}</div><div class="l">CA</div></div>
@@ -1450,7 +1487,7 @@ function viewCreate(){
       <div class="small muted" style="margin-bottom:6px">Testes de resistência: ${pd.saves.filter(s=>s.prof).map(s=>`${AB_NOME[s.a]} ${sg(s.v)}`).join(', ')}</div>
       <div class="small muted" style="margin-bottom:6px">Perícias: ${[...r.skills].map(k=>SKILL_NOME[k]).join(', ')||'—'}</div>
       <div class="small muted" style="margin-bottom:6px">Ataques: ${pd.ataques.map(a=>`${h(a.nome)} ${sg(a.atk)} (${a.dado}${a.mod?sg(a.mod):''})`).join(' · ')}</div>
-      ${pd.magia?`<div class="small muted" style="margin-bottom:6px">Conjuração (${AB_NOME[pd.magia.ab]}): CD ${pd.magia.cd}, ataque ${sg(pd.magia.atk)}, ${pd.magia.truques} truques e ${pd.magia.preparadas} magias preparadas no nível 1. As magias são adicionadas depois, com aprovação do mestre.</div>`:''}
+      ${pd.magia?`<div class="small muted" style="margin-bottom:6px">Conjuração (${AB_NOME[pd.magia.ab]}): CD ${pd.magia.cd}, ataque ${sg(pd.magia.atk)}, ${pd.magia.truques} truques e ${pd.magia.preparadas} magias preparadas no nível ${r.nivel}. As magias são adicionadas depois, com aprovação do mestre.</div>`:''}
       <div class="small muted" style="margin-bottom:12px">Talentos: ${r.talentos.map(h).join('; ')||'—'}</div>
       ${r.errors.length?`<div style="margin-bottom:12px">${r.errors.map(e=>`<div class="err">• ${h(e)}</div>`).join('')}</div>`:`<div class="ok-t" style="margin-bottom:12px">Ficha válida pelas regras.</div>`}
       <button class="btn pri" style="width:100%" ${r.errors.length?'disabled':''}>${S.isMaster?'Criar personagem':'Enviar ao mestre para aprovação'}</button>
@@ -1909,7 +1946,7 @@ async function savePop(){
   catch(err){ toast('Não foi possível salvar ('+(err.code||'erro')+').'); }
 }
 
-function setPath(obj,path,val){ const ks=path.split('.'); let o=obj; ks.slice(0,-1).forEach(k=>o=o[k]); o[ks.at(-1)]=val; }
+function setPath(obj,path,val){ const ks=path.split('.'); let o=obj; ks.slice(0,-1).forEach(k=>o=(o[k] ??= {})); o[ks.at(-1)]=val; }
 document.addEventListener('click', async e=>{
   const t=e.target.closest('[data-act]'); if(!t || t.tagName==='SELECT') return;
   const a=t.dataset.act;
