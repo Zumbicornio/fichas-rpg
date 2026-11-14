@@ -1500,7 +1500,7 @@ function renderChrome(){
 }
 /* Jogadores veem as próprias fichas e as dos outros jogadores, mas não as dos mestres (dono do app e lista de mestres). */
 const isMasterId = id => !!id && (id===S.donoId || S.mestres.includes(id));
-const canSee = c => S.isMaster || c.ownerId===S.myId || !isMasterId(c.ownerId);
+const canSee = c => S.isMaster || c.ownerId===S.myId || !isMasterId(c.ownerId) || c.visivel===true;
 const isMine = c => S.isMaster || c.ownerId===S.myId;
 function visibleChars(){ return S.chars.filter(canSee).sort((a,b)=> (S.isMaster?0:(b.ownerId===S.myId)-(a.ownerId===S.myId)) || a.nome.localeCompare(b.nome)); }
 function hpColor(r){ return r>.5?'var(--green)':r>.25?'var(--gold)':'var(--red)'; }
@@ -1525,6 +1525,7 @@ function viewList(){
       <div style="margin-top:6px">${statusChip(c)}</div>
       <div class="hpbar"><i style="width:${r*100}%;background:${hpColor(r)}"></i></div>
       <div class="row between small"><span>PV ${pv}/${d.max}${e.temp?` (+${e.temp})`:''}</span><span>CA ${d.ac}</span><span>Iniciativa ${sg(d.init)}</span></div>
+      ${S.isMaster&&isMasterId(c.ownerId)?`<div class="small muted" style="margin-top:6px">${c.visivel===true?'Visível para os jogadores':'Oculta dos jogadores'}</div>`:''}
       ${S.isMaster||c.ownerId!==S.myId?`<div class="small muted" style="margin-top:6px">Jogador: ${h(nameOf(c.ownerId))}</div>`:'<div class="small" style="margin-top:6px;color:var(--gold2)">Sua ficha</div>'}
     </div></div>`;}).join('')}</div>`;
 }
@@ -1789,6 +1790,7 @@ function viewSheet(){
           : `${ro?'':'<button class="btn sm" data-act="clone">Clonar ficha</button>'}<button class="btn sm" data-act="export">Exportar ficha</button>`}</div>
       ${ro?'<span class="chip">Ficha de outro jogador · só leitura</span>':''}
       ${S.isMaster?`<div class="row" style="gap:6px"><label for="dono-sel" style="margin:0">Dono da ficha</label><div style="min-width:200px">${ownerPicker('id="dono-sel" data-owner-sel', c.ownerId)}</div><button class="btn sm" data-act="transfer">Transferir</button></div>`:''}
+      ${S.isMaster&&isMasterId(c.ownerId)?`<div class="row" style="gap:6px"><span class="small">Ficha de mestre:</span><button class="btn sm${c.visivel===true?' ok':''}" data-act="vis" title="Escolha se os jogadores podem ver esta ficha">${c.visivel===true?'Visível para os jogadores':'Oculta dos jogadores'}</button></div>`:''}
       ${S.isMaster?`<button class="btn sm danger" data-act="del" data-id="${h(c.id)}">${S.delArm===c.id?'Clique de novo para excluir':'Excluir personagem'}</button>`:''}
     </div>
     <div style="margin-bottom:14px"><div class="row" style="gap:12px"><h2 style="font-size:26px;color:var(--gold2)">${h(c.nome)}</h2>${statusChip(c)}</div>
@@ -2141,6 +2143,9 @@ document.addEventListener('click', async e=>{
     const ids = a==='mestre-add' ? [...new Set([...S.mestres, id])] : S.mestres.filter(x=>x!==id);
     t.disabled=true;
     try { await store.saveMestres(ids); toast(a==='mestre-add'?'Mestre adicionado.':'Mestre removido.'); }
+    catch(err){ t.disabled=false; toast(errTxt(err)||('Não foi possível salvar ('+(err.code||'erro')+').')); } }
+  else if (a==='vis'){ const c=S.chars.find(x=>x.id===S.charId); if(!c||!S.isMaster) return; t.disabled=true;
+    try { const n=clone(c); n.visivel=c.visivel!==true; addLog(n, n.visivel?'Ficha visível para os jogadores':'Ficha oculta dos jogadores', S.myId, ''); await store.saveCharacter(n); toast(n.visivel?'Os jogadores agora veem esta ficha.':'Ficha oculta dos jogadores.'); render(true); }
     catch(err){ t.disabled=false; toast(errTxt(err)||('Não foi possível salvar ('+(err.code||'erro')+').')); } }
   else if (a==='transfer'){ const c=S.chars.find(x=>x.id===S.charId); const novo=$('#dono-sel')?.value; if(!c||!novo) return;
     if (novo===c.ownerId){ toast('Essa pessoa já é a dona da ficha.'); return; }
