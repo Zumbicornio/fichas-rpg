@@ -746,6 +746,7 @@ SPELL_NAMES.sort((a,b)=>a.localeCompare(b));
 
 /* ============ UTILITÁRIOS ============ */
 const $ = s => document.querySelector(s);
+const errTxt = e => !e ? '' : e.code==='invalid_argument' ? 'O app recusou o envio: seu acesso não permite salvar dados. Peça ao mestre para conferir o compartilhamento.' : e.code ? '' : (e.message||'');
 const h = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const mod = s => Math.floor((s-10)/2);
 const sg = n => (n>=0?'+':'')+n;
@@ -1150,7 +1151,7 @@ async function submitAction(form){
       toast('Enviado ao mestre para aprovação.');
     }
     form.reset();
-  } catch(e){ toast(e.message || ('Não foi possível salvar ('+(e.code||'erro')+').')); }
+  } catch(e){ toast(errTxt(e) || ('Não foi possível salvar ('+(e.code||'erro')+').')); }
 }
 async function submitCreate(){
   const r=draftCompute(S.draft); if (r.errors.length){ toast(r.errors[0]); return; }
@@ -1164,7 +1165,7 @@ async function submitCreate(){
       toast('Ficha enviada ao mestre para aprovação.'); S.tab='solicitacoes';
     }
     S.draft=newDraft(); render(true);
-  } catch(e){ toast(e.message || ('Não foi possível salvar ('+(e.code||'erro')+').')); }
+  } catch(e){ toast(errTxt(e) || ('Não foi possível salvar ('+(e.code||'erro')+').')); }
 }
 async function approve(owner, id){
   const item=S.reqDocs[owner]?.items?.[id]; if(!item || item.status!=='pendente') return;
@@ -1213,7 +1214,7 @@ async function submitClone(c, nome){
       toast('Pedido de cópia enviado ao mestre.');
     }
     S.cloneArm=null; return true;
-  } catch(e){ toast(e.message || ('Não foi possível clonar ('+(e.code||'erro')+').')); return false; }
+  } catch(e){ toast(errTxt(e) || ('Não foi possível clonar ('+(e.code||'erro')+').')); return false; }
 }
 async function reject(owner,id,motivo){
   const item=S.reqDocs[owner]?.items?.[id];
@@ -1238,7 +1239,7 @@ async function submitPortrait(c, img){
       await store.addRequest({id:newId(), charId:c.id, charNome:c.nome, type:'retrato', payload:p, motivo:'', by:S.myId, at:nowIso(), status:'pendente'});
       toast('Enviado ao mestre para aprovação.');
     }
-  } catch(e){ toast(e.message || ('Não foi possível salvar ('+(e.code||'erro')+').')); }
+  } catch(e){ toast(errTxt(e) || ('Não foi possível salvar ('+(e.code||'erro')+').')); }
 }
 function pendingList(){
   const out=[]; Object.entries(S.reqDocs).forEach(([owner,doc])=>Object.values(doc.items||{}).forEach(i=>{ if(i.status==='pendente') out.push({owner,...i}); }));
@@ -2012,7 +2013,8 @@ async function init(){
   if (db && user){ try { id=await user.id(); } catch {} }
   if (db && user && id){
     S.mode='db'; S.user=user; S.myId=id;
-    try { S.isMaster = !!(await user.canEdit()); } catch { S.isMaster=false; }
+    /* Mestre = dono do app. Jogadores convidados de fora da organização só gravam dados como Editores, então Editor não basta para ser mestre. */
+    try { S.isMaster = !!(await user.isOwner()); } catch { S.isMaster=false; }
     store=makeDbStore(db);
   } else {
     S.mode='local'; S.myId='demo-mestre'; S.isMaster=true; S.loaded=true;
