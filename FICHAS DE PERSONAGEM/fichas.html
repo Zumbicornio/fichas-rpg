@@ -787,13 +787,13 @@ function portrait(img, nome, cls=''){
 const S = {
   mode:'carregando', isMaster:false, myId:null, user:null,
   chars:[], reqDocs:{}, estado:{}, rolls:[], tab:'personagens', charId:null, actionType:'item',
-  draft:null, names:{}, namesPending:new Set(), notice:'', loaded:false, delArm:null, deferred:false, regras:{}, pop:null, filtro:{status:'',campanha:''}, people:[], registered:false
+  draft:null, names:{}, namesPending:new Set(), notice:'', loaded:false, delArm:null, deferred:false, regras:{}, pop:null, filtro:{status:'',campanha:''}, people:[], registered:false, isOwner:false, mestres:[]
 };
 let store = null;
 
 /* ============ ARMAZENAMENTO ============ */
 function makeLocalStore(){
-  const mem = {chars:{}, reqs:{}, est:{}, regras:{}}; const cc=[], rc=[], ec=[], gc=[];
+  const mem = {chars:{}, reqs:{}, est:{}, regras:{}, mestres:[]}; const cc=[], rc=[], ec=[], gc=[], mc=[];
   const emitG = () => gc.forEach(f=>f(clone(mem.regras)));
   const emitC = () => cc.forEach(f=>f(Object.values(mem.chars).map(clone)));
   const emitR = () => rc.forEach(f=>f(clone(mem.reqs)));
@@ -804,6 +804,8 @@ function makeLocalStore(){
     async setEstado(owner,charId,e){ (mem.est[owner] ||= {chars:{}}).chars[charId]=clone(e); emitE(); },
     onRequests(cb){ rc.push(cb); setTimeout(emitR); },
     onRegras(cb){ gc.push(cb); setTimeout(emitG); },
+    onMestres(cb){ mc.push(cb); setTimeout(()=>cb([...mem.mestres])); },
+    async saveMestres(ids){ mem.mestres=[...ids]; mc.forEach(f=>f([...ids])); },
     async saveRegra(slug,r){ mem.regras[slug]=clone(r); emitG(); },
     async deleteRegra(slug){ delete mem.regras[slug]; emitG(); },
     async ensureEstado(){ if(!mem.est[S.myId]){ mem.est[S.myId]={chars:{}}; emitE(); } },
@@ -852,6 +854,8 @@ function makeDbStore(db){
         return ref.update({items:{[item.id]:item}});
       });
     },
+    onMestres(cb,err){ return db.doc('config/mestres').onSnapshot(d => cb(d.exists ? (d.data().ids||[]).filter(x=>typeof x==='string') : []), err); },
+    saveMestres(ids){ return q('config/mestres', ()=>db.doc('config/mestres').set({ids:[...ids]})); },
     onRegras(cb,err){ return db.collection('regras').onSnapshot(s => { const m={}; s.docs.forEach(d=>{ if(d.exists) m[d.id]=clone(d.data()); }); cb(m); }, err); },
     saveRegra(slug,r){ return q('regras/'+slug, ()=>db.doc('regras/'+slug).set(clone(r))); },
     deleteRegra(slug){ return q('regras/'+slug, ()=>db.doc('regras/'+slug).delete()); },
@@ -1275,10 +1279,23 @@ function knownPeople(){
   const lbl = i => i===S.myId ? 'Você (mestre)' : S.mode==='local' ? nameOf(i) : (S.names[i] && S.names[i]!=='Jogador' && S.names[i]!=='…') ? nameOf(i) : 'Jogador sem nome ('+String(i).slice(-4)+')';
   return [...ids].map(i=>({id:i, nome:lbl(i)})).sort((a,b)=> a.id===S.myId ? -1 : b.id===S.myId ? 1 : a.nome.localeCompare(b.nome));
 }
-function ownerOptions(sel){ return knownPeople().map(p=>`<option value="${h(p.id)}" ${p.id===sel?'selected':''}>${h(p.nome)}</option>`).join(''); }
+function ownerOptions(sel, exclMestres){ return knownPeople().filter(p=>!exclMestres || (p.id!==S.myId && !S.mestres.includes(p.id))).map(p=>`<option value="${h(p.id)}" ${p.id===sel?'selected':''}>${h(p.nome)}</option>`).join(''); }
 function ownerPicker(selAttrs, sel){
   const busca = S.mode==='db' && S.user?.search ? `<input type="search" data-owner-search placeholder="Buscar pessoa pelo nome…" aria-label="Buscar pessoa pelo nome" style="margin-top:6px">` : '';
   return `<select ${selAttrs}>${ownerOptions(sel)}</select>${busca}`;
+}
+
+function viewMestres(){
+  const opts=ownerOptions('', true);
+  const busca = S.mode==='db' && S.user?.search ? `<input type="search" data-owner-search placeholder="Buscar pessoa pelo nome…" aria-label="Buscar pessoa pelo nome" style="margin-top:6px">` : '';
+  return `<div class="panel" style="max-width:640px"><h3>Mestres do app</h3>
+    <p class="small muted" style="margin-top:0">Você é o mestre principal, por ser o dono do app. Quem estiver nesta lista também vira mestre: vê todas as fichas, aprova pedidos, cria e altera fichas e escreve textos de regras. Só você pode mudar esta lista. A pessoa precisa ter acesso de Editor no menu Compartilhar.</p>
+    <div class="list" style="margin-bottom:14px"><div class="li"><span>${h(nameOf(S.myId))} <span class="muted small">· dono do app</span></span></div>
+      ${S.mestres.map(id=>`<div class="li"><span>${h(nameOf(id))}</span><button class="btn sm danger" data-act="mestre-rem" data-id="${h(id)}">Remover</button></div>`).join('')}</div>
+    <label for="mestre-sel">Adicionar mestre</label>
+    <div class="row" style="align-items:flex-start"><div style="flex:1;min-width:200px"><select id="mestre-sel" data-owner-sel data-excl>${opts||'<option value="">Ninguém disponível ainda</option>'}</select>${busca}</div>
+      <button class="btn pri" data-act="mestre-add">Adicionar</button></div>
+    <div class="small muted" style="margin-top:6px">A pessoa aparece na lista depois de abrir o app uma vez.</div></div>`;
 }
 
 /* ============ RENDERIZAÇÃO ============ */
@@ -1295,6 +1312,7 @@ function render(force){
   else if (S.tab==='ficha') html += viewSheet();
   else if (S.tab==='aprovacoes') html += viewApprovals();
   else if (S.tab==='solicitacoes') html += viewMine();
+  else if (S.tab==='mestres' && S.isOwner) html += viewMestres();
   app.innerHTML = html;
   if (S.pop && S.tab!=='ficha') S.pop=null;
   renderPop();
@@ -1303,7 +1321,7 @@ function renderChrome(){
   const b=[];
   if (S.mode==='local'){
     b.push(`<span class="badge">Demonstração: dados só nesta aba</span>`);
-    b.push(`<span class="muted small">Ver como:</span><button class="btn sm ${S.isMaster?'pri':''}" data-act="role" data-role="mestre">Mestre</button><button class="btn sm ${!S.isMaster?'pri':''}" data-act="role" data-role="jogador">Jogador</button>`);
+    b.push(`<span class="muted small">Ver como:</span><button class="btn sm ${S.isOwner?'pri':''}" data-act="role" data-role="mestre">Mestre</button><button class="btn sm ${!S.isOwner?'pri':''}" data-act="role" data-role="jogador">Jogador</button>`);
   } else if (S.mode==='db'){
     b.push(`<span class="badge gold">${S.isMaster?'Mestre':'Jogador'}</span>`);
     b.push(`<span class="badge">${S.loaded?'Sincronizado':'Conectando…'}</span>`);
@@ -1313,6 +1331,7 @@ function renderChrome(){
   const tabs=[['personagens',S.isMaster?'Todos os personagens':'Meus personagens'],['criar','Criar personagem']];
   if (S.isMaster) tabs.push(['aprovacoes',`Aprovações${pend?`<span class="count">${pend}</span>`:''}`]);
   else tabs.push(['solicitacoes','Minhas solicitações']);
+  if (S.isOwner) tabs.push(['mestres','Mestres']);
   $('#nav').innerHTML = tabs.map(([k,l])=>`<button class="${S.tab===k||(S.tab==='ficha'&&k==='personagens')?'on':''}" data-act="tab" data-tab="${k}">${l}</button>`).join('');
 }
 function visibleChars(){ return S.chars.filter(c=>S.isMaster || c.ownerId===S.myId).sort((a,b)=>a.nome.localeCompare(b.nome)); }
@@ -1897,7 +1916,7 @@ document.addEventListener('click', async e=>{
     S.delArm=null; try{ await store.deleteRegra(r.slug); S.pop.edit=false; renderPop(true); toast('Texto excluído.'); }catch(err){ toast('Não foi possível excluir ('+(err.code||'erro')+').'); } return; }
   if (a==='tab'){ S.tab=t.dataset.tab; S.delArm=null; S.cloneArm=null; if(S.tab==='criar'&&!S.draft) S.draft=newDraft(); render(true); }
   else if (a==='open'){ S.charId=t.dataset.id; S.tab='ficha'; S.delArm=null; S.cloneArm=null; render(true); window.scrollTo(0,0); }
-  else if (a==='role'){ S.isMaster = t.dataset.role==='mestre'; S.myId = S.isMaster?'demo-mestre':'demo-jogador'; if(S.tab==='aprovacoes'||S.tab==='solicitacoes') S.tab='personagens'; render(true); }
+  else if (a==='role'){ S.isOwner = t.dataset.role==='mestre'; S.myId = S.isOwner?'demo-mestre':'demo-jogador'; S.isMaster = S.isOwner || S.mestres.includes(S.myId); if(S.tab==='aprovacoes'||S.tab==='solicitacoes') S.tab='personagens'; render(true); }
   else if (a==='pb'){ const ab=t.dataset.ab; S.draft.compra[ab]=Math.max(8,Math.min(15,S.draft.compra[ab]+(+t.dataset.d))); render(true); }
   else if (a==='reset-draft'){ S.draft=newDraft(); render(true); }
   else if (a==='lvl-roll'){ const c=S.chars.find(x=>x.id===S.charId); if(!c) return;
@@ -1920,6 +1939,12 @@ document.addEventListener('click', async e=>{
     S.delArm=null; await submitPortrait(c,''); render(true); }
   else if (a==='del'){ const id=t.dataset.id; if(S.delArm!==id){ S.delArm=id; render(true); return; }
     try{ await store.deleteCharacter(id); S.delArm=null; S.tab='personagens'; toast('Personagem excluído.'); render(true); } catch(err){ toast('Não foi possível excluir ('+(err.code||'erro')+').'); } }
+  else if (a==='mestre-add' || a==='mestre-rem'){ if(!S.isOwner) return;
+    const id = a==='mestre-add' ? $('#mestre-sel')?.value : t.dataset.id; if(!id || id===S.myId) return;
+    const ids = a==='mestre-add' ? [...new Set([...S.mestres, id])] : S.mestres.filter(x=>x!==id);
+    t.disabled=true;
+    try { await store.saveMestres(ids); toast(a==='mestre-add'?'Mestre adicionado.':'Mestre removido.'); }
+    catch(err){ t.disabled=false; toast(errTxt(err)||('Não foi possível salvar ('+(err.code||'erro')+').')); } }
   else if (a==='transfer'){ const c=S.chars.find(x=>x.id===S.charId); const novo=$('#dono-sel')?.value; if(!c||!novo) return;
     if (novo===c.ownerId){ toast('Essa pessoa já é a dona da ficha.'); return; }
     t.disabled=true;
@@ -1969,7 +1994,7 @@ document.addEventListener('input', async e=>{
     const hits = await S.user.search(el.value.trim());
     hits.forEach(p=>{ if(p.id && p.name){ S.names[p.id]=p.name; if(!S.people.includes(p.id)) S.people.push(p.id); } });
     const sel=el.parentElement.querySelector('[data-owner-sel]'); if(!sel) return; const cur=sel.value;
-    sel.innerHTML=ownerOptions(cur); const first=hits.find(p=>p.id&&p.name);
+    sel.innerHTML=ownerOptions(cur, sel.hasAttribute('data-excl')); const first=hits.find(p=>p.id&&p.name);
     if (first && el.value.trim()){ sel.value=first.id; if(sel.dataset.f) setPath(S.draft,'dono',first.id); }
     return;
   } if(!S.draft || !el.hasAttribute('data-live') || !el.closest('form[data-form="criar"]')) return;
@@ -1994,11 +2019,23 @@ function subscribe(){
     if (!meta || !meta.fromCache){ S.loaded=true; clearTimeout(timer); if(S.notice.startsWith('Não foi possível alcançar')) S.notice=''; }
     loadNames(); render();
   }, err=>{ clearTimeout(timer); S.loaded=true; S.notice='Não foi possível carregar as fichas ('+h(err.code)+').'; render(); });
-  store.onEstado(m=>{ S.estado=m||{};
-    if (S.mode==='db' && !S.isMaster && !S.registered && !S.estado[S.myId]){ S.registered=true; store.ensureEstado().catch(()=>{ S.registered=false; }); }
-    loadNames(); render(); }, err=>{ S.notice='Não foi possível carregar os pontos de vida ('+h(err.code)+').'; render(); });
+  store.onMestres(ids=>{ S.mestres=ids||[]; applyRole(); }, ()=>{});
+  resubRoles();
   store.onRegras(m=>{ S.regras=m||{}; renderPop(); }, ()=>{});
-  store.onRequests(m=>{ S.reqDocs=m||{}; loadNames(); render(); }, err=>{ S.notice='Não foi possível carregar as solicitações ('+h(err.code)+').'; render(); });
+}
+/* Mestre = dono do app ou alguém que o dono pôs na lista de mestres (config/mestres). */
+let roleUnsubs=[];
+function applyRole(){
+  const m = S.isOwner || S.mestres.includes(S.myId);
+  if (m!==S.isMaster){ S.isMaster=m; if(!m && (S.tab==='aprovacoes'||S.tab==='mestres')) S.tab='personagens'; if(m && S.tab==='solicitacoes') S.tab='personagens'; if (S.mode==='db') resubRoles(); }
+  render();
+}
+function resubRoles(){
+  roleUnsubs.forEach(u=>{ try{ typeof u==='function' && u(); }catch{} }); roleUnsubs=[];
+  roleUnsubs.push(store.onEstado(m=>{ S.estado=m||{};
+    if (S.mode==='db' && !S.isMaster && !S.registered && !S.estado[S.myId]){ S.registered=true; store.ensureEstado().catch(()=>{ S.registered=false; }); }
+    loadNames(); render(); }, err=>{ S.notice='Não foi possível carregar os pontos de vida ('+h(err.code)+').'; render(); }));
+  roleUnsubs.push(store.onRequests(m=>{ S.reqDocs=m||{}; loadNames(); render(); }, err=>{ S.notice='Não foi possível carregar as solicitações ('+h(err.code)+').'; render(); }));
 }
 async function init(){
   S.draft=newDraft(); render();
@@ -2014,10 +2051,11 @@ async function init(){
   if (db && user && id){
     S.mode='db'; S.user=user; S.myId=id;
     /* Mestre = dono do app. Jogadores convidados de fora da organização só gravam dados como Editores, então Editor não basta para ser mestre. */
-    try { S.isMaster = !!(await user.isOwner()); } catch { S.isMaster=false; }
+    try { S.isOwner = !!(await user.isOwner()); } catch { S.isOwner=false; }
+    S.isMaster = S.isOwner;
     store=makeDbStore(db);
   } else {
-    S.mode='local'; S.myId='demo-mestre'; S.isMaster=true; S.loaded=true;
+    S.mode='local'; S.myId='demo-mestre'; S.isMaster=true; S.isOwner=true; S.loaded=true;
     S.notice='<b>Modo demonstração.</b> O banco compartilhado não está disponível nesta visualização, então os dados ficam só nesta aba. Use "Ver como" para testar o fluxo de jogador e mestre.';
     store=makeLocalStore();
   }
