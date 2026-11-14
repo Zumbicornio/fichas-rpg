@@ -1023,9 +1023,11 @@ function newWeapon(base, p={}){
 }
 
 /* ============ MUDANÇAS (propostas e aplicação) ============ */
+/* pares [atributo, valor] válidos de um pedido de aumento de atributo */
+const atrPares = p => [[p.a1,p.v1],[p.a2,p.v2]].filter(([a,v])=>AB.includes(a) && Math.floor(+v)).map(([a,v])=>[a,Math.max(-10,Math.min(10,Math.floor(+v)))]);
 const ACTIONS = {item:'Itens', moedas:'Dinheiro e tesouro', arma_add:'Adicionar arma', arma_rem:'Remover arma',
   magia_nova:'Aprender magia', magia_prep:'Preparar / despreparar magia', magia_rem:'Esquecer magia',
-  nivel:'Subir de nível', equip:'Armadura e escudo', status:'Status e campanha', nota:'Anotação'};
+  nivel:'Subir de nível', atributo:'Aumento de atributo', equip:'Armadura e escudo', status:'Status e campanha', nota:'Anotação'};
 /* status do personagem na mesa; fichas antigas sem o campo contam como "Ativo" */
 const STATUS = {ativo:{nome:'Ativo'}, espera:{nome:'Em espera'}, aposentado:{nome:'Aposentado'}, falecido:{nome:'Falecido'}};
 function statusOf(c){ const s=c?.status||{}; return {tipo:STATUS[s.tipo]?s.tipo:'ativo', campanha:String(s.campanha||'')}; }
@@ -1051,6 +1053,7 @@ function describe(type,p,c){
       if (p.subclasse) s+=`, subclasse: ${p.subclasse}`; return s;
     }
     case 'equip': return `Equipar: ${ARMORS[p.armadura]?.nome}${p.escudo?' + escudo':''}${+p.caBonus?`, bônus mágico ${sg(+p.caBonus)} CA`:''}`;
+    case 'atributo': return 'Atributos: '+atrPares(p).map(([a,v])=>`${AB_NOME[a]} ${sg(v)}${c?.atributos?` (${c.atributos[a]} → ${c.atributos[a]+v})`:''}`).join(', ');
     case 'nota': return `Anotação: ${p.texto}`;
     case 'status': return `Status: ${STATUS[p.tipo]?.nome||'?'}${String(p.campanha||'').trim()?`, campanha ${String(p.campanha).trim()}`:', sem campanha'}`;
     case 'retrato': return p.acao==='remover' ? 'Remover a imagem do personagem' : 'Nova imagem do personagem';
@@ -1134,6 +1137,16 @@ function applyChange(c0, type, p){
       const campanha=String(p.campanha||'').trim().replace(/\s+/g,' ').slice(0,60); const s=statusOf(c);
       if (s.tipo===p.tipo && s.campanha===campanha) throw new Error('O status e a campanha já são esses.');
       c.status={tipo:p.tipo, campanha}; break;
+    }
+    case 'atributo': {
+      const pares=atrPares(p); if(!pares.length) throw new Error('Escolha o atributo e o valor.');
+      if (pares.length===2 && pares[0][0]===pares[1][0]) throw new Error('Escolha dois atributos diferentes.');
+      const max = p.limite==='30' ? 30 : 20;
+      pares.forEach(([a,v])=>{ const nv=c.atributos[a]+v;
+        if (nv>max) throw new Error(`${AB_NOME[a]} não pode passar de ${max}${max===20?' (escolha o limite 30 se for item mágico ou dádiva épica)':''}.`);
+        if (nv<1) throw new Error(`${AB_NOME[a]} não pode ficar abaixo de 1.`);
+        c.atributos[a]=nv; });
+      break;
     }
     case 'nota': {
       const t=String(p.texto||'').trim(); if(!t) throw new Error('Escreva a anotação.');
@@ -1542,6 +1555,11 @@ function actionForm(c,d){
     body=`<div class="small muted" style="margin-bottom:8px">Status atual: ${STATUS[s.tipo].nome}${s.campanha?`, campanha ${h(s.campanha)}`:''}.</div>
       <div class="cols2"><div class="f"><label>Status</label><select name="tipo">${Object.entries(STATUS).map(([k,v])=>opt(k,v.nome,s.tipo)).join('')}</select></div>
       <div class="f"><label>Campanha (opcional)</label><input name="campanha" maxlength="60" list="camp-list" value="${h(s.campanha)}" placeholder="Ex.: A Maldição de Strahd"><datalist id="camp-list">${campaigns(S.chars).map(n=>`<option value="${h(n)}">`).join('')}</datalist></div></div>`; }
+  else if (t==='atributo'){ const abSel=(nm,req)=>`<select name="${nm}" ${req?'required':''}><option value="">—</option>${AB.map(a=>`<option value="${a}">${AB_NOME[a]} (${c.atributos[a]})</option>`).join('')}</select>`;
+    body=`<div class="small muted" style="margin-bottom:8px">Para aumentos fora da subida de nível: talento, item mágico, bênção, maldição etc. Use valor negativo para reduzir.</div>
+      <div class="cols2"><div class="f"><label>Atributo</label>${abSel('a1',true)}</div><div class="f"><label>Valor</label><input name="v1" type="number" min="-10" max="10" value="1" required></div></div>
+      <div class="cols2"><div class="f"><label>Segundo atributo (opcional)</label>${abSel('a2',false)}</div><div class="f"><label>Valor</label><input name="v2" type="number" min="-10" max="10" value="1"></div></div>
+      <div class="f"><label>Limite</label><select name="limite"><option value="20">Até 20 (regra normal)</option><option value="30">Até 30 (item mágico ou dádiva épica)</option></select></div>`; }
   else if (t==='nota') body=`<div class="f"><label>Anotação</label><textarea name="texto" maxlength="500" required placeholder="Ex.: prometeu ajudar o ferreiro de Vila Alta"></textarea></div>`;
   return `<form data-form="acao" data-type="${t}">${body}${bloqueia?'':motivo+`<button class="btn pri" style="width:100%">${btn}</button>`}</form>`;
 }
