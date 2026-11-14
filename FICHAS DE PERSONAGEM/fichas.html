@@ -184,9 +184,22 @@ const SPECIES = {
   orc:{nome:'Orc',desl:30,tracos:['Surto de adrenalina','Visão no escuro (36 m)','Resistência implacável']},
   tiefling:{nome:'Tiefling',desl:30,tracos:['Legado ínfero','Presença sobrenatural','Visão no escuro (18 m)']}
 };
+/* Os 16 antecedentes do Livro do Jogador 2024 (só 4 estão no SRD 5.2). A chave antiga de cada um foi mantida para não quebrar fichas já criadas. */
 const BACKGROUNDS = {
   acolito:{nome:'Acólito',abs:['INT','SAB','CAR'],skills:['intuicao','religiao'],talento:'Iniciado em Magia (Clérigo)'},
+  andarilho:{nome:'Andarilho',abs:['DES','SAB','CAR'],skills:['intuicao','furtividade'],talento:'Sortudo'},
+  artesao:{nome:'Artesão',abs:['FOR','DES','INT'],skills:['investigacao','persuasao'],talento:'Fabricante'},
+  artista:{nome:'Artista',abs:['FOR','DES','CAR'],skills:['acrobacia','atuacao'],talento:'Músico'},
+  charlatao:{nome:'Charlatão',abs:['DES','CON','CAR'],skills:['enganacao','prestidigitacao'],talento:'Habilidoso'},
   criminoso:{nome:'Criminoso',abs:['DES','CON','INT'],skills:['prestidigitacao','furtividade'],talento:'Alerta'},
+  eremita:{nome:'Eremita',abs:['CON','SAB','CAR'],skills:['medicina','religiao'],talento:'Curandeiro'},
+  escriba:{nome:'Escriba',abs:['DES','INT','SAB'],skills:['investigacao','percepcao'],talento:'Habilidoso'},
+  fazendeiro:{nome:'Fazendeiro',abs:['FOR','CON','SAB'],skills:['adestrar','natureza'],talento:'Vigoroso'},
+  guarda:{nome:'Guarda',abs:['FOR','INT','SAB'],skills:['atletismo','percepcao'],talento:'Alerta'},
+  guia:{nome:'Guia',abs:['DES','CON','SAB'],skills:['furtividade','sobrevivencia'],talento:'Iniciado em Magia (Druida)'},
+  marinheiro:{nome:'Marinheiro',abs:['FOR','DES','SAB'],skills:['acrobacia','percepcao'],talento:'Brigão de Taverna'},
+  mercador:{nome:'Mercador',abs:['CON','INT','CAR'],skills:['adestrar','persuasao'],talento:'Sortudo'},
+  nobre:{nome:'Nobre',abs:['FOR','INT','CAR'],skills:['historia','persuasao'],talento:'Habilidoso'},
   sabio:{nome:'Sábio',abs:['CON','INT','SAB'],skills:['arcanismo','historia'],talento:'Iniciado em Magia (Mago)'},
   soldado:{nome:'Soldado',abs:['FOR','DES','CON'],skills:['atletismo','intimidacao'],talento:'Atacante Selvagem'},
   custom:{nome:'Personalizado (de outro livro)',custom:true}
@@ -312,6 +325,12 @@ const RULES = {
   'iniciado em magia':['Talento de origem','Escolha uma lista de magias: Clérigo, Druida ou Mago.\n• Você aprende dois truques dessa lista.\n• Escolha uma magia de 1º círculo da mesma lista. Ela fica sempre preparada. Você pode conjurá-la uma vez sem gastar espaço, e recupera esse uso num descanso longo. Também pode conjurá-la com espaços de magia que tiver.\n• A habilidade de conjuração é Inteligência, Sabedoria ou Carisma, escolhida quando você pega o talento.\n• Sempre que subir de nível, pode trocar uma dessas magias por outra do mesmo círculo e da mesma lista.\nVocê pode pegar este talento mais de uma vez, desde que escolha uma lista diferente a cada vez.'],
   'atacante selvagem':['Talento de origem','Uma vez por turno, quando acerta um alvo com uma arma, você pode rolar os dados de dano da arma duas vezes e usar qualquer um dos dois resultados.'],
   'habilidoso|talento':['Talento de origem','Você ganha proficiência em qualquer combinação de três perícias ou ferramentas. Pode pegar este talento mais de uma vez.'],
+  'sortudo|talento':['Talento de origem','Você tem pontos de sorte iguais ao seu bônus de proficiência e os recupera num descanso longo. Ao fazer um Teste de D20, pode gastar 1 ponto para ter vantagem na jogada. Quando uma criatura faz uma jogada de ataque contra você, pode gastar 1 ponto para impor desvantagem a essa jogada.'],
+  'fabricante':['Talento de origem','• Você ganha proficiência com três ferramentas de artesão diferentes.\n• Descontos: você paga 20% a menos ao comprar itens não mágicos.\n• Fabricação rápida: ao terminar um descanso longo, pode fabricar um equipamento simples da tabela de Fabricação Rápida do livro (se tiver as ferramentas e a proficiência). Ele dura até você terminar o próximo descanso longo.'],
+  'musico':['Talento de origem','• Você ganha proficiência com três instrumentos musicais.\n• Canção encorajadora: ao terminar um descanso curto ou longo, você pode tocar um instrumento com que tenha proficiência e dar Inspiração Heroica a até um número de aliados que ouvirem a música igual ao seu bônus de proficiência.'],
+  'vigoroso':['Talento de origem','Seu máximo de pontos de vida aumenta em um valor igual ao dobro do seu nível quando você ganha este talento, e em mais 2 a cada nível que ganhar depois. A ficha já soma esse valor.'],
+  'curandeiro':['Talento de origem','• Médico de batalha: usando um Kit de Curandeiro como ação, você faz uma criatura gastar um dos seus Dados de Vida e rolá-lo: ela recupera pontos de vida iguais ao resultado mais o seu bônus de proficiência.\n• Rerrolagem de cura: ao rolar dados para determinar os PV recuperados por este talento ou por uma magia, você pode rolar de novo um dado que tirou 1, e deve usar o novo resultado.'],
+  'brigao de taverna':['Talento de origem','• Seu ataque desarmado causa 1d4 + modificador de Força de dano de concussão.\n• Ao rolar o dado de dano do ataque desarmado, você pode rolar de novo um 1 e usar o novo resultado.\n• Você tem proficiência com armas improvisadas.\n• Uma vez por turno, ao acertar um ataque desarmado como parte da ação de Ataque, pode empurrar o alvo 1,5 m (5 pés) para longe de você.'],
   'talento de origem extra':['Traço de espécie · Humano','Pelo traço Versátil, você ganha um talento de Origem à sua escolha, como Habilidoso, Alerta, Iniciado em Magia ou Atacante Selvagem. Combine qual com o mestre e peça para trocar esta linha pelo talento escolhido.'],
   'aumento no valor de atributo':['Talento geral','Aumente um valor de atributo em 2, ou dois valores de atributo em 1 cada. Nenhum valor pode passar de 20 por meio deste talento.'],
   'acuidade|prop':['Propriedade de arma','Nos ataques com esta arma, você escolhe usar Força ou Destreza, tanto na jogada de ataque quanto no dano. A ficha já usa o maior dos dois.'],
@@ -840,7 +859,8 @@ function makeDbStore(db){
 /* ============ REGRAS: CÁLCULOS DA FICHA ============ */
 function hpMax(c){
   const sp=SPECIES[c.especie]||{};
-  return Math.max(c.nivel, c.pvBase + c.nivel*mod(c.atributos.CON) + (sp.pvExtra ? sp.pvExtra*c.nivel : 0));
+  const vigoroso = (c.talentos||[]).some(t=>/vigoroso|tough/i.test(t)) ? 2*c.nivel : 0;
+  return Math.max(c.nivel, c.pvBase + c.nivel*mod(c.atributos.CON) + (sp.pvExtra ? sp.pvExtra*c.nivel : 0) + vigoroso);
 }
 function derive(c){
   const cls=CLASSES[c.classe], sp=SPECIES[c.especie];
@@ -1826,7 +1846,7 @@ function renderPop(force){
           ${g?`<button class="btn sm danger" data-act="pop-del">${S.delArm==='regra:'+r.slug?'Confirmar exclusão':'Excluir texto'}</button>`:''}</div></div>`:''}
       </div>
       <div class="row between" style="margin-top:12px">
-        <span class="small muted">${r.srd?'Resumo baseado no SRD 5.2 (CC BY 4.0).':''}</span>
+        <span class="small muted">${r.srd?'Resumo próprio, baseado no SRD 5.2 (CC BY 4.0) e nas regras do D&amp;D 5.5.':''}</span>
         ${S.isMaster && !p.edit?`<button class="btn sm" data-act="pop-edit">${g?'Editar texto do mestre':r.corpo?'Acrescentar texto':'Escrever texto'}</button>`:''}
       </div>
     </div>`;
