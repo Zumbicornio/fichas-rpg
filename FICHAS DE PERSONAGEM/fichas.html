@@ -382,6 +382,128 @@ const ruleKey = n => String(n||'').split(':')[0].replace(/\([^)]*\)/g,'').normal
 const ruleSlug = n => ruleKey(n).replace(/ /g,'-').slice(0,80) || 'x';
 const ruleBuiltin = (n,ctx) => RULES[ruleKey(n)+'|'+ctx] || RULES[ruleKey(n)] || null;
 
+/* ============ TALENTOS (Livro do Jogador 2024) ============
+   Resumos próprios em português. abs = atributos que podem receber +1 (máximo 20; dádivas épicas, 30).
+   req: ab = precisa de um dos atributos com valor mínimo; mag = precisa ser conjurador. */
+const FEAT_CAT = {origem:'Talento de origem', geral:'Talento geral', estilo:'Talento de estilo de luta', epica:'Dádiva épica'};
+const ESTILO_CLASSES = ['guerreiro','paladino','patrulheiro'];
+const FEATS = {}; const FEAT_LIST = [];
+function F(nome,en,cat,abs,req,txt,o={}){
+  const f={nome,en,cat,abs:abs==='*'?[...AB]:abs?abs.split(','):[],req:req||{},txt,rep:!!o.rep,pre:o.pre||'',max:cat==='epica'?30:20};
+  FEAT_LIST.push(f); [nome,en,...(o.alias||[])].forEach(n=>{ const k=ruleKey(n); if(k && !FEATS[k]) FEATS[k]=f; }); return f;
+}
+const R = (ab,min=13) => ({ab:ab.split(','),min});
+const MAG = {mag:true};
+/* origem: textos já estão em RULES */
+F('Alerta','Alert','origem','',null,'');
+F('Fabricante','Crafter','origem','',null,'',{alias:['Artesão (talento)']});
+F('Curandeiro','Healer','origem','',null,'');
+F('Sortudo','Lucky','origem','',null,'');
+F('Iniciado em Magia','Magic Initiate','origem','',null,'',{rep:true});
+F('Músico','Musician','origem','',null,'');
+F('Atacante Selvagem','Savage Attacker','origem','',null,'');
+F('Habilidoso','Skilled','origem','',null,'',{rep:true});
+F('Brigão de Taverna','Tavern Brawler','origem','',null,'');
+F('Vigoroso','Tough','origem','',null,'');
+/* gerais (nível 4+) */
+F('Ator','Actor','geral','CAR',null,'• Personificação: enquanto estiver disfarçado de outra pessoa, você tem vantagem em testes de Carisma (Enganação ou Atuação) para se passar por ela.\n• Mímica: você imita sons e a voz de pessoas que já ouviu falar por pelo menos 1 minuto. Quem ouve percebe a imitação passando num teste de Sabedoria (Intuição) contra CD 8 + mod. de Carisma + bônus de proficiência.');
+F('Atleta','Athlete','geral','FOR,DES',null,'• Você ganha deslocamento de escalada igual ao seu deslocamento.\n• Levantar-se da condição Caído custa só 1,5 m de movimento.\n• Você faz um salto com corrida depois de se mover apenas 1,5 m.');
+F('Investida','Charger','geral','FOR,DES',null,'• Corrida melhorada: quando faz a ação de Disparada, seu deslocamento aumenta 3 m nesse turno.\n• Ataque em investida: se você se mover pelo menos 3 m em linha reta até um alvo antes de acertá-lo com um ataque corpo a corpo da ação de Ataque, escolha: +1d8 de dano, ou empurrar o alvo 3 m (se ele não for mais de um tamanho maior que você). Uma vez por turno.',{alias:['Atacante Impetuoso']});
+F('Cozinheiro','Chef','geral','CON,SAB',null,'• Você ganha proficiência com utensílios de cozinheiro.\n• Refeição revigorante: durante um descanso curto, você cozinha para até 4 + bônus de proficiência criaturas. Quem comer e gastar Dados de Vida nesse descanso recupera 1d8 PV extras.\n• Petiscos: depois de um descanso longo (ou com 1 hora de trabalho), você prepara petiscos em número igual ao seu bônus de proficiência. Comer um é uma ação bônus e dá PV temporários iguais ao seu bônus de proficiência. Duram 8 horas.',{alias:['Chef de Cozinha']});
+F('Especialista em Besta','Crossbow Expert','geral','DES',null,'• Você ignora a propriedade Recarga das bestas.\n• Atacar com uma besta estando a 1,5 m de um inimigo não impõe desvantagem.\n• Ao fazer o ataque extra da propriedade Leve com uma besta Leve, você soma o modificador de atributo ao dano desse ataque.',{alias:['Perito em Besta']});
+F('Esmagador','Crusher','geral','FOR,CON',null,'• Uma vez por turno, ao acertar com dano de concussão, você pode mover o alvo 1,5 m para um espaço desocupado (se ele não for mais de um tamanho maior que você).\n• Ao fazer um acerto crítico com dano de concussão, os ataques contra esse alvo têm vantagem até o início do seu próximo turno.');
+F('Duelista Defensivo','Defensive Duelist','geral','DES',R('DES'),'Se estiver empunhando uma arma com Acuidade e uma criatura acertar você com um ataque corpo a corpo, você pode usar sua reação para somar seu bônus de proficiência à CA, possivelmente fazendo o ataque errar. O bônus vale contra ataques corpo a corpo até o início do seu próximo turno.');
+F('Combatente com Duas Armas','Dual Wielder','geral','FOR,DES',R('FOR,DES'),'• Quando faz a ação de Ataque com uma arma Leve, o ataque extra (ação bônus) pode ser com uma arma que não seja Leve, desde que não tenha a propriedade Duas Mãos.\n• Você saca ou guarda duas armas de uma vez, onde normalmente sacaria ou guardaria uma.',{alias:['Lutador com Duas Armas']});
+F('Durável','Durable','geral','CON',null,'• Você tem vantagem nos testes contra a morte.\n• Como ação bônus, você pode gastar um Dado de Vida, rolá-lo e recuperar essa quantidade de PV.',{alias:['Duravel']});
+F('Adepto Elemental','Elemental Adept','geral','INT,SAB,CAR',MAG,'Escolha ácido, elétrico, fogo, frio ou trovejante.\n• Suas magias ignoram resistência a esse tipo de dano.\n• Ao rolar dano desse tipo numa magia, trate cada 1 nos dados como 2.\nVocê pode pegar este talento mais de uma vez, escolhendo um tipo diferente a cada vez.',{rep:true});
+F('Tocado pelas Fadas','Fey Touched','geral','INT,SAB,CAR',null,'Você aprende Passo Nebuloso e uma magia de 1º círculo de Adivinhação ou Encantamento à sua escolha. As duas ficam sempre preparadas. Cada uma pode ser conjurada uma vez sem gastar espaço (recupera num descanso longo), e você também pode conjurá-las com seus espaços. A habilidade de conjuração é o atributo aumentado por este talento.',{alias:['Toque Feérico']});
+F('Agarrador','Grappler','geral','FOR,DES',R('FOR,DES'),'• Soco e agarrão: ao acertar um ataque desarmado como parte da ação de Ataque, você pode causar o dano e também agarrar o alvo. Uma vez por turno.\n• Você tem vantagem em ataques contra uma criatura agarrada por você.\n• Mover uma criatura agarrada por você, do seu tamanho ou menor, não custa movimento extra.');
+F('Mestre de Armas Grandes','Great Weapon Master','geral','FOR',R('FOR'),'• Ao acertar com uma arma Pesada como parte da ação de Ataque, você causa dano extra igual ao seu bônus de proficiência.\n• Depois de um acerto crítico ou de reduzir uma criatura a 0 PV com uma arma corpo a corpo, você pode fazer um ataque com a mesma arma como ação bônus.',{alias:['Mestre em Armas Grandes','Mestre com Armas Grandes']});
+F('Treinado em Armadura Pesada','Heavily Armored','geral','FOR,CON',null,'Você ganha treinamento com armaduras pesadas.',{pre:'treino com armadura média',alias:['Armadura Pesada']});
+F('Mestre em Armadura Pesada','Heavy Armor Master','geral','FOR,CON',null,'Enquanto estiver usando armadura pesada, o dano de concussão, cortante e perfurante que você sofre é reduzido em um valor igual ao seu bônus de proficiência.',{pre:'treino com armadura pesada'});
+F('Líder Inspirador','Inspiring Leader','geral','SAB,CAR',R('SAB,CAR'),'Ao terminar um descanso curto ou longo, você faz um discurso inspirador. Até seis aliados (você pode se incluir) a até 9 m que o ouvirem ganham PV temporários iguais ao seu nível + o modificador do atributo aumentado por este talento.');
+F('Mente Afiada','Keen Mind','geral','INT',R('INT'),'• Você ganha proficiência numa destas perícias: Arcanismo, História, Investigação, Natureza ou Religião (ou especialização, se já for proficiente).\n• Você pode fazer a ação de Estudar como ação bônus.');
+F('Treinado em Armadura Leve','Lightly Armored','geral','FOR,DES',null,'Você ganha treinamento com armaduras leves e escudos.',{alias:['Armadura Leve']});
+F('Matador de Magos','Mage Slayer','geral','FOR,DES',null,'• Quando você causa dano a uma criatura que está se concentrando, ela tem desvantagem no teste para manter a concentração.\n• Mente protegida: se falhar num teste de resistência de Inteligência, Sabedoria ou Carisma, você pode passar em vez disso. Depois, só pode usar isto de novo após um descanso curto ou longo.');
+F('Treinamento com Armas Marciais','Martial Weapon Training','geral','FOR,DES',null,'Você ganha proficiência com armas marciais.');
+F('Mestre em Armadura Média','Medium Armor Master','geral','FOR,DES',null,'Usando armadura média, você soma até +3 de Destreza à CA (em vez de +2), se sua Destreza for 16 ou mais.',{pre:'treino com armadura média'});
+F('Treinado em Armadura Média','Moderately Armored','geral','FOR,DES',null,'Você ganha treinamento com armaduras médias.',{pre:'treino com armadura leve',alias:['Armadura Média']});
+F('Combatente Montado','Mounted Combatant','geral','FOR,DES,SAB',null,'• Montado, você tem vantagem em ataques contra criaturas desmontadas a até 1,5 m da montaria e menores que ela.\n• Se sua montaria for alvo de um efeito que permite teste de Destreza para sofrer metade do dano, ela não sofre dano se passar e só metade se falhar.\n• Você pode fazer um ataque que miraria sua montaria mirar você em vez dela.');
+F('Observador','Observant','geral','INT,SAB',R('INT,SAB'),'• Você ganha proficiência numa destas perícias: Intuição, Investigação ou Percepção (ou especialização, se já for proficiente).\n• Você pode fazer a ação de Procurar como ação bônus.',{alias:['Observante']});
+F('Perfurador','Piercer','geral','FOR,DES',null,'• Uma vez por turno, ao acertar com dano perfurante, você pode rolar de novo um dos dados de dano e usar o novo resultado.\n• Num acerto crítico com dano perfurante, role um dado de dano extra.');
+F('Envenenador','Poisoner','geral','DES,INT',null,'• Seu dano de veneno ignora resistência a veneno.\n• Com 1 hora de trabalho, um kit de envenenador e 50 PO em materiais, você prepara doses de veneno em número igual ao seu bônus de proficiência. Como ação bônus, aplica uma dose numa arma ou munição. Quem for atingido faz teste de Constituição (CD 8 + mod. do atributo aumentado + bônus de proficiência): se falhar, sofre 2d8 de dano de veneno e fica Envenenado até o fim do seu próximo turno.');
+F('Mestre de Armas de Haste','Polearm Master','geral','FOR,DES',R('FOR,DES'),'• Depois de atacar com bordão, lança ou arma Pesada com Alcance como parte da ação de Ataque, você pode fazer um ataque com a outra ponta como ação bônus: 1d4 de concussão.\n• Você pode fazer um ataque de oportunidade quando uma criatura entra no alcance dessa arma.',{alias:['Mestre em Armas de Haste']});
+F('Resiliente','Resilient','geral','*',null,'Escolha um atributo: ele recebe +1 e você ganha proficiência nos testes de resistência dele. Use o mesmo atributo nos dois benefícios. Avise o mestre para marcar a proficiência no teste de resistência.');
+F('Conjurador Ritualista','Ritual Caster','geral','INT,SAB,CAR',R('INT,SAB,CAR'),'• Você escolhe magias de ritual de 1º círculo em número igual ao seu bônus de proficiência. Elas ficam sempre preparadas, e você as conjura com o atributo aumentado por este talento.\n• Uma vez por descanso longo, você pode conjurar uma magia de ritual preparada no tempo normal sem gastar espaço.',{alias:['Conjurador de Rituais']});
+F('Sentinela','Sentinel','geral','FOR,DES',R('FOR,DES'),'• Guardião: quando uma criatura a até 1,5 m faz a ação de Desengajar ou acerta um alvo que não seja você, você pode fazer um ataque de oportunidade contra ela.\n• Parar: se acertar um ataque de oportunidade, o deslocamento da criatura vira 0 pelo resto do turno.');
+F('Tocado pelas Sombras','Shadow Touched','geral','INT,SAB,CAR',null,'Você aprende Invisibilidade e uma magia de 1º círculo de Ilusão ou Necromancia à sua escolha. As duas ficam sempre preparadas. Cada uma pode ser conjurada uma vez sem gastar espaço (recupera num descanso longo), e você também pode conjurá-las com seus espaços. A habilidade de conjuração é o atributo aumentado por este talento.',{alias:['Toque Sombrio']});
+F('Atirador de Elite','Sharpshooter','geral','DES',R('DES'),'• Seus ataques com armas à distância ignoram meia cobertura e três quartos de cobertura.\n• Atacar à distância estando a 1,5 m de um inimigo não impõe desvantagem.\n• Atacar além do alcance normal da arma não impõe desvantagem.',{alias:['Mestre-Atirador','Mestre Atirador','Atirador Aguçado','Atirador Certeiro']});
+F('Mestre em Escudos','Shield Master','geral','FOR',null,'• Golpe de escudo: quando ataca com arma corpo a corpo como parte da ação de Ataque, você pode golpear com o escudo uma criatura a até 1,5 m. Ela faz teste de Força (CD 8 + mod. de Força + bônus de proficiência) ou é empurrada 1,5 m ou derrubada (Caído), à sua escolha. Uma vez por turno.\n• Interpor o escudo: se um efeito permitir teste de Destreza para sofrer metade do dano, você pode usar a reação para não sofrer dano nenhum se passar.',{pre:'treino com escudo',alias:['Mestre de Escudo']});
+F('Especialista em Perícia','Skill Expert','geral','*',null,'• Você ganha proficiência em uma perícia à sua escolha.\n• Escolha uma perícia em que é proficiente: você ganha especialização nela (dobra o bônus de proficiência). Peça ao mestre para marcar as perícias na ficha.',{alias:['Perito em Perícias']});
+F('Espreitador','Skulker','geral','DES',R('DES'),'• Você ganha percepção às cegas de 3 m.\n• Durante o combate, tem vantagem nos testes de Destreza (Furtividade) da ação de Esconder.\n• Se estiver escondido e errar um ataque, o ataque não revela sua posição.',{alias:['Furtivo']});
+F('Retalhador','Slasher','geral','FOR,DES',null,'• Uma vez por turno, ao acertar com dano cortante, você reduz o deslocamento do alvo em 3 m até o início do seu próximo turno.\n• Num acerto crítico com dano cortante, o alvo tem desvantagem nas jogadas de ataque até o início do seu próximo turno.');
+F('Veloz','Speedy','geral','DES,CON',R('DES,CON'),'• Seu deslocamento aumenta 3 m.\n• Quando faz a ação de Disparada, terreno difícil não custa movimento extra nesse turno.\n• Ataques de oportunidade contra você têm desvantagem.',{alias:['Ligeiro']});
+F('Atirador Mágico','Spell Sniper','geral','INT,SAB,CAR',MAG,'• Seus ataques com magia ignoram meia cobertura e três quartos de cobertura.\n• Conjurar uma magia com jogada de ataque estando a 1,5 m de um inimigo não impõe desvantagem.\n• Magias com jogada de ataque e alcance de pelo menos 3 m ganham +18 m de alcance.',{alias:['Atirador de Magia']});
+F('Telecinético','Telekinetic','geral','INT,SAB,CAR',null,'• Você aprende Mão Mágica (pode conjurá-la sem componentes verbais ou somáticos, invisível, com +9 m de alcance).\n• Como ação bônus, você empurra telecineticamente uma criatura que consiga ver a até 9 m: ela faz teste de Força (CD 8 + mod. do atributo aumentado + bônus de proficiência) ou é movida 1,5 m para perto ou para longe de você.');
+F('Telepático','Telepathic','geral','INT,SAB,CAR',null,'• Você fala telepaticamente com qualquer criatura que consiga ver a até 18 m, num idioma que conheça. Ela precisa entender o idioma para compreender.\n• Você conjura Detectar Pensamentos uma vez sem espaço (recupera num descanso longo), usando o atributo aumentado por este talento.');
+F('Conjurador de Guerra','War Caster','geral','INT,SAB,CAR',MAG,'• Você tem vantagem nos testes de Constituição para manter a concentração.\n• Magia reativa: em vez de um ataque de oportunidade, você pode conjurar contra a criatura uma magia de 1 ação que tenha só ela como alvo.\n• Você faz os componentes somáticos mesmo com armas ou escudo nas mãos.',{alias:['Conjurador em Combate']});
+F('Mestre de Armas','Weapon Master','geral','FOR,DES',null,'Você ganha a propriedade de Maestria de um tipo de arma simples ou marcial com que seja proficiente. Ao terminar um descanso longo, pode trocar o tipo de arma.');
+/* estilos de luta (Guerreiro, Paladino e Patrulheiro) */
+F('Arquearia','Archery','estilo','',null,'Você ganha +2 nas jogadas de ataque com armas à distância.',{alias:['Arqueiro']});
+F('Combate às Cegas','Blind Fighting','estilo','',null,'Você ganha percepção às cegas de 3 m.');
+F('Defesa','Defense','estilo','',null,'Enquanto estiver usando armadura leve, média ou pesada, você ganha +1 na CA. Peça ao mestre para somar no "Bônus mágico de CA".');
+F('Duelismo','Dueling','estilo','',null,'Empunhando uma arma corpo a corpo numa mão e nenhuma outra arma, você ganha +2 nas jogadas de dano com ela.',{alias:['Duelo']});
+F('Combate com Armas Grandes','Great Weapon Fighting','estilo','',null,'Ao rolar dano de um ataque com arma corpo a corpo empunhada com as duas mãos (Duas Mãos ou Versátil), trate qualquer 1 ou 2 nos dados como 3.');
+F('Interceptação','Interception','estilo','',null,'Quando uma criatura que você consiga ver acerta outra criatura a até 1,5 m de você, use sua reação para reduzir o dano em 1d10 + seu bônus de proficiência. Você precisa estar empunhando um escudo ou uma arma simples ou marcial.',{alias:['Interceptar']});
+F('Proteção','Protection','estilo','',null,'Quando uma criatura que você consiga ver ataca outro alvo a até 1,5 m de você, use sua reação para impor desvantagem a esse ataque e aos demais ataques contra o alvo até o início do seu próximo turno, enquanto continuar a até 1,5 m. Você precisa estar empunhando um escudo.');
+F('Combate com Armas de Arremesso','Thrown Weapon Fighting','estilo','',null,'Você saca a arma com Arremesso como parte do ataque, e ganha +2 nas jogadas de dano de ataques à distância com ela.');
+F('Combate com Duas Armas','Two-Weapon Fighting','estilo','',null,'Ao fazer o ataque extra da propriedade Leve, você soma o modificador de atributo ao dano desse ataque.');
+F('Combate Desarmado','Unarmed Fighting','estilo','',null,'Seu ataque desarmado causa 1d6 + mod. de Força de concussão (1d8 se não estiver empunhando armas nem escudo). No início de cada turno, você pode causar 1d4 de concussão a uma criatura agarrada por você.',{alias:['Luta Desarmada']});
+/* dádivas épicas (nível 19) */
+F('Dádiva da Proeza em Combate','Boon of Combat Prowess','epica','*',null,'Quando errar uma jogada de ataque, você pode acertar em vez disso. Depois, só pode usar isto de novo no início do seu próximo turno.');
+F('Dádiva da Viagem Dimensional','Boon of Dimensional Travel','epica','*',null,'Logo depois de fazer a ação de Ataque ou a ação de Magia, você pode se teleportar até 9 m para um espaço desocupado que consiga ver.');
+F('Dádiva da Resistência a Energia','Boon of Energy Resistance','epica','*',null,'• Escolha dois tipos entre ácido, elétrico, fogo, frio, necrótico, psíquico, radiante, trovejante e veneno: você tem resistência a eles. Pode trocar ao fim de um descanso longo.\n• Ao sofrer dano de um desses tipos, use a reação para forçar uma criatura a até 18 m a fazer teste de Destreza (CD 8 + mod. de Constituição + bônus de proficiência). Se falhar, ela sofre 2d12 + mod. de Constituição desse tipo de dano.');
+F('Dádiva do Destino','Boon of Fate','epica','*',null,'Quando você ou outra criatura a até 18 m passar ou falhar num Teste de D20, você pode rolar 2d4 e somar ou subtrair do resultado. Depois, só pode usar isto de novo após rolar iniciativa ou terminar um descanso curto ou longo.');
+F('Dádiva da Fortitude','Boon of Fortitude','epica','*',null,'• Seu máximo de PV aumenta 40 (a ficha já soma).\n• Quando recupera PV, você pode recuperar um extra igual ao seu modificador de Constituição. Uma vez por turno.');
+F('Dádiva do Ataque Irresistível','Boon of Irresistible Offense','epica','FOR,DES',null,'• Seu dano de concussão, cortante e perfurante ignora resistência.\n• Quando tira 20 no d20 de um ataque, você causa dano extra igual ao valor do atributo aumentado por esta dádiva.');
+F('Dádiva da Recuperação','Boon of Recovery','epica','*',null,'• Último esforço: quando seus PV cairiam a 0, você pode ficar com 1 PV e recuperar PV iguais à metade do seu máximo. Uma vez por descanso longo.\n• Você tem 10d10 de reserva. Como ação bônus, rola quantos dados quiser e recupera essa quantidade de PV. A reserva volta num descanso longo.');
+F('Dádiva da Perícia','Boon of Skill','epica','*',null,'Você ganha proficiência em todas as perícias e especialização em uma delas. Peça ao mestre para marcar na ficha.');
+F('Dádiva da Velocidade','Boon of Speed','epica','*',null,'• Como ação bônus, você faz a ação de Desengajar, que também encerra a condição Agarrado em você.\n• Seu deslocamento aumenta 9 m.');
+F('Dádiva da Lembrança de Magia','Boon of Spell Recall','epica','INT,SAB,CAR',MAG,'Quando conjura uma magia com espaço do 1º ao 4º círculo, role 1d4. Se o resultado for igual ao círculo do espaço, ele não é gasto.');
+F('Dádiva do Espírito Noturno','Boon of the Night Spirit','epica','*',null,'• Em penumbra ou escuridão, como ação bônus, você fica Invisível até fazer uma ação, ação bônus ou reação.\n• Em penumbra ou escuridão, você tem resistência a todo dano, exceto psíquico e radiante.');
+F('Dádiva da Visão Verdadeira','Boon of Truesight','epica','*',null,'Você ganha visão verdadeira de 18 m.');
+function featPre(f){
+  const p=[]; if(f.cat==='geral') p.push('nível 4+'); if(f.cat==='epica') p.push('nível 19+'); if(f.cat==='estilo') p.push('característica Estilo de Luta (Guerreiro, Paladino ou Patrulheiro)');
+  if (f.req.ab) p.push(f.req.ab.map(a=>AB_NOME[a]).join(' ou ')+' '+f.req.min+'+'); if (f.req.mag) p.push('conjuração ou Magia de Pacto'); if (f.pre) p.push(f.pre);
+  return p.join(', ');
+}
+FEAT_LIST.forEach(f=>{
+  if (f.cat==='origem') return;
+  const pre=featPre(f);
+  const corpo = f.txt + (f.abs.length ? `\nAumento de atributo: +1 em ${f.abs.length===6?'um atributo à sua escolha':f.abs.map(a=>AB_NOME[a]).join(' ou ')} (máximo ${f.max}). A ficha aplica ao escolher o talento na subida de nível.` : '');
+  [f.nome,f.en].forEach(n=>{ RULES[ruleKey(n)+'|talento'] ||= [`${FEAT_CAT[f.cat]}${pre?' · Pré-requisito: '+pre:''}`, corpo]; });
+});
+/* motivo pelo qual o personagem não pode pegar o talento no nível nl (ou '' se pode) */
+function featCheck(f, c, nl){
+  if (f.cat==='geral' && nl<4) return `${f.nome} exige nível 4.`;
+  if (f.cat==='epica' && nl<19) return `${f.nome} exige nível 19.`;
+  if (f.cat==='estilo' && !ESTILO_CLASSES.includes(c.classe)) return `${f.nome} exige a característica Estilo de Luta (Guerreiro, Paladino ou Patrulheiro).`;
+  if (f.req.ab && !f.req.ab.some(a=>(c.atributos[a]||0)>=f.req.min)) return `${f.nome} exige ${f.req.ab.map(a=>AB_NOME[a]).join(' ou ')} ${f.req.min}.`;
+  if (f.req.mag && !CLASSES[c.classe]?.magia) return `${f.nome} exige conjuração ou Magia de Pacto.`;
+  if (!f.rep && (c.talentos||[]).some(t=>FEATS[ruleKey(t)]===f)) return `O personagem já tem ${f.nome}.`;
+  return '';
+}
+function featOptions(c, nl, sel){
+  const grupos = nl>=19 ? ['epica','geral','estilo','origem'] : ['geral','estilo','origem'];
+  return `<option value="">Escolha o talento…</option>` + grupos.map(g=>`<optgroup label="${FEAT_CAT[g]}">${FEAT_LIST.filter(f=>f.cat===g).map(f=>{ const err=featCheck(f,c,nl);
+    return `<option value="${h(f.nome)}" ${f.nome===sel?'selected':''} ${err?'disabled':''}>${h(f.nome)}${f.abs.length?` (+1 ${f.abs.length===6?'qualquer':f.abs.join('/')})`:''}${err?' · indisponível':''}</option>`; }).join('')}</optgroup>`).join('')
+    + `<option value="__outro" ${sel==='__outro'?'selected':''}>Outro talento (escrever o nome)</option>`;
+}
+function featAbsOptions(f, c, sel){
+  if (!f || !f.abs.length) return '';
+  return `<option value="">Atributo +1…</option>`+f.abs.map(a=>`<option value="${a}" ${a===sel?'selected':''} ${(c.atributos[a]||0)>=f.max?'disabled':''}>${AB_NOME[a]} (${c.atributos[a]||0})</option>`).join('');
+}
+
 /* ============ MAGIAS DO SRD 5.2 (truques ao 3º círculo) ============
    Resumos próprios em português, baseados no SRD 5.2 (CC BY 4.0).
    [nome, nome em inglês, círculo, escola, conjuração, alcance, componentes, duração, texto, outros nomes] */
@@ -866,7 +988,7 @@ function makeDbStore(db){
 /* ============ REGRAS: CÁLCULOS DA FICHA ============ */
 function hpMax(c){
   const sp=SPECIES[c.especie]||{};
-  const vigoroso = (c.talentos||[]).some(t=>/vigoroso|tough/i.test(t)) ? 2*c.nivel : 0;
+  const vigoroso = ((c.talentos||[]).some(t=>/vigoroso|tough/i.test(t)) ? 2*c.nivel : 0) + ((c.talentos||[]).some(t=>/fortitude/i.test(t)) ? 40 : 0);
   return Math.max(c.nivel, c.pvBase + c.nivel*mod(c.atributos.CON) + (sp.pvExtra ? sp.pvExtra*c.nivel : 0) + vigoroso);
 }
 function derive(c){
@@ -981,7 +1103,7 @@ function draftCompute(d){
 const draftLevel = d => Math.max(1, Math.min(20, Math.floor(+d.nivel||1)));
 function levelPayload(d, l){
   const m=(d.melhorias||{})[l]||{};
-  return {hp:d.hpModo==='rolado'?'rolado':'media', rolado:(d.hpRolls||{})[l], subclasse:d.subclasse, asiModo:m.modo||'2', a1:m.a1||'', a2:m.a2||'', talento:m.talento||''};
+  return {hp:d.hpModo==='rolado'?'rolado':'media', rolado:(d.hpRolls||{})[l], subclasse:d.subclasse, asiModo:m.modo||'2', a1:m.a1||'', a2:m.a2||'', talento:m.talento||'', talentoOutro:m.talentoOutro||'', fatr:m.fatr||''};
 }
 function applyLevels(c, d){
   const alvo=draftLevel(d);
@@ -1049,7 +1171,7 @@ function describe(type,p,c){
       const dv=CLASSES[c?.classe]?.dado; const dd=dv?`d${dv}`:'dado de vida';
       let s=`Subir para o nível ${(c?.nivel||0)+1}, ${p.hp==='rolado'?`PV: rolou ${p.rolado} no ${dd}${p.rolApp?' (rolado no app)':''}`:`PV pela média${dv?` (${dv/2+1})`:''}`}`;
       if (p.ajusteMestre) s+=` (ajustado pelo mestre; o jogador ${p.ajusteMestre})`;
-      if (p.asiModo==='2') s+=`, +2 ${p.a1}`; else if (p.asiModo==='11') s+=`, +1 ${p.a1} e +1 ${p.a2}`; else if (p.asiModo==='talento') s+=`, talento: ${p.talento}`;
+      if (p.asiModo==='2') s+=`, +2 ${p.a1}`; else if (p.asiModo==='11') s+=`, +1 ${p.a1} e +1 ${p.a2}`; else if (p.asiModo==='talento') s+=`, talento: ${p.talento==='__outro'?p.talentoOutro:p.talento}${p.fatr?` (+1 ${p.fatr})`:''}`;
       if (p.subclasse) s+=`, subclasse: ${p.subclasse}`; return s;
     }
     case 'equip': return `Equipar: ${ARMORS[p.armadura]?.nome}${p.escudo?' + escudo':''}${+p.caBonus?`, bônus mágico ${sg(+p.caBonus)} CA`:''}`;
@@ -1120,9 +1242,20 @@ function applyChange(c0, type, p){
       if (isAsiLevel(cls,nl)){
         if (p.asiModo==='2'){ if(!p.a1) throw new Error('Escolha o atributo.'); c.atributos[p.a1]+=2; }
         else if (p.asiModo==='11'){ if(!p.a1||!p.a2||p.a1===p.a2) throw new Error('Escolha dois atributos diferentes.'); c.atributos[p.a1]+=1; c.atributos[p.a2]+=1; }
-        else if (p.asiModo==='talento'){ if(!String(p.talento||'').trim()) throw new Error('Informe o talento.'); c.talentos.push(String(p.talento).trim().slice(0,80)); }
-        else throw new Error('Este nível concede Melhoria de Atributo ou talento: escolha uma opção.');
-        AB.forEach(a=>{ if(c.atributos[a]>20) throw new Error(`${AB_NOME[a]} não pode passar de 20.`); });
+        let lim=20;
+        if (p.asiModo==='talento'){
+          const nm=String((p.talento==='__outro' ? p.talentoOutro : p.talento)||'').trim(); if(!nm) throw new Error('Escolha o talento.');
+          const f=FEATS[ruleKey(nm)];
+          if (f){ const err=featCheck(f,c,nl); if(err) throw new Error(err);
+            let txt=f.nome;
+            if (f.abs.length){ if(!f.abs.includes(p.fatr)) throw new Error(`${f.nome}: escolha o atributo que recebe +1 (${f.abs.map(a=>AB_NOME[a]).join(', ')}).`);
+              lim=f.max; c.atributos[p.fatr]+=1; txt+=` (+1 ${p.fatr})`;
+              if (c.atributos[p.fatr]>lim) throw new Error(`${AB_NOME[p.fatr]} não pode passar de ${lim}.`); }
+            c.talentos.push(txt);
+          } else c.talentos.push(nm.slice(0,80));
+        }
+        else if (p.asiModo!=='2' && p.asiModo!=='11') throw new Error('Este nível concede Melhoria de Atributo ou talento: escolha uma opção.');
+        if (lim===20) AB.forEach(a=>{ if(c.atributos[a]>20) throw new Error(`${AB_NOME[a]} não pode passar de 20.`); });
       }
       if (nl===3){ if(!String(p.subclasse||'').trim()) throw new Error('No nível 3 o personagem escolhe a subclasse.'); c.subclasse=String(p.subclasse).trim().slice(0,60); }
       break;
@@ -1404,6 +1537,7 @@ function levelPanel(d, r){
   const lv=r.nivel, cls=r.cls, media=cls.dado/2+1;
   const asis=[]; for(let l=2;l<=lv;l++) if(isAsiLevel(cls,l)) asis.push(l);
   const abOpts = sel => opt('','—',sel)+AB.map(a=>opt(a,AB_NOME[a],sel)).join('');
+  const cBase = {classe:d.classe, atributos:{...r.final}, talentos:[...r.talentos]};
   return `<div class="panel"><h3>Nível inicial</h3>
     <div class="cols2"><div class="f"><label>Nível</label><select data-f="nivel">${Array.from({length:20},(_,i)=>opt(i+1,'Nível '+(i+1),lv)).join('')}</select></div>
     ${lv>1?`<div class="f"><label>Pontos de vida dos níveis 2 a ${lv}</label><select data-f="hpModo">${opt('media',`Média (${media} + CON por nível)`,d.hpModo)}${opt('rolado',`Rolados no d${cls.dado}`,d.hpModo)}</select></div>`:''}</div>
@@ -1413,7 +1547,7 @@ function levelPanel(d, r){
     ${asis.map(l=>{ const m=(d.melhorias||{})[l]||{}; const modo=m.modo||'2';
       return `<div class="f"><label>Nível ${l}: ${l===19?'Dádiva épica ou Melhoria de Atributo':'Melhoria de Atributo ou talento'}</label>
       <div class="cols3"><select data-f="melhorias.${l}.modo" aria-label="Tipo de melhoria no nível ${l}">${opt('2','+2 em um atributo',modo)}${opt('11','+1 em dois atributos',modo)}${opt('talento','Talento',modo)}</select>
-      ${modo==='talento'?`<input data-f="melhorias.${l}.talento" data-live maxlength="80" value="${h(m.talento||'')}" placeholder="Nome do talento" style="grid-column:span 2" aria-label="Talento no nível ${l}">`
+      ${modo==='talento'?`<select data-f="melhorias.${l}.talento" aria-label="Talento no nível ${l}">${featOptions(cBase,l,m.talento||'')}</select>${m.talento==='__outro'?`<input data-f="melhorias.${l}.talentoOutro" data-live maxlength="80" value="${h(m.talentoOutro||'')}" placeholder="Nome do talento" aria-label="Nome do talento no nível ${l}">`:FEATS[ruleKey(m.talento)]?.abs.length?`<select data-f="melhorias.${l}.fatr" aria-label="Atributo +1 do talento no nível ${l}">${featAbsOptions(FEATS[ruleKey(m.talento)],cBase,m.fatr||'')}</select>`:''}`
         :`<select data-f="melhorias.${l}.a1" aria-label="Atributo no nível ${l}">${abOpts(m.a1)}</select>${modo==='11'?`<select data-f="melhorias.${l}.a2" aria-label="Segundo atributo no nível ${l}">${abOpts(m.a2)}</select>`:''}`}</div></div>`; }).join('')}
     ${lv>1?'<div class="small muted">As magias entram depois, pelo pedido "Aprender magia", já com os espaços do nível escolhido.</div>':''}
   </div>`;
@@ -1547,7 +1681,8 @@ function actionForm(c,d){
         <div class="row" style="margin:-4px 0 12px;gap:8px"><button type="button" class="btn sm" data-act="lvl-roll">Rolar aqui (d${d.cls.dado})</button><span class="small muted">O app rola o dado e o mestre vê que o valor veio daqui. Só dá para rolar uma vez por nível.</span></div>`; })()}
       ${nl===3?`<div class="f"><label>Subclasse</label><input name="subclasse" maxlength="60" required></div>`:''}
       ${asi?`<div class="f"><label>Melhoria</label><select name="asiModo"><option value="2">+2 em um atributo</option><option value="11">+1 em dois atributos</option><option value="talento">Talento</option></select></div>
-      <div class="cols3"><div class="f"><label>Atributo 1</label><select name="a1"><option value="">—</option>${AB.map(a=>`<option value="${a}">${a} (${c.atributos[a]})</option>`).join('')}</select></div><div class="f"><label>Atributo 2</label><select name="a2"><option value="">—</option>${AB.map(a=>`<option value="${a}">${a} (${c.atributos[a]})</option>`).join('')}</select></div><div class="f"><label>Talento</label><input name="talento" maxlength="80"></div></div>`:''}`; }
+      <div class="f"><label>Talento (se escolher "Talento")</label><select name="talento" data-feat-sel>${featOptions(c,nl,"")}</select><input name="talentoOutro" maxlength="80" placeholder="Nome do talento" style="margin-top:6px" hidden><select name="fatr" style="margin-top:6px" hidden aria-label="Atributo que recebe +1"></select><div class="small muted feat-hint" style="margin-top:4px"></div></div>
+      <div class="cols3"><div class="f"><label>Atributo 1</label><select name="a1"><option value="">—</option>${AB.map(a=>`<option value="${a}">${a} (${c.atributos[a]})</option>`).join('')}</select></div><div class="f"><label>Atributo 2</label><select name="a2"><option value="">—</option>${AB.map(a=>`<option value="${a}">${a} (${c.atributos[a]})</option>`).join('')}</select></div></div>`:''}`; }
   }
   else if (t==='equip') body=`<div class="f"><label>Armadura</label><select name="armadura">${Object.entries(ARMORS).map(([k,v])=>opt(k,v.nome,c.armadura)).join('')}</select></div>
       <div class="cols2"><div class="f">${chk('escudo','Escudo',c.escudo)}</div><div class="f"><label>Bônus mágico de CA</label><input name="caBonus" type="number" min="-5" max="5" value="${+c.caBonus||0}"></div></div>`;
@@ -2036,6 +2171,12 @@ document.addEventListener('change', async e=>{
     return;
   }
   if (el.matches('[data-spell-name]')){ const m=SPELLS[ruleKey(el.value)]; const sel=el.form?.elements.circ; if(m && sel) sel.value=String(m.circ); return; }
+  if (el.matches('[data-feat-sel]')){ const fm=el.form; const c=S.chars.find(x=>x.id===S.charId); if(!fm||!c) return;
+    const f=FEATS[ruleKey(el.value)]; const fa=fm.elements.fatr, fo=fm.elements.talentoOutro, hint=fm.querySelector('.feat-hint');
+    fo.hidden = el.value!=='__outro'; fa.innerHTML=featAbsOptions(f,c,''); fa.hidden=!(f&&f.abs.length);
+    if (el.value) fm.elements.asiModo.value='talento';
+    if (hint) hint.textContent = f ? (RULES[ruleKey(f.nome)+'|talento']||RULES[ruleKey(f.nome)]||['',''])[0] : '';
+    return; }
   if (el.matches('[data-filter]')){ S.filtro[el.dataset.filter]=el.value; render(true); return; }
   if (el.matches('[data-act-type]')){ S.actionType=el.value; render(true); return; }
   if (!S.draft || !el.closest('form[data-form="criar"]')) return;
