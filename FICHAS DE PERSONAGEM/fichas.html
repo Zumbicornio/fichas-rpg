@@ -433,7 +433,7 @@ F('Observador','Observant','geral','INT,SAB',R('INT,SAB'),'• Você ganha profi
 F('Perfurador','Piercer','geral','FOR,DES',null,'• Uma vez por turno, ao acertar com dano perfurante, você pode rolar de novo um dos dados de dano e usar o novo resultado.\n• Num acerto crítico com dano perfurante, role um dado de dano extra.');
 F('Envenenador','Poisoner','geral','DES,INT',null,'• Seu dano de veneno ignora resistência a veneno.\n• Com 1 hora de trabalho, um kit de envenenador e 50 PO em materiais, você prepara doses de veneno em número igual ao seu bônus de proficiência. Como ação bônus, aplica uma dose numa arma ou munição. Quem for atingido faz teste de Constituição (CD 8 + mod. do atributo aumentado + bônus de proficiência): se falhar, sofre 2d8 de dano de veneno e fica Envenenado até o fim do seu próximo turno.');
 F('Mestre de Armas de Haste','Polearm Master','geral','FOR,DES',R('FOR,DES'),'• Depois de atacar com bordão, lança ou arma Pesada com Alcance como parte da ação de Ataque, você pode fazer um ataque com a outra ponta como ação bônus: 1d4 de concussão.\n• Você pode fazer um ataque de oportunidade quando uma criatura entra no alcance dessa arma.',{alias:['Mestre em Armas de Haste']});
-F('Resiliente','Resilient','geral','*',null,'Escolha um atributo: ele recebe +1 e você ganha proficiência nos testes de resistência dele. Use o mesmo atributo nos dois benefícios. Avise o mestre para marcar a proficiência no teste de resistência.');
+F('Resiliente','Resilient','geral','*',null,'Escolha um atributo: ele recebe +1 e você ganha proficiência nos testes de resistência dele. Use o mesmo atributo nos dois benefícios. A ficha marca a proficiência automaticamente.');
 F('Conjurador Ritualista','Ritual Caster','geral','INT,SAB,CAR',R('INT,SAB,CAR'),'• Você escolhe magias de ritual de 1º círculo em número igual ao seu bônus de proficiência. Elas ficam sempre preparadas, e você as conjura com o atributo aumentado por este talento.\n• Uma vez por descanso longo, você pode conjurar uma magia de ritual preparada no tempo normal sem gastar espaço.',{alias:['Conjurador de Rituais']});
 F('Sentinela','Sentinel','geral','FOR,DES',R('FOR,DES'),'• Guardião: quando uma criatura a até 1,5 m faz a ação de Desengajar ou acerta um alvo que não seja você, você pode fazer um ataque de oportunidade contra ela.\n• Parar: se acertar um ataque de oportunidade, o deslocamento da criatura vira 0 pelo resto do turno.');
 F('Tocado pelas Sombras','Shadow Touched','geral','INT,SAB,CAR',null,'Você aprende Invisibilidade e uma magia de 1º círculo de Ilusão ou Necromancia à sua escolha. As duas ficam sempre preparadas. Cada uma pode ser conjurada uma vez sem gastar espaço (recupera num descanso longo), e você também pode conjurá-las com seus espaços. A habilidade de conjuração é o atributo aumentado por este talento.',{alias:['Toque Sombrio']});
@@ -1002,7 +1002,8 @@ function derive(c){
   if (c.escudo) ac += 2;
   ac += (+c.caBonus||0);
   const alerta = (c.talentos||[]).some(t=>/alerta/i.test(t));
-  const saves = AB.map(a=>{ const prof=cls.saves.includes(a); return {a, prof, v:m[a]+(prof?P:0)}; });
+  const resil = (c.talentos||[]).map(t=>/^ *(?:resiliente|resilient)[^(]*[(](?:[+]1 *)?(FOR|DES|CON|INT|SAB|CAR)[)]/i.exec(t)).filter(Boolean).map(x=>x[1].toUpperCase());
+  const saves = AB.map(a=>{ const prof=cls.saves.includes(a)||resil.includes(a); return {a, prof, v:m[a]+(prof?P:0)}; });
   const skills = SKILLS.map(([k,n,a])=>{ const prof=(c.pericias||[]).includes(k); return {k,n,a,prof,v:m[a]+(prof?P:0)}; });
   const perc = skills.find(s=>s.k==='percepcao').v;
   let magia=null;
