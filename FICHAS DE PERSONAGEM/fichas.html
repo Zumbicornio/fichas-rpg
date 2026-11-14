@@ -451,7 +451,7 @@ F('Mestre de Armas','Weapon Master','geral','FOR,DES',null,'Você ganha a propri
 /* estilos de luta (Guerreiro, Paladino e Patrulheiro) */
 F('Arquearia','Archery','estilo','',null,'Você ganha +2 nas jogadas de ataque com armas à distância.',{alias:['Arqueiro']});
 F('Combate às Cegas','Blind Fighting','estilo','',null,'Você ganha percepção às cegas de 3 m.');
-F('Defesa','Defense','estilo','',null,'Enquanto estiver usando armadura leve, média ou pesada, você ganha +1 na CA. Peça ao mestre para somar no "Bônus mágico de CA".');
+F('Defesa','Defense','estilo','',null,'Enquanto estiver usando armadura leve, média ou pesada, você ganha +1 na CA. A ficha soma o +1 automaticamente quando há armadura equipada.');
 F('Duelismo','Dueling','estilo','',null,'Empunhando uma arma corpo a corpo numa mão e nenhuma outra arma, você ganha +2 nas jogadas de dano com ela.',{alias:['Duelo']});
 F('Combate com Armas Grandes','Great Weapon Fighting','estilo','',null,'Ao rolar dano de um ataque com arma corpo a corpo empunhada com as duas mãos (Duas Mãos ou Versátil), trate qualquer 1 ou 2 nos dados como 3.');
 F('Interceptação','Interception','estilo','',null,'Quando uma criatura que você consiga ver acerta outra criatura a até 1,5 m de você, use sua reação para reduzir o dano em 1d10 + seu bônus de proficiência. Você precisa estar empunhando um escudo ou uma arma simples ou marcial.',{alias:['Interceptar']});
@@ -1001,6 +1001,8 @@ function derive(c){
   else ac = ar.base + (ar.dex==='full' ? m.DES : ar.dex===0 ? 0 : Math.min(m.DES, ar.dex));
   if (c.escudo) ac += 2;
   ac += (+c.caBonus||0);
+  const defesa = c.armadura!=='nenhuma' && !!ARMORS[c.armadura] && (c.talentos||[]).some(t=>/^ *(?:defesa|defense) *$/i.test(t));
+  if (defesa) ac += 1;
   const alerta = (c.talentos||[]).some(t=>/alerta/i.test(t));
   const resil = (c.talentos||[]).map(t=>/^ *(?:resiliente|resilient)[^(]*[(](?:[+]1 *)?(FOR|DES|CON|INT|SAB|CAR)[)]/i.exec(t)).filter(Boolean).map(x=>x[1].toUpperCase());
   const saves = AB.map(a=>{ const prof=cls.saves.includes(a)||resil.includes(a); return {a, prof, v:m[a]+(prof?P:0)}; });
@@ -1821,7 +1823,7 @@ function viewSheet(){
             <div class="panel"><h3>Traços e talentos</h3><div class="small">${d.sp.tracos.map(t=>`<div>• ${ruleLink(t,'traco')}</div>`).join('')}${(c.talentos||[]).map(t=>`<div>• ${ruleLink(t,'talento')}</div>`).join('')}</div></div>
           </div>
           <div class="stack">
-            <div class="panel"><h3>Equipamento</h3><div class="small">${ARMORS[c.armadura]?ruleLink(ARMORS[c.armadura].nome,'armadura',` data-arm="${h(c.armadura)}"`):''}${c.escudo?` · ${ruleLink('Escudo','armadura')}`:''}${+c.caBonus?` · bônus ${sg(+c.caBonus)} CA`:''}</div></div>
+            <div class="panel"><h3>Equipamento</h3><div class="small">${ARMORS[c.armadura]?ruleLink(ARMORS[c.armadura].nome,'armadura',` data-arm="${h(c.armadura)}"`):''}${c.escudo?` · ${ruleLink('Escudo','armadura')}`:''}${+c.caBonus?` · bônus ${sg(+c.caBonus)} CA`:''}${(c.talentos||[]).some(t=>/^ *(?:defesa|defense) *$/i.test(t))?` · ${ruleLink('Defesa','talento')} ${c.armadura!=='nenhuma'?'+1 CA':'(sem armadura, não soma)'}`:''}</div></div>
             <div class="panel"><h3>Moedas</h3><div class="row" style="gap:14px">${COINS.map(([k,ab])=>`<span><b>${c.moedas[k]||0}</b> <span class="muted small">${ab}</span></span>`).join('')}</div></div>
             <div class="panel"><h3>Inventário</h3>${c.inventario.length?`<div class="list">${c.inventario.map(i=>`<div class="li small"><span>${ruleLink(i.nome,'item')}${i.obs?` <span class="muted">· ${h(i.obs)}</span>`:''}</span><b>×${i.qtd}</b></div>`).join('')}</div>`:'<div class="muted small">Vazio.</div>'}</div>
           </div>
