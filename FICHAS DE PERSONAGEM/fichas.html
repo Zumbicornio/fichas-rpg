@@ -787,7 +787,7 @@ function portrait(img, nome, cls=''){
 const S = {
   mode:'carregando', isMaster:false, myId:null, user:null,
   chars:[], reqDocs:{}, estado:{}, rolls:[], tab:'personagens', charId:null, actionType:'item',
-  draft:null, names:{}, namesPending:new Set(), notice:'', loaded:false, delArm:null, deferred:false, regras:{}, pop:null, filtro:{status:'',campanha:''}, people:[], registered:false, isOwner:false, mestres:[]
+  draft:null, names:{}, namesPending:new Set(), notice:'', loaded:false, delArm:null, deferred:false, regras:{}, pop:null, filtro:{status:'',campanha:''}, people:[], registered:false, isOwner:false, mestres:[], donoId:null
 };
 let store = null;
 
@@ -804,8 +804,8 @@ function makeLocalStore(){
     async setEstado(owner,charId,e){ (mem.est[owner] ||= {chars:{}}).chars[charId]=clone(e); emitE(); },
     onRequests(cb){ rc.push(cb); setTimeout(emitR); },
     onRegras(cb){ gc.push(cb); setTimeout(emitG); },
-    onMestres(cb){ mc.push(cb); setTimeout(()=>cb([...mem.mestres])); },
-    async saveMestres(ids){ mem.mestres=[...ids]; mc.forEach(f=>f([...ids])); },
+    onMestres(cb){ mc.push(cb); setTimeout(()=>cb({ids:[...mem.mestres], dono:'demo-mestre'})); },
+    async saveMestres(ids){ mem.mestres=[...ids]; mc.forEach(f=>f({ids:[...ids], dono:'demo-mestre'})); },
     async saveRegra(slug,r){ mem.regras[slug]=clone(r); emitG(); },
     async deleteRegra(slug){ delete mem.regras[slug]; emitG(); },
     async ensureEstado(){ if(!mem.est[S.myId]){ mem.est[S.myId]={chars:{}}; emitE(); } },
@@ -829,8 +829,7 @@ function makeDbStore(db){
     saveCharacter(c){ const {id,...rest}=clone(c); return q('characters/'+id, ()=>db.doc('characters/'+id).set(rest)); },
     deleteCharacter(id){ return q('characters/'+id, ()=>db.doc('characters/'+id).delete()); },
     onEstado(cb,err){
-      if (S.isMaster) return db.collection('estado').onSnapshot(s => { const m={}; s.docs.forEach(d=>{ if(d.exists) m[d.id]=clone(d.data()); }); cb(m); }, err);
-      return db.doc('estado/'+S.myId).onSnapshot(d => cb(d.exists ? {[S.myId]:clone(d.data())} : {}), err);
+      return db.collection('estado').onSnapshot(s => { const m={}; s.docs.forEach(d=>{ if(d.exists) m[d.id]=clone(d.data()); }); cb(m); }, err);
     },
     setEstado(owner,charId,e){
       const p='estado/'+owner; e=clone(e);
@@ -854,8 +853,8 @@ function makeDbStore(db){
         return ref.update({items:{[item.id]:item}});
       });
     },
-    onMestres(cb,err){ return db.doc('config/mestres').onSnapshot(d => cb(d.exists ? (d.data().ids||[]).filter(x=>typeof x==='string') : []), err); },
-    saveMestres(ids){ return q('config/mestres', ()=>db.doc('config/mestres').set({ids:[...ids]})); },
+    onMestres(cb,err){ return db.doc('config/mestres').onSnapshot(d => { const v=d.exists?d.data():{}; cb({ids:(v.ids||[]).filter(x=>typeof x==='string'), dono:typeof v.dono==='string'?v.dono:null}); }, err); },
+    saveMestres(ids){ return q('config/mestres', ()=>db.doc('config/mestres').set({ids:[...ids], dono:S.myId})); },
     onRegras(cb,err){ return db.collection('regras').onSnapshot(s => { const m={}; s.docs.forEach(d=>{ if(d.exists) m[d.id]=clone(d.data()); }); cb(m); }, err); },
     saveRegra(slug,r){ return q('regras/'+slug, ()=>db.doc('regras/'+slug).set(clone(r))); },
     deleteRegra(slug){ return q('regras/'+slug, ()=>db.doc('regras/'+slug).delete()); },
@@ -1328,13 +1327,17 @@ function renderChrome(){
   }
   $('#badges').innerHTML=b.join('');
   const pend=pendingList().length;
-  const tabs=[['personagens',S.isMaster?'Todos os personagens':'Meus personagens'],['criar','Criar personagem']];
+  const tabs=[['personagens',S.isMaster?'Todos os personagens':'Personagens'],['criar','Criar personagem']];
   if (S.isMaster) tabs.push(['aprovacoes',`Aprovações${pend?`<span class="count">${pend}</span>`:''}`]);
   else tabs.push(['solicitacoes','Minhas solicitações']);
   if (S.isOwner) tabs.push(['mestres','Mestres']);
   $('#nav').innerHTML = tabs.map(([k,l])=>`<button class="${S.tab===k||(S.tab==='ficha'&&k==='personagens')?'on':''}" data-act="tab" data-tab="${k}">${l}</button>`).join('');
 }
-function visibleChars(){ return S.chars.filter(c=>S.isMaster || c.ownerId===S.myId).sort((a,b)=>a.nome.localeCompare(b.nome)); }
+/* Jogadores veem as próprias fichas e as dos outros jogadores, mas não as dos mestres (dono do app e lista de mestres). */
+const isMasterId = id => !!id && (id===S.donoId || S.mestres.includes(id));
+const canSee = c => S.isMaster || c.ownerId===S.myId || !isMasterId(c.ownerId);
+const isMine = c => S.isMaster || c.ownerId===S.myId;
+function visibleChars(){ return S.chars.filter(canSee).sort((a,b)=> (S.isMaster?0:(b.ownerId===S.myId)-(a.ownerId===S.myId)) || a.nome.localeCompare(b.nome)); }
 function hpColor(r){ return r>.5?'var(--green)':r>.25?'var(--gold)':'var(--red)'; }
 function pendingFor(charId){ return pendingList().filter(r=>r.charId===charId).length + (S.isMaster?0:myRequests().filter(r=>r.charId===charId&&r.status==='pendente').length); }
 
@@ -1357,7 +1360,7 @@ function viewList(){
       <div style="margin-top:6px">${statusChip(c)}</div>
       <div class="hpbar"><i style="width:${r*100}%;background:${hpColor(r)}"></i></div>
       <div class="row between small"><span>PV ${pv}/${d.max}${e.temp?` (+${e.temp})`:''}</span><span>CA ${d.ac}</span><span>Iniciativa ${sg(d.init)}</span></div>
-      ${S.isMaster?`<div class="small muted" style="margin-top:6px">Jogador: ${h(nameOf(c.ownerId))}</div>`:''}
+      ${S.isMaster||c.ownerId!==S.myId?`<div class="small muted" style="margin-top:6px">Jogador: ${h(nameOf(c.ownerId))}</div>`:'<div class="small" style="margin-top:6px;color:var(--gold2)">Sua ficha</div>'}
     </div></div>`;}).join('')}</div>`;
 }
 
@@ -1575,6 +1578,7 @@ function doAttack(c, id, vers){
 }
 
 async function changeEstado(c, fn){
+  if (!isMine(c)) return;
   const d=derive(c); const e=est(c); fn(e,d);
   e.dano=Math.max(0,Math.min(d.max,Math.floor(e.dano))); e.temp=Math.max(0,Math.floor(e.temp));
   if (d.max-e.dano>0) e.morte={s:0,f:0};
@@ -1583,26 +1587,27 @@ async function changeEstado(c, fn){
 
 function viewSheet(){
   const c=S.chars.find(x=>x.id===S.charId);
-  if (!c || (!S.isMaster && c.ownerId!==S.myId)) return `<div class="empty">Personagem não encontrado. <button class="btn" data-act="tab" data-tab="personagens">Voltar</button></div>`;
-  const d=derive(c);
+  if (!c || !canSee(c)) return `<div class="empty">Personagem não encontrado. <button class="btn" data-act="tab" data-tab="personagens">Voltar</button></div>`;
+  const d=derive(c); const ro=!isMine(c);
   const mine = S.isMaster ? pendingList().filter(x=>x.charId===c.id) : myRequests().filter(x=>x.charId===c.id&&x.status==='pendente');
   return `<div class="row between" style="margin-bottom:14px">
       <div class="row" style="gap:8px"><button class="btn sm" data-act="tab" data-tab="personagens">← Voltar</button>
         ${S.cloneArm===c.id
           ? `<input id="clone-nome" maxlength="60" value="${h((c.nome+' (cópia)').slice(0,60))}" style="width:220px" aria-label="Nome da cópia">
              <button class="btn sm ok" data-act="clone-ok">${S.isMaster?'Criar cópia':'Pedir cópia ao mestre'}</button><button class="btn sm" data-act="clone-cancel">Cancelar</button>`
-          : `<button class="btn sm" data-act="clone">Clonar ficha</button><button class="btn sm" data-act="export">Exportar ficha</button>`}</div>
+          : `${ro?'':'<button class="btn sm" data-act="clone">Clonar ficha</button>'}<button class="btn sm" data-act="export">Exportar ficha</button>`}</div>
+      ${ro?'<span class="chip">Ficha de outro jogador · só leitura</span>':''}
       ${S.isMaster?`<div class="row" style="gap:6px"><label for="dono-sel" style="margin:0">Dono da ficha</label><div style="min-width:200px">${ownerPicker('id="dono-sel" data-owner-sel', c.ownerId)}</div><button class="btn sm" data-act="transfer">Transferir</button></div>`:''}
       ${S.isMaster?`<button class="btn sm danger" data-act="del" data-id="${h(c.id)}">${S.delArm===c.id?'Clique de novo para excluir':'Excluir personagem'}</button>`:''}
     </div>
     <div style="margin-bottom:14px"><div class="row" style="gap:12px"><h2 style="font-size:26px;color:var(--gold2)">${h(c.nome)}</h2>${statusChip(c)}</div>
-      <div class="muted">${h(d.sp.nome)} · ${h(d.cls.nome)}${c.subclasse?` (${h(c.subclasse)})`:''} · nível ${c.nivel} · ${h(c.antecedenteNome)}${c.alinhamento?` · ${h(c.alinhamento)}`:''}${S.isMaster?` · jogador: ${h(nameOf(c.ownerId))}`:''}</div></div>
+      <div class="muted">${h(d.sp.nome)} · ${h(d.cls.nome)}${c.subclasse?` (${h(c.subclasse)})`:''} · nível ${c.nivel} · ${h(c.antecedenteNome)}${c.alinhamento?` · ${h(c.alinhamento)}`:''}${S.isMaster||ro?` · jogador: ${h(nameOf(c.ownerId))}`:''}</div></div>
     <div class="sheet">
       <div class="stack">
         <div class="panel">${portrait(c.retrato, c.nome, 'lg')}
-          <div class="img-actions"><label class="btn sm" style="color:var(--text);margin:0">${c.retrato?'Trocar imagem':'Enviar imagem'}<input type="file" accept="image/*" data-img="sheet"></label>
+          ${ro?'':`<div class="img-actions"><label class="btn sm" style="color:var(--text);margin:0">${c.retrato?'Trocar imagem':'Enviar imagem'}<input type="file" accept="image/*" data-img="sheet"></label>
           ${c.retrato?`<button class="btn sm" data-act="img-remove">${S.delArm==='img:'+c.id?'Confirmar remoção':'Remover'}</button>`:''}</div>
-          ${!S.isMaster?'<div class="small muted" style="margin-top:8px;text-align:center">A imagem entra na ficha depois que o mestre aprovar.</div>':''}
+          ${!S.isMaster?'<div class="small muted" style="margin-top:8px;text-align:center">A imagem entra na ficha depois que o mestre aprovar.</div>':''}`}
         </div>
         <div class="abil">${AB.map(a=>{ const s=d.saves.find(x=>x.a===a); return `<div class="ab"><div><div class="n">${AB_NOME[a]}</div><div class="s">valor ${c.atributos[a]} · <span class="dot ${s.prof?'on':''}"></span>resist. ${sg(s.v)}</div></div><div class="m">${sg(d.m[a])}</div></div>`; }).join('')}</div>
         <div class="panel"><h3>Perícias</h3><div class="list">${d.skills.map(s=>`<div class="li small"><span><span class="dot ${s.prof?'on':''}"></span>${ruleLink(s.n,'pericia',` data-sk="${s.k}"`)}</span><b>${sg(s.v)}</b></div>`).join('')}</div></div>
@@ -1629,7 +1634,7 @@ function viewSheet(){
           </div>
         </div>
       </div>
-      <div class="stack c3">
+      <div class="stack c3">${ro?`<div class="panel small muted">Esta ficha é de ${h(nameOf(c.ownerId))}. Você pode consultá-la, mas só o dono pede mudanças.</div>`:`
         <div class="panel"><h3>${S.isMaster?'Alterar ficha':'Propor mudança'}</h3>
           <div class="f"><select data-act-type>${Object.entries(ACTIONS).map(([k,l])=>opt(k,l,S.actionType)).join('')}</select></div>
           ${actionForm(c,d)}
@@ -1637,6 +1642,7 @@ function viewSheet(){
         </div>
         ${mine.length?`<div class="panel"><h3>Aguardando aprovação</h3>${mine.map(m=>`<div class="small" style="margin-bottom:6px">• ${h(describe(m.type,m.payload,c))}</div>`).join('')}${S.isMaster?`<button class="btn sm" data-act="tab" data-tab="aprovacoes">Ver aprovações</button>`:''}</div>`:''}
         <div class="panel"><h3>Anotações</h3>${S.isMaster?`<form data-form="notas"><textarea name="notas" maxlength="4000" style="min-height:110px">${h(c.notas)}</textarea><button class="btn sm" style="margin-top:8px">Salvar anotações</button></form>`:`<div class="small" style="white-space:pre-wrap">${h(c.notas)||'<span class="muted">Sem anotações.</span>'}</div>`}</div>
+`}
         <div class="panel"><h3>Histórico de mudanças</h3><div class="log">${(c.log||[]).map(l=>`<div class="e"><div>${h(l.text)}${l.dono?` para ${h(nameOf(l.dono))}`:''}${l.motivo?` <span class="muted">· ${h(l.motivo)}</span>`:''}</div><div class="muted">${fmtDate(l.at)} · por ${h(nameOf(l.by))}${l.approvedBy&&l.approvedBy!==l.by?`, aprovado por ${h(nameOf(l.approvedBy))}`:''}</div></div>`).join('')||'<div class="muted small">Sem registros.</div>'}</div></div>
       </div>
     </div>`;
@@ -2019,7 +2025,9 @@ function subscribe(){
     if (!meta || !meta.fromCache){ S.loaded=true; clearTimeout(timer); if(S.notice.startsWith('Não foi possível alcançar')) S.notice=''; }
     loadNames(); render();
   }, err=>{ clearTimeout(timer); S.loaded=true; S.notice='Não foi possível carregar as fichas ('+h(err.code)+').'; render(); });
-  store.onMestres(ids=>{ S.mestres=ids||[]; applyRole(); }, ()=>{});
+  store.onMestres(v=>{ S.mestres=v.ids||[]; S.donoId=v.dono||null;
+    if (S.mode==='db' && S.isOwner && S.donoId!==S.myId && !S.donoSaving){ S.donoSaving=true; store.saveMestres(S.mestres).catch(()=>{}).finally(()=>{ S.donoSaving=false; }); }
+    applyRole(); }, ()=>{});
   resubRoles();
   store.onRegras(m=>{ S.regras=m||{}; renderPop(); }, ()=>{});
 }
