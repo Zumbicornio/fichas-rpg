@@ -786,7 +786,7 @@ function portrait(img, nome, cls=''){
 const S = {
   mode:'carregando', isMaster:false, myId:null, user:null,
   chars:[], reqDocs:{}, estado:{}, rolls:[], tab:'personagens', charId:null, actionType:'item',
-  draft:null, names:{}, namesPending:new Set(), notice:'', loaded:false, delArm:null, deferred:false, regras:{}, pop:null, filtro:{status:'',campanha:''}
+  draft:null, names:{}, namesPending:new Set(), notice:'', loaded:false, delArm:null, deferred:false, regras:{}, pop:null, filtro:{status:'',campanha:''}, people:[], registered:false
 };
 let store = null;
 
@@ -805,6 +805,7 @@ function makeLocalStore(){
     onRegras(cb){ gc.push(cb); setTimeout(emitG); },
     async saveRegra(slug,r){ mem.regras[slug]=clone(r); emitG(); },
     async deleteRegra(slug){ delete mem.regras[slug]; emitG(); },
+    async ensureEstado(){ if(!mem.est[S.myId]){ mem.est[S.myId]={chars:{}}; emitE(); } },
     async saveCharacter(c){ mem.chars[c.id]=clone(c); emitC(); },
     async deleteCharacter(id){ delete mem.chars[id]; emitC(); },
     async addRequest(item){ (mem.reqs[S.myId] ||= {items:{}}).items[item.id]=clone(item); emitR(); },
@@ -834,6 +835,7 @@ function makeDbStore(db){
         if (!snap.exists) return ref.set({chars:{[charId]:e}});
         return ref.update({chars:{[charId]:e}}); });
     },
+    ensureEstado(){ const p='estado/'+S.myId; return q(p, async ()=>{ const ref=db.doc(p); const snap=await ref.get(); if(!snap.exists) await ref.set({chars:{}}); }); },
     addRequest(item){
       const p='requests/'+S.myId; item=clone(item);
       return q(p, async ()=>{
@@ -1154,7 +1156,8 @@ async function submitCreate(){
   const r=draftCompute(S.draft); if (r.errors.length){ toast(r.errors[0]); return; }
   try {
     if (S.isMaster){
-      const c=buildCharacter(S.draft, S.myId); addLog(c,'Personagem criado',S.myId,'');
+      const dono=S.draft.dono||S.myId; if(!knownPeople().some(p=>p.id===dono)) throw new Error('Escolha o dono da ficha.');
+      const c=buildCharacter(S.draft, dono); addLog(c,'Personagem criado',S.myId,''); if(dono!==S.myId) c.log[0].dono=dono;
       await store.saveCharacter(c); toast('Personagem criado.'); S.charId=c.id; S.tab='ficha';
     } else {
       await store.addRequest({id:newId(), charId:null, charNome:S.draft.nome, type:'criar', payload:clone(S.draft), motivo:'', by:S.myId, at:nowIso(), status:'pendente'});
@@ -1254,13 +1257,27 @@ async function loadNames(){
   if (S.mode!=='db' || !S.user?.profiles) return;
   const ids=new Set();
   S.chars.forEach(c=>{ ids.add(c.ownerId); (c.log||[]).forEach(l=>{ ids.add(l.by); ids.add(l.approvedBy); }); });
-  Object.keys(S.reqDocs).forEach(i=>ids.add(i));
+  Object.keys(S.reqDocs).forEach(i=>ids.add(i)); Object.keys(S.estado).forEach(i=>ids.add(i));
   const need=[...ids].filter(i=>i && i!==S.myId && !(i in S.names) && !S.namesPending.has(i));
   if (!need.length) return;
   need.forEach(i=>S.namesPending.add(i));
   try { const ps=await S.user.profiles(need); need.forEach(i=>S.names[i]=(ps&&ps[i]&&ps[i].name)||'Jogador'); }
   catch { need.forEach(i=>S.names[i]='Jogador'); }
   render();
+}
+/* Dono da ficha: pessoas conhecidas (quem já abriu o app, fez pedido ou tem ficha) + busca por nome */
+function knownPeople(){
+  const ids=new Set([S.myId]);
+  if (S.mode==='local') ids.add('demo-jogador');
+  S.chars.forEach(c=>ids.add(c.ownerId)); Object.keys(S.reqDocs).forEach(i=>ids.add(i)); Object.keys(S.estado).forEach(i=>ids.add(i)); S.people.forEach(i=>ids.add(i));
+  ids.delete(undefined); ids.delete(null); ids.delete('');
+  const lbl = i => i===S.myId ? 'Você (mestre)' : S.mode==='local' ? nameOf(i) : (S.names[i] && S.names[i]!=='Jogador' && S.names[i]!=='…') ? nameOf(i) : 'Jogador sem nome ('+String(i).slice(-4)+')';
+  return [...ids].map(i=>({id:i, nome:lbl(i)})).sort((a,b)=> a.id===S.myId ? -1 : b.id===S.myId ? 1 : a.nome.localeCompare(b.nome));
+}
+function ownerOptions(sel){ return knownPeople().map(p=>`<option value="${h(p.id)}" ${p.id===sel?'selected':''}>${h(p.nome)}</option>`).join(''); }
+function ownerPicker(selAttrs, sel){
+  const busca = S.mode==='db' && S.user?.search ? `<input type="search" data-owner-search placeholder="Buscar pessoa pelo nome…" aria-label="Buscar pessoa pelo nome" style="margin-top:6px">` : '';
+  return `<select ${selAttrs}>${ownerOptions(sel)}</select>${busca}`;
 }
 
 /* ============ RENDERIZAÇÃO ============ */
@@ -1363,6 +1380,7 @@ function viewCreate(){
         </div>
         <div class="cols2"><div class="f"><label>Nome do personagem</label><input data-f="nome" data-live value="${h(d.nome)}" maxlength="60" placeholder="Ex.: Lyra Ventoalto"></div>
         <div class="f"><label>Alinhamento (opcional)</label><input data-f="alinhamento" data-live value="${h(d.alinhamento)}" maxlength="40"></div></div>
+        ${S.isMaster?`<div class="f"><label>Dono da ficha</label>${ownerPicker('data-f="dono" data-owner-sel', d.dono||S.myId)}<div class="small muted" style="margin-top:4px">Só o dono e o mestre veem a ficha. O jogador aparece na lista depois de abrir o app uma vez.</div></div>`:''}
         <div class="f"><label>Campanha (opcional)</label><input data-f="campanha" data-live value="${h(d.campanha||'')}" maxlength="60" list="camp-list-criar" placeholder="Em qual campanha o personagem vai jogar"><datalist id="camp-list-criar">${campaigns(S.chars).map(n=>`<option value="${h(n)}">`).join('')}</datalist></div>
         <div class="cols3">
           <div class="f"><label>Espécie</label><select data-f="especie">${Object.entries(SPECIES).map(([k,v])=>opt(k,v.nome,d.especie)).join('')}</select></div>
@@ -1554,6 +1572,7 @@ function viewSheet(){
           ? `<input id="clone-nome" maxlength="60" value="${h((c.nome+' (cópia)').slice(0,60))}" style="width:220px" aria-label="Nome da cópia">
              <button class="btn sm ok" data-act="clone-ok">${S.isMaster?'Criar cópia':'Pedir cópia ao mestre'}</button><button class="btn sm" data-act="clone-cancel">Cancelar</button>`
           : `<button class="btn sm" data-act="clone">Clonar ficha</button><button class="btn sm" data-act="export">Exportar ficha</button>`}</div>
+      ${S.isMaster?`<div class="row" style="gap:6px"><label for="dono-sel" style="margin:0">Dono da ficha</label><div style="min-width:200px">${ownerPicker('id="dono-sel" data-owner-sel', c.ownerId)}</div><button class="btn sm" data-act="transfer">Transferir</button></div>`:''}
       ${S.isMaster?`<button class="btn sm danger" data-act="del" data-id="${h(c.id)}">${S.delArm===c.id?'Clique de novo para excluir':'Excluir personagem'}</button>`:''}
     </div>
     <div style="margin-bottom:14px"><div class="row" style="gap:12px"><h2 style="font-size:26px;color:var(--gold2)">${h(c.nome)}</h2>${statusChip(c)}</div>
@@ -1598,7 +1617,7 @@ function viewSheet(){
         </div>
         ${mine.length?`<div class="panel"><h3>Aguardando aprovação</h3>${mine.map(m=>`<div class="small" style="margin-bottom:6px">• ${h(describe(m.type,m.payload,c))}</div>`).join('')}${S.isMaster?`<button class="btn sm" data-act="tab" data-tab="aprovacoes">Ver aprovações</button>`:''}</div>`:''}
         <div class="panel"><h3>Anotações</h3>${S.isMaster?`<form data-form="notas"><textarea name="notas" maxlength="4000" style="min-height:110px">${h(c.notas)}</textarea><button class="btn sm" style="margin-top:8px">Salvar anotações</button></form>`:`<div class="small" style="white-space:pre-wrap">${h(c.notas)||'<span class="muted">Sem anotações.</span>'}</div>`}</div>
-        <div class="panel"><h3>Histórico de mudanças</h3><div class="log">${(c.log||[]).map(l=>`<div class="e"><div>${h(l.text)}${l.motivo?` <span class="muted">· ${h(l.motivo)}</span>`:''}</div><div class="muted">${fmtDate(l.at)} · por ${h(nameOf(l.by))}${l.approvedBy&&l.approvedBy!==l.by?`, aprovado por ${h(nameOf(l.approvedBy))}`:''}</div></div>`).join('')||'<div class="muted small">Sem registros.</div>'}</div></div>
+        <div class="panel"><h3>Histórico de mudanças</h3><div class="log">${(c.log||[]).map(l=>`<div class="e"><div>${h(l.text)}${l.dono?` para ${h(nameOf(l.dono))}`:''}${l.motivo?` <span class="muted">· ${h(l.motivo)}</span>`:''}</div><div class="muted">${fmtDate(l.at)} · por ${h(nameOf(l.by))}${l.approvedBy&&l.approvedBy!==l.by?`, aprovado por ${h(nameOf(l.approvedBy))}`:''}</div></div>`).join('')||'<div class="muted small">Sem registros.</div>'}</div></div>
       </div>
     </div>`;
 }
@@ -1900,6 +1919,12 @@ document.addEventListener('click', async e=>{
     S.delArm=null; await submitPortrait(c,''); render(true); }
   else if (a==='del'){ const id=t.dataset.id; if(S.delArm!==id){ S.delArm=id; render(true); return; }
     try{ await store.deleteCharacter(id); S.delArm=null; S.tab='personagens'; toast('Personagem excluído.'); render(true); } catch(err){ toast('Não foi possível excluir ('+(err.code||'erro')+').'); } }
+  else if (a==='transfer'){ const c=S.chars.find(x=>x.id===S.charId); const novo=$('#dono-sel')?.value; if(!c||!novo) return;
+    if (novo===c.ownerId){ toast('Essa pessoa já é a dona da ficha.'); return; }
+    t.disabled=true;
+    try { const e=est(c); const n=clone(c); n.ownerId=novo; addLog(n,'Ficha transferida',S.myId,''); n.log[0].dono=novo;
+      await store.setEstado(novo,c.id,e); await store.saveCharacter(n); toast('Ficha transferida.'); render(true); }
+    catch(err){ t.disabled=false; toast('Não foi possível transferir ('+(err.code||'erro')+').'); } }
   else if (a==='approve'){ t.disabled=true; if(await approve(t.dataset.owner,t.dataset.id)) toast('Aprovado.'); else t.disabled=false; }
   else if (a==='reject'){ const inp=document.querySelector(`.rej-motivo[data-for="${CSS.escape(t.dataset.id)}"]`); t.disabled=true; await reject(t.dataset.owner,t.dataset.id,inp?.value); }
   else if (a==='hp'){ const c=S.chars.find(x=>x.id===S.charId); const n=Math.floor(+($('#hp-n')?.value)||0); if(!c) return; if(n<1){ toast('Digite a quantidade.'); return; }
@@ -1937,8 +1962,16 @@ document.addEventListener('change', async e=>{
   if (f==='metodo' && val==='padrao') AB.forEach(a=>S.draft.padrao[a]='');
   if (!el.hasAttribute('data-live')) render(true);
 });
-document.addEventListener('input', e=>{
-  const el=e.target; if(!S.draft || !el.hasAttribute('data-live') || !el.closest('form[data-form="criar"]')) return;
+document.addEventListener('input', async e=>{
+  const el=e.target;
+  if (el.matches('[data-owner-search]')){
+    const hits = await S.user.search(el.value.trim());
+    hits.forEach(p=>{ if(p.id && p.name){ S.names[p.id]=p.name; if(!S.people.includes(p.id)) S.people.push(p.id); } });
+    const sel=el.parentElement.querySelector('[data-owner-sel]'); if(!sel) return; const cur=sel.value;
+    sel.innerHTML=ownerOptions(cur); const first=hits.find(p=>p.id&&p.name);
+    if (first && el.value.trim()){ sel.value=first.id; if(sel.dataset.f) setPath(S.draft,'dono',first.id); }
+    return;
+  } if(!S.draft || !el.hasAttribute('data-live') || !el.closest('form[data-form="criar"]')) return;
   setPath(S.draft, el.dataset.f, el.value);
 });
 document.addEventListener('keydown', e=>{ if(e.key==='Escape' && S.pop) closePop(); });
@@ -1960,7 +1993,9 @@ function subscribe(){
     if (!meta || !meta.fromCache){ S.loaded=true; clearTimeout(timer); if(S.notice.startsWith('Não foi possível alcançar')) S.notice=''; }
     loadNames(); render();
   }, err=>{ clearTimeout(timer); S.loaded=true; S.notice='Não foi possível carregar as fichas ('+h(err.code)+').'; render(); });
-  store.onEstado(m=>{ S.estado=m||{}; render(); }, err=>{ S.notice='Não foi possível carregar os pontos de vida ('+h(err.code)+').'; render(); });
+  store.onEstado(m=>{ S.estado=m||{};
+    if (S.mode==='db' && !S.isMaster && !S.registered && !S.estado[S.myId]){ S.registered=true; store.ensureEstado().catch(()=>{ S.registered=false; }); }
+    loadNames(); render(); }, err=>{ S.notice='Não foi possível carregar os pontos de vida ('+h(err.code)+').'; render(); });
   store.onRegras(m=>{ S.regras=m||{}; renderPop(); }, ()=>{});
   store.onRequests(m=>{ S.reqDocs=m||{}; loadNames(); render(); }, err=>{ S.notice='Não foi possível carregar as solicitações ('+h(err.code)+').'; render(); });
 }
