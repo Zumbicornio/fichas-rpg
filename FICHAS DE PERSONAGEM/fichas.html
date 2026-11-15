@@ -493,12 +493,14 @@ function featCheck(f, c, nl){
   if (!f.rep && (c.talentos||[]).some(t=>FEATS[ruleKey(t)]===f)) return `O personagem já tem ${f.nome}.`;
   return '';
 }
-function featOptions(c, nl, sel){
+function featOptions(c, nl, sel, livre){
   const grupos = nl>=19 ? ['epica','geral','estilo','origem'] : ['geral','estilo','origem'];
   return `<option value="">Escolha o talento…</option>` + grupos.map(g=>`<optgroup label="${FEAT_CAT[g]}">${FEAT_LIST.filter(f=>f.cat===g).map(f=>{ const err=featCheck(f,c,nl);
-    return `<option value="${h(f.nome)}" ${f.nome===sel?'selected':''} ${err?'disabled':''}>${h(f.nome)}${f.abs.length?` (+1 ${f.abs.length===6?'qualquer':f.abs.join('/')})`:''}${err?' · indisponível':''}</option>`; }).join('')}</optgroup>`).join('')
+    return `<option value="${h(f.nome)}" ${f.nome===sel?'selected':''} ${err&&!livre?'disabled':''}>${h(f.nome)}${f.abs.length?` (+1 ${f.abs.length===6?'qualquer':f.abs.join('/')})`:''}${err?(livre?' · sem pré-requisito':' · indisponível'):''}</option>`; }).join('')}</optgroup>`).join('')
     + `<option value="__outro" ${sel==='__outro'?'selected':''}>Outro talento (escrever o nome)</option>`;
 }
+/* atributo que o talento aumentou, lido do texto salvo: "Atirador de Elite (+1 DES)" */
+const talAtr = t => (/[(][+]1 (FOR|DES|CON|INT|SAB|CAR)[)]/.exec(String(t||''))||[])[1] || '';
 function featAbsOptions(f, c, sel){
   if (!f || !f.abs.length) return '';
   return `<option value="">Atributo +1…</option>`+f.abs.map(a=>`<option value="${a}" ${a===sel?'selected':''} ${(c.atributos[a]||0)>=f.max?'disabled':''}>${AB_NOME[a]} (${c.atributos[a]||0})</option>`).join('');
@@ -1150,8 +1152,9 @@ function newWeapon(base, p={}){
 /* ============ MUDANÇAS (propostas e aplicação) ============ */
 /* pares [atributo, valor] válidos de um pedido de aumento de atributo */
 const atrPares = p => [[p.a1,p.v1],[p.a2,p.v2]].filter(([a,v])=>AB.includes(a) && Math.floor(+v)).map(([a,v])=>[a,Math.max(-10,Math.min(10,Math.floor(+v)))]);
-const ACTIONS = {item:'Itens', moedas:'Dinheiro e tesouro', arma_add:'Adicionar arma', arma_rem:'Remover arma',
+const ACTIONS = {item:'Adicionar item', item_rem:'Remover item', moedas:'Dinheiro e tesouro', arma_add:'Adicionar arma', arma_rem:'Remover arma',
   magia_nova:'Aprender magia', magia_prep:'Preparar / despreparar magia', magia_rem:'Esquecer magia',
+  talento_add:'Adicionar talento', talento_rem:'Remover talento',
   nivel:'Subir de nível', atributo:'Aumento de atributo', equip:'Armadura e escudo', status:'Status e campanha', nota:'Anotação'};
 /* status do personagem na mesa; fichas antigas sem o campo contam como "Ativo" */
 const STATUS = {ativo:{nome:'Ativo'}, espera:{nome:'Em espera'}, aposentado:{nome:'Aposentado'}, falecido:{nome:'Falecido'}};
@@ -1167,6 +1170,9 @@ function describe(type,p,c){
     case 'arma_add': { const base=p.base==='custom'?`personalizada, ${p.dado} ${p.dano}`:WEAPONS[p.base]?.nome; const nome=String(p.nome||'').trim();
       return `Adicionar arma: ${nome||base}${nome&&p.base!=='custom'?` (${base})`:p.base==='custom'?` (${base})`:''}${+p.bonus?` +${+p.bonus}`:''}${p.obs?` · ${p.obs}`:''}`; }
     case 'arma_rem': return `Remover arma: ${p.nomeRef||'?'}`;
+    case 'item_rem': return `Remover ${p.qtd}× ${p.nome}${p.obs?` (${p.obs})`:''}`;
+    case 'talento_add': { const nm=p.talento==='__outro'?p.talentoOutro:p.talento; return `Adicionar talento: ${nm}${p.fatr?` (+1 ${p.fatr})`:''}${p.livre==='on'?', sem exigir pré-requisitos':''}`; }
+    case 'talento_rem': return `Remover talento: ${p.ref}${p.desfaz==='on'&&talAtr(p.ref)?`, desfazendo o +1 ${talAtr(p.ref)}`:''}`;
     case 'magia_nova': return `Aprender ${p.nome} (${circLabel(p.circ)})${+p.circ>0&&p.prep?', já preparada':''}${p.extra?', não conta no limite':''}`;
     case 'magia_prep': return `${p.prep==='1'?'Preparar':'Despreparar'} ${p.nomeRef||'?'}`;
     case 'magia_rem': return `Esquecer ${p.nomeRef||'?'}`;
@@ -1202,6 +1208,28 @@ function applyChange(c0, type, p){
       const i=c.inventario.findIndex(x=>x.nome.toLowerCase()===nome.toLowerCase());
       if (p.acao==='add'){ if(i>=0){ c.inventario[i].qtd+=n; if(p.obs) c.inventario[i].obs=p.obs; } else c.inventario.push({nome:nome.slice(0,80),qtd:n,obs:String(p.obs||'').slice(0,120)}); }
       else { if(i<0) throw new Error('Item não está no inventário.'); if(c.inventario[i].qtd<n) throw new Error('Quantidade maior que a disponível.'); c.inventario[i].qtd-=n; if(!c.inventario[i].qtd) c.inventario.splice(i,1); }
+      break;
+    }
+    case 'item_rem': return applyChange(c0, 'item', {...p, acao:'rem'});
+    case 'talento_add': {
+      c.talentos ||= [];
+      const nm=String((p.talento==='__outro' ? p.talentoOutro : p.talento)||'').trim(); if(!nm) throw new Error('Escolha o talento.');
+      const f=FEATS[ruleKey(nm)];
+      if (f){ if (p.livre!=='on'){ const err=featCheck(f,c,c.nivel); if(err) throw new Error(err); }
+        else if (!f.rep && c.talentos.some(t=>FEATS[ruleKey(t)]===f)) throw new Error(`O personagem já tem ${f.nome}.`);
+        let txt=f.nome;
+        if (f.abs.length && p.fatr){ if(!f.abs.includes(p.fatr)) throw new Error(`${f.nome}: o +1 só pode ir para ${f.abs.map(a=>AB_NOME[a]).join(', ')}.`);
+          c.atributos[p.fatr]+=1; txt+=` (+1 ${p.fatr})`;
+          if (c.atributos[p.fatr]>f.max) throw new Error(`${AB_NOME[p.fatr]} não pode passar de ${f.max}.`); }
+        else if (f.abs.length) throw new Error(`${f.nome}: escolha o atributo que recebe +1 (${f.abs.map(a=>AB_NOME[a]).join(', ')}).`);
+        c.talentos.push(txt);
+      } else { if (c.talentos.some(t=>t.toLowerCase()===nm.toLowerCase())) throw new Error('O personagem já tem esse talento.'); c.talentos.push(nm.slice(0,80)); }
+      break;
+    }
+    case 'talento_rem': {
+      c.talentos ||= []; const i=c.talentos.indexOf(p.ref); if(i<0) throw new Error('Talento não encontrado na ficha.');
+      c.talentos.splice(i,1); const a=talAtr(p.ref);
+      if (p.desfaz==='on' && a){ c.atributos[a]-=1; if(c.atributos[a]<1) throw new Error(`${AB_NOME[a]} não pode ficar abaixo de 1.`); }
       break;
     }
     case 'arma_add': {
@@ -1653,9 +1681,18 @@ function actionForm(c,d){
   const chk=(name,label,on)=>`<label style="display:flex;gap:8px;align-items:center;color:var(--text);margin-bottom:8px"><input type="checkbox" name="${name}" ${on?'checked':''}> ${label}</label>`;
   let body='', bloqueia=false;
   if (t==='moedas') body=`<div class="small muted" style="margin-bottom:6px">Use números negativos para gastar.</div><div class="cols3">${COINS.map(([k,ab,n])=>`<div class="f"><label>${ab} (${n})</label><input name="${k}" type="number" value="0"></div>`).join('')}</div>`;
-  else if (t==='item') body=`<div class="cols2"><div class="f"><label>Ação</label><select name="acao"><option value="add">Adicionar</option><option value="rem">Remover / usar</option></select></div><div class="f"><label>Quantidade</label><input name="qtd" type="number" min="1" value="1" required></div></div>
-      <div class="f"><label>Item</label><input name="nome" list="inv-list" maxlength="80" required placeholder="Ex.: Poção de cura"><datalist id="inv-list">${c.inventario.map(i=>`<option value="${h(i.nome)}">`).join('')}</datalist></div>
+  else if (t==='item') body=`<input type="hidden" name="acao" value="add"><div class="cols2"><div class="f"><label>Item</label><input name="nome" list="inv-list" maxlength="80" required placeholder="Ex.: Poção de cura"><datalist id="inv-list">${c.inventario.map(i=>`<option value="${h(i.nome)}">`).join('')}</datalist></div><div class="f"><label>Quantidade</label><input name="qtd" type="number" min="1" value="1" required></div></div>
       <div class="f"><label>Observação</label><input name="obs" maxlength="120" placeholder="Ex.: achado na cripta"></div>`;
+  else if (t==='item_rem'){ if(!c.inventario.length){ body='<div class="muted">Nenhum item no inventário.</div>'; bloqueia=true; }
+    else body=`<div class="cols2"><div class="f"><label>Item</label><select name="nome">${c.inventario.map(i=>opt(i.nome,`${i.nome} (${i.qtd})`,'')).join('')}</select></div><div class="f"><label>Quantidade</label><input name="qtd" type="number" min="1" value="1" required></div></div>
+      <div class="f"><label>Observação</label><input name="obs" maxlength="120" placeholder="Ex.: usada no combate, vendida, perdida"></div>`; }
+  else if (t==='talento_add') body=`<div class="small muted" style="margin-bottom:8px">Para talentos ganhos fora da subida de nível: recompensa, treinamento, dádiva etc. Na subida de nível, use "Subir de nível".</div>
+      <div class="f"><label>Talento</label><select name="talento" data-feat-sel required>${featOptions(c,c.nivel,'')}</select><input name="talentoOutro" maxlength="80" placeholder="Nome do talento" style="margin-top:6px" hidden><select name="fatr" style="margin-top:6px" hidden aria-label="Atributo que recebe +1"></select><div class="small muted feat-hint" style="margin-top:4px"></div></div>
+      <label style="display:flex;gap:8px;align-items:center;color:var(--text);margin-bottom:8px"><input type="checkbox" name="livre" data-feat-livre> Sem exigir pré-requisitos (concedido pelo mestre)</label>`;
+  else if (t==='talento_rem'){ const ts=c.talentos||[]; if(!ts.length){ body='<div class="muted">Nenhum talento na ficha.</div>'; bloqueia=true; }
+    else body=`<div class="f"><label>Talento</label><select name="ref">${ts.map(x=>opt(x,x,'')).join('')}</select></div>
+      ${chk('desfaz','Desfazer o +1 de atributo que o talento deu (se houver)',true)}
+      <div class="small muted" style="margin-bottom:8px">Proficiências e outros benefícios automáticos do talento (Resiliente, Defesa, Vigoroso etc.) saem junto.</div>`; }
   else if (t==='arma_add') body=`<div class="f"><label>Arma</label><select name="base">${weaponOptions(c.classe,'espada_longa')}<option value="custom">Personalizada…</option></select></div>
       <div class="cols2"><div class="f"><label>Nome próprio (opcional)</label><input name="nome" maxlength="60" placeholder="Ex.: Lâmina da Aurora"></div><div class="f"><label>Bônus mágico</label><select name="bonus"><option value="0">Nenhum</option><option value="1">+1</option><option value="2">+2</option><option value="3">+3</option></select></div></div>
       <div class="f"><label>Observação</label><input name="obs" maxlength="120" placeholder="Ex.: +1d6 de fogo contra mortos-vivos"></div>
@@ -2179,10 +2216,12 @@ document.addEventListener('change', async e=>{
     return;
   }
   if (el.matches('[data-spell-name]')){ const m=SPELLS[ruleKey(el.value)]; const sel=el.form?.elements.circ; if(m && sel) sel.value=String(m.circ); return; }
+  if (el.matches('[data-feat-livre]')){ const c=S.chars.find(x=>x.id===S.charId); const sel=el.form?.elements.talento; if(!c||!sel) return; const v=sel.value;
+    sel.innerHTML=featOptions(c,c.nivel,'',el.checked); sel.value=v; if(sel.value!==v) sel.value=''; sel.dispatchEvent(new Event('change',{bubbles:true})); return; }
   if (el.matches('[data-feat-sel]')){ const fm=el.form; const c=S.chars.find(x=>x.id===S.charId); if(!fm||!c) return;
     const f=FEATS[ruleKey(el.value)]; const fa=fm.elements.fatr, fo=fm.elements.talentoOutro, hint=fm.querySelector('.feat-hint');
     fo.hidden = el.value!=='__outro'; fa.innerHTML=featAbsOptions(f,c,''); fa.hidden=!(f&&f.abs.length);
-    if (el.value) fm.elements.asiModo.value='talento';
+    if (el.value && fm.elements.asiModo) fm.elements.asiModo.value='talento';
     if (hint) hint.textContent = f ? (RULES[ruleKey(f.nome)+'|talento']||RULES[ruleKey(f.nome)]||['',''])[0] : '';
     return; }
   if (el.matches('[data-filter]')){ S.filtro[el.dataset.filter]=el.value; render(true); return; }
