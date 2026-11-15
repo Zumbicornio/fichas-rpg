@@ -385,7 +385,11 @@ const classRes = c => [...(CLASS_RES[c.classe]||[]), ...subRes(c)].map(r=>({...r
 const AMMO_RE = /^(flechas?|virotes?|setas?|balas?|agulhas?|dardos? de zarabatana|muni[cç][aã]o|pedras? de funda|arrows?|bolts?|bullets?|needles?)([^a-zà-ú]|$)/i;
 /* item mágico: {desc, bonus:[[ATR,valor],...], usos:n}. O bônus entra nos atributos ao adicionar e sai ao remover o último. */
 const magicBonus = p => [[p.ma1,p.mv1],[p.ma2,p.mv2]].map(([a,v])=>[a,Math.max(-10,Math.min(10,Math.floor(+v)||0))]).filter(([a,v])=>AB.includes(a)&&v);
-const magicDesc = m => [...(m.bonus||[]).map(([a,v])=>sg(v)+' '+a), m.usos?m.usos+(m.usos>1?' usos':' uso')+' por dia':''].filter(Boolean).join(', ');
+/* sintonização: m.sint = requer; m.sintonizado = sintonizado agora. Bônus só vale com o item ativo. */
+const SINT_MAX = 3;
+const magicAtivo = m => !!m && (!m.sint || !!m.sintonizado);
+const sintCount = c => (c.inventario||[]).filter(i=>i.magico?.sint && i.magico.sintonizado).length;
+const magicDesc = m => [m.sint?'requer sintonização':'', ...(m.bonus||[]).map(([a,v])=>sg(v)+' '+a), m.usos?m.usos+(m.usos>1?' usos':' uso')+' por dia':''].filter(Boolean).join(', ');
 const isAmmo = i => !!i && (i.municao===true || (i.municao!==false && AMMO_RE.test(String(i.nome||''))));
 const ammoKey = i => String(i.nome||'').toLowerCase();
 const ammoLeft = (i,e) => Math.max(0, i.qtd - Math.min(i.qtd, +(e.municao||{})[ammoKey(i)]||0));
@@ -1254,7 +1258,7 @@ function newWeapon(base, p={}){
 const atrPares = p => [[p.a1,p.v1,p.d1],[p.a2,p.v2,p.d2]].map(([a,v,d])=>{ let n=Math.max(-10,Math.min(10,Math.floor(+v)||0)); if(d==='menos') n=-Math.abs(n); else if(d==='mais') n=Math.abs(n); return [a,n]; }).filter(([a,n])=>AB.includes(a) && n);
 const ACTIONS = {item:'Adicionar item', item_rem:'Remover item', moedas:'Dinheiro e tesouro', arma_add:'Adicionar arma', arma_rem:'Remover arma',
   magia_nova:'Aprender magia', magia_prep:'Preparar / despreparar magia', magia_rem:'Esquecer magia',
-  talento_add:'Adicionar talento', talento_rem:'Remover talento',
+  sintonia:'Sintonização de item mágico', talento_add:'Adicionar talento', talento_rem:'Remover talento',
   nivel:'Subir de nível', atributo:'Alterar atributo', equip:'Armadura e escudo', status:'Status e campanha', nota:'Anotação'};
 /* status do personagem na mesa; fichas antigas sem o campo contam como "Ativo" */
 const STATUS = {ativo:{nome:'Ativo'}, espera:{nome:'Em espera'}, aposentado:{nome:'Aposentado'}, falecido:{nome:'Falecido'}};
@@ -1266,13 +1270,14 @@ function describe(type,p,c){
   switch(type){
     case 'criar': { const sp=SPECIES[p.especie], cl=CLASSES[p.classe], bg=BACKGROUNDS[p.antecedente]; return `Novo personagem: ${p.nome||'(sem nome)'}, ${sp?.nome} ${cl?.nome}${draftLevel(p)>1?` nível ${draftLevel(p)}`:''} (${bg?.nome})${String(p.campanha||'').trim()?`, campanha ${String(p.campanha).trim()}`:''}`; }
     case 'moedas': return 'Moedas: '+COINS.filter(([k])=>+p[k]).map(([k,ab])=>`${sg(+p[k])} ${ab}`).join(', ');
-    case 'item': { const mg = p.acao==='add' && p.magico==='on' ? magicDesc({bonus:magicBonus(p), usos:p.mtemUsos==='on'?Math.floor(+p.musos)||0:0}) : '';
+    case 'item': { const mg = p.acao==='add' && p.magico==='on' ? magicDesc({bonus:magicBonus(p), usos:p.mtemUsos==='on'?Math.floor(+p.musos)||0:0, sint:p.msint==='on'})+(p.msint==='on'&&p.msintOn==='on'?', já sintonizado':'') : '';
       return `${p.acao==='add'?'Adicionar':'Remover'} ${p.qtd}× ${p.nome}${p.municao==='on'?' (munição)':''}${p.acao==='add'&&p.magico==='on'?` (item mágico${mg?': '+mg:''})`:''}${p.obs?` (${p.obs})`:''}${p.acao==='add'&&p.magico==='on'&&p.mdesc?`. Descrição: ${String(p.mdesc).trim()}`:''}`; }
     case 'arma_add': { const base=p.base==='custom'?`personalizada, ${p.dado} ${p.dano}`:WEAPONS[p.base]?.nome; const nome=String(p.nome||'').trim();
       return `Adicionar arma: ${nome||base}${nome&&p.base!=='custom'?` (${base})`:p.base==='custom'?` (${base})`:''}${+p.bonus?` +${+p.bonus}`:''}${p.obs?` · ${p.obs}`:''}`; }
     case 'arma_rem': return `Remover arma: ${p.nomeRef||'?'}`;
     case 'item_rem': return `Remover ${p.qtd}× ${p.nome}${p.obs?` (${p.obs})`:''}`;
     case 'talento_add': { const nm=p.talento==='__outro'?p.talentoOutro:p.talento; return `Adicionar talento: ${nm}${p.fatr?` (+1 ${p.fatr})`:''}${p.livre==='on'?', sem exigir pré-requisitos':''}`; }
+    case 'sintonia': return `${p.acao==='on'?'Sintonizar com':'Encerrar a sintonização com'} ${p.ref}`;
     case 'talento_rem': return `Remover talento: ${p.ref}${p.desfaz==='on'&&talAtr(p.ref)?`, desfazendo o +1 ${talAtr(p.ref)}`:''}`;
     case 'magia_nova': return `Aprender ${p.nome} (${circLabel(p.circ)})${+p.circ>0&&p.prep?', já preparada':''}${p.extra?', não conta no limite':''}`;
     case 'magia_prep': return `${p.prep==='1'?'Preparar':'Despreparar'} ${p.nomeRef||'?'}`;
@@ -1312,12 +1317,13 @@ function applyChange(c0, type, p){
         const desc=String(p.mdesc||'').trim(); if(!desc) throw new Error('Item mágico precisa de descrição.');
         const bonus=magicBonus(p); if (bonus.length===2 && bonus[0][0]===bonus[1][0]) throw new Error('Escolha dois atributos diferentes no item mágico.');
         const usos=Math.max(0,Math.min(20,Math.floor(+p.musos)||0)); if (p.mtemUsos==='on' && !usos) throw new Error('Informe quantos usos por dia o item tem.');
-        mg={desc:desc.slice(0,1500), bonus, usos:p.mtemUsos==='on'?usos:0};
+        mg={desc:desc.slice(0,1500), bonus, usos:p.mtemUsos==='on'?usos:0, ...(p.msint==='on'?{sint:true, sintonizado:p.msintOn==='on'}:{})};
+        if (mg.sintonizado && sintCount(c)>=SINT_MAX) throw new Error(`O personagem já está sintonizado com ${SINT_MAX} itens. Encerre uma sintonização antes.`);
       }
       const aplicaBonus=(m,sinal)=>(m?.bonus||[]).forEach(([a,v])=>{ const nv=c.atributos[a]+sinal*v; if(nv>30) throw new Error(AB_NOME[a]+' não pode passar de 30.'); if(nv<1) throw new Error(AB_NOME[a]+' não pode ficar abaixo de 1.'); c.atributos[a]=nv; });
-      if (p.acao==='add'){ if(i>=0){ const it=c.inventario[i]; it.qtd+=n; if(p.obs) it.obs=p.obs; if(p.municao==='on') it.municao=true; if(mg && !it.magico){ it.magico=mg; aplicaBonus(mg,1); } }
-        else { c.inventario.push({nome:nome.slice(0,80),qtd:n,obs:String(p.obs||'').slice(0,120),...(p.municao==='on'?{municao:true}:{}),...(mg?{magico:mg}:{})}); aplicaBonus(mg,1); } }
-      else { if(i<0) throw new Error('Item não está no inventário.'); if(c.inventario[i].qtd<n) throw new Error('Quantidade maior que a disponível.'); c.inventario[i].qtd-=n; if(!c.inventario[i].qtd){ aplicaBonus(c.inventario[i].magico,-1); c.inventario.splice(i,1); } }
+      if (p.acao==='add'){ if(i>=0){ const it=c.inventario[i]; it.qtd+=n; if(p.obs) it.obs=p.obs; if(p.municao==='on') it.municao=true; if(mg && !it.magico){ it.magico=mg; if(magicAtivo(mg)) aplicaBonus(mg,1); } }
+        else { c.inventario.push({nome:nome.slice(0,80),qtd:n,obs:String(p.obs||'').slice(0,120),...(p.municao==='on'?{municao:true}:{}),...(mg?{magico:mg}:{})}); if(magicAtivo(mg)) aplicaBonus(mg,1); } }
+      else { if(i<0) throw new Error('Item não está no inventário.'); if(c.inventario[i].qtd<n) throw new Error('Quantidade maior que a disponível.'); c.inventario[i].qtd-=n; if(!c.inventario[i].qtd){ if(magicAtivo(c.inventario[i].magico)) aplicaBonus(c.inventario[i].magico,-1); c.inventario.splice(i,1); } }
       break;
     }
     case 'item_rem': return applyChange(c0, 'item', {...p, acao:'rem'});
@@ -1334,6 +1340,13 @@ function applyChange(c0, type, p){
         else if (f.abs.length) throw new Error(`${f.nome}: escolha o atributo que recebe +1 (${f.abs.map(a=>AB_NOME[a]).join(', ')}).`);
         c.talentos.push(txt);
       } else { if (c.talentos.some(t=>t.toLowerCase()===nm.toLowerCase())) throw new Error('O personagem já tem esse talento.'); c.talentos.push(nm.slice(0,80)); }
+      break;
+    }
+    case 'sintonia': {
+      const it=c.inventario.find(x=>x.nome===p.ref && x.magico?.sint); if(!it) throw new Error('Item mágico com sintonização não encontrado.');
+      const m=it.magico; const aplica=sinal=>(m.bonus||[]).forEach(([a,v])=>{ const nv=c.atributos[a]+sinal*v; if(nv>30) throw new Error(AB_NOME[a]+' não pode passar de 30.'); if(nv<1) throw new Error(AB_NOME[a]+' não pode ficar abaixo de 1.'); c.atributos[a]=nv; });
+      if (p.acao==='on'){ if(m.sintonizado) throw new Error('Já está sintonizado com esse item.'); if(sintCount(c)>=SINT_MAX) throw new Error(`Limite de ${SINT_MAX} itens sintonizados. Encerre uma sintonização antes.`); m.sintonizado=true; aplica(1); }
+      else { if(!m.sintonizado) throw new Error('Não está sintonizado com esse item.'); m.sintonizado=false; aplica(-1); }
       break;
     }
     case 'talento_rem': {
@@ -1800,6 +1813,8 @@ function actionForm(c,d){
         <div class="small muted" style="margin-bottom:6px">Atributos que o item altera (opcional). O valor entra na ficha enquanto o item estiver no inventário.</div>
         ${[1,2].map(n=>`<div class="cols2"><div class="f"><label>Atributo ${n}</label><select name="ma${n}"><option value="">—</option>${AB.map(a=>`<option value="${a}">${AB_NOME[a]} (${c.atributos[a]})</option>`).join('')}</select></div><div class="f"><label>Bônus (+/−)</label><input name="mv${n}" type="number" min="-10" max="10" value="${n===1?2:1}"></div></div>`).join('')}
         <div class="cols2"><div class="f"><label style="display:flex;gap:8px;align-items:center;color:var(--text)"><input type="checkbox" name="mtemUsos" data-magic-usos> Tem usos diários</label></div><div class="f"><label>Usos por dia</label><input name="musos" type="number" min="1" max="20" value="1" disabled></div></div>
+        <div class="cols2"><div class="f"><label style="display:flex;gap:8px;align-items:center;color:var(--text)"><input type="checkbox" name="msint" data-magic-sint> Requer sintonização</label></div><div class="f"><label style="display:flex;gap:8px;align-items:center;color:var(--text)"><input type="checkbox" name="msintOn" disabled> Já entra sintonizado (${sintCount(c)} de ${SINT_MAX} em uso)</label></div></div>
+        <div class="small muted">Itens que requerem sintonização só aplicam os bônus enquanto o personagem estiver sintonizado (máximo ${SINT_MAX} itens).</div>
       </div>`;
   else if (t==='item_rem'){ if(!c.inventario.length){ body='<div class="muted">Nenhum item no inventário.</div>'; bloqueia=true; }
     else body=`<div class="cols2"><div class="f"><label>Item</label><select name="nome">${c.inventario.map(i=>opt(i.nome,`${i.nome} (${i.qtd})`,'')).join('')}</select></div><div class="f"><label>Quantidade</label><input name="qtd" type="number" min="1" value="1" required></div></div>
@@ -1807,6 +1822,12 @@ function actionForm(c,d){
   else if (t==='talento_add') body=`<div class="small muted" style="margin-bottom:8px">Para talentos ganhos fora da subida de nível: recompensa, treinamento, dádiva etc. Na subida de nível, use "Subir de nível".</div>
       <div class="f"><label>Talento</label><select name="talento" data-feat-sel required>${featOptions(c,c.nivel,'')}</select><input name="talentoOutro" maxlength="80" placeholder="Nome do talento" style="margin-top:6px" hidden><select name="fatr" style="margin-top:6px" hidden aria-label="Atributo que recebe +1"></select><div class="small muted feat-hint" style="margin-top:4px"></div></div>
       <label style="display:flex;gap:8px;align-items:center;color:var(--text);margin-bottom:8px"><input type="checkbox" name="livre" data-feat-livre> Sem exigir pré-requisitos (concedido pelo mestre)</label>`;
+  else if (t==='sintonia'){ const its=c.inventario.filter(i=>i.magico?.sint);
+    if(!its.length){ body='<div class="muted">Nenhum item mágico que requer sintonização. Marque "Requer sintonização" ao adicionar o item.</div>'; bloqueia=true; }
+    else { const sel=its.find(i=>i.nome===S.sintRef)||its[0];
+      body=`<div class="small muted" style="margin-bottom:8px">Sintonizado com ${sintCount(c)} de ${SINT_MAX} itens. Sintonizar leva um descanso curto com o item.</div>
+      <div class="cols2"><div class="f"><label>Item</label><select name="ref">${its.map(i=>opt(i.nome,i.nome+(i.magico.sintonizado?' (sintonizado)':''),sel.nome)).join('')}</select></div>
+      <div class="f"><label>Ação</label><select name="acao"><option value="on" ${sel.magico.sintonizado?'':'selected'}>Sintonizar</option><option value="off" ${sel.magico.sintonizado?'selected':''}>Encerrar sintonização</option></select></div></div>`; } }
   else if (t==='talento_rem'){ const ts=c.talentos||[]; if(!ts.length){ body='<div class="muted">Nenhum talento na ficha.</div>'; bloqueia=true; }
     else body=`<div class="f"><label>Talento</label><select name="ref">${ts.map(x=>opt(x,x,'')).join('')}</select></div>
       ${chk('desfaz','Desfazer o +1 de atributo que o talento deu (se houver)',true)}
@@ -1888,9 +1909,10 @@ function resPanel(c){
 function magicPanel(c){
   const its=(c.inventario||[]).filter(i=>i.magico); if(!its.length) return '';
   const e=est(c); const pode=isMine(c);
-  return `<div class="panel"><h3>Itens mágicos</h3><div class="list">${its.map(i=>{ const m=i.magico; const k=h(ammoKey(i)); const gastos=Math.min(m.usos||0,+(e.itemUsos||{})[ammoKey(i)]||0); const left=(m.usos||0)-gastos;
-    return `<div class="li" style="flex-wrap:wrap;gap:6px"><span>✨ <b>${h(i.nome)}</b>${(m.bonus||[]).map(([a,v])=>` <span class="chip" style="font-size:11px">${sg(v)} ${a}</span>`).join('')}</span>
-      ${m.usos?`<span class="small">${left} de ${m.usos} hoje <span class="pips">${Array.from({length:m.usos},(_,j)=>{ const on=j<left; return `<i class="pip ${on?'on':''}" ${pode?`data-act="item-uso" data-k="${k}" data-d="${on?1:-1}" style="cursor:pointer" title="${on?'Usar':'Recuperar'}"`:''}></i>`; }).join('')}</span></span>`:''}
+  const ns=sintCount(c); const temSint=its.some(i=>i.magico.sint);
+  return `<div class="panel"><h3>Itens mágicos</h3>${temSint?`<div class="small" style="margin-bottom:6px">Sintonização: <b>${ns} de ${SINT_MAX}</b></div>`:''}<div class="list">${its.map(i=>{ const m=i.magico; const ativo=magicAtivo(m); const k=h(ammoKey(i)); const gastos=Math.min(m.usos||0,+(e.itemUsos||{})[ammoKey(i)]||0); const left=(m.usos||0)-gastos;
+    return `<div class="li" style="flex-wrap:wrap;gap:6px"><span>✨ <b>${h(i.nome)}</b>${(m.bonus||[]).map(([a,v])=>` <span class="chip" style="font-size:11px${ativo?'':';opacity:.45;text-decoration:line-through'}" title="${ativo?'Ativo':'Inativo: precisa de sintonização'}">${sg(v)} ${a}</span>`).join('')}${m.sint?(m.sintonizado?' <span class="chip aprovado" style="font-size:11px">Sintonizado</span>':' <span class="chip" style="font-size:11px">Não sintonizado</span>'):''}${m.sint&&pode?` <button class="btn sm" data-act="sint-open" data-ref="${h(i.nome)}">${m.sintonizado?'Encerrar sintonização':'Sintonizar'}</button>`:''}</span>
+      ${m.usos?`<span class="small">${ativo?'':'<span class="muted">(sem sintonização) </span>'}${left} de ${m.usos} hoje <span class="pips">${Array.from({length:m.usos},(_,j)=>{ const on=j<left; return `<i class="pip ${on?'on':''}" ${pode&&ativo?`data-act="item-uso" data-k="${k}" data-d="${on?1:-1}" style="cursor:pointer" title="${on?'Usar':'Recuperar'}"`:''}></i>`; }).join('')}</span></span>`:''}
       <details style="flex-basis:100%"><summary class="small muted" style="cursor:pointer">Descrição</summary><div class="small" style="white-space:pre-wrap;margin-top:4px">${h(m.desc)}</div></details></div>`; }).join('')}</div>
     ${its.some(i=>i.magico.usos)&&pode?'<div class="small muted" style="margin-top:6px">Os usos diários voltam no descanso longo.</div>':''}</div>`;
 }
@@ -2354,6 +2376,7 @@ document.addEventListener('click', async e=>{
   else if (a==='slot'){ const c=S.chars.find(x=>x.id===S.charId); if(!c) return; const gastar=t.dataset.on==='1'; const i=t.dataset.i;
     await changeEstado(c,(e,d)=>{ if(i==='pacto'){ e.pacto=Math.max(0,Math.min(d.magia.pacto.qtd,e.pacto+(gastar?1:-1))); } else { const k=+i; const tot=d.magia.slots[k]||0; e.espacos[k]=Math.max(0,Math.min(tot,(e.espacos[k]||0)+(gastar?1:-1))); } }); }
   else if (a==='nome-rand'){ if(!S.draft) return; S.draft.nome=nomeAleatorio(S.draft.especie); const inp=document.querySelector('input[data-f="nome"]'); if(inp) inp.value=S.draft.nome; render(true); }
+  else if (a==='sint-open'){ S.actionType='sintonia'; S.sintRef=t.dataset.ref; render(true); document.querySelector('form[data-form="acao"]')?.scrollIntoView({behavior:'smooth',block:'center'}); }
   else if (a==='item-uso'){ const c=S.chars.find(x=>x.id===S.charId); if(!c) return; const k=t.dataset.k;
     const it=(c.inventario||[]).find(x=>x.magico&&ammoKey(x)===k); if(!it) return; const tot=it.magico.usos||0;
     await changeEstado(c,e=>{ e.itemUsos ||= {}; const g=Math.min(tot,+e.itemUsos[k]||0); e.itemUsos[k]=Math.max(0,Math.min(tot,g+(+t.dataset.d))); if(!e.itemUsos[k]) delete e.itemUsos[k]; }); }
@@ -2383,6 +2406,7 @@ document.addEventListener('change', async e=>{
   }
   if (el.matches('[data-spell-name]')){ const m=SPELLS[ruleKey(el.value)]; const sel=el.form?.elements.circ; if(m && sel) sel.value=String(m.circ); return; }
   if (el.matches('[data-magic-chk]')){ const fm=el.form; const box=fm?.querySelector('.magic-box'); if(box) box.hidden=!el.checked; if(fm?.elements.mdesc) fm.elements.mdesc.required=el.checked; return; }
+  if (el.matches('[data-magic-sint]')){ const o=el.form?.elements.msintOn; if(o){ o.disabled=!el.checked; if(!el.checked) o.checked=false; } return; }
   if (el.matches('[data-magic-usos]')){ const u=el.form?.elements.musos; if(u){ u.disabled=!el.checked; u.required=el.checked; } return; }
   if (el.matches('form[data-type="item"] [name="nome"]')){ const ck=el.form?.elements.municao; const c=S.chars.find(x=>x.id===S.charId); if(ck){ const ex=(c?.inventario||[]).find(x=>x.nome.toLowerCase()===el.value.trim().toLowerCase()); ck.checked = ex ? isAmmo(ex) : AMMO_RE.test(el.value.trim()); } return; }
   if (el.matches('[data-feat-livre]')){ const c=S.chars.find(x=>x.id===S.charId); const sel=el.form?.elements.talento; if(!c||!sel) return; const v=sel.value;
