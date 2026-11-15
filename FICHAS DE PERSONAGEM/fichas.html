@@ -289,7 +289,12 @@ const PREP = {bardo:PREP_A,clerigo:PREP_A,druida:PREP_A,
   paladino:[2,3,4,5,6,6,7,7,9,9,10,10,11,11,12,12,14,14,15,15],
   patrulheiro:[2,3,4,5,6,6,7,7,9,9,10,10,11,11,12,12,14,14,15,15]};
 const circLabel = n => +n===0 ? 'truque' : `${n}º círculo`;
-const ESTADO_PADRAO = () => ({dano:0,temp:0,espacos:[0,0,0,0,0,0,0,0,0],pacto:0,morte:{s:0,f:0}});
+const ESTADO_PADRAO = () => ({dano:0,temp:0,espacos:[0,0,0,0,0,0,0,0,0],pacto:0,morte:{s:0,f:0},municao:{}});
+/* munição: o inventário guarda o total; o estado do jogador guarda quantas foram gastas (chave = nome em minúsculas) */
+const AMMO_RE = /^(flechas?|virotes?|setas?|balas?|agulhas?|dardos? de zarabatana|muni[cç][aã]o|pedras? de funda|arrows?|bolts?|bullets?|needles?)([^a-zà-ú]|$)/i;
+const isAmmo = i => !!i && (i.municao===true || (i.municao!==false && AMMO_RE.test(String(i.nome||''))));
+const ammoKey = i => String(i.nome||'').toLowerCase();
+const ammoLeft = (i,e) => Math.max(0, i.qtd - Math.min(i.qtd, +(e.municao||{})[ammoKey(i)]||0));
 
 /* ============ TEXTOS DE REGRAS (janela ao clicar) ============
    Resumos próprios em português, baseados no SRD 5.2 (CC BY 4.0, Wizards of the Coast).
@@ -1167,7 +1172,7 @@ function describe(type,p,c){
   switch(type){
     case 'criar': { const sp=SPECIES[p.especie], cl=CLASSES[p.classe], bg=BACKGROUNDS[p.antecedente]; return `Novo personagem: ${p.nome||'(sem nome)'}, ${sp?.nome} ${cl?.nome}${draftLevel(p)>1?` nível ${draftLevel(p)}`:''} (${bg?.nome})${String(p.campanha||'').trim()?`, campanha ${String(p.campanha).trim()}`:''}`; }
     case 'moedas': return 'Moedas: '+COINS.filter(([k])=>+p[k]).map(([k,ab])=>`${sg(+p[k])} ${ab}`).join(', ');
-    case 'item': return `${p.acao==='add'?'Adicionar':'Remover'} ${p.qtd}× ${p.nome}${p.obs?` (${p.obs})`:''}`;
+    case 'item': return `${p.acao==='add'?'Adicionar':'Remover'} ${p.qtd}× ${p.nome}${p.municao==='on'?' (munição)':''}${p.obs?` (${p.obs})`:''}`;
     case 'arma_add': { const base=p.base==='custom'?`personalizada, ${p.dado} ${p.dano}`:WEAPONS[p.base]?.nome; const nome=String(p.nome||'').trim();
       return `Adicionar arma: ${nome||base}${nome&&p.base!=='custom'?` (${base})`:p.base==='custom'?` (${base})`:''}${+p.bonus?` +${+p.bonus}`:''}${p.obs?` · ${p.obs}`:''}`; }
     case 'arma_rem': return `Remover arma: ${p.nomeRef||'?'}`;
@@ -1207,7 +1212,7 @@ function applyChange(c0, type, p){
     case 'item': {
       const n=int(p.qtd,1); const nome=String(p.nome||'').trim(); if(!nome) throw new Error('Informe o item.');
       const i=c.inventario.findIndex(x=>x.nome.toLowerCase()===nome.toLowerCase());
-      if (p.acao==='add'){ if(i>=0){ c.inventario[i].qtd+=n; if(p.obs) c.inventario[i].obs=p.obs; } else c.inventario.push({nome:nome.slice(0,80),qtd:n,obs:String(p.obs||'').slice(0,120)}); }
+      if (p.acao==='add'){ if(i>=0){ c.inventario[i].qtd+=n; if(p.obs) c.inventario[i].obs=p.obs; if(p.municao==='on') c.inventario[i].municao=true; } else c.inventario.push({nome:nome.slice(0,80),qtd:n,obs:String(p.obs||'').slice(0,120),...(p.municao==='on'?{municao:true}:{})}); }
       else { if(i<0) throw new Error('Item não está no inventário.'); if(c.inventario[i].qtd<n) throw new Error('Quantidade maior que a disponível.'); c.inventario[i].qtd-=n; if(!c.inventario[i].qtd) c.inventario.splice(i,1); }
       break;
     }
@@ -1683,7 +1688,8 @@ function actionForm(c,d){
   let body='', bloqueia=false;
   if (t==='moedas') body=`<div class="small muted" style="margin-bottom:6px">Use números negativos para gastar.</div><div class="cols3">${COINS.map(([k,ab,n])=>`<div class="f"><label>${ab} (${n})</label><input name="${k}" type="number" value="0"></div>`).join('')}</div>`;
   else if (t==='item') body=`<input type="hidden" name="acao" value="add"><div class="cols2"><div class="f"><label>Item</label><input name="nome" list="inv-list" maxlength="80" required placeholder="Ex.: Poção de cura"><datalist id="inv-list">${c.inventario.map(i=>`<option value="${h(i.nome)}">`).join('')}</datalist></div><div class="f"><label>Quantidade</label><input name="qtd" type="number" min="1" value="1" required></div></div>
-      <div class="f"><label>Observação</label><input name="obs" maxlength="120" placeholder="Ex.: achado na cripta"></div>`;
+      <div class="f"><label>Observação</label><input name="obs" maxlength="120" placeholder="Ex.: achado na cripta"></div>
+      <label style="display:flex;gap:8px;align-items:center;color:var(--text);margin-bottom:8px"><input type="checkbox" name="municao" data-ammo-chk> É munição (flechas, virotes, balas etc.): ganha um contador na ficha</label>`;
   else if (t==='item_rem'){ if(!c.inventario.length){ body='<div class="muted">Nenhum item no inventário.</div>'; bloqueia=true; }
     else body=`<div class="cols2"><div class="f"><label>Item</label><select name="nome">${c.inventario.map(i=>opt(i.nome,`${i.nome} (${i.qtd})`,'')).join('')}</select></div><div class="f"><label>Quantidade</label><input name="qtd" type="number" min="1" value="1" required></div></div>
       <div class="f"><label>Observação</label><input name="obs" maxlength="120" placeholder="Ex.: usada no combate, vendida, perdida"></div>`; }
@@ -1759,6 +1765,15 @@ function hpPanel(c,d){
     ${morte}</div>`;
 }
 
+function ammoPanel(c){
+  const its=(c.inventario||[]).filter(isAmmo); if(!its.length) return '';
+  const e=est(c); const pode=isMine(c);
+  return `<div class="panel"><h3>Munição</h3>${pode?'<div class="small muted" style="margin-bottom:6px">Clique para gastar ou recuperar. Depois da luta, metade das munições gastas pode ser recuperada.</div>':''}
+    <div class="list">${its.map(i=>{ const k=h(ammoKey(i)); const left=ammoLeft(i,e); const gastas=i.qtd-left;
+      return `<div class="li" style="flex-wrap:wrap;gap:6px"><span>${ruleLink(i.nome,'item')} <b style="font-size:18px;margin-left:6px">${left}</b> <span class="muted small">de ${i.qtd}</span></span>
+        ${pode?`<span class="row" style="gap:4px"><button class="btn sm danger" data-act="ammo" data-k="${k}" data-d="1" ${left?'':'disabled'} title="Gastar 1">−1</button><button class="btn sm ok" data-act="ammo" data-k="${k}" data-d="-1" ${gastas?'':'disabled'} title="Recuperar 1">+1</button><button class="btn sm" data-act="ammo" data-k="${k}" data-d="metade" ${gastas>1?'':'disabled'} title="Recupera metade das gastas (arredondado para baixo)">Recuperar metade</button></span>`:''}
+        ${i.qtd<=40?`<span class="pips" style="flex-basis:100%;flex-wrap:wrap">${Array.from({length:i.qtd},(_,j)=>{ const on=j<left; return `<i class="pip ${on?'on':''}" ${pode?`data-act="ammo" data-k="${k}" data-d="${on?1:-1}" style="cursor:pointer" title="${on?'Gastar':'Recuperar'}"`:''}></i>`; }).join('')}</span>`:''}</div>`; }).join('')}</div></div>`;
+}
 function spellPanel(c,d){
   const ms=c.magias||[]; if(!d.magia && !ms.length) return '';
   const e=est(c); const pode = S.isMaster || c.ownerId===S.myId;
@@ -1864,7 +1879,8 @@ function viewSheet(){
           <div class="stack">
             <div class="panel"><h3>Equipamento</h3><div class="small">${ARMORS[c.armadura]?ruleLink(ARMORS[c.armadura].nome,'armadura',` data-arm="${h(c.armadura)}"`):''}${c.escudo?` · ${ruleLink('Escudo','armadura')}`:''}${+c.caBonus?` · bônus ${sg(+c.caBonus)} CA`:''}${(c.talentos||[]).some(t=>/^ *(?:defesa|defense) *$/i.test(t))?` · ${ruleLink('Defesa','talento')} ${c.armadura!=='nenhuma'?'+1 CA':'(sem armadura, não soma)'}`:''}</div></div>
             <div class="panel"><h3>Moedas</h3><div class="row" style="gap:14px">${COINS.map(([k,ab])=>`<span><b>${c.moedas[k]||0}</b> <span class="muted small">${ab}</span></span>`).join('')}</div></div>
-            <div class="panel"><h3>Inventário</h3>${c.inventario.length?`<div class="list">${c.inventario.map(i=>`<div class="li small"><span>${ruleLink(i.nome,'item')}${i.obs?` <span class="muted">· ${h(i.obs)}</span>`:''}</span><b>×${i.qtd}</b></div>`).join('')}</div>`:'<div class="muted small">Vazio.</div>'}</div>
+            ${ammoPanel(c)}
+            <div class="panel"><h3>Inventário</h3>${c.inventario.length?`<div class="list">${c.inventario.map(i=>`<div class="li small"><span>${ruleLink(i.nome,'item')}${i.obs?` <span class="muted">· ${h(i.obs)}</span>`:''}</span><b>${isAmmo(i)?`${ammoLeft(i,est(c))} de ${i.qtd}`:`×${i.qtd}`}</b></div>`).join('')}</div>`:'<div class="muted small">Vazio.</div>'}</div>
           </div>
         </div>
       </div>
@@ -2203,6 +2219,12 @@ document.addEventListener('click', async e=>{
     await changeEstado(c,e=>{ e.pacto=0; if(longo){ e.dano=0; e.temp=0; e.espacos=[0,0,0,0,0,0,0,0,0]; } }); toast(longo?'Descanso longo: PV e espaços de magia restaurados.':'Descanso curto feito. Gaste dados de vida curando pelo campo de PV.'); }
   else if (a==='slot'){ const c=S.chars.find(x=>x.id===S.charId); if(!c) return; const gastar=t.dataset.on==='1'; const i=t.dataset.i;
     await changeEstado(c,(e,d)=>{ if(i==='pacto'){ e.pacto=Math.max(0,Math.min(d.magia.pacto.qtd,e.pacto+(gastar?1:-1))); } else { const k=+i; const tot=d.magia.slots[k]||0; e.espacos[k]=Math.max(0,Math.min(tot,(e.espacos[k]||0)+(gastar?1:-1))); } }); }
+  else if (a==='ammo'){ const c=S.chars.find(x=>x.id===S.charId); if(!c) return; const k=t.dataset.k, dd=t.dataset.d;
+    const it=(c.inventario||[]).find(x=>isAmmo(x)&&ammoKey(x)===k); if(!it) return;
+    await changeEstado(c,e=>{ e.municao ||= {}; const g=Math.min(it.qtd,+e.municao[k]||0);
+      const ng = dd==='metade' ? g-Math.floor(g/2) : g+(+dd);
+      e.municao[k]=Math.max(0,Math.min(it.qtd,ng)); if(!e.municao[k]) delete e.municao[k]; });
+    if (dd==='metade') toast('Metade das munições gastas recuperada.'); }
   else if (a==='ds'){ const c=S.chars.find(x=>x.id===S.charId); if(!c) return; const k=t.dataset.k, n=+t.dataset.n;
     await changeEstado(c,e=>{ e.morte[k] = e.morte[k]===n ? n-1 : n; }); }
   else if (a==='atk'){ const c=S.chars.find(x=>x.id===S.charId); if(c) doAttack(c,t.dataset.id,t.dataset.vers==='1'); }
@@ -2218,6 +2240,7 @@ document.addEventListener('change', async e=>{
     return;
   }
   if (el.matches('[data-spell-name]')){ const m=SPELLS[ruleKey(el.value)]; const sel=el.form?.elements.circ; if(m && sel) sel.value=String(m.circ); return; }
+  if (el.matches('form[data-type="item"] [name="nome"]')){ const ck=el.form?.elements.municao; const c=S.chars.find(x=>x.id===S.charId); if(ck){ const ex=(c?.inventario||[]).find(x=>x.nome.toLowerCase()===el.value.trim().toLowerCase()); ck.checked = ex ? isAmmo(ex) : AMMO_RE.test(el.value.trim()); } return; }
   if (el.matches('[data-feat-livre]')){ const c=S.chars.find(x=>x.id===S.charId); const sel=el.form?.elements.talento; if(!c||!sel) return; const v=sel.value;
     sel.innerHTML=featOptions(c,c.nivel,'',el.checked); sel.value=v; if(sel.value!==v) sel.value=''; sel.dispatchEvent(new Event('change',{bubbles:true})); return; }
   if (el.matches('[data-feat-sel]')){ const fm=el.form; const c=S.chars.find(x=>x.id===S.charId); if(!fm||!c) return;
