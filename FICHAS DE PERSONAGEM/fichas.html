@@ -1151,11 +1151,12 @@ function newWeapon(base, p={}){
 
 /* ============ MUDANÇAS (propostas e aplicação) ============ */
 /* pares [atributo, valor] válidos de um pedido de aumento de atributo */
-const atrPares = p => [[p.a1,p.v1],[p.a2,p.v2]].filter(([a,v])=>AB.includes(a) && Math.floor(+v)).map(([a,v])=>[a,Math.max(-10,Math.min(10,Math.floor(+v)))]);
+/* d1/d2 = 'mais' ou 'menos'; pedidos antigos sem d usam o sinal do valor */
+const atrPares = p => [[p.a1,p.v1,p.d1],[p.a2,p.v2,p.d2]].map(([a,v,d])=>{ let n=Math.max(-10,Math.min(10,Math.floor(+v)||0)); if(d==='menos') n=-Math.abs(n); else if(d==='mais') n=Math.abs(n); return [a,n]; }).filter(([a,n])=>AB.includes(a) && n);
 const ACTIONS = {item:'Adicionar item', item_rem:'Remover item', moedas:'Dinheiro e tesouro', arma_add:'Adicionar arma', arma_rem:'Remover arma',
   magia_nova:'Aprender magia', magia_prep:'Preparar / despreparar magia', magia_rem:'Esquecer magia',
   talento_add:'Adicionar talento', talento_rem:'Remover talento',
-  nivel:'Subir de nível', atributo:'Aumento de atributo', equip:'Armadura e escudo', status:'Status e campanha', nota:'Anotação'};
+  nivel:'Subir de nível', atributo:'Alterar atributo', equip:'Armadura e escudo', status:'Status e campanha', nota:'Anotação'};
 /* status do personagem na mesa; fichas antigas sem o campo contam como "Ativo" */
 const STATUS = {ativo:{nome:'Ativo'}, espera:{nome:'Em espera'}, aposentado:{nome:'Aposentado'}, falecido:{nome:'Falecido'}};
 function statusOf(c){ const s=c?.status||{}; return {tipo:STATUS[s.tipo]?s.tipo:'ativo', campanha:String(s.campanha||'')}; }
@@ -1732,9 +1733,10 @@ function actionForm(c,d){
       <div class="cols2"><div class="f"><label>Status</label><select name="tipo">${Object.entries(STATUS).map(([k,v])=>opt(k,v.nome,s.tipo)).join('')}</select></div>
       <div class="f"><label>Campanha (opcional)</label><input name="campanha" maxlength="60" list="camp-list" value="${h(s.campanha)}" placeholder="Ex.: A Maldição de Strahd"><datalist id="camp-list">${campaigns(S.chars).map(n=>`<option value="${h(n)}">`).join('')}</datalist></div></div>`; }
   else if (t==='atributo'){ const abSel=(nm,req)=>`<select name="${nm}" ${req?'required':''}><option value="">—</option>${AB.map(a=>`<option value="${a}">${AB_NOME[a]} (${c.atributos[a]})</option>`).join('')}</select>`;
-    body=`<div class="small muted" style="margin-bottom:8px">Para aumentos fora da subida de nível: talento, item mágico, bênção, maldição etc. Use valor negativo para reduzir.</div>
-      <div class="cols2"><div class="f"><label>Atributo</label>${abSel('a1',true)}</div><div class="f"><label>Valor</label><input name="v1" type="number" min="-10" max="10" value="1" required></div></div>
-      <div class="cols2"><div class="f"><label>Segundo atributo (opcional)</label>${abSel('a2',false)}</div><div class="f"><label>Valor</label><input name="v2" type="number" min="-10" max="10" value="1"></div></div>
+    const dirSel=nm=>`<select name="${nm}"><option value="mais">Aumentar</option><option value="menos">Diminuir</option></select>`;
+    body=`<div class="small muted" style="margin-bottom:8px">Para mudanças fora da subida de nível: item mágico, bênção, maldição, dreno, veneno, correção de ficha etc.</div>
+      <div class="cols3"><div class="f"><label>Atributo</label>${abSel('a1',true)}</div><div class="f"><label>Ação</label>${dirSel('d1')}</div><div class="f"><label>Quanto</label><input name="v1" type="number" min="1" max="10" value="1" required></div></div>
+      <div class="cols3"><div class="f"><label>Segundo atributo (opcional)</label>${abSel('a2',false)}</div><div class="f"><label>Ação</label>${dirSel('d2')}</div><div class="f"><label>Quanto</label><input name="v2" type="number" min="1" max="10" value="1"></div></div>
       <div class="f"><label>Limite</label><select name="limite"><option value="20">Até 20 (regra normal)</option><option value="30">Até 30 (item mágico ou dádiva épica)</option></select></div>`; }
   else if (t==='nota') body=`<div class="f"><label>Anotação</label><textarea name="texto" maxlength="500" required placeholder="Ex.: prometeu ajudar o ferreiro de Vila Alta"></textarea></div>`;
   return `<form data-form="acao" data-type="${t}">${body}${bloqueia?'':motivo+`<button class="btn pri" style="width:100%">${btn}</button>`}</form>`;
