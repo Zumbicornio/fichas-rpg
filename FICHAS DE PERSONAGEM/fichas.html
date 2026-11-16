@@ -1738,6 +1738,7 @@ function viewList(){
 }
 
 function opt(v,l,sel){ return `<option value="${h(v)}" ${String(sel)===String(v)?'selected':''}>${h(l)}</option>`; }
+function subOpts(classe,cur){ cur=cur||''; const l=(SUB_RES[classe]||[]).map(x=>x.n); const extra=cur&&!l.includes(cur)?[cur]:[]; return `<option value="">— escolha a subclasse —</option>`+l.map(n=>opt(n,n,cur)).join('')+extra.map(n=>opt(n,n+' (atual)',cur)).join(''); }
 function weaponOptions(classe,sel){
   const grp=(cat,dist,label)=>`<optgroup label="${label}">${Object.entries(WEAPONS).filter(([k,w])=>w.cat===cat&&w.dist===dist).map(([k,w])=>opt(k,`${w.nome} (${w.dado} ${w.dano})${weaponProf(classe,w)?'':' · sem proficiência'}`,sel)).join('')}</optgroup>`;
   return grp('s',0,'Simples corpo a corpo')+grp('s',1,'Simples à distância')+grp('m',0,'Marciais corpo a corpo')+grp('m',1,'Marciais à distância');
@@ -1752,7 +1753,7 @@ function levelPanel(d, r){
     ${lv>1?`<div class="f"><label>Pontos de vida dos níveis 2 a ${lv}</label><select data-f="hpModo">${opt('media',`Média (${media} + CON por nível)`,d.hpModo)}${opt('rolado',`Rolados no d${cls.dado}`,d.hpModo)}</select></div>`:''}</div>
     ${lv===1?'<div class="small muted">Para começar acima do nível 1, escolha o nível: a ficha aplica cada subida de nível com as mesmas regras do pedido "Subir de nível".</div>':''}
     ${lv>1 && d.hpModo==='rolado'?`<div class="f"><label>Valor rolado em cada nível (1 a ${cls.dado})</label><div class="cols6">${Array.from({length:lv-1},(_,i)=>i+2).map(l=>`<div><div class="small muted">Nível ${l}</div><input type="number" min="1" max="${cls.dado}" data-f="hpRolls.${l}" data-live value="${h((d.hpRolls||{})[l]??'')}" aria-label="PV rolado no nível ${l}"></div>`).join('')}</div></div>`:''}
-    ${lv>=3?`<div class="f"><label>Subclasse (nível 3)</label><input data-f="subclasse" data-live maxlength="60" value="${h(d.subclasse||'')}" placeholder="Ex.: Campeão"></div>`:''}
+    ${lv>=3?`<div class="f"><label>Subclasse (nível 3)</label><select data-f="subclasse">${subOpts(d.classe,d.subclasse)}</select><div class="small muted">Subclasses do Livro do Jogador 2024 para ${h(cls.nome)}.</div></div>`:''}
     ${asis.map(l=>{ const m=(d.melhorias||{})[l]||{}; const modo=m.modo||'2';
       return `<div class="f"><label>Nível ${l}: ${l===19?'Dádiva épica ou Melhoria de Atributo':'Melhoria de Atributo ou talento'}</label>
       <div class="cols3"><select data-f="melhorias.${l}.modo" aria-label="Tipo de melhoria no nível ${l}">${opt('2','+2 em um atributo',modo)}${opt('11','+1 em dois atributos',modo)}${opt('talento','Talento',modo)}</select>
@@ -1913,7 +1914,7 @@ function actionForm(c,d){
         <div class="small muted">Esse valor vale para o nível ${nl} e não pode ser rolado de novo. O mestre ainda pode ajustá-lo ao aprovar.</div></div>`;
         return `<div class="cols2"><div class="f"><label>Pontos de vida</label><select name="hp"><option value="media">Média (${media} + CON)</option><option value="rolado">Rolado no d${d.cls.dado}</option></select></div><div class="f"><label>Valor rolado</label><input name="rolado" type="number" min="1" max="${d.cls.dado}"></div></div>
         <div class="row" style="margin:-4px 0 12px;gap:8px"><button type="button" class="btn sm" data-act="lvl-roll">Rolar aqui (d${d.cls.dado})</button><span class="small muted">O app rola o dado e o mestre vê que o valor veio daqui. Só dá para rolar uma vez por nível.</span></div>`; })()}
-      ${nl===3?`<div class="f"><label>Subclasse</label><input name="subclasse" maxlength="60" required></div>`:''}
+      ${nl===3?`<div class="f"><label>Subclasse</label><select name="subclasse" required>${subOpts(c.classe,'')}</select><div class="small muted">Subclasses do Livro do Jogador 2024 para ${h(d.cls.nome)}.</div></div>`:''}
       ${asi?`<div class="f"><label>Melhoria</label><select name="asiModo"><option value="2">+2 em um atributo</option><option value="11">+1 em dois atributos</option><option value="talento">Talento</option></select></div>
       <div class="f"><label>Talento (se escolher "Talento")</label><select name="talento" data-feat-sel>${featOptions(c,nl,"")}</select><input name="talentoOutro" maxlength="80" placeholder="Nome do talento" style="margin-top:6px" hidden><select name="fatr" style="margin-top:6px" hidden aria-label="Atributo que recebe +1"></select><div class="small muted feat-hint" style="margin-top:4px"></div></div>
       <div class="cols3"><div class="f"><label>Atributo 1</label><select name="a1"><option value="">—</option>${AB.map(a=>`<option value="${a}">${a} (${c.atributos[a]})</option>`).join('')}</select></div><div class="f"><label>Atributo 2</label><select name="a2"><option value="">—</option>${AB.map(a=>`<option value="${a}">${a} (${c.atributos[a]})</option>`).join('')}</select></div></div>`:''}`; }
@@ -2478,7 +2479,7 @@ document.addEventListener('change', async e=>{
   const f=el.dataset.f; if(!f) return;
   const val = el.type==='checkbox' ? el.checked : el.value;
   setPath(S.draft,f,val);
-  if (f==='classe') S.draft.classSkills=[];
+  if (f==='classe'){ S.draft.classSkills=[]; S.draft.subclasse=''; }
   if (f==='especie') S.draft.extraSkill='';
   if (f==='antecedente'){ S.draft.b2=''; S.draft.b1=''; }
   if (f==='metodo' && val==='padrao') AB.forEach(a=>S.draft.padrao[a]='');
