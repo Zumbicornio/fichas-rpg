@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gerador de Masmorras</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: cabeçalho + abas; na mesa, mapa em pergaminho à esquerda e painel da sala à direita (empilha no celular).
+   Visual escuro único, de propósito, igual ao app das fichas. */
+:root{
+  color-scheme:dark;
+  --bg:#12100e; --panel:#1c1814; --panel2:#251f19; --line:#382e25; --line2:#4b3e32;
+  --text:#eee5d3; --muted:#a8998a; --gold:#d1a84e; --gold2:#f0cd7a; --red:#cf5b43; --green:#74a96d; --blue:#6f9cc9; --orange:#d9853b; --violet:#a48bc9;
+  --floor:#d8c9a3; --floorgrid:rgba(70,52,34,.20); --wall:#2b2119; --rock:#191512; --hatch:#3a3027; --ink:#3a2a1c; --sel:#b8402a;
+  --display:Cinzel,Georgia,"Times New Roman",serif; --body:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 var(--body)}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3{font-family:var(--display);letter-spacing:.02em;margin:0;text-wrap:balance}
+.gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding-block:14px;border-bottom:1px solid var(--line);background:linear-gradient(#1b1611,var(--bg))}
+header h1{font-size:20px;color:var(--gold2)}
+header .sub{color:var(--muted);font-size:12px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.badge{padding:3px 10px;border-radius:99px;border:1px solid var(--line2);font-size:12px;color:var(--muted);white-space:nowrap}
+.badge.gold{color:var(--gold2);border-color:var(--gold)}
+nav{display:flex;gap:4px;padding-top:6px;border-bottom:1px solid var(--line);overflow-x:auto}
+nav button{background:none;border:0;border-bottom:2px solid transparent;padding:10px 14px;color:var(--muted);cursor:pointer;white-space:nowrap}
+nav button.on{color:var(--gold2);border-color:var(--gold)}
+nav .count{background:var(--line2);color:var(--text);border-radius:99px;padding:0 7px;margin-left:6px;font-size:11px}
+main{padding-block:18px 40px;max-width:1500px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.notice{background:#2a2117;border:1px solid var(--line2);border-radius:var(--r);padding:10px 14px;color:var(--muted)}
+.notice b{color:var(--text)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.muted{color:var(--muted)} .small{font-size:12px}
+.btn{background:var(--panel2);border:1px solid var(--line2);border-radius:8px;padding:7px 12px;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--gold)}
+.btn.pri{background:var(--gold);border-color:var(--gold);color:#1a140c;font-weight:600}
+.btn.pri:hover{background:var(--gold2)}
+.btn.danger{color:var(--red);border-color:#6a3328}
+.btn.sm{padding:4px 9px;font-size:12px}
+.btn:disabled{opacity:.5;cursor:default}
+.btn:focus-visible,nav button:focus-visible,.roomlink:focus-visible,.card:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted);min-width:0}
+input,select,textarea{background:var(--bg);border:1px solid var(--line2);border-radius:7px;padding:7px 9px;min-width:0}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold)}
+textarea{width:100%;min-height:80px;resize:vertical}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;align-items:end}
+.form .wide{grid-column:span 2}
+@media (max-width:520px){.form .wide{grid-column:auto}}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.toolbar .nm{font-family:var(--display);font-size:18px;font-weight:700;color:var(--gold2);background:transparent;border:1px solid transparent;padding:4px 6px;width:min(520px,100%)}
+.toolbar .nm:hover{border-color:var(--line2)}
+.mesa{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:920px){.mesa{grid-template-columns:minmax(0,1fr)}}
+.mapbox{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:10px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.mapwrap{overflow:auto;border-radius:6px;max-height:80vh}
+#mapa{display:block;width:100%;cursor:pointer;touch-action:manipulation}
+.mapwrap.zoom #mapa{width:auto}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--muted);font-size:12px;align-items:center;justify-content:space-between}
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.side .panel h3{font-size:14px;color:var(--gold);margin-bottom:8px}
+.side h2{font-size:19px;color:var(--gold2)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px}
+.kv dt{color:var(--muted)} .kv dd{margin:0;font-variant-numeric:tabular-nums}
+.chip{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:99px;border:1px solid currentColor;white-space:nowrap}
+.t-entrada{color:var(--gold2)} .t-combate{color:var(--red)} .t-chefe{color:#ff8a6b;background:rgba(207,91,67,.15)} .t-armadilha{color:var(--orange)}
+.t-tesouro{color:var(--gold)} .t-misterio{color:var(--blue)} .t-descanso{color:var(--green)} .t-vazia{color:var(--muted)}
+.rooms{display:flex;flex-direction:column;gap:2px}
+.roomlink{display:grid;grid-template-columns:2.2em 1fr auto;gap:8px;align-items:center;text-align:left;background:none;border:0;border-radius:6px;padding:6px 8px;cursor:pointer}
+.roomlink:hover{background:var(--panel2)}
+.roomlink .n{font-family:var(--display);font-weight:700;color:var(--gold);font-variant-numeric:tabular-nums}
+.mon{display:flex;flex-direction:column;gap:6px}
+.mon .m{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-bottom:1px dashed var(--line);padding-bottom:6px}
+.mon .m:last-child{border-bottom:0}
+.mon .q{font-weight:600}
+.en{color:var(--muted);font-size:12px}
+.num{font-variant-numeric:tabular-nums}
+ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:3px}
+table.d6{width:100%;border-collapse:collapse;font-size:13px}
+table.d6 td{padding:5px 6px;border-top:1px solid var(--line);vertical-align:top}
+table.d6 td:first-child{width:2em;color:var(--gold);font-family:var(--display);font-weight:700;text-align:center}
+.grid-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer}
+.card:hover{border-color:var(--gold)}
+.card h2{font-size:16px;color:var(--gold2)}
+.empty{padding:32px 20px;text-align:center;color:var(--muted);display:flex;flex-direction:column;gap:8px;align-items:center}
+.empty h2{color:var(--text);font-size:17px}
+.dirty{color:var(--orange);font-size:12px}
+.ok{color:var(--green);font-size:12px}
+.prose{max-width:65ch}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+'use strict';
+/* ================= utilidades ================= */
+const h = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clone = o => JSON.parse(JSON.stringify(o));
+const fmt = n => Number(n).toLocaleString('pt-BR');
+function hashStr(str){ let a=1779033703^str.length; for(let i=0;i<str.length;i++){ a=Math.imul(a^str.charCodeAt(i),3432918353); a=a<<13|a>>>19; } a=Math.imul(a^a>>>16,2246822507); a=Math.imul(a^a>>>13,3266489909); return (a^=a>>>16)>>>0; }
+function makeRng(seed){
+  let s = hashStr(String(seed));
+  const f = () => { s|=0; s=s+0x6D2B79F5|0; let t=Math.imul(s^s>>>15,1|s); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; };
+  const R = {
+    f, int:(a,b)=>a+Math.floor(f()*(b-a+1)), pick:arr=>arr[Math.floor(f()*arr.length)], chance:p=>f()<p,
+    roll:(n,d)=>{ let t=0; for(let i=0;i<n;i++) t+=1+Math.floor(f()*d); return t; },
+    shuffle:arr=>{ const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(f()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; },
+    weighted:obj=>{ let tot=0; for(const k in obj) tot+=obj[k]; let x=f()*tot; for(const k in obj){ x-=obj[k]; if(x<0) return k; } return Object.keys(obj)[0]; }
+  };
+  return R;
+}
+const SEED_WORDS=['lua','osso','ferro','cinza','corvo','brasa','nevoa','pedra','sal','espinho','raiz','prata','sombra','vela','cripta','dente'];
+const randSeed = () => SEED_WORDS[Math.floor(Math.random()*SEED_WORDS.length)]+'-'+(1000+Math.floor(Math.random()*9000));
+const newId = () => 'm'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+
+/* ================= regras: orçamento de XP (Livro do Mestre 2024) ================= */
+/* XP por personagem: [Baixa, Moderada, Alta] */
+const BUD = {1:[50,75,100],2:[100,150,200],3:[150,225,400],4:[250,375,500],5:[500,750,1100],6:[600,1000,1400],7:[750,1300,1700],8:[1000,1700,2100],9:[1300,2000,2600],10:[1600,2300,3100],11:[1900,2900,4100],12:[2200,3700,4700],13:[2600,4200,5400],14:[2900,4900,6200],15:[3300,5400,7800],16:[3800,6100,9800],17:[4500,7200,11700],18:[5000,8700,14200],19:[5500,10700,17200],20:[6400,13200,22000]};
+const DIFS = ['Baixa','Moderada','Alta'];
+const CRXP = {'0':10,'1/8':25,'1/4':50,'1/2':100,'1':200,'2':450,'3':700,'4':1100,'5':1800,'6':2300,'7':2900,'8':3900,'9':5000,'10':5900,'11':7200,'12':8400,'13':10000,'14':11500,'15':13000,'16':15000,'17':18000,'18':20000,'19':22000,'20':25000,'21':33000};
+const tierOf = l => l<=4?1:l<=10?2:l<=16?3:4;
+const TDC = {det:[12,14,16,18], sv:[13,15,17,19], dano:['2d10','4d10','8d10','12d10'], leve:['1d10','2d10','4d10','6d10']};
+
+/* Monstros (nome, nome em inglês, ND, temas). Temas: c cripta, v caverna, f fortaleza, t templo, e esgoto, g covil, a arcana */
+const MON = [
+['Rato Gigante','Giant Rat','1/8','ve'],['Kobold Guerreiro','Kobold Warrior','1/8','vg'],['Bandido','Bandit','1/8','fe'],['Cultista','Cultist','1/8','t'],['Guarda','Guard','1/8','f'],
+['Enxame de Ratos','Swarm of Rats','1/4','ec'],['Morcego Gigante','Giant Bat','1/4','vc'],['Esqueleto','Skeleton','1/4','cfa'],['Zumbi','Zombie','1/4','ce'],['Goblin Guerreiro','Goblin Warrior','1/4','gv'],
+['Lobo','Wolf','1/4','g'],['Grimlock','Grimlock','1/4','v'],['Fungo Violeta','Violet Fungus','1/4','ve'],['Espada Voadora','Flying Sword','1/4','a'],['Dretch','Dretch','1/4','t'],['Acólito','Priest Acolyte','1/4','t'],
+['Sombra','Shadow','1/2','ct'],['Hobgoblin Guerreiro','Hobgoblin Warrior','1/2','gf'],['Gnoll Guerreiro','Gnoll Warrior','1/2','gv'],['Worg','Worg','1/2','g'],['Lodo Cinzento','Gray Ooze','1/2','ve'],
+['Crocodilo','Crocodile','1/2','e'],['Brutamontes','Tough','1/2','fe'],['Batedor','Scout','1/2','f'],['Cocatriz','Cockatrice','1/2','v'],
+['Armadura Animada','Animated Armor','1','acf'],['Carniçal','Ghoul','1','ce'],['Aranha Gigante','Giant Spider','1','vc'],['Bugbear Guerreiro','Bugbear Warrior','1','g'],['Goblin Chefe','Goblin Boss','1','g'],
+['Diabrete','Imp','1','ta'],['Quasit','Quasit','1','t'],['Espectro','Specter','1','c'],['Espião','Spy','1','fe'],
+['Lívido','Ghast','2','ce'],['Cubo Gelatinoso','Gelatinous Cube','2','vea'],['Gosma Ocre','Ochre Jelly','2','ve'],['Mímico','Mimic','2','av'],['Ogro','Ogre','2','vgf'],['Zumbi Ogro','Ogre Zombie','2','c'],
+['Esqueleto de Minotauro','Minotaur Skeleton','2','c'],['Gárgula','Gargoyle','2','taf'],['Ettercap','Ettercap','2','v'],['Grick','Grick','2','v'],['Ankheg','Ankheg','2','v'],['Tapete Sufocante','Rug of Smothering','2','a'],
+['Capitão Bandido','Bandit Captain','2','fe'],['Cultista Fanático','Cultist Fanatic','2','t'],['Sacerdote','Priest','2','t'],['Homem-Rato','Wererat','2','e'],
+['Wight','Wight','3','cf'],['Múmia','Mummy','3','ct'],['Basilisco','Basilisk','3','v'],['Cão Infernal','Hell Hound','3','t'],['Diabo Barbado','Bearded Devil','3','t'],['Capitão Hobgoblin','Hobgoblin Captain','3','gf'],
+['Bugbear Espreitador','Bugbear Stalker','3','g'],['Cavaleiro','Knight','3','f'],['Guerreiro Veterano','Warrior Veteran','3','f'],['Mantícora','Manticore','3','gv'],['Urso-Coruja','Owlbear','3','gv'],
+['Fantasma','Ghost','4','ca'],['Banshee','Banshee','4','c'],['Pudim Negro','Black Pudding','4','ve'],
+['Otyugh','Otyugh','5','ev'],['Troll','Troll','5','vg'],['Aparição','Wraith','5','c'],['Cria Vampírica','Vampire Spawn','5','ce'],['Golem de Carne','Flesh Golem','5','a'],['Elemental da Terra','Earth Elemental','5','av'],
+['Crocodilo Gigante','Giant Crocodile','5','e'],['Gigante da Colina','Hill Giant','5','gf'],['Gladiador','Gladiator','5','f'],['Umber Hulk','Umber Hulk','5','v'],['Roper','Roper','5','v'],
+['Mago','Mage','6','at'],['Medusa','Medusa','6','t'],['Vrock','Vrock','6','t'],['Quimera','Chimera','6','g'],['Serpe','Wyvern','6','gv'],
+['Escudo Guardião','Shield Guardian','7','a'],['Dragão Negro Jovem','Young Black Dragon','7','ve'],['Gigante de Pedra','Stone Giant','7','gv'],
+['Assassino','Assassin','8','fe'],['Hezrou','Hezrou','8','t'],['Diabo das Correntes','Chain Devil','8','tc'],['Hidra','Hydra','8','ev'],['Gigante do Gelo','Frost Giant','8','g'],
+['Golem de Barro','Clay Golem','9','a'],['Diabo Ósseo','Bone Devil','9','tc'],['Gigante de Fogo','Fire Giant','9','fg'],['Glabrezu','Glabrezu','9','t'],
+['Golem de Pedra','Stone Golem','10','ac'],['Dragão Vermelho Jovem','Young Red Dragon','10','vf'],['Aboleth','Aboleth','10','e'],
+['Behir','Behir','11','v'],['Diabo Chifrudo','Horned Devil','11','t'],['Arquimago','Archmage','12','a'],
+['Vampiro','Vampire','13','c'],['Nalfeshnee','Nalfeshnee','13','t'],['Dragão Negro Adulto','Adult Black Dragon','14','ve'],
+['Múmia Senhora','Mummy Lord','15','c'],['Verme Púrpura','Purple Worm','15','v'],['Golem de Ferro','Iron Golem','16','a'],['Marilith','Marilith','16','t'],
+['Dragão Vermelho Adulto','Adult Red Dragon','17','vfg'],['Balor','Balor','19','t'],['Pit Fiend','Pit Fiend','20','t'],['Lich','Lich','21','ca'],['Dragão Negro Ancião','Ancient Black Dragon','21','ve']
+].map(([pt,en,cr,tags]) => ({pt,en,cr,xp:CRXP[cr],tags}));
+
+/* ================= temas ================= */
+const TEMAS = {
+ cripta:{nome:'Cripta', tag:'c',
+  titulos:['A Cripta de {n}','As Catacumbas de {n}','O Mausoléu de {n}'],
+  nomes:['Valdren, o Esquecido','Lady Isembra Corvalto','Orsik Mão-de-Ferro','o Abade Morcant','a Rainha Cinzenta','Theodric Velanor'],
+  ganchos:['Os mortos do vilarejo vizinho começaram a sair das covas, e as trilhas levam até a tumba de {n}.','Um nobre paga 500 PO para recuperar o anel de sinete enterrado com {n}.','Saqueadores entraram há três dias e só um voltou, repetindo sem parar o nome de {n}.','Um sacerdote precisa reconsagrar o lugar antes da próxima lua nova, quando {n} deve despertar.'],
+  salas:['Ossuário','Câmara de sarcófagos','Capela profanada','Galeria de nichos funerários','Sala de embalsamamento','Cripta familiar','Salão das efígies','Câmara das urnas','Sala do guardião de pedra','Galeria dos lamentos'],
+  chefe:['Câmara funerária de {n}','Sepulcro de {n}','Trono de ossos de {n}'],
+  entrada:['Uma escadaria de pedra desce sob um portão de ferro enferrujado. Inscrições funerárias cobrem o arco.','Uma laje tombada revela degraus cobertos de musgo que descem para o frio.','A porta de bronze do mausoléu está entreaberta; marcas de unhas riscam o lado de dentro.'],
+  detalhes:['Ossos empilhados em padrões geométricos formam as paredes.','Velas pretas derretidas cobrem um pequeno altar.','Uma tampa de sarcófago está partida no chão.','Teias grossas pendem do teto abobadado.','Afrescos desbotados mostram uma procissão fúnebre.','Uma camada de pó cinzento cobre o chão, marcada só por pegadas pequenas.','Nichos nas paredes guardam crânios com moedas sobre os olhos.','Uma estátua de anjo sem cabeça segura uma tocha apagada.','Correntes enferrujadas pendem de argolas na parede.','Um fosso raso no centro está cheio de cinzas antigas.'],
+  sentidos:['Cheiro de terra úmida e incenso velho.','Um gotejar constante ecoa em algum lugar.','O ar é tão frio que a respiração vira névoa.','Silêncio absoluto; os passos parecem altos demais.','Um sussurro baixo some quando alguém presta atenção.','Cheiro adocicado de carne em decomposição.']},
+ caverna:{nome:'Cavernas', tag:'v',
+  titulos:['As Cavernas de {n}','O Abismo de {n}','As Grutas de {n}'],
+  nomes:['Garganta Funda','Kragmor','Pedra-que-Chora','Vel’Thuun','Mãe das Aranhas','Olho Cego'],
+  ganchos:['Mineiros romperam uma parede e acharam cavernas antigas; desde então, três deles sumiram em {n}.','Um cristal raro, essencial para um alquimista, só cresce perto do coração de {n}.','Gado está desaparecendo e as trilhas de sangue levam até {n}.','Um mapa antigo marca um tesouro anão perdido em {n}.'],
+  salas:['Gruta de estalactites','Lago subterrâneo','Galeria de cristais','Câmara de fungos luminosos','Ninho abandonado','Fenda estreita','Salão de colunas naturais','Poço de guano','Gruta da cascata','Antigo veio de mineração'],
+  chefe:['Covil de {n}','O coração de {n}','Caverna profunda de {n}'],
+  entrada:['Uma boca de caverna se abre na encosta, escondida atrás de uma cortina de raízes.','Uma fenda no fundo de um barranco desce em espiral para a escuridão.','A galeria de uma mina abandonada termina numa parede quebrada que dá para cavernas naturais.'],
+  detalhes:['Estalactites pingam sobre poças rasas e geladas.','Cogumelos azulados emitem uma luz fraca (Penumbra).','O chão é irregular e escorregadio (Terreno Difícil em metade da sala).','Ossos roídos de animais se espalham pelo chão.','Um riacho subterrâneo corta a sala.','Cristais nas paredes refletem qualquer luz em mil pontos.','Uma coluna de pedra natural vai do chão ao teto.','Rachaduras no teto deixam cair poeira a cada tremor.','Restos de um acampamento antigo: tochas e uma mochila podre.','Marcas de garras profundas riscam a rocha.'],
+  sentidos:['Cheiro de mofo e minerais.','O eco devolve cada som com atraso.','Um vento frio sopra de uma fenda.','Ruído distante de água corrente.','Estalos de pedras se acomodando.','Cheiro forte de amônia.']},
+ fortaleza:{nome:'Fortaleza em ruínas', tag:'f',
+  titulos:['A Fortaleza de {n}','O Forte Caído de {n}','A Cidadela de {n}'],
+  nomes:['Barão Aldemar','Torre Cinzenta','Guarda do Vale','Comandante Rhessa','Lorde Vorgan','Sentinela do Norte'],
+  ganchos:['Bandidos tomaram as ruínas de {n} e cobram pedágio na estrada do rei.','Um herdeiro quer de volta a escritura guardada no cofre de {n}.','Sinais de fogo voltaram a ser acesos nas torres de {n}, abandonada há um século.','Um desertor diz que o novo líder de {n} prepara um ataque à cidade.'],
+  salas:['Quartel','Arsenal','Refeitório','Sala da guarda','Cozinha','Capela militar','Corredor das celas','Salão nobre','Estábulo arruinado','Sala de mapas'],
+  chefe:['Salão de {n}','Aposentos de {n}','Torre de comando de {n}'],
+  entrada:['O portão principal está caído; a ponte levadiça apodrecida ainda aguenta peso com cuidado.','Uma poterna escondida pela hera dá acesso aos porões.','A muralha desabou num trecho, abrindo uma passagem entre escombros.'],
+  detalhes:['Estandartes rasgados pendem das vigas.','Camas de palha e cobertores sujos se alinham junto à parede.','Uma mesa longa ainda tem restos de uma refeição.','Armas quebradas estão empilhadas num canto.','Uma lareira grande guarda brasas ainda mornas.','Seteiras deixam entrar faixas de luz.','Um mapa da região, cheio de marcações, está pregado na parede.','Barris de cerveja, alguns furados.','Um boneco de treino retalhado por golpes.','Grades de ferro dividem a sala ao meio.'],
+  sentidos:['Cheiro de fumaça e suor.','Vozes abafadas vindas de outro cômodo.','Vento assobiando pelas seteiras.','Cheiro de cerveja azeda.','Ruído de metal batendo em metal.','Ratos correndo nas vigas.']},
+ templo:{nome:'Templo profano', tag:'t',
+  titulos:['O Templo de {n}','O Santuário Profano de {n}','O Altar Afundado de {n}'],
+  nomes:['Zhar’uul','a Serpente de Olhos Fechados','Morvath','o Deus Sem Nome','Ysgrath','a Chama Negra'],
+  ganchos:['Um culto sequestrou peregrinos para um ritual em honra de {n}.','Um terremoto revelou a entrada de um templo de {n}, enterrado há mil anos.','Um paladino moribundo pede que alguém destrua o ídolo de {n}.','Sonhos com {n} se espalham pela cidade, e os sonhadores andam até o templo dormindo.'],
+  salas:['Nave dos fiéis','Câmara de purificação','Biblioteca de pergaminhos proibidos','Cela de penitência','Sala das oferendas','Galeria de ídolos','Dormitório dos acólitos','Câmara de rituais','Salão das colunas serpentinas','Cripta dos sumos sacerdotes'],
+  chefe:['Santuário interno de {n}','Altar de {n}','Câmara da invocação de {n}'],
+  entrada:['Degraus largos descem até portas gravadas com um olho fechado.','Um poço ritual no centro de ruínas leva, por uma escada estreita, ao templo subterrâneo.','Atrás de uma cachoeira, um portal de pedra negra se abre para dentro da montanha.'],
+  detalhes:['Um círculo ritual pintado com sangue seco cobre o chão.','Ídolos com muitos olhos observam de nichos.','Bancos de pedra estão virados para um altar vazio.','Incensários de bronze ainda soltam fumaça.','Mosaicos mostram criaturas devorando estrelas.','Correntes presas a um pilar central.','Pergaminhos queimados se espalham pelo chão.','Uma fonte de água escura que não reflete nada.','Velas vermelhas formam um caminho até a parede norte.','Máscaras cerimoniais penduradas em ganchos.'],
+  sentidos:['Cânticos distantes numa língua desconhecida.','Cheiro de enxofre.','O ar é quente e pesado.','Um tambor bate devagar, sem origem visível.','Cheiro de incenso e sangue.','Sussurros que parecem dizer o nome de um dos personagens.']},
+ esgoto:{nome:'Esgotos', tag:'e',
+  titulos:['Os Esgotos de {n}','As Galerias sob {n}','O Labirinto Úmido de {n}'],
+  nomes:['Porto Cinzento','Vila Alta','Valmarco','Pedra Rasa','Ponte Velha','Mercado Baixo'],
+  ganchos:['Algo nos esgotos de {n} está puxando gente para dentro dos bueiros à noite.','A guilda de ladrões de {n} perdeu um carregamento roubado nas galerias e paga bem por ele.','Uma praga começou nos bairros baixos de {n}; a fonte parece estar nos esgotos.','Um cano antigo dá acesso ao cofre do banco de {n}, e alguém chegou antes.'],
+  salas:['Cisterna','Câmara de comportas','Junção de canais','Depósito de contrabando','Antiga sala de manutenção','Galeria desabada','Ninho de lixo','Câmara do vertedouro','Passagem para um porão','Reservatório de lodo'],
+  chefe:['Covil sob {n}','Grande cisterna de {n}','Câmara do Rei dos Ratos de {n}'],
+  entrada:['Uma grade de bueiro solta num beco escuro dá para uma escada de ferro.','O cano de saída no rio é largo o bastante para entrar curvado.','Um alçapão no porão de uma taverna desce direto para as galerias.'],
+  detalhes:['Um canal de água imunda corre pelo meio (a água chega à cintura).','Passarelas estreitas de pedra correm junto às paredes.','Caixas de contrabando cobertas por lona.','Uma comporta enferrujada bloqueia metade da sala.','Montes de lixo que se mexem sozinhos.','Símbolos de ladrões riscados a giz na parede.','Um barco pequeno amarrado a uma argola.','Canos de cerâmica antigos vazam por toda parte.','Restos de uma fogueira e cobertores: alguém mora aqui.','Uma grade no teto deixa ver os pés de quem passa na rua.'],
+  sentidos:['Fedor insuportável.','Gotas caem do teto sem parar.','Guinchos de ratos por todos os lados.','O som da cidade lá em cima, abafado.','Água corrente ruge atrás de uma parede.','Cheiro químico e ácido.']},
+ covil:{nome:'Covil goblinoide', tag:'g',
+  titulos:['O Covil de {n}','O Ninho de {n}','A Toca de {n}'],
+  nomes:['Dente-Podre','Krug, o Caolho','Clã do Punho Sangrento','Grashnak','Rainha Vespa','Clã da Lua Torta'],
+  ganchos:['Os goblins de {n} atacaram uma caravana e levaram a filha do mercador.','{n} uniu três tribos e está pronto para atacar o vilarejo.','Um xamã a serviço de {n} roubou uma relíquia do templo local.','Batedores viram lobos enormes entrando e saindo do covil de {n}.'],
+  salas:['Canil de lobos','Despensa saqueada','Sala do xamã','Dormitório imundo','Arena de lutas','Depósito de saque','Cozinha fumacenta','Posto de vigia','Cela de prisioneiros','Forja improvisada'],
+  chefe:['Salão de {n}','Trono de {n}','Câmara de {n}'],
+  entrada:['Uma boca de caverna guardada por estacas com crânios.','Uma paliçada mal construída esconde a entrada de uma toca na colina.','Um tronco oco gigante leva para túneis cavados à mão.'],
+  detalhes:['Peles fedorentas cobrem o chão.','Saque de caravana: tecidos, barris, uma roda de carroça.','Totens grosseiros pintados com sangue.','Ossos roídos e restos de comida.','Uma fogueira central enche a sala de fumaça.','Armadilhas de caça penduradas para secar.','Desenhos de batalhas riscados na parede.','Gaiolas de madeira vazias.','Um gongo improvisado feito de escudo.','Montes de lixo usados como camas.'],
+  sentidos:['Cheiro de fumaça e carne queimada.','Risadas agudas e brigas ao longe.','Latidos e uivos.','Tambores de guerra irregulares.','Cheiro de animal molhado.','O silêncio de alguém prendendo a respiração.']},
+ arcana:{nome:'Ruínas arcanas', tag:'a',
+  titulos:['As Ruínas Arcanas de {n}','O Laboratório de {n}','A Torre Submersa de {n}'],
+  nomes:['Mestre Elandor','a Arquimaga Sevrine','Quorrin, o Insone','Magnus Vael','o Colégio Esquecido','Ilyra das Mil Chaves'],
+  ganchos:['A aprendiz de {n} pede ajuda: o mestre não sai do laboratório há um mês.','Explosões de luz colorida saem das ruínas de {n} toda noite.','Um grimório de {n} apareceu num leilão; o resto da coleção ainda está lá dentro.','Os construtos de {n} começaram a patrulhar a estrada.'],
+  salas:['Biblioteca','Laboratório alquímico','Observatório','Sala de invocação','Galeria de construtos','Estufa de plantas mágicas','Sala dos espelhos','Depósito de componentes','Escritório','Câmara de testes'],
+  chefe:['Sanctum de {n}','Câmara do grande círculo de {n}','Oficina de {n}'],
+  entrada:['Uma porta de bronze sem maçaneta se abre a quem diz "amigo" em élfico.','Uma escadaria em espiral desce de um jardim tomado por plantas que brilham.','Um arco de pedra com runas apagadas zumbe baixo quando alguém passa.'],
+  detalhes:['Estantes até o teto, com livros cujos títulos mudam sozinhos.','Frascos borbulham sobre chamas azuis.','Um telescópio de latão aponta para uma claraboia rachada.','Círculos de invocação gravados em prata no chão.','Peças de construtos desmontados sobre mesas.','Plantas carnívoras em vasos de cristal.','Espelhos que mostram a sala com alguns segundos de atraso.','Gavetas com rótulos como "olhos de salamandra" e "pó de estrela".','Um globo flutuante gira devagar sobre um pedestal.','Anotações espalhadas, algumas com a tinta ainda fresca.'],
+  sentidos:['Cheiro de ozônio, como depois de um raio.','Um zumbido grave faz os dentes vibrarem.','A luz muda de cor sem motivo.','Páginas viram sozinhas em algum lugar.','Cheiro de ervas e enxofre.','A gravidade parece um pouco mais leve.']}
+};
+
+/* ================= tabelas genéricas ================= */
+const TIPOS = {entrada:'Entrada',combate:'Combate',chefe:'Chefe',armadilha:'Armadilha',tesouro:'Tesouro',misterio:'Mistério',descanso:'Descanso',vazia:'Vazia'};
+const COMPORT = ['Estão dormindo; Destreza (Furtividade) CD {det} para passar sem acordá-los.','Montam guarda e atacam ao primeiro sinal de intrusos.','Discutem sobre a divisão de um saque; podem ser negociados.','Estão distraídos com outra coisa; os personagens têm Vantagem na Iniciativa.','Preparam uma emboscada perto da porta: Sabedoria (Percepção) CD {det} para notar.','Patrulham entre esta sala e a sala {k}.','Estão feridos por um combate recente (metade dos Pontos de Vida).','Guardam um prisioneiro acorrentado.','Executam um ritual; interrompê-lo é prioridade deles.','Fogem para avisar o chefe se a luta ficar ruim.'];
+const ARMADILHAS = [
+ {nome:'Fosso com estacas', gat:'Placa de pressão no meio da sala', ef:'O chão se abre. Destreza CD {sv}: sucesso, a criatura se agarra à borda; falha, cai sobre estacas e sofre {dano} de dano Perfurante.'},
+ {nome:'Dardos envenenados', gat:'Fio esticado perto da porta', ef:'Dardos saem das paredes. Destreza CD {sv}: falha, {leve} de dano Perfurante e Constituição CD {sv} ou fica Envenenado por 1 hora.'},
+ {nome:'Lâmina pendular', gat:'Ladrilho solto no corredor central', ef:'Uma lâmina desce do teto. Destreza CD {sv}: falha, {dano} de dano Cortante; sucesso, metade.'},
+ {nome:'Bloco que despenca', gat:'Abrir a porta oposta', ef:'Um bloco de pedra cai do teto. Destreza CD {sv}: falha, {dano} de dano Contundente e a criatura fica Caída.'},
+ {nome:'Runa de fogo', gat:'Pisar sobre a runa gravada no chão', ef:'Chamas explodem num raio de 3 m. Destreza CD {sv}: falha, {dano} de dano Ígneo; sucesso, metade.'},
+ {nome:'Gás sonífero', gat:'Abrir o baú ou a urna da sala', ef:'Um gás enche a sala. Constituição CD {sv}: falha, a criatura fica Inconsciente por 1 minuto ou até sofrer dano.'},
+ {nome:'Agulha na fechadura', gat:'Tentar abrir a fechadura sem desarmar', ef:'Uma agulha espeta a mão. Constituição CD {sv}: falha, {leve} de dano Venenoso e Envenenado por 1 hora.'},
+ {nome:'Teto que desce', gat:'Fechar a porta de entrada', ef:'As portas trancam e o teto desce. Cada criatura sofre {leve} de dano Contundente no fim de cada rodada até alguém travar o mecanismo: Força (Atletismo) CD {sv}.'},
+ {nome:'Glifo de relâmpago', gat:'Tocar no objeto em exposição', ef:'Um raio salta para quem tocou. Destreza CD {sv}: falha, {dano} de dano Elétrico; sucesso, metade.'},
+ {nome:'Rede com sino', gat:'Fio esticado na entrada', ef:'Uma rede cai sobre 3 m quadrados. Destreza CD {sv}: falha, a criatura fica Impedida (Força (Atletismo) CD {sv} para escapar). O sino alerta a sala {k}.'},
+ {nome:'Jato de ácido', gat:'Mover a estátua ou a alavanca', ef:'Bicos nas paredes cospem ácido. Destreza CD {sv}: falha, {dano} de dano Ácido; sucesso, metade.'},
+ {nome:'Rampa escorregadia', gat:'Placa de pressão na descida', ef:'Os degraus viram uma rampa. Destreza CD {sv}: falha, a criatura escorrega até o fundo, sofre {leve} de dano Contundente e fica Caída.'}
+];
+const MISTERIOS = [
+ 'Uma estátua de mãos estendidas segura uma tigela vazia. Uma oferenda de valor (10 PO ou mais) abre uma passagem secreta para a sala {k}.',
+ 'Quatro alavancas na parede, cada uma com um símbolo (sol, lua, estrela, olho). A ordem certa está num mural da sala {k} (Inteligência (Investigação) CD {det}). A ordem errada dispara um alarme.',
+ 'Uma fonte de água prateada. Quem bebe rola 1d4: 1, recupera 2d4 + 2 Pontos de Vida; 2, fica Envenenado por 1 hora; 3, ganha Visão no Escuro de 18 m por 1 hora; 4, nada acontece.',
+ 'Um espelho de corpo inteiro mostra os personagens alguns segundos no futuro. Uma vez por dia, quem o toca pode fazer ao mestre uma pergunta de sim ou não.',
+ 'Um tabuleiro de xadrez gigante com peças de pedra. Vencer uma partida (três testes resistidos de Inteligência) abre um compartimento com {pouco}.',
+ 'Uma porta sem fechadura com um enigma gravado: "Quanto mais se tira, maior fica." A resposta, dita em voz alta, abre a porta: um buraco.',
+ 'Uma placa com runas antigas. Inteligência (Arcanismo) CD {det} revela a palavra de comando que desativa a armadilha mais próxima.',
+ 'Um prisioneiro acorrentado implora por liberdade. Ele conhece o caminho até a sala {k}, mas pode ser um traidor (role 1d6: par, aliado; ímpar, traidor).',
+ 'Três baús idênticos. Um tem {pouco}, outro está vazio, e o terceiro tem uma agulha envenenada (Constituição CD {sv} ou {leve} de dano Venenoso).',
+ 'Uma esfera de Escuridão mágica preenche metade da sala. De dentro dela, uma voz oferece uma barganha em troca de uma lembrança querida.',
+ 'Um mural mostra a planta desta masmorra. Sabedoria (Percepção) CD {det} encontra a marca de uma porta secreta perto da sala {k}.',
+ 'O chão é um mosaico de ladrilhos claros e escuros. Pisar só nos claros é seguro; pisar num escuro causa {leve} de dano Elétrico (Destreza CD {sv} para metade).'
+];
+const DESCANSOS = ['Um nicho seco e escondido. O grupo pode fazer um Descanso Curto sem ser incomodado.','Uma pequena capela ainda consagrada; mortos-vivos e Infernais evitam entrar.','Uma porta grossa que tranca por dentro e uma fonte de água limpa.','Restos de um acampamento de aventureiros, com 1d4 rações e um kit de curandeiro com 3 usos.'];
+const PISTAS = ['Pegadas recentes levam para a sala {k}.','Um diário rasgado menciona um ponto fraco de {n}.','Os restos de um aventureiro ainda carregam {pouco}.','Marcas de arrasto vão até uma parede (porta secreta? Sabedoria (Percepção) CD {det}).','Nada além de poeira e ecos.','Um aviso riscado na parede: "não abram a sala {k}".'];
+
+/* tesouro */
+const GEMAS = {10:['Ágata musgo','Quartzo azul','Hematita','Malaquita','Obsidiana','Turquesa'],50:['Calcedônia','Cornalina','Jaspe','Ônix','Pedra-da-lua','Zircão'],100:['Âmbar','Ametista','Coral','Granada','Jade','Pérola'],500:['Alexandrita','Água-marinha','Pérola negra','Topázio'],1000:['Esmeralda','Opala de fogo','Safira','Opala negra'],5000:['Diamante','Rubi','Jacinto','Safira-estrela']};
+const ARTE = {25:['Cálice de prata','Estatueta de marfim','Pulseira de ouro','Espelho de bronze emoldurado'],250:['Coroa de prata simples','Pente de ouro com pedras','Estatueta de jade','Tapeçaria fina'],750:['Ídolo de ouro maciço','Taça de ouro com rubis','Máscara cerimonial de ouro'],2500:['Coroa de ouro com gemas','Anel de platina com safira','Tiara de diamantes']};
+const ARMAS = ['Espada Longa','Machado de Batalha','Arco Longo','Adaga','Maça','Lança','Martelo de Guerra','Rapieira','Besta Leve','Espada Curta'];
+const ARMADURAS = ['Cota de Malha','Couro Batido','Meia-Armadura','Brunea','Placas','Camisão de Malha'];
+const ITENS = {
+ comum:['Poção de Cura','Pergaminho de Magia (truque)','Pergaminho de Magia (1º círculo)','Espada Tocada pela Lua','Manto de Muitas Modas'],
+ incomum:['Poção de Cura Maior','{arma} +1','Escudo +1','Bolsa de Contenção','Botas Élficas','Manto Élfico','Capa de Proteção','Óculos da Noite','Varinha de Mísseis Mágicos','Manoplas de Poder Ogro','Pergaminho de Magia (2º círculo)','Pergaminho de Magia (3º círculo)','Corda de Escalada','Bastão Imóvel'],
+ rara:['Poção de Cura Superior','{arma} +2','{armadura} +1','Escudo +2','Anel de Proteção','Anel de Resistência','Amuleto da Saúde','Varinha de Bolas de Fogo','Cinto de Força de Gigante da Colina','Botas da Velocidade','Manto de Deslocamento','Pergaminho de Magia (4º círculo)','Pergaminho de Magia (5º círculo)'],
+ muitorara:['Poção de Cura Suprema','{arma} +3','{armadura} +2','Escudo +3','Anel de Regeneração','Cajado do Poder','Espada Dançante','Tapete Voador','Cinto de Força de Gigante de Fogo','Pergaminho de Magia (6º círculo)','Pergaminho de Magia (7º círculo)','Pergaminho de Magia (8º círculo)'],
+ lendaria:['Espada Vorpal','Manto de Invisibilidade','{armadura} +3','Anel de Três Desejos','Cajado dos Magos','Cinto de Força de Gigante da Tempestade','Pergaminho de Magia (9º círculo)']
+};
+const RAR_NOME = {comum:'comum',incomum:'incomum',rara:'raro',muitorara:'muito raro',lendaria:'lendário'};
+const RAR_TIER = {1:{comum:6,incomum:4},2:{incomum:6,rara:4},3:{rara:6,muitorara:4},4:{muitorara:6,lendaria:4}};
+
+/* ================= gerador de mapa ================= */
+const SIZES = {pequena:{w:40,h:30,n:[6,8],nome:'Pequena (6–8 salas)'}, media:{w:54,h:38,n:[10,13],nome:'Média (10–13 salas)'}, grande:{w:68,h:48,n:[15,19],nome:'Grande (15–19 salas)'}};
+function genMap(rng, tamanho, tema){
+  const Z = SIZES[tamanho]||SIZES.media, W=Z.w, H=Z.h, alvo=rng.int(Z.n[0],Z.n[1]);
+  const g = new Uint8Array(W*H); let rooms=[];
+  for(let a=0; a<900 && rooms.length<alvo; a++){
+    const w=rng.int(4,9), hh=rng.int(4,8), x=rng.int(1,W-w-1), y=rng.int(1,H-hh-1);
+    if (rooms.some(r => x<r.x+r.w+2 && x+w+2>r.x && y<r.y+r.h+2 && y+hh+2>r.y)) continue;
+    rooms.push({x,y,w,h:hh});
+  }
+  const cen = r => [r.x+(r.w>>1), r.y+(r.h>>1)];
+  const dist = (a,b) => { const [p,q]=cen(a),[s,t]=cen(b); return Math.hypot(p-s,q-t); };
+  /* árvore mínima + alguns atalhos para criar ciclos */
+  const edges=[], inT=[0], rest=rooms.map((_,i)=>i).slice(1);
+  while(rest.length){ let best=null; for(const i of inT) for(const j of rest){ const d=dist(rooms[i],rooms[j]); if(!best||d<best[2]) best=[i,j,d]; } edges.push([best[0],best[1]]); inT.push(best[1]); rest.splice(rest.indexOf(best[1]),1); }
+  const has = (i,j) => edges.some(e => (e[0]===i&&e[1]===j)||(e[0]===j&&e[1]===i));
+  for(let k=0;k<Math.max(1,Math.round(rooms.length*.18));k++){
+    const i=rng.int(0,rooms.length-1); const c=rooms.map((r,j)=>[j,dist(rooms[i],r)]).filter(([j])=>j!==i&&!has(i,j)).sort((a,b)=>a[1]-b[1]);
+    if (c.length && c[0][1] < 22) edges.push([i,c[0][0]]);
+  }
+  /* entrada = sala mais perto da borda; numeração em ordem de exploração (busca em largura) */
+  const adj = rooms.map(()=>[]); edges.forEach(([a,b])=>{ adj[a].push(b); adj[b].push(a); });
+  let ent=0, bd=1e9; rooms.forEach((r,i)=>{ const d=Math.min(r.x, r.y, W-(r.x+r.w), H-(r.y+r.h)); if(d<bd){bd=d; ent=i;} });
+  const order=[ent], depth={[ent]:0}; for(let q=0;q<order.length;q++){ const u=order[q]; for(const v of adj[u]) if(depth[v]===undefined){ depth[v]=depth[u]+1; order.push(v); } }
+  const maxD = Math.max(...order.map(i=>depth[i]));
+  const boss = order.filter(i=>depth[i]===maxD).sort((a,b)=>rooms[b].w*rooms[b].h-rooms[a].w*rooms[a].h)[0];
+  const ord = order.filter(i=>i!==boss).concat([boss]);
+  const remap = {}; ord.forEach((old,nw)=>remap[old]=nw);
+  rooms = ord.map(i=>rooms[i]);
+  const conex = edges.map(([a,b])=>({a:remap[a], b:remap[b]}));
+  rooms.forEach(r=>{ for(let j=r.y;j<r.y+r.h;j++) for(let i=r.x;i<r.x+r.w;i++) g[j*W+i]=1; });
+  const roomAt = (x,y) => rooms.findIndex(r => x>=r.x && x<r.x+r.w && y>=r.y && y<r.y+r.h);
+  const doors = new Map();
+  for(const {a,b} of conex){
+    const [x0,y0]=cen(rooms[a]), [x1,y1]=cen(rooms[b]); const path=[[x0,y0]]; let x=x0, y=y0;
+    const sx=()=>{ while(x!==x1){ x+=Math.sign(x1-x); path.push([x,y]); } }, sy=()=>{ while(y!==y1){ y+=Math.sign(y1-y); path.push([x,y]); } };
+    if (rng.chance(.5)){ sx(); sy(); } else { sy(); sx(); }
+    let prev = roomAt(x0,y0);
+    for(let k=1;k<path.length;k++){
+      const [px,py]=path[k], ri=roomAt(px,py);
+      if (ri<0 && g[py*W+px]===0) g[py*W+px]=2;
+      if (prev>=0 && ri<0) doors.set(px+','+py,{x:px,y:py});
+      if (prev<0 && ri>=0){ const [qx,qy]=path[k-1]; doors.set(qx+','+qy,{x:qx,y:qy}); }
+      prev=ri;
+    }
+  }
+  const at = (i,j) => (i<0||j<0||i>=W||j>=H) ? 0 : g[j*W+i];
+  /* porta só onde a passagem tem exatamente dois lados abertos e opostos */
+  const dl = [];
+  for (const d of doors.values()){
+    const L=!!at(d.x-1,d.y), R=!!at(d.x+1,d.y), U=!!at(d.x,d.y-1), D=!!at(d.x,d.y+1);
+    if ((L&&R&&!U&&!D) || (U&&D&&!L&&!R)) dl.push({x:d.x, y:d.y, o:(L&&R)?'h':'v', t:rng.weighted({normal:70,trancada:14,secreta:8,emperrada:8})});
+  }
+  if (tema==='caverna'){
+    /* bordas irregulares nas grutas */
+    const keep = new Set(); dl.forEach(d=>{ for(let dy=-1;dy<=1;dy++) for(let dx=-1;dx<=1;dx++) keep.add((d.x+dx)+','+(d.y+dy)); });
+    rooms.forEach(r=>{
+      for(let j=r.y;j<r.y+r.h;j++) for(let i=r.x;i<r.x+r.w;i++){
+        const edge = i===r.x||j===r.y||i===r.x+r.w-1||j===r.y+r.h-1, corner=(i===r.x||i===r.x+r.w-1)&&(j===r.y||j===r.y+r.h-1);
+        if (!edge || keep.has(i+','+j)) continue;
+        const nearCorr = [[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy])=>at(i+dx,j+dy)===2);
+        if (!nearCorr && (corner || rng.chance(.35))) g[j*W+i]=0;
+      }
+      for(let j=r.y-1;j<=r.y+r.h;j++) for(let i=r.x-1;i<=r.x+r.w;i++){
+        if (i<1||j<1||i>=W-1||j>=H-1) continue;
+        const out = i<r.x||j<r.y||i>=r.x+r.w||j>=r.y+r.h, corner=(i<r.x||i>=r.x+r.w)&&(j<r.y||j>=r.y+r.h);
+        if (out && !corner && g[j*W+i]===0 && rng.chance(.18)) g[j*W+i]=1;
+      }
+    });
+  }
+  return {w:W, h:H, grid:Array.from(g).join(''), doors:dl, rooms, conex};
+}
+
+/* ================= gerador de conteúdo ================= */
+function poolFor(tema){ const t=TEMAS[tema].tag; return MON.filter(m=>m.tags.includes(t)); }
+function buildEncounter(rng, p, dif, chefe){
+  const per = BUD[p.nivel][dif]; let alvo = per*p.jogadores; if (chefe && p.ritmo==='pesado') alvo=Math.round(alvo*1.25);
+  const pool = poolFor(p.tema);
+  const fits = (list,lo,hi) => list.filter(m=>m.xp<=hi && m.xp>=lo);
+  let cand = fits(pool, alvo/(chefe?4:10), alvo*(chefe?.85:1)); if (cand.length<2) cand = fits(MON, alvo/(chefe?4:10), alvo*(chefe?.85:1));
+  if (!cand.length) cand = [MON.filter(m=>m.xp<=alvo).sort((a,b)=>b.xp-a.xp)[0] || MON[0]];
+  let prim, n;
+  if (chefe){ const sorted=[...cand].sort((a,b)=>b.xp-a.xp); prim = rng.pick(sorted.slice(0,Math.max(1,Math.ceil(sorted.length/3)))); n=1; }
+  else { prim = rng.pick(cand); const maxN=Math.max(1,Math.min(8,Math.floor(alvo/prim.xp))); n=Math.max(1,Math.round(maxN*(.6+.4*rng.f()))); }
+  const grupos=[{pt:prim.pt,en:prim.en,cr:prim.cr,xp:prim.xp,qtd:n}];
+  let resto = alvo - n*prim.xp;
+  if (resto >= alvo*.2){
+    let c2 = pool.filter(m=>m.xp<=resto && m.pt!==prim.pt && m.xp>=resto/6); if(!c2.length) c2 = MON.filter(m=>m.xp<=resto && m.pt!==prim.pt && m.xp>=resto/6);
+    if (c2.length){ const s=rng.pick(c2); const k=Math.max(1,Math.min(6,Math.floor(resto/s.xp))); grupos.push({pt:s.pt,en:s.en,cr:s.cr,xp:s.xp,qtd:k}); }
+  }
+  const xp = grupos.reduce((t,gp)=>t+gp.xp*gp.qtd,0);
+  return {dif, orcamento:alvo, xp, grupos, comport:''};
+}
+const fill = (txt, ctx) => txt.replace(/\{(\w+)\}/g,(m,k)=>ctx[k]!==undefined?ctx[k]:m).replace(/\bde o /g,'do ').replace(/\bde a /g,'da ').replace(/^(o|a) /,c=>c.toUpperCase());
+function pickItem(rng, rar){ return fill(rng.pick(ITENS[rar]), {arma:rng.pick(ARMAS), armadura:rng.pick(ARMADURAS)}) + ' · '+RAR_NOME[rar]; }
+function gem(rng, v){ return rng.pick(GEMAS[v])+' ('+fmt(v)+' PO)'; }
+function individual(rng,t){ return t===1?rng.roll(3,6)+' PO' : t===2?fmt(rng.roll(2,8)*10)+' PO' : t===3?fmt(rng.roll(2,10)*10)+' PL' : fmt(rng.roll(2,8)*100)+' PL'; }
+function pouco(rng,t){ return individual(rng,t); }
+function genTesouro(rng, t, tipo){
+  const itens=[]; let moedas;
+  if (tipo==='chefe'){
+    moedas = t===1 ? fmt(rng.roll(2,4)*100)+' PO' : t===2 ? fmt(rng.roll(2,6)*100)+' PO e '+fmt(rng.roll(3,6)*10)+' PL' : t===3 ? fmt(rng.roll(4,6)*1000)+' PO e '+fmt(rng.roll(5,6)*100)+' PL' : fmt(rng.roll(12,6)*1000)+' PO e '+fmt(rng.roll(8,6)*1000)+' PL';
+    const gv = {1:[10,50],2:[50,100],3:[100,500,1000],4:[1000,5000]}[t]; const ng=rng.int(1,3)+t-1;
+    for(let i=0;i<ng;i++) itens.push(gem(rng, rng.pick(gv)));
+    const av = {1:25,2:250,3:750,4:2500}[t]; if (rng.chance(.6)) itens.push(rng.pick(ARTE[av])+' ('+fmt(av)+' PO)');
+    const nm = t<=2 ? rng.int(1,3) : rng.int(1,4);
+    for(let i=0;i<nm;i++) itens.push(pickItem(rng, rng.weighted(RAR_TIER[t])));
+  } else if (tipo==='tesouro'){
+    moedas = individual(rng,t)+' + '+individual(rng,t)+' + '+individual(rng,t);
+    itens.push(gem(rng, {1:10,2:50,3:100,4:1000}[t]));
+    if (rng.chance(.45)){ const r=RAR_TIER[t]; const low=Object.keys(r)[0]; itens.push(pickItem(rng, low)); }
+  } else {
+    moedas = individual(rng,t);
+    if (rng.chance(.15)) itens.push(pickItem(rng, Object.keys(RAR_TIER[t])[0]));
+  }
+  return {moedas, itens};
+}
+function genSala(rng, d, i, tipo, nomeUsado){
+  const p=d.params, T=TEMAS[p.tema], t=tierOf(p.nivel), r=d.mapa.rooms[i], ns=d.mapa.rooms.length;
+  let k = rng.int(1,ns); if (k===i+1) k = (k % ns)+1;
+  const ctx = {det:TDC.det[t-1], sv:TDC.sv[t-1], dano:TDC.dano[t-1], leve:TDC.leve[t-1], k, n:d.vilao, pouco:pouco(rng,t)};
+  const s = {tipo, nome:'', desc:'', sentido:rng.pick(T.sentidos), encontro:null, armadilha:null, tesouro:null, misterio:'', descanso:'', pista:'', notas:''};
+  const det = rng.shuffle(T.detalhes);
+  if (tipo==='entrada'){ s.nome='Entrada'; s.desc = rng.pick(T.entrada)+' '+det[0]; }
+  else if (tipo==='chefe'){ s.nome = fill(rng.pick(T.chefe), ctx); s.desc = det[0]+' '+det[1]; }
+  else { s.nome = nomeUsado || rng.pick(T.salas); s.desc = det[0] + (rng.chance(.5)?' '+det[1]:''); }
+  const ritmo = {leve:{0:6,1:3,2:1}, padrao:{0:4,1:4,2:2}, pesado:{0:2,1:4,2:4}}[p.ritmo] || {0:4,1:4,2:2};
+  const enc = chefe => { const e = buildEncounter(rng, p, chefe?2:+rng.weighted(ritmo), chefe); e.comport = fill(chefe?'O chefe, {n}, lidera os defensores e luta até o fim, a menos que os personagens ofereçam algo que deseje mais do que a vitória.':rng.pick(COMPORT), ctx); return e; };
+  if (tipo==='combate'){ s.encontro = enc(false); if (rng.chance(.5)) s.tesouro = genTesouro(rng,t,'individual'); }
+  if (tipo==='chefe'){ s.encontro = enc(true); s.tesouro = genTesouro(rng,t,'chefe'); }
+  if (tipo==='entrada' && rng.chance(.35)){ s.encontro = buildEncounter(rng,p,0,false); s.encontro.comport = 'Vigiam a entrada; um deles corre para dar o alarme na sala '+Math.min(2,ns)+'.'; }
+  if (tipo==='armadilha'){ const a=rng.pick(ARMADILHAS); s.armadilha = {nome:a.nome, gatilho:a.gat, efeito:fill(a.ef,ctx), det:ctx.det}; if (rng.chance(.35)) s.tesouro = genTesouro(rng,t,'individual'); }
+  if (tipo==='tesouro'){ s.tesouro = genTesouro(rng,t,'tesouro'); if (rng.chance(.4)){ const a=rng.pick(ARMADILHAS); s.armadilha={nome:a.nome, gatilho:'Mexer no tesouro', efeito:fill(a.ef,ctx), det:ctx.det}; } }
+  if (tipo==='misterio') s.misterio = fill(rng.pick(MISTERIOS), ctx);
+  if (tipo==='descanso') s.descanso = rng.pick(DESCANSOS);
+  if (tipo==='vazia') s.pista = fill(rng.pick(PISTAS), ctx);
+  return s;
+}
+function genErrantes(rng, d){
+  const out=[]; for(let i=0;i<6;i++){ const e=buildEncounter(rng, d.params, 0, false); out.push(e.grupos.map(gp=>gp.qtd+'× '+gp.pt).join(' e ')+' ('+fmt(e.xp)+' XP)'); }
+  return out;
+}
+function genDungeon(params){
+  const p = {...params, nivel:Math.max(1,Math.min(20,+params.nivel||1)), jogadores:Math.max(1,Math.min(8,+params.jogadores||4))};
+  const semente = (p.semente||'').trim() || randSeed();
+  const rng = makeRng(semente+'|'+p.tema+'|'+p.tamanho+'|'+p.nivel+'|'+p.jogadores+'|'+p.ritmo);
+  const T = TEMAS[p.tema];
+  const vilao = rng.pick(T.nomes);
+  const mapa = genMap(rng, p.tamanho, p.tema);
+  const ns = mapa.rooms.length;
+  const d = {id:null, nome:(p.nome||'').trim() || fill(rng.pick(T.titulos),{n:vilao}), vilao, gancho:fill(rng.pick(T.ganchos),{n:vilao}), semente,
+    params:{tema:p.tema, tamanho:p.tamanho, nivel:p.nivel, jogadores:p.jogadores, ritmo:p.ritmo}, mapa, salas:[], errantes:[], publicada:false, criada:Date.now(), atualizada:Date.now()};
+  const tipos = ['entrada'];
+  for(let i=1;i<ns-1;i++) tipos.push(rng.weighted({combate:40, armadilha:13, tesouro:9, vazia:18, misterio:12, descanso:5}));
+  tipos.push('chefe');
+  if (ns>=6){
+    if (!tipos.includes('tesouro')) tipos[rng.int(1,ns-2)]='tesouro';
+    if (!tipos.includes('armadilha')){ let j=rng.int(1,ns-2); if (tipos[j]==='tesouro') j = j===1?2:j-1; tipos[j]='armadilha'; }
+  }
+  const nomes = rng.shuffle(T.salas); let ni=0;
+  d.salas = tipos.map((tp,i)=>genSala(rng, d, i, tp, nomes[(ni++)%nomes.length]));
+  d.errantes = genErrantes(rng, d);
+  return d;
+}
+
+/* ================= estado ================= */
+const S = {
+  mode:'local', isOwner:true, viewAs:'mestre', tab:'gerar', myId:null,
+  params:{tema:'cripta', tamanho:'media', nivel:3, jogadores:4, ritmo:'padrao', semente:'', nome:''},
+  cur:null, sel:null, dirty:false, genArm:false, zoom:false,
+  lista:{}, publicas:{}, openPub:null, notice:'', saving:false, delArm:null, loaded:false
+};
+const isMestre = () => S.isOwner && S.viewAs==='mestre';
+let store = null;
+
+/* cópia para os jogadores: por enquanto tudo, menos as anotações do mestre */
+function playerCopy(d){ const c = clone(d); c.salas.forEach(s=>{ delete s.notas; }); return c; }
+
+function makeLocalStore(){
+  let mem = {masmorras:{}, publicas:{}};
+  try { const raw = localStorage.getItem('gerador-masmorras-demo'); if (raw) mem = JSON.parse(raw); } catch {}
+  const persist = () => { try { localStorage.setItem('gerador-masmorras-demo', JSON.stringify(mem)); } catch {} };
+  const L=[], P=[];
+  return {
+    onLista(cb){ L.push(cb); setTimeout(()=>cb(clone(mem.masmorras))); },
+    onPublicas(cb){ P.push(cb); setTimeout(()=>cb(clone(mem.publicas))); },
+    async save(d){ mem.masmorras[d.id]=clone(d); if (d.publicada) mem.publicas[d.id]=playerCopy(d); else delete mem.publicas[d.id]; persist(); L.forEach(f=>f(clone(mem.masmorras))); P.forEach(f=>f(clone(mem.publicas))); },
+    async remove(id){ delete mem.masmorras[id]; delete mem.publicas[id]; persist(); L.forEach(f=>f(clone(mem.masmorras))); P.forEach(f=>f(clone(mem.publicas))); }
+  };
+}
+function makeDbStore(db){
+  const chain = {};
+  const q = (k,fn) => (chain[k] = (chain[k]||Promise.resolve()).catch(()=>{}).then(fn));
+  const toMap = s => { const m={}; s.docs.forEach(x=>{ if (x.exists) m[x.id] = {...clone(x.data()), id:x.id}; }); return m; };
+  return {
+    onLista(cb, err){ return db.collection('masmorras').onSnapshot(s=>cb(toMap(s)), err); },
+    onPublicas(cb, err){ return db.collection('publicas').onSnapshot(s=>cb(toMap(s)), err); },
+    save(d){ const {id, ...rest} = clone(d); return q(id, async ()=>{
+      await db.doc('masmorras/'+id).set(rest);
+      if (d.publicada){ const {id:_, ...pub} = playerCopy(d); await db.doc('publicas/'+id).set(pub); }
+      else { await db.doc('publicas/'+id).delete().catch(()=>{}); }
+    }); },
+    remove(id){ return q(id, async ()=>{ await db.doc('publicas/'+id).delete().catch(()=>{}); await db.doc('masmorras/'+id).delete(); }); }
+  };
+}
+
+/* ================= desenho do mapa ================= */
+function drawMap(d){
+  const cv = document.getElementById('mapa'); if (!cv || !d) return;
+  const wrap = cv.parentElement, m = d.mapa;
+  const cssW = S.zoom ? m.w*18 : wrap.clientWidth; if (!cssW) return;
+  const c = cssW/m.w, cssH = c*m.h, dpr = window.devicePixelRatio||1;
+  cv.width = Math.round(cssW*dpr); cv.height = Math.round(cssH*dpr); cv.style.width = cssW+'px'; cv.style.height = cssH+'px';
+  const x = cv.getContext('2d'); x.setTransform(dpr,0,0,dpr,0,0);
+  const css = getComputedStyle(document.documentElement), col = n => css.getPropertyValue(n).trim();
+  const G = m.grid, at = (i,j) => (i<0||j<0||i>=m.w||j>=m.h) ? 0 : +G[j*m.w+i];
+  x.fillStyle = col('--rock'); x.fillRect(0,0,cssW,cssH);
+  /* hachura da rocha junto às paredes */
+  x.strokeStyle = col('--hatch'); x.lineWidth = 1; x.beginPath();
+  for(let j=0;j<m.h;j++) for(let i=0;i<m.w;i++){
+    if (at(i,j)) continue; let near=false; for(let dy=-1;dy<=1&&!near;dy++) for(let dx=-1;dx<=1;dx++) if (at(i+dx,j+dy)){ near=true; break; }
+    if (!near) continue; const px=i*c, py=j*c;
+    x.moveTo(px,py+c); x.lineTo(px+c,py);
+    x.moveTo(px,py+c/2); x.lineTo(px+c/2,py); x.moveTo(px+c/2,py+c); x.lineTo(px+c,py+c/2);
+  }
+  x.stroke();
+  x.fillStyle = col('--floor');
+  for(let j=0;j<m.h;j++) for(let i=0;i<m.w;i++) if (at(i,j)) x.fillRect(i*c, j*c, c+.5, c+.5);
+  x.strokeStyle = col('--floorgrid'); x.lineWidth = 1; x.beginPath();
+  for(let j=0;j<m.h;j++) for(let i=0;i<m.w;i++) if (at(i,j)) x.rect(i*c+.5, j*c+.5, c-1, c-1);
+  x.stroke();
+  /* paredes */
+  x.strokeStyle = col('--wall'); x.lineWidth = Math.max(2, c*.18); x.lineCap='square'; x.beginPath();
+  for(let j=0;j<m.h;j++) for(let i=0;i<m.w;i++){
+    if (!at(i,j)) continue; const px=i*c, py=j*c;
+    if (!at(i,j-1)){ x.moveTo(px,py); x.lineTo(px+c,py); }
+    if (!at(i,j+1)){ x.moveTo(px,py+c); x.lineTo(px+c,py+c); }
+    if (!at(i-1,j)){ x.moveTo(px,py); x.lineTo(px,py+c); }
+    if (!at(i+1,j)){ x.moveTo(px+c,py); x.lineTo(px+c,py+c); }
+  }
+  x.stroke();
+  /* portas */
+  const showSecret = isMestre();
+  m.doors.forEach(dr=>{
+    const cx=dr.x*c+c/2, cy=dr.y*c+c/2, horiz = dr.o==='h'; const dw = horiz? c*.32 : c*.86, dh = horiz? c*.86 : c*.32;
+    if (dr.t==='secreta'){
+      x.strokeStyle = col('--wall'); x.lineWidth = Math.max(2,c*.18); x.beginPath();
+      if (horiz){ x.moveTo(cx,dr.y*c); x.lineTo(cx,dr.y*c+c); } else { x.moveTo(dr.x*c,cy); x.lineTo(dr.x*c+c,cy); } x.stroke();
+      if (showSecret){ x.fillStyle = col('--sel'); x.font = `700 ${Math.max(8,c*.7)}px ${col('--display')}`; x.textAlign='center'; x.textBaseline='middle'; x.fillText('S', cx + (horiz? c*.32:0), cy + (horiz?0:-c*.32)); }
+      return;
+    }
+    x.fillStyle = dr.t==='trancada' ? col('--wall') : col('--floor');
+    x.fillRect(cx-dw/2, cy-dh/2, dw, dh);
+    x.strokeStyle = col('--wall'); x.lineWidth = Math.max(1, c*.08); x.strokeRect(cx-dw/2, cy-dh/2, dw, dh);
+    if (dr.t==='emperrada'){ x.beginPath(); x.moveTo(cx-dw/2,cy-dh/2); x.lineTo(cx+dw/2,cy+dh/2); x.stroke(); }
+  });
+  /* escada na entrada */
+  const e = m.rooms[0]; if (e){ const sx=(e.x+1)*c, sy=(e.y+1)*c; x.strokeStyle=col('--ink'); x.lineWidth=Math.max(1,c*.08); x.beginPath(); for(let k=0;k<5;k++){ const yy=sy+k*c/5+c*.1; x.moveTo(sx+c*.1,yy); x.lineTo(sx+c*.9,yy); } x.stroke(); }
+  /* números das salas */
+  x.textAlign='center'; x.textBaseline='middle';
+  m.rooms.forEach((r,i)=>{
+    const fs = Math.max(9, Math.min(c*1.1, 22)); x.font = `700 ${fs}px ${col('--display')}`;
+    const cx=(r.x+r.w/2)*c, cy=(r.y+r.h/2)*c;
+    x.fillStyle = col('--ink'); x.fillText(String(i+1), cx, cy);
+    if (S.sel===i){ x.strokeStyle = col('--sel'); x.lineWidth = Math.max(2,c*.2); x.strokeRect(r.x*c+c*.2, r.y*c+c*.2, r.w*c-c*.4, r.h*c-c*.4); }
+  });
+}
+function mapClick(e, d){
+  const cv = e.currentTarget, rc = cv.getBoundingClientRect(), m = d.mapa;
+  const i = Math.floor((e.clientX-rc.left)/rc.width*m.w), j = Math.floor((e.clientY-rc.top)/rc.height*m.h);
+  const idx = m.rooms.findIndex(r => i>=r.x && i<r.x+r.w && j>=r.y && j<r.y+r.h);
+  if (idx>=0){ S.sel = S.sel===idx ? null : idx; render(); const side=document.querySelector('.side'); if (side && window.innerWidth<=920) side.scrollIntoView({behavior:'smooth', block:'start'}); }
+}
+
+/* ================= telas ================= */
+const opt = (v, cur, label) => `<option value="${h(v)}" ${String(v)===String(cur)?'selected':''}>${h(label)}</option>`;
+function viewForm(){
+  const p = S.params;
+  return `<section class="panel"><div class="form">
+    <label class="f">Tema<select id="p-tema" data-p="tema">${Object.entries(TEMAS).map(([k,t])=>opt(k,p.tema,t.nome)).join('')}</select></label>
+    <label class="f">Tamanho<select id="p-tamanho" data-p="tamanho">${Object.entries(SIZES).map(([k,z])=>opt(k,p.tamanho,z.nome)).join('')}</select></label>
+    <label class="f">Nível do grupo<select id="p-nivel" data-p="nivel">${Array.from({length:20},(_,i)=>opt(i+1,p.nivel,'Nível '+(i+1))).join('')}</select></label>
+    <label class="f">Personagens<select id="p-jog" data-p="jogadores">${Array.from({length:8},(_,i)=>opt(i+1,p.jogadores,(i+1)+(i?' personagens':' personagem'))).join('')}</select></label>
+    <label class="f">Ritmo dos combates<select id="p-ritmo" data-p="ritmo">${opt('leve',p.ritmo,'Leve')}${opt('padrao',p.ritmo,'Equilibrado')}${opt('pesado',p.ritmo,'Pesado')}</select></label>
+    <label class="f">Semente (opcional)<input id="p-semente" data-p="semente" value="${h(p.semente)}" placeholder="aleatória" autocomplete="off"></label>
+    <label class="f wide">Nome (opcional)<input id="p-nome" data-p="nome" value="${h(p.nome)}" placeholder="gerado com o tema" autocomplete="off"></label>
+    <button class="btn pri" data-act="gerar">${S.genArm?'Gerar e descartar alterações':'Gerar masmorra'}</button>
+  </div>${S.genArm?'<p class="dirty" style="margin:10px 0 0">A masmorra aberta tem alterações não salvas. Clique de novo para gerar outra mesmo assim.</p>':''}</section>`;
+}
+function encHtml(e){
+  if (!e) return '';
+  return `<div class="panel"><h3>Encontro · dificuldade ${h(DIFS[e.dif])}</h3>
+    <div class="mon">${e.grupos.map(g=>`<div class="m"><span><span class="q num">${g.qtd}×</span> ${h(g.pt)} <span class="en">(${h(g.en)})</span></span><span class="muted small num">ND ${h(g.cr)} · ${fmt(g.xp)} XP cada</span></div>`).join('')}</div>
+    <p class="small muted num" style="margin:8px 0 0">Total ${fmt(e.xp)} XP · orçamento ${fmt(e.orcamento)} XP</p>
+    ${e.comport?`<p style="margin:8px 0 0">${h(e.comport)}</p>`:''}</div>`;
+}
+function roomView(d, i, edit){
+  const s = d.salas[i], r = d.mapa.rooms[i];
+  const ns = d.salas.length;
+  return `<div class="panel" style="display:flex;flex-direction:column;gap:10px">
+      <div class="row" style="justify-content:space-between"><button class="btn sm" data-act="sel" data-i="">← Visão geral</button>
+        <span class="row"><button class="btn sm" data-act="sel" data-i="${(i-1+ns)%ns}" aria-label="Sala anterior">‹</button><button class="btn sm" data-act="sel" data-i="${(i+1)%ns}" aria-label="Próxima sala">›</button></span></div>
+      <div class="row"><span class="chip t-${h(s.tipo)}">${h(TIPOS[s.tipo]||s.tipo)}</span><span class="muted small num">${fmt(r.w*1.5)} × ${fmt(r.h*1.5)} m</span></div>
+      <h2>${i+1}. ${h(s.nome)}</h2>
+      <p class="prose" style="margin:0">${h(s.desc)}</p>
+      <p class="muted" style="margin:0"><i>${h(s.sentido)}</i></p>
+      ${edit?`<div class="row"><button class="btn sm" data-act="reroll-sala" data-i="${i}">Gerar sala de novo</button>${s.encontro?`<button class="btn sm" data-act="reroll-enc" data-i="${i}">Trocar encontro</button>`:''}
+        <select id="tipo-${i}" class="btn sm" data-act-change="tipo" data-i="${i}" aria-label="Mudar tipo da sala">${Object.entries(TIPOS).map(([k,v])=>opt(k,s.tipo,'Tipo: '+v)).join('')}</select></div>`:''}
+    </div>
+    ${encHtml(s.encontro)}
+    ${s.armadilha?`<div class="panel"><h3>Armadilha · ${h(s.armadilha.nome)}</h3><dl class="kv"><dt>Gatilho</dt><dd>${h(s.armadilha.gatilho)}</dd><dt>Perceber</dt><dd>Sabedoria (Percepção) CD ${s.armadilha.det}</dd><dt>Desarmar</dt><dd>Destreza (Prestidigitação) com Ferramentas de Ladrão CD ${s.armadilha.det}</dd></dl><p style="margin:8px 0 0">${h(s.armadilha.efeito)}</p></div>`:''}
+    ${s.misterio?`<div class="panel"><h3>Mistério</h3><p class="prose" style="margin:0">${h(s.misterio)}</p></div>`:''}
+    ${s.descanso?`<div class="panel"><h3>Lugar seguro</h3><p style="margin:0">${h(s.descanso)}</p></div>`:''}
+    ${s.pista?`<div class="panel"><h3>Pista</h3><p style="margin:0">${h(s.pista)}</p></div>`:''}
+    ${s.tesouro?`<div class="panel"><h3>Tesouro</h3><dl class="kv"><dt>Moedas</dt><dd>${h(s.tesouro.moedas)}</dd></dl>${s.tesouro.itens.length?`<ul class="plain" style="margin-top:8px">${s.tesouro.itens.map(t=>`<li>${h(t)}</li>`).join('')}</ul>`:''}</div>`:''}
+    ${edit?`<div class="panel"><h3>Anotações do mestre</h3><textarea id="notas-${i}" data-notas="${i}" placeholder="Só você vê estas anotações.">${h(s.notas||'')}</textarea></div>`:''}`;
+}
+function overview(d, edit){
+  const p = d.params, xpTot = d.salas.reduce((t,s)=>t+(s.encontro?s.encontro.xp:0),0);
+  const portas = d.mapa.doors.reduce((o,x)=>(o[x.t]=(o[x.t]||0)+1,o),{});
+  return `<div class="panel" style="display:flex;flex-direction:column;gap:10px">
+      <div class="row"><span class="badge gold">${h(TEMAS[p.tema].nome)}</span><span class="badge">Nível ${p.nivel}</span><span class="badge">${p.jogadores} personagens</span><span class="badge">${d.salas.length} salas</span></div>
+      <h3 style="margin:0">Gancho</h3><p class="prose" style="margin:0">${h(d.gancho)}</p>
+      <dl class="kv"><dt>Mente por trás</dt><dd>${h(d.vilao.charAt(0).toUpperCase()+d.vilao.slice(1))}</dd><dt>XP dos encontros</dt><dd>${fmt(xpTot)} XP no total</dd>
+        <dt>Portas</dt><dd>${portas.normal||0} comuns · ${portas.trancada||0} trancadas (Destreza (Prestidigitação) CD ${TDC.det[tierOf(p.nivel)-1]}) · ${portas.emperrada||0} emperradas (Força (Atletismo) CD ${TDC.det[tierOf(p.nivel)-1]-2})${edit?` · ${portas.secreta||0} secretas`:''}</dd></dl>
+    </div>
+    <div class="panel"><h3>Salas</h3><div class="rooms">${d.salas.map((s,i)=>`<button class="roomlink" data-act="sel" data-i="${i}"><span class="n">${i+1}</span><span>${h(s.nome)}</span><span class="chip t-${h(s.tipo)}">${h(TIPOS[s.tipo]||s.tipo)}</span></button>`).join('')}</div></div>
+    <div class="panel"><h3>Monstros errantes (role 1d6 a cada 30 minutos; 6 = encontro)</h3><table class="d6"><tbody>${d.errantes.map((e,i)=>`<tr><td>${i+1}</td><td>${h(e)}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function viewMesa(d, edit){
+  const toolbar = edit ? `<div class="toolbar">
+      <input class="nm" id="nome-masmorra" data-nome value="${h(d.nome)}" aria-label="Nome da masmorra">
+      <div class="row">
+        <span class="muted small">Semente <b class="num">${h(d.semente)}</b></span>
+        ${S.dirty?'<span class="dirty">Alterações não salvas</span>':(d.id?'<span class="ok">Salva</span>':'')}
+        <button class="btn ${S.dirty||!d.id?'pri':''}" data-act="salvar" ${S.saving?'disabled':''}>${S.saving?'Salvando…':'Salvar'}</button>
+        <button class="btn" data-act="publicar" ${S.saving?'disabled':''}>${d.publicada?'Ocultar dos jogadores':'Mostrar aos jogadores'}</button>
+        ${d.publicada?'<span class="badge gold">Visível aos jogadores</span>':'<span class="badge">Só o mestre vê</span>'}
+      </div></div>`
+    : `<div class="toolbar"><h2 style="color:var(--gold2);font-size:20px">${h(d.nome)}</h2><button class="btn" data-act="voltar">← Todas as masmorras</button></div>`;
+  return `${toolbar}<div class="mesa">
+    <div class="mapbox"><div class="mapwrap ${S.zoom?'zoom':''}"><canvas id="mapa" role="img" aria-label="Mapa da masmorra ${h(d.nome)}"></canvas></div>
+      <div class="legend"><span>1 quadrado = 1,5 m · toque numa sala para ver os detalhes${edit?' · S = porta secreta':''} · porta escura = trancada</span><button class="btn sm" data-act="zoom">${S.zoom?'Ajustar à tela':'Ampliar mapa'}</button></div></div>
+    <aside class="side">${S.sel==null ? overview(d,edit) : roomView(d,S.sel,edit)}</aside></div>`;
+}
+function cards(map, actOpen, master){
+  const list = Object.values(map).sort((a,b)=>(b.atualizada||0)-(a.atualizada||0));
+  return `<div class="grid-cards">${list.map(d=>`<div class="card" tabindex="0" role="button" data-act="${actOpen}" data-id="${h(d.id)}">
+    <h2>${h(d.nome)}</h2>
+    <div class="row"><span class="badge gold">${h(TEMAS[d.params.tema]?.nome||'')}</span><span class="badge">Nível ${d.params.nivel}</span><span class="badge">${d.salas.length} salas</span>${master?(d.publicada?'<span class="badge gold">Visível aos jogadores</span>':'<span class="badge">Só o mestre</span>'):''}</div>
+    <p class="muted small" style="margin:0">${h(d.gancho)}</p>
+    ${master?`<div class="row"><button class="btn sm danger" data-act="excluir" data-id="${h(d.id)}">${S.delArm===d.id?'Confirmar exclusão':'Excluir'}</button></div>`:''}
+  </div>`).join('')}</div>`;
+}
+function viewSalvas(){
+  const n = Object.keys(S.lista).length;
+  if (!n) return `<div class="panel empty"><h2>Nenhuma masmorra salva</h2><p>Gere uma masmorra na aba Gerador e clique em Salvar. Ela aparece aqui para você abrir depois.</p><button class="btn pri" data-act="tab" data-tab="gerar">Ir para o Gerador</button></div>`;
+  return cards(S.lista, 'abrir', true);
+}
+function viewJogador(){
+  if (S.openPub && S.publicas[S.openPub]) return viewMesa(S.publicas[S.openPub], false);
+  const n = Object.keys(S.publicas).length;
+  if (!n) return `<div class="panel empty"><h2>Nenhuma masmorra à vista</h2><p>Quando o mestre mostrar uma masmorra, ela aparece aqui com o mapa.</p></div>`;
+  return cards(S.publicas, 'ver', false);
+}
+function render(){
+  const mestre = isMestre();
+  if (!mestre) S.tab = 'jogador'; else if (S.tab==='jogador') S.tab='gerar';
+  const nl = Object.keys(S.lista).length;
+  const tabs = mestre ? [['gerar','Gerador'],['salvas','Masmorras salvas',nl]] : [['jogador','Masmorras']];
+  let body = '';
+  if (S.tab==='gerar') body = viewForm() + (S.cur ? viewMesa(S.cur, true) : '');
+  else if (S.tab==='salvas') body = viewSalvas();
+  else body = viewJogador();
+  const ae = document.activeElement, focusId = ae && ae.id, selStart = ae && 'selectionStart' in ae ? ae.selectionStart : null;
+  const scroll = window.scrollY;
+  document.getElementById('app').innerHTML = `
+  <header class="gut"><div><h1>Gerador de Masmorras</h1><div class="sub">D&amp;D 5.5 · ${mestre?'visão do mestre':'visão do jogador'}</div></div>
+    <div class="row">${S.isOwner?`<span class="muted small">Ver como:</span><button class="btn sm ${S.viewAs==='mestre'?'pri':''}" data-act="ver-como" data-v="mestre">Mestre</button><button class="btn sm ${S.viewAs==='jogador'?'pri':''}" data-act="ver-como" data-v="jogador">Jogador</button>`:'<span class="badge">Jogador</span>'}</div></header>
+  <nav class="gut">${tabs.map(([k,l,c])=>`<button class="${S.tab===k?'on':''}" data-act="tab" data-tab="${k}">${l}${c?`<span class="count">${c}</span>`:''}</button>`).join('')}</nav>
+  <main class="gut">${S.notice?`<div class="notice">${S.notice}</div>`:''}${body}</main>`;
+  if (focusId){ const el=document.getElementById(focusId); if (el){ el.focus(); if (selStart!=null && el.setSelectionRange) try{ el.setSelectionRange(selStart,selStart); }catch{} } }
+  window.scrollTo(0, scroll);
+  const d = S.tab==='gerar' ? S.cur : (S.tab==='jogador' && S.openPub ? S.publicas[S.openPub] : null);
+  const cv = document.getElementById('mapa');
+  if (cv && d){ drawMap(d); cv.addEventListener('click', e=>mapClick(e,d)); }
+}
+
+/* ================= ações ================= */
+function markDirty(){ if (!S.dirty){ S.dirty = true; render(); } }
+async function salvar(){
+  const d = S.cur; if (!d || S.saving) return;
+  if (!d.id) d.id = newId();
+  d.atualizada = Date.now(); S.saving = true; render();
+  try { await store.save(d); S.dirty = false; S.notice = ''; }
+  catch(err){ S.notice = 'Não foi possível salvar ('+h(err && (err.code||err.message) || 'erro')+'). Tente de novo.'; }
+  S.saving = false; render();
+}
+document.addEventListener('click', e=>{
+  const t = e.target.closest('[data-act]'); if (!t) return;
+  const a = t.dataset.act;
+  if (a!=='excluir') S.delArm = null;
+  if (a==='tab'){ S.tab = t.dataset.tab; S.sel = null; render(); }
+  else if (a==='ver-como'){ S.viewAs = t.dataset.v; S.sel = null; S.openPub = null; S.tab = S.viewAs==='mestre'?'gerar':'jogador'; render(); }
+  else if (a==='gerar'){
+    if (S.dirty && !S.genArm){ S.genArm = true; render(); return; }
+    S.genArm = false; S.cur = genDungeon(S.params); S.sel = null; S.dirty = true; render();
+  }
+  else if (a==='sel'){ e.stopPropagation(); S.sel = t.dataset.i===''?null:+t.dataset.i; render(); }
+  else if (a==='zoom'){ S.zoom = !S.zoom; render(); }
+  else if (a==='salvar') salvar();
+  else if (a==='publicar'){ if (!S.cur) return; S.cur.publicada = !S.cur.publicada; S.dirty = true; salvar(); }
+  else if (a==='reroll-sala' || a==='reroll-enc'){
+    const i = +t.dataset.i, d = S.cur, rng = makeRng(d.semente+':'+i+':'+Date.now()+Math.random());
+    const old = d.salas[i];
+    if (a==='reroll-sala'){ const ns = genSala(rng, d, i, old.tipo, rng.pick(TEMAS[d.params.tema].salas)); ns.notas = old.notas||''; if (old.tipo!=='entrada' && old.tipo!=='chefe') ns.nome = rng.pick(TEMAS[d.params.tema].salas); d.salas[i] = ns; }
+    else { const enc = buildEncounter(rng, d.params, old.tipo==='chefe'?2:old.encontro.dif, old.tipo==='chefe'); enc.comport = old.encontro.comport; old.encontro = enc; }
+    S.dirty = true; render();
+  }
+  else if (a==='abrir'){ if (e.target.closest('[data-act="excluir"]')) return; const d = S.lista[t.dataset.id]; if (!d) return; if (S.dirty && S.cur && !confirmLeave()) return; S.cur = clone(d); S.sel = null; S.dirty = false; S.tab = 'gerar'; render(); window.scrollTo(0,0); }
+  else if (a==='excluir'){ e.stopPropagation(); const id = t.dataset.id;
+    if (S.delArm !== id){ S.delArm = id; render(); return; }
+    S.delArm = null; store.remove(id).catch(err=>{ S.notice='Não foi possível excluir ('+h(err && (err.code||err.message))+').'; render(); });
+    if (S.cur && S.cur.id===id){ S.cur.id = null; S.cur.publicada = false; S.dirty = true; }
+  }
+  else if (a==='ver'){ S.openPub = t.dataset.id; S.sel = null; render(); window.scrollTo(0,0); }
+  else if (a==='voltar'){ S.openPub = null; S.sel = null; render(); }
+});
+/* abrir uma masmorra salva por cima de alterações não salvas: segundo clique confirma */
+let leaveArm = 0;
+function confirmLeave(){ if (Date.now()-leaveArm < 4000) return true; leaveArm = Date.now(); S.notice = 'A masmorra aberta no Gerador tem alterações não salvas. Clique de novo na masmorra para abri-la mesmo assim.'; render(); return false; }
+document.addEventListener('keydown', e=>{ if ((e.key==='Enter'||e.key===' ') && e.target.classList && e.target.classList.contains('card')){ e.preventDefault(); e.target.click(); } });
+document.addEventListener('input', e=>{
+  const t = e.target;
+  if (t.dataset.p){ S.params[t.dataset.p] = t.value; return; }
+  if (t.dataset.notas!==undefined && S.cur){ S.cur.salas[+t.dataset.notas].notas = t.value; if (!S.dirty){ S.dirty = true; const tb=document.querySelector('.toolbar .row'); if (tb) render(); } return; }
+  if (t.dataset.nome!==undefined && S.cur){ S.cur.nome = t.value; if (!S.dirty){ S.dirty = true; render(); } }
+});
+document.addEventListener('change', e=>{
+  const t = e.target;
+  if (t.dataset.p){ S.params[t.dataset.p] = t.tagName==='SELECT' && t.dataset.p!=='tema' && t.dataset.p!=='tamanho' && t.dataset.p!=='ritmo' ? +t.value : t.value; return; }
+  if (t.dataset.actChange==='tipo' && S.cur){
+    const i = +t.dataset.i, d = S.cur, rng = makeRng(d.semente+':t:'+i+':'+Date.now());
+    const old = d.salas[i]; const ns = genSala(rng, d, i, t.value, old.nome); ns.notas = old.notas||''; if (t.value!=='entrada' && t.value!=='chefe') ns.nome = old.tipo==='entrada'||old.tipo==='chefe' ? rng.pick(TEMAS[d.params.tema].salas) : old.nome;
+    d.salas[i] = ns; S.dirty = true; render();
+  }
+});
+let rzT; window.addEventListener('resize', ()=>{ clearTimeout(rzT); rzT = setTimeout(()=>{ const d = S.tab==='gerar' ? S.cur : (S.openPub ? S.publicas[S.openPub] : null); drawMap(d); }, 120); });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(()=>{ const d = S.tab==='gerar' ? S.cur : (S.openPub ? S.publicas[S.openPub] : null); drawMap(d); });
+
+/* ================= início ================= */
+function subscribe(){
+  const err = what => e => { S.notice = 'Não foi possível carregar '+what+' ('+h(e && (e.code||e.message))+').'; render(); };
+  if (S.isOwner) store.onLista(m=>{ S.lista = m; render(); }, err('as masmorras salvas'));
+  store.onPublicas(m=>{ S.publicas = m; if (S.openPub && !m[S.openPub]) S.openPub = null; render(); }, err('as masmorras visíveis'));
+}
+async function init(){
+  S.cur = genDungeon({...S.params, semente:'exemplo-cripta'}); S.dirty = true;
+  render();
+  let db=null, user=null;
+  if (window.claude && typeof window.claude.use==='function'){
+    try {
+      const timeout = new Promise(r=>setTimeout(()=>r([null,null]),10000));
+      [db,user] = await Promise.race([Promise.all([window.claude.use('db'), window.claude.use('user')]), timeout]);
+    } catch { db=null; user=null; }
+  }
+  if (db && user){
+    S.mode = 'db'; store = makeDbStore(db);
+    try { S.isOwner = !!(await user.isOwner()); } catch { S.isOwner = false; }
+    try { S.myId = await user.id(); } catch {}
+    S.viewAs = S.isOwner ? 'mestre' : 'jogador';
+    if (!S.isOwner){ S.cur = null; S.dirty = false; }
+  } else {
+    S.mode = 'local'; store = makeLocalStore(); S.isOwner = true;
+    S.notice = '<b>Modo demonstração.</b> O banco compartilhado não está disponível aqui, então as masmorras ficam só neste navegador. Use "Ver como" para testar a visão do jogador.';
+  }
+  S.loaded = true; subscribe(); render();
+}
+init();
+</script>
+</body>
+</html>
