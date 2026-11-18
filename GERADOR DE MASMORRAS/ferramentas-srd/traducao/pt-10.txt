@@ -1,0 +1,208 @@
+@@ Vampire
+## Traços
+Resistência Lendária (3/Dia, ou 4/Dia no Covil). Se o vampiro falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+Fuga em Névoa. Se o vampiro cair a 0 Pontos de Vida fora do seu local de descanso, ele usa Mudar de Forma para virar névoa (não exige ação). Se não puder usar Mudar de Forma, ele é destruído. Enquanto estiver com 0 Pontos de Vida na forma de névoa, ele não pode voltar à forma de vampiro e precisa chegar ao seu local de descanso em até 2 horas ou será destruído. No local de descanso, ele volta à forma de vampiro e fica na condição Paralisado até recuperar algum Ponto de Vida, e recupera 1 Ponto de Vida após passar 1 hora ali.
+Patas de Aranha. O vampiro consegue escalar superfícies difíceis, inclusive pelo teto, sem precisar fazer um teste de atributo.
+Fraquezas do Vampiro. O vampiro tem estas fraquezas:
+Proibição. O vampiro não pode entrar numa residência sem o convite de um morador.
+Água Corrente. O vampiro sofre 20 de dano Ácido se terminar o turno em água corrente.
+Estaca no Coração. Se uma arma que cause dano Perfurante for cravada no coração do vampiro enquanto ele estiver na condição Incapacitado no seu local de descanso, ele fica na condição Paralisado até a arma ser removida.
+Luz do Sol. O vampiro sofre 20 de dano Radiante se começar o turno sob luz do sol. Sob luz do sol, ele tem Desvantagem em jogadas de ataque e testes de atributo.
+## Ações
+Ataque Múltiplo (Somente na Forma de Vampiro). O vampiro faz dois ataques de Golpe Sepulcral e usa Mordida.
+Golpe Sepulcral (Somente na Forma de Vampiro). Jogada de Ataque Corpo a Corpo: +9, alcance 1,5 m. Acerto: 8 (1d8 + 4) de dano Contundente mais 7 (2d6) de dano Necrótico. Se o alvo for uma criatura Grande ou menor, ele fica na condição Agarrado (CD 14 para escapar) por uma de duas mãos.
+Mordida (Somente nas Formas de Morcego ou Vampiro). Salvaguarda de Constituição: CD 17, uma criatura a até 1,5 m que esteja voluntária ou nas condições Agarrado, Incapacitado ou Impedido. Falha: 6 (1d4 + 4) de dano Perfurante mais 13 (3d8) de dano Necrótico. O máximo de Pontos de Vida do alvo diminui numa quantidade igual ao dano Necrótico sofrido, e o vampiro recupera Pontos de Vida iguais a essa quantidade. Um Humanoide reduzido a 0 Pontos de Vida por esse dano e depois enterrado se ergue no pôr do sol seguinte como uma Cria Vampírica sob o controle do vampiro.
+## Ações Bônus
+Encanto (Recarga 5–6). O vampiro conjura Charm Person, sem precisar de componentes de magia e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 17), e a duração é de 24 horas. O alvo Enfeitiçado aceita de bom grado a Mordida do vampiro, cujo dano não encerra a magia. Quando a magia acaba, o alvo não sabe que foi Enfeitiçado pelo vampiro.
+Mudar de Forma. Se não estiver sob luz do sol nem em água corrente, o vampiro se transforma num morcego Miúdo (Deslocamento 1,5 m, Deslocamento de Voo 9 m) ou numa nuvem de névoa Média (Deslocamento 1,5 m, Deslocamento de Voo 6 m [pairar]), ou volta à forma de vampiro. O que estiver vestindo se transforma junto. Na forma de morcego, o vampiro não pode falar. Suas estatísticas de jogo, exceto tamanho e Deslocamento, não mudam. Na forma de névoa, o vampiro não pode realizar ações, falar nem manipular objetos. Ele não tem peso e pode entrar no espaço de um inimigo e parar ali. A névoa passa por qualquer espaço por onde o ar passe, mas não atravessa líquidos. Ela tem Resistência a todo dano, exceto o dano que sofre da luz do sol.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, o vampiro pode gastar um uso para realizar uma das ações a seguir. O vampiro recupera todos os usos gastos no início de cada um de seus turnos.
+Seduzir. O vampiro conjura Command, sem precisar de componentes de magia e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 17). O vampiro não pode realizar esta ação de novo até o início do seu próximo turno.
+Golpe Imortal. O vampiro se move até metade do seu Deslocamento e faz um ataque de Golpe Sepulcral.
+
+@@ Vrock
+## Traços
+Restauração Demoníaca. Se o vrock morrer fora do Abismo, seu corpo se dissolve em icor e ele ganha um novo corpo instantaneamente, revivendo com todos os seus Pontos de Vida em algum lugar do Abismo.
+Resistência à Magia. O vrock tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Ataque Múltiplo. O vrock faz dois ataques de Retalhar.
+Retalhar. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 10 (2d6 + 3) de dano Perfurante mais 10 (3d6) de dano Venenoso.
+Esporos (Recarga 6). Salvaguarda de Constituição: CD 15, cada criatura numa Emanação de 6 m a partir do vrock. Falha: O alvo fica na condição Envenenado e repete a salvaguarda no fim de cada um de seus turnos, encerrando o efeito em si mesmo com um sucesso. Enquanto Envenenado, o alvo sofre 5 (1d10) de dano Venenoso no início de cada um de seus turnos. Derramar um frasco de Água Benta no alvo encerra o efeito antes.
+Guincho Atordoante (1/Dia). Salvaguarda de Constituição: CD 15, cada criatura numa Emanação de 6 m a partir do vrock (demônios são bem-sucedidos automaticamente). Falha: 10 (3d6) de dano Trovejante, e o alvo fica na condição Atordoado até o fim do próximo turno do vrock.
+
+@@ Warrior Infantry
+## Traços
+Táticas de Matilha. O guerreiro tem Vantagem numa jogada de ataque contra uma criatura se pelo menos um aliado dele estiver a até 1,5 m dela e não estiver na condição Incapacitado.
+## Ações
+Lança. Jogada de Ataque Corpo a Corpo ou à Distância: +3, alcance 1,5 m ou distância 6/18 m. Acerto: 4 (1d6 + 1) de dano Perfurante.
+
+@@ Warrior Veteran
+## Ações
+Ataque Múltiplo. O guerreiro faz dois ataques de Montante ou de Besta Pesada.
+Montante. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 10 (2d6 + 3) de dano Cortante.
+Besta Pesada. Jogada de Ataque à Distância: +3, distância 30/120 m. Acerto: 12 (2d10 + 1) de dano Perfurante.
+## Reações
+Aparar. Gatilho: O guerreiro é atingido por uma jogada de ataque corpo a corpo enquanto empunha uma arma. Resposta: O guerreiro soma 2 à sua CA contra esse ataque, possivelmente fazendo-o errar.
+
+@@ Water Elemental
+## Traços
+Congelar. Se o elemental sofrer dano de Frio, seu Deslocamento diminui em 6 m até o fim do seu próximo turno.
+Forma Aquática. O elemental pode entrar no espaço de um inimigo e parar ali. Ele pode passar por um espaço de apenas 2,5 cm de largura sem gastar movimento extra.
+## Ações
+Ataque Múltiplo. O elemental faz dois ataques de Pancada.
+Pancada. Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 13 (2d8 + 4) de dano Contundente. Se o alvo for uma criatura Média ou menor, ele fica na condição Caído.
+Submergir (Recarga 4–6). Salvaguarda de Força: CD 15, cada criatura no espaço do elemental. Falha: 22 (4d8 + 4) de dano Contundente. Se o alvo for uma criatura Grande ou menor, ele fica na condição Agarrado (CD 14 para escapar). Até o agarrão acabar, o alvo fica na condição Impedido, está sufocando a menos que respire água e sofre 9 (2d8) de dano Contundente no início de cada turno do elemental. O elemental pode agarrar uma criatura Grande ou até duas criaturas Médias ou menores ao mesmo tempo com Submergir. Com uma ação, uma criatura a até 1,5 m do elemental pode puxar uma criatura para fora dele com um teste de Força (Atletismo) CD 14 bem-sucedido. Sucesso: Apenas metade do dano.
+
+@@ Werebear
+## Ações
+Ataque Múltiplo. O urso-lobisomem faz dois ataques, usando Machadinha ou Dilacerar em qualquer combinação. Ele pode substituir um ataque por um ataque de Mordida.
+Mordida (Somente nas Formas de Urso ou Híbrida). Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 17 (2d12 + 4) de dano Perfurante. Se o alvo for um Humanoide, ele é submetido ao efeito a seguir. Salvaguarda de Constituição: CD 14. Falha: O alvo fica amaldiçoado. Se o alvo amaldiçoado cair a 0 Pontos de Vida, em vez disso ele se torna um Urso-Lobisomem sob o controle do mestre, com 10 Pontos de Vida. Sucesso: O alvo fica imune à maldição deste urso-lobisomem por 24 horas.
+Machadinha (Somente nas Formas Humanoide ou Híbrida). Jogada de Ataque Corpo a Corpo ou à Distância: +7, alcance 1,5 m ou distância 6/18 m. Acerto: 14 (3d6 + 4) de dano Cortante.
+Dilacerar (Somente nas Formas de Urso ou Híbrida). Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 13 (2d8 + 4) de dano Cortante.
+## Ações Bônus
+Mudar de Forma. O urso-lobisomem se transforma numa forma híbrida Grande de urso e humanoide ou num urso Grande, ou volta à sua forma humanoide verdadeira. Suas estatísticas de jogo, exceto o tamanho, são as mesmas em todas as formas. Equipamentos que esteja vestindo ou carregando não se transformam.
+
+@@ Wereboar
+## Ações
+Ataque Múltiplo. O javali-lobisomem faz dois ataques, usando Azagaia ou Presa em qualquer combinação. Ele pode substituir um ataque por um ataque de Chifrada.
+Chifrada (Somente nas Formas de Javali ou Híbrida). Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 12 (2d8 + 3) de dano Perfurante. Se o alvo for um Humanoide, ele é submetido ao efeito a seguir. Salvaguarda de Constituição: CD 12. Falha: O alvo fica amaldiçoado. Se o alvo amaldiçoado cair a 0 Pontos de Vida, em vez disso ele se torna um Javali-Lobisomem sob o controle do mestre, com 10 Pontos de Vida. Sucesso: O alvo fica imune à maldição deste javali-lobisomem por 24 horas.
+Azagaia (Somente nas Formas Humanoide ou Híbrida). Jogada de Ataque Corpo a Corpo ou à Distância: +5, alcance 1,5 m ou distância 9/36 m. Acerto: 13 (3d6 + 3) de dano Perfurante.
+Presa (Somente nas Formas de Javali ou Híbrida). Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 10 (2d6 + 3) de dano Perfurante. Se o alvo for uma criatura Média ou menor e o javali-lobisomem tiver se movido 6 m ou mais em linha reta na direção dele imediatamente antes do acerto, o alvo sofre 7 (2d6) de dano Perfurante extra e fica na condição Caído.
+## Ações Bônus
+Mudar de Forma. O javali-lobisomem se transforma num híbrido Médio de javali e humanoide ou num javali Pequeno, ou volta à sua forma humanoide verdadeira. Suas estatísticas de jogo, exceto o tamanho, são as mesmas em todas as formas. Equipamentos que esteja vestindo ou carregando não se transformam.
+
+@@ Wererat
+## Ações
+Ataque Múltiplo. O homem-rato faz dois ataques, usando Arranhão ou Besta de Mão em qualquer combinação. Ele pode substituir um ataque por um ataque de Mordida.
+Mordida (Somente nas Formas de Rato ou Híbrida). Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 8 (2d4 + 3) de dano Perfurante. Se o alvo for um Humanoide, ele é submetido ao efeito a seguir. Salvaguarda de Constituição: CD 11. Falha: O alvo fica amaldiçoado. Se o alvo amaldiçoado cair a 0 Pontos de Vida, em vez disso ele se torna um Homem-Rato sob o controle do mestre, com 10 Pontos de Vida. Sucesso: O alvo fica imune à maldição deste homem-rato por 24 horas.
+Arranhão. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 6 (1d6 + 3) de dano Cortante.
+Besta de Mão (Somente nas Formas Humanoide ou Híbrida). Jogada de Ataque à Distância: +5, distância 9/36 m. Acerto: 6 (1d6 + 3) de dano Perfurante.
+## Ações Bônus
+Mudar de Forma. O homem-rato se transforma num híbrido Médio de rato e humanoide ou num rato Pequeno, ou volta à sua forma humanoide verdadeira. Suas estatísticas de jogo, exceto o tamanho, são as mesmas em todas as formas. Equipamentos que esteja vestindo ou carregando não se transformam.
+
+@@ Weretiger
+## Ações
+Ataque Múltiplo. O tigre-lobisomem faz dois ataques, usando Arranhão ou Arco Longo em qualquer combinação. Ele pode substituir um ataque por um ataque de Mordida.
+Mordida (Somente nas Formas de Tigre ou Híbrida). Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 12 (2d8 + 3) de dano Perfurante. Se o alvo for um Humanoide, ele é submetido ao efeito a seguir. Salvaguarda de Constituição: CD 13. Falha: O alvo fica amaldiçoado. Se o alvo amaldiçoado cair a 0 Pontos de Vida, em vez disso ele se torna um Tigre-Lobisomem sob o controle do mestre, com 10 Pontos de Vida. Sucesso: O alvo fica imune à maldição deste tigre-lobisomem por 24 horas.
+Arranhão. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 10 (2d6 + 3) de dano Cortante.
+Arco Longo (Somente nas Formas Humanoide ou Híbrida). Jogada de Ataque à Distância: +4, distância 45/180 m. Acerto: 11 (2d8 + 2) de dano Perfurante.
+## Ações Bônus
+Espreitar (Somente nas Formas de Tigre ou Híbrida). O tigre-lobisomem se move até o seu Deslocamento sem provocar Ataques de Oportunidade. No fim desse movimento, ele pode realizar a ação Esconder.
+Mudar de Forma. O tigre-lobisomem se transforma num híbrido Grande de tigre e humanoide ou num tigre Grande, ou volta à sua forma humanoide verdadeira. Suas estatísticas de jogo, exceto o tamanho, são as mesmas em todas as formas. Equipamentos que esteja vestindo ou carregando não se transformam.
+
+@@ Werewolf
+## Traços
+Táticas de Matilha. O lobisomem tem Vantagem numa jogada de ataque contra uma criatura se pelo menos um aliado dele estiver a até 1,5 m dela e não estiver na condição Incapacitado.
+## Ações
+Ataque Múltiplo. O lobisomem faz dois ataques, usando Arranhão ou Arco Longo em qualquer combinação. Ele pode substituir um ataque por um ataque de Mordida.
+Mordida (Somente nas Formas de Lobo ou Híbrida). Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 12 (2d8 + 3) de dano Perfurante. Se o alvo for um Humanoide, ele é submetido ao efeito a seguir. Salvaguarda de Constituição: CD 12. Falha: O alvo fica amaldiçoado. Se o alvo amaldiçoado cair a 0 Pontos de Vida, em vez disso ele se torna um Lobisomem sob o controle do mestre, com 10 Pontos de Vida. Sucesso: O alvo fica imune à maldição deste lobisomem por 24 horas.
+Arranhão. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 10 (2d6 + 3) de dano Cortante.
+Arco Longo (Somente nas Formas Humanoide ou Híbrida). Jogada de Ataque à Distância: +4, distância 45/180 m. Acerto: 11 (2d8 + 2) de dano Perfurante.
+## Ações Bônus
+Mudar de Forma. O lobisomem se transforma num híbrido Grande de lobo e humanoide ou num lobo Médio, ou volta à sua forma humanoide verdadeira. Suas estatísticas de jogo, exceto o tamanho, são as mesmas em todas as formas. Equipamentos que esteja vestindo ou carregando não se transformam.
+
+@@ White Dragon Wyrmling
+## Traços
+Andar no Gelo. O dragão consegue se mover e escalar superfícies geladas sem precisar fazer um teste de atributo. Além disso, Terreno Difícil feito de gelo ou neve não custa movimento extra para ele.
+## Ações
+Ataque Múltiplo. O dragão faz dois ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 6 (1d8 + 2) de dano Cortante mais 2 (1d4) de dano de Frio.
+Sopro Gélido (Recarga 5–6). Salvaguarda de Constituição: CD 12, cada criatura num Cone de 4,5 m. Falha: 22 (5d8) de dano de Frio. Sucesso: Metade do dano.
+
+@@ Young White Dragon
+## Traços
+Andar no Gelo. O dragão consegue se mover e escalar superfícies geladas sem precisar fazer um teste de atributo. Além disso, Terreno Difícil feito de gelo ou neve não custa movimento extra para ele.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +7, alcance 3 m. Acerto: 9 (2d4 + 4) de dano Cortante mais 2 (1d4) de dano de Frio.
+Sopro Gélido (Recarga 5–6). Salvaguarda de Constituição: CD 15, cada criatura num Cone de 9 m. Falha: 40 (9d8) de dano de Frio. Sucesso: Metade do dano.
+
+@@ Adult White Dragon
+## Traços
+Andar no Gelo. O dragão consegue se mover e escalar superfícies geladas sem precisar fazer um teste de atributo. Além disso, Terreno Difícil feito de gelo ou neve não custa movimento extra para ele.
+Resistência Lendária (3/Dia, ou 4/Dia no Covil). Se o dragão falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +11, alcance 3 m. Acerto: 13 (2d6 + 6) de dano Cortante mais 4 (1d8) de dano de Frio.
+Sopro Gélido (Recarga 5–6). Salvaguarda de Constituição: CD 19, cada criatura num Cone de 18 m. Falha: 54 (12d8) de dano de Frio. Sucesso: Metade do dano.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, o dragão pode gastar um uso para realizar uma das ações a seguir. O dragão recupera todos os usos gastos no início de cada um de seus turnos.
+Explosão Congelante. Salvaguarda de Constituição: CD 14, cada criatura numa Esfera de 9 m de raio centrada num ponto que o dragão consiga ver a até 36 m. Falha: 7 (2d6) de dano de Frio, e o Deslocamento do alvo passa a 0 até o fim do próximo turno do alvo. Falha ou Sucesso: O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Presença Aterradora. O dragão conjura Fear, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 14). O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Bote. O dragão se move até metade do seu Deslocamento e faz um ataque de Dilacerar.
+
+@@ Ancient White Dragon
+## Traços
+Andar no Gelo. O dragão consegue se mover e escalar superfícies geladas sem precisar fazer um teste de atributo. Além disso, Terreno Difícil feito de gelo ou neve não custa movimento extra para ele.
+Resistência Lendária (4/Dia, ou 5/Dia no Covil). Se o dragão falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +14, alcance 4,5 m. Acerto: 17 (2d8 + 8) de dano Cortante mais 7 (2d6) de dano de Frio.
+Sopro Gélido (Recarga 5–6). Salvaguarda de Constituição: CD 22, cada criatura num Cone de 27 m. Falha: 63 (14d8) de dano de Frio. Sucesso: Metade do dano.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, o dragão pode gastar um uso para realizar uma das ações a seguir. O dragão recupera todos os usos gastos no início de cada um de seus turnos.
+Explosão Congelante. Salvaguarda de Constituição: CD 20, cada criatura numa Esfera de 9 m de raio centrada num ponto que o dragão consiga ver a até 36 m. Falha: 14 (4d6) de dano de Frio, e o Deslocamento do alvo passa a 0 até o fim do próximo turno do alvo. Falha ou Sucesso: O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Presença Aterradora. O dragão conjura Fear, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 18). O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Bote. O dragão se move até metade do seu Deslocamento e faz um ataque de Dilacerar.
+
+@@ Wight
+## Traços
+Sensibilidade à Luz Solar. Sob luz do sol, o wight tem Desvantagem em testes de atributo e jogadas de ataque.
+## Ações
+Ataque Múltiplo. O wight faz dois ataques, usando Espada Necrótica ou Arco Necrótico em qualquer combinação. Ele pode substituir um ataque por um uso de Drenar Vida.
+Espada Necrótica. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 6 (1d8 + 2) de dano Cortante mais 4 (1d8) de dano Necrótico.
+Arco Necrótico. Jogada de Ataque à Distância: +4, distância 45/180 m. Acerto: 6 (1d8 + 2) de dano Perfurante mais 4 (1d8) de dano Necrótico.
+Drenar Vida. Salvaguarda de Constituição: CD 13, uma criatura a até 1,5 m. Falha: 6 (1d8 + 2) de dano Necrótico, e o máximo de Pontos de Vida do alvo diminui numa quantidade igual ao dano sofrido. Um Humanoide morto por este ataque se ergue 24 horas depois como um Zumbi sob o controle do wight, a menos que seja trazido de volta à vida ou que seu corpo seja destruído. O wight não pode ter mais de doze zumbis sob seu controle ao mesmo tempo.
+
+@@ Will-o'-Wisp
+## Traços
+Efêmero. O fogo-fátuo não pode vestir nem carregar nada.
+Iluminação. O fogo-fátuo emite Luz Plena num raio de 6 m e Penumbra por mais 6 m.
+Movimento Incorpóreo. O fogo-fátuo pode atravessar outras criaturas e objetos como se fossem Terreno Difícil. Ele sofre 5 (1d10) de dano de Energia se terminar o turno dentro de um objeto.
+## Ações
+Choque. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 11 (2d8 + 2) de dano Elétrico.
+## Ações Bônus
+Consumir Vida. Salvaguarda de Constituição: CD 10, uma criatura viva com 0 Pontos de Vida que o fogo-fátuo consiga ver a até 1,5 m. Falha: O alvo morre, e o fogo-fátuo recupera 10 (3d6) Pontos de Vida.
+Desaparecer. O fogo-fátuo e sua luz ficam na condição Invisível até a Concentração do fogo-fátuo neste efeito acabar, o que acontece antes logo depois de ele fazer uma jogada de ataque ou usar Consumir Vida.
+
+@@ Winter Wolf
+## Traços
+Táticas de Matilha. O lobo tem Vantagem numa jogada de ataque contra uma criatura se pelo menos um aliado do lobo estiver a até 1,5 m dela e não estiver na condição Incapacitado.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 11 (2d6 + 4) de dano Perfurante. Se o alvo for uma criatura Grande ou menor, ele fica na condição Caído.
+Sopro Gélido (Recarga 5–6). Salvaguarda de Constituição: CD 12, cada criatura num Cone de 4,5 m. Falha: 18 (4d8) de dano de Frio. Sucesso: Metade do dano.
+
+@@ Worg
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 7 (1d8 + 3) de dano Perfurante, e a próxima jogada de ataque contra o alvo antes do início do próximo turno do worg tem Vantagem.
+
+@@ Wraith
+## Traços
+Movimento Incorpóreo. A aparição pode atravessar outras criaturas e objetos como se fossem Terreno Difícil. Ela sofre 5 (1d10) de dano de Energia se terminar o turno dentro de um objeto.
+Sensibilidade à Luz Solar. Sob luz do sol, a aparição tem Desvantagem em testes de atributo e jogadas de ataque.
+## Ações
+Drenar Vida. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 21 (4d8 + 3) de dano Necrótico. Se o alvo for uma criatura, seu máximo de Pontos de Vida diminui numa quantidade igual ao dano sofrido.
+Criar Espectro. A aparição escolhe um cadáver de Humanoide a até 3 m de si que esteja morto há no máximo 1 minuto. O espírito do alvo se ergue como um Espectro no espaço do cadáver ou no espaço desocupado mais próximo, sob o controle da aparição. A aparição não pode ter mais de sete espectros sob seu controle ao mesmo tempo.
+
+@@ Wyvern
+## Ações
+Ataque Múltiplo. A serpe faz um ataque de Mordida e um ataque de Ferrão.
+Mordida. Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 13 (2d8 + 4) de dano Perfurante.
+Ferrão. Jogada de Ataque Corpo a Corpo: +7, alcance 3 m. Acerto: 11 (2d6 + 4) de dano Perfurante mais 24 (7d6) de dano Venenoso, e o alvo fica na condição Envenenado até o início do próximo turno da serpe.
+
+@@ Xorn
+## Traços
+Deslizar pela Terra. O xorn consegue escavar terra e pedra não mágicas e não trabalhadas. Ao fazer isso, ele não perturba o material por onde passa.
+Faro de Tesouro. O xorn consegue localizar com precisão metais e pedras preciosas a até 18 m de si.
+## Ações
+Ataque Múltiplo. O xorn faz um ataque de Mordida e três ataques de Garra.
+Mordida. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 17 (4d6 + 3) de dano Perfurante.
+Garra. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 8 (1d10 + 3) de dano Cortante.
+## Ações Bônus
+Investida. O xorn se move até o seu Deslocamento ou Deslocamento de Escavação em linha reta na direção de um inimigo que consiga perceber.
+
+@@ Zombie
+## Traços
+Fortitude Morta-Viva. Se um dano reduzir o zumbi a 0 Pontos de Vida, ele faz uma salvaguarda de Constituição (CD 5 mais o dano sofrido), a menos que o dano seja Radiante ou de um Acerto Crítico. Com sucesso, o zumbi cai a 1 Ponto de Vida em vez disso.
+## Ações
+Pancada. Jogada de Ataque Corpo a Corpo: +3, alcance 1,5 m. Acerto: 5 (1d8 + 1) de dano Contundente.

@@ -1,0 +1,196 @@
+@@ Remorhaz
+## Traços
+Aura de Calor. No fim de cada turno do remorhaz, cada criatura numa Emanação de 1,5 m a partir dele sofre 16 (3d10) de dano de Fogo.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +11, alcance 3 m. Acerto: 18 (2d10 + 7) de dano Perfurante mais 14 (4d6) de dano de Fogo. Se o alvo for uma criatura Grande ou menor, ele fica na condição Agarrado (CD 17 para escapar) e na condição Impedido até o agarrão acabar.
+## Ações Bônus
+Engolir. Salvaguarda de Força: CD 19, uma criatura Grande ou menor Agarrada pelo remorhaz (ele pode ter até duas criaturas engolidas ao mesmo tempo). Falha: O alvo é engolido pelo remorhaz e a condição Agarrado acaba. Uma criatura engolida fica nas condições Cego e Impedido, tem Cobertura Total contra ataques e outros efeitos de fora do remorhaz e sofre 10 (3d6) de dano Ácido mais 10 (3d6) de dano de Fogo no início de cada turno do remorhaz. Se o remorhaz sofrer 30 ou mais de dano num único turno vindo de uma criatura dentro dele, ele precisa ser bem-sucedido numa salvaguarda de Constituição CD 15 no fim desse turno ou regurgita todas as criaturas engolidas, que caem num espaço a até 1,5 m dele na condição Caído. Se o remorhaz morrer, qualquer criatura engolida deixa de estar Impedida e pode escapar do cadáver usando 4,5 m de movimento, saindo Caída.
+
+@@ Roc
+## Ações
+Ataque Múltiplo. A roca faz dois ataques de Bico. Ela pode substituir um ataque por um ataque de Garras.
+Bico. Jogada de Ataque Corpo a Corpo: +13, alcance 3 m. Acerto: 28 (3d12 + 9) de dano Perfurante.
+Garras. Jogada de Ataque Corpo a Corpo: +13, alcance 1,5 m. Acerto: 23 (4d6 + 9) de dano Cortante. Se o alvo for uma criatura Enorme ou menor, ele fica na condição Agarrado (CD 19 para escapar) pelas duas garras e na condição Impedido até o agarrão acabar.
+## Ações Bônus
+Rasante (Recarga 5–6). Se a roca estiver agarrando uma criatura, ela voa até metade do seu Deslocamento de Voo sem provocar Ataques de Oportunidade e solta essa criatura.
+
+@@ Roper
+## Traços
+Patas de Aranha. O roper consegue escalar superfícies difíceis, inclusive pelo teto, sem precisar fazer um teste de atributo.
+## Ações
+Ataque Múltiplo. O roper faz dois ataques de Tentáculo, usa Puxar e faz dois ataques de Mordida.
+Mordida. Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 17 (3d8 + 4) de dano Perfurante.
+Tentáculo. Jogada de Ataque Corpo a Corpo: +7, alcance 18 m. Acerto: O alvo fica na condição Agarrado (CD 14 para escapar) por um de seis tentáculos e na condição Envenenado até o agarrão acabar. O tentáculo pode ser danificado, libertando a criatura agarrada quando destruído (CA 20, 10 PV, Imunidade a dano Venenoso e Psíquico). Danificar o tentáculo não causa dano ao roper, e um tentáculo destruído volta a crescer no início do próximo turno do roper.
+Puxar. O roper puxa cada criatura Agarrada por ele até 9 m em linha reta na sua direção.
+
+@@ Rust Monster
+## Traços
+Faro de Ferro. O monstro da ferrugem consegue localizar com precisão metais ferrosos a até 9 m de si.
+## Ações
+Ataque Múltiplo. O monstro da ferrugem faz um ataque de Mordida e usa Antenas duas vezes.
+Mordida. Jogada de Ataque Corpo a Corpo: +3, alcance 1,5 m. Acerto: 5 (1d8 + 1) de dano Perfurante.
+Antenas. O monstro da ferrugem escolhe um objeto de metal não mágico (armadura ou arma) vestido ou carregado por uma criatura a até 1,5 m de si. Salvaguarda de Destreza: CD 11, a criatura com o objeto. Falha: O objeto sofre uma penalidade de −1 na CA que concede (armadura) ou nas jogadas de ataque (arma). A armadura é destruída se a penalidade reduzir sua CA a 10, e a arma é destruída se a penalidade chegar a −5. A penalidade pode ser removida conjurando a magia Mending na armadura ou na arma.
+Destruir Metal. O monstro da ferrugem toca um objeto de metal não mágico a até 1,5 m de si que ninguém esteja vestindo ou carregando. O toque destrói um Cubo de 30 cm do objeto.
+## Reações
+Antenas Reflexas. Gatilho: Uma jogada de ataque atinge o monstro da ferrugem. Resposta: O monstro da ferrugem usa Antenas.
+
+@@ Sahuagin Warrior
+## Traços
+Frenesi Sangrento. O sahuagin tem Vantagem em jogadas de ataque contra qualquer criatura que não esteja com todos os seus Pontos de Vida.
+Anfíbio Limitado. O sahuagin consegue respirar ar e água, mas precisa ficar submerso pelo menos uma vez a cada 4 horas para não sufocar fora d'água.
+Telepatia com Tubarões. O sahuagin consegue controlar magicamente tubarões a até 36 m de si, usando uma telepatia especial.
+## Ações
+Ataque Múltiplo. O sahuagin faz dois ataques de Garra.
+Garra. Jogada de Ataque Corpo a Corpo: +3, alcance 1,5 m. Acerto: 4 (1d6 + 1) de dano Cortante.
+## Ações Bônus
+Investida Aquática. O sahuagin nada até o seu Deslocamento de Natação em linha reta na direção de um inimigo que consiga ver.
+
+@@ Salamander
+## Traços
+Aura de Fogo. No fim de cada turno da salamandra, cada criatura à escolha dela numa Emanação de 1,5 m a partir da salamandra sofre 7 (2d6) de dano de Fogo.
+## Ações
+Ataque Múltiplo. A salamandra faz dois ataques de Lança Flamejante. Ela pode substituir um ataque por um uso de Constringir.
+Lança Flamejante. Jogada de Ataque Corpo a Corpo ou à Distância: +7, alcance 1,5 m ou distância 6/18 m. Acerto: 13 (2d8 + 4) de dano Perfurante mais 7 (2d6) de dano de Fogo. Acerto ou Erro: A lança volta magicamente para a mão da salamandra logo após um ataque à distância.
+Constringir. Salvaguarda de Força: CD 15, uma criatura Grande ou menor que a salamandra consiga ver a até 3 m. Falha: 11 (2d6 + 4) de dano Contundente mais 7 (2d6) de dano de Fogo. O alvo fica na condição Agarrado (CD 14 para escapar) e na condição Impedido até o agarrão acabar.
+
+@@ Satyr
+## Traços
+Resistência à Magia. O sátiro tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Cascos. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 5 (1d4 + 3) de dano Contundente. Se o alvo for uma criatura Média ou menor, o sátiro o empurra até 3 m em linha reta para longe de si.
+Zombaria. Salvaguarda de Sabedoria: CD 12, uma criatura que o sátiro consiga ver a até 27 m. Falha: 5 (1d6 + 2) de dano Psíquico.
+
+@@ Scout
+## Ações
+Ataque Múltiplo. O batedor faz dois ataques, usando Espada Curta e Arco Longo em qualquer combinação.
+Espada Curta. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 5 (1d6 + 2) de dano Perfurante.
+Arco Longo. Jogada de Ataque à Distância: +4, distância 45/180 m. Acerto: 6 (1d8 + 2) de dano Perfurante.
+
+@@ Sea Hag
+## Traços
+Anfíbio. A bruxa consegue respirar ar e água.
+Magia do Conciliábulo. Enquanto estiver a até 9 m de pelo menos duas bruxas aliadas, a bruxa pode conjurar uma das magias a seguir, sem precisar de componentes Materiais, usando o tempo de conjuração normal da magia e Inteligência como atributo de conjuração (CD de salvaguarda de magia 11): Augury, Find Familiar, Identify, Locate Object, Scrying ou Unseen Servant. A bruxa precisa terminar um Descanso Longo antes de usar este traço para conjurar essa mesma magia de novo.
+Aparência Vil. Salvaguarda de Sabedoria: CD 11, qualquer Fera ou Humanoide que comece o turno a até 9 m da bruxa e consiga ver sua verdadeira forma. Falha: O alvo fica na condição Amedrontado até o início do seu próximo turno. Sucesso: O alvo fica imune à Aparência Vil desta bruxa por 24 horas.
+## Ações
+Garra. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 10 (2d6 + 3) de dano Cortante.
+Olhar Mortal (Recarga 5–6). Salvaguarda de Sabedoria: CD 11, uma criatura Amedrontada que a bruxa consiga ver a até 9 m. Falha: Se o alvo tiver 20 Pontos de Vida ou menos, ele cai a 0 Pontos de Vida. Caso contrário, o alvo sofre 13 (3d8) de dano Psíquico.
+Aparência Ilusória. A bruxa conjura Disguise Self, usando Constituição como atributo de conjuração (CD de salvaguarda de magia 13). A duração da magia é de 24 horas.
+
+@@ Shadow
+## Traços
+Amorfo. A sombra pode passar por um espaço de apenas 2,5 cm de largura sem gastar movimento extra.
+Fraqueza à Luz Solar. Sob luz do sol, a sombra tem Desvantagem em Testes de D20.
+## Ações
+Golpe Drenante. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 5 (1d6 + 2) de dano Necrótico, e o valor de Força do alvo diminui em 1d4. O alvo morre se isso reduzir esse valor a 0. Se um Humanoide for morto por este ataque, uma Sombra se ergue do cadáver 1d4 horas depois.
+## Ações Bônus
+Furtividade Sombria. Sob Penumbra ou Escuridão, a sombra realiza a ação Esconder.
+
+@@ Shambling Mound
+## Traços
+Absorção Elétrica. Sempre que o monte rastejante for submetido a dano Elétrico, ele recupera Pontos de Vida iguais ao dano Elétrico causado.
+## Ações
+Ataque Múltiplo. O monte rastejante faz três ataques de Gavinha Carregada. Ele pode substituir um ataque por um uso de Engolfar.
+Gavinha Carregada. Jogada de Ataque Corpo a Corpo: +7, alcance 3 m. Acerto: 7 (1d6 + 4) de dano Contundente mais 5 (2d4) de dano Elétrico. Se o alvo for uma criatura Média ou menor, o monte rastejante o puxa 1,5 m em linha reta na sua direção.
+Engolfar. Salvaguarda de Força: CD 15, uma criatura Média ou menor a até 1,5 m. Falha: O alvo é puxado para o espaço do monte rastejante e fica na condição Agarrado (CD 14 para escapar). Até o agarrão acabar, o alvo fica nas condições Cego e Impedido e sofre 10 (3d6) de dano Elétrico no início de cada um de seus turnos. Quando o monte rastejante se move, o alvo Agarrado se move junto, sem custo extra de movimento. O monte rastejante só pode ter uma criatura Agarrada por esta ação de cada vez.
+
+@@ Shield Guardian
+## Traços
+Vinculado. O guardião está magicamente vinculado a um amuleto. Enquanto o guardião e o amuleto estiverem no mesmo plano de existência, quem usa o amuleto pode chamar o guardião telepaticamente para ir até ele, e o guardião sabe a distância e a direção do amuleto. Se o guardião estiver a até 18 m de quem usa o amuleto, metade de todo dano que essa pessoa sofrer (arredondado para cima) é transferida para o guardião.
+Regeneração. O guardião recupera 10 Pontos de Vida no início de cada um de seus turnos se tiver pelo menos 1 Ponto de Vida.
+Armazenar Magia. Um conjurador que use o amuleto do guardião pode fazer o guardião armazenar uma magia de 4º círculo ou menor. Para isso, quem usa o amuleto precisa conjurar a magia no guardião estando a até 1,5 m dele. A magia não tem efeito, mas fica armazenada no guardião. Qualquer magia armazenada antes se perde quando uma nova é armazenada. O guardião pode conjurar a magia armazenada com os parâmetros definidos pelo conjurador original, sem precisar de componentes de magia e usando o atributo de conjuração do conjurador. A magia armazenada então se perde.
+## Ações
+Ataque Múltiplo. O guardião faz dois ataques de Punho.
+Punho. Jogada de Ataque Corpo a Corpo: +7, alcance 3 m. Acerto: 11 (2d6 + 4) de dano Contundente mais 7 (2d6) de dano de Energia.
+## Reações
+Proteção. Gatilho: Uma jogada de ataque atinge quem usa o amuleto do guardião enquanto essa pessoa está a até 1,5 m dele. Resposta: Quem usa o amuleto ganha +5 de bônus na CA, inclusive contra o ataque que ativou o gatilho, possivelmente fazendo-o errar, até o início do próximo turno do guardião.
+
+@@ Silver Dragon Wyrmling
+## Ações
+Ataque Múltiplo. O dragão faz dois ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 9 (1d10 + 4) de dano Perfurante.
+Sopro Gélido (Recarga 5–6). Salvaguarda de Constituição: CD 13, cada criatura num Cone de 4,5 m. Falha: 18 (4d8) de dano de Frio. Sucesso: Metade do dano.
+Sopro Paralisante. Salvaguarda de Constituição: CD 13, cada criatura num Cone de 4,5 m. Primeira Falha: O alvo fica na condição Incapacitado até o fim do seu próximo turno, quando repete a salvaguarda. Segunda Falha: O alvo fica na condição Paralisado e repete a salvaguarda no fim de cada um de seus turnos, encerrando o efeito em si mesmo com um sucesso. Após 1 minuto, ele é bem-sucedido automaticamente.
+
+@@ Young Silver Dragon
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar. Ele pode substituir um ataque por um uso de Sopro Paralisante.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +10, alcance 3 m. Acerto: 15 (2d8 + 6) de dano Cortante.
+Sopro Gélido (Recarga 5–6). Salvaguarda de Constituição: CD 17, cada criatura num Cone de 9 m. Falha: 49 (11d8) de dano de Frio. Sucesso: Metade do dano.
+Sopro Paralisante. Salvaguarda de Constituição: CD 17, cada criatura num Cone de 9 m. Primeira Falha: O alvo fica na condição Incapacitado até o fim do seu próximo turno, quando repete a salvaguarda. Segunda Falha: O alvo fica na condição Paralisado e repete a salvaguarda no fim de cada um de seus turnos, encerrando o efeito em si mesmo com um sucesso. Após 1 minuto, ele é bem-sucedido automaticamente.
+
+@@ Adult Silver Dragon
+## Traços
+Resistência Lendária (3/Dia, ou 4/Dia no Covil). Se o dragão falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar. Ele pode substituir um ataque por um uso de (A) Sopro Paralisante ou (B) Conjuração para conjurar Ice Knife.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +13, alcance 3 m. Acerto: 17 (2d8 + 8) de dano Cortante mais 4 (1d8) de dano de Frio.
+Sopro Gélido (Recarga 5–6). Salvaguarda de Constituição: CD 20, cada criatura num Cone de 18 m. Falha: 54 (12d8) de dano de Frio. Sucesso: Metade do dano.
+Sopro Paralisante. Salvaguarda de Constituição: CD 20, cada criatura num Cone de 18 m. Primeira Falha: O alvo fica na condição Incapacitado até o fim do seu próximo turno, quando repete a salvaguarda. Segunda Falha: O alvo fica na condição Paralisado e repete a salvaguarda no fim de cada um de seus turnos, encerrando o efeito em si mesmo com um sucesso. Após 1 minuto, ele é bem-sucedido automaticamente.
+Conjuração. O dragão conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 19, +11 para acertar com ataques de magia): À Vontade: Detect Magic, Hold Monster, Ice Knife, Shapechange (apenas formas de Fera ou Humanoide, sem ganhar Pontos de Vida Temporários pela magia e sem precisar de Concentração ou Pontos de Vida Temporários para mantê-la). 1/Dia Cada: Ice Storm (versão de 5º círculo), Zone of Truth.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, o dragão pode gastar um uso para realizar uma das ações a seguir. O dragão recupera todos os usos gastos no início de cada um de seus turnos.
+Calafrio. O dragão usa Conjuração para conjurar Hold Monster. O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Vendaval Gélido. Salvaguarda de Destreza: CD 19, cada criatura numa Linha de 18 m de comprimento e 3 m de largura. Falha: 14 (4d6) de dano de Frio, e o alvo é empurrado até 9 m em linha reta para longe do dragão. Sucesso: Apenas metade do dano. Falha ou Sucesso: O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Bote. O dragão se move até metade do seu Deslocamento e faz um ataque de Dilacerar.
+
+@@ Ancient Silver Dragon
+## Traços
+Resistência Lendária (4/Dia, ou 5/Dia no Covil). Se o dragão falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar. Ele pode substituir um ataque por um uso de (A) Sopro Paralisante ou (B) Conjuração para conjurar Ice Knife (versão de 2º círculo).
+Dilacerar. Jogada de Ataque Corpo a Corpo: +17, alcance 4,5 m. Acerto: 19 (2d8 + 10) de dano Cortante mais 9 (2d8) de dano de Frio.
+Sopro Gélido (Recarga 5–6). Salvaguarda de Constituição: CD 24, cada criatura num Cone de 27 m. Falha: 67 (15d8) de dano de Frio. Sucesso: Metade do dano.
+Sopro Paralisante. Salvaguarda de Constituição: CD 24, cada criatura num Cone de 27 m. Primeira Falha: O alvo fica na condição Incapacitado até o fim do seu próximo turno, quando repete a salvaguarda. Segunda Falha: O alvo fica na condição Paralisado e repete a salvaguarda no fim de cada um de seus turnos, encerrando o efeito em si mesmo com um sucesso. Após 1 minuto, ele é bem-sucedido automaticamente.
+Conjuração. O dragão conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 23, +15 para acertar com ataques de magia): À Vontade: Detect Magic, Hold Monster, Ice Knife (versão de 2º círculo), Shapechange (apenas formas de Fera ou Humanoide, sem ganhar Pontos de Vida Temporários pela magia e sem precisar de Concentração ou Pontos de Vida Temporários para mantê-la). 1/Dia Cada: Control Weather, Ice Storm (versão de 7º círculo), Teleport, Zone of Truth.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, o dragão pode gastar um uso para realizar uma das ações a seguir. O dragão recupera todos os usos gastos no início de cada um de seus turnos.
+Calafrio. O dragão usa Conjuração para conjurar Hold Monster. O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Vendaval Gélido. Salvaguarda de Destreza: CD 23, cada criatura numa Linha de 18 m de comprimento e 3 m de largura. Falha: 14 (4d6) de dano de Frio, e o alvo é empurrado até 9 m em linha reta para longe do dragão. Sucesso: Apenas metade do dano. Falha ou Sucesso: O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Bote. O dragão se move até metade do seu Deslocamento e faz um ataque de Dilacerar.
+
+@@ Skeleton
+## Ações
+Espada Curta. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 6 (1d6 + 3) de dano Perfurante.
+Arco Curto. Jogada de Ataque à Distância: +5, distância 24/96 m. Acerto: 6 (1d6 + 3) de dano Perfurante.
+
+@@ Warhorse Skeleton
+## Ações
+Cascos. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 7 (1d6 + 4) de dano Contundente. Se o alvo for uma criatura Grande ou menor e o esqueleto tiver se movido 6 m ou mais em linha reta na direção dele imediatamente antes do acerto, o alvo fica na condição Caído.
+
+@@ Minotaur Skeleton
+## Ações
+Chifrada. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 11 (2d6 + 4) de dano Perfurante. Se o alvo for uma criatura Grande ou menor e o esqueleto tiver se movido 6 m ou mais em linha reta na direção dele imediatamente antes do acerto, o alvo sofre 9 (2d8) de dano Perfurante extra e fica na condição Caído.
+Pancada. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 15 (2d10 + 4) de dano Contundente.
+
+@@ Solar
+## Traços
+Percepção Divina. O solar sabe quando ouve uma mentira.
+Restauração Exaltada. Se o solar morrer fora do Monte Celéstia, seu corpo desaparece e ele ganha um novo corpo instantaneamente, revivendo com todos os seus Pontos de Vida em algum lugar do Monte Celéstia.
+Resistência Lendária (4/Dia). Se o solar falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+Resistência à Magia. O solar tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Ataque Múltiplo. O solar faz dois ataques de Espada Voadora. Ele pode substituir um ataque por um uso de Arco Mortífero.
+Espada Voadora. Jogada de Ataque Corpo a Corpo ou à Distância: +15, alcance 3 m ou distância 36 m. Acerto: 22 (4d6 + 8) de dano Cortante mais 36 (8d8) de dano Radiante. Acerto ou Erro: A espada volta magicamente para a mão do solar ou paira a até 1,5 m dele logo após um ataque à distância.
+Arco Mortífero. Salvaguarda de Destreza: CD 21, uma criatura que o solar consiga ver a até 180 m. Falha: Se a criatura tiver 100 Pontos de Vida ou menos, ela morre. Caso contrário, sofre 24 (4d8 + 6) de dano Perfurante mais 36 (8d8) de dano Radiante.
+Conjuração. O solar conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 25): À Vontade: Detect Evil and Good. 1/Dia Cada: Commune, Control Weather, Dispel Evil and Good, Resurrection.
+## Ações Bônus
+Auxílio Divino (3/Dia). O solar conjura Cure Wounds (versão de 2º círculo), Lesser Restoration ou Remove Curse, usando o mesmo atributo de conjuração de Conjuração.
+## Ações Lendárias
+Usos de Ação Lendária: 3. Imediatamente após o turno de outra criatura, o solar pode gastar um uso para realizar uma das ações a seguir. O solar recupera todos os usos gastos no início de cada um de seus turnos.
+Olhar Cegante. Salvaguarda de Constituição: CD 25, uma criatura que o solar consiga ver a até 36 m. Falha: O alvo fica na condição Cego por 1 minuto. Falha ou Sucesso: O solar não pode realizar esta ação de novo até o início do seu próximo turno.
+Teletransporte Radiante. O solar se teletransporta até 18 m para um espaço desocupado que consiga ver. Salvaguarda de Destreza: CD 25, cada criatura numa Emanação de 3 m a partir do solar no espaço de destino. Falha: 11 (2d10) de dano Radiante. Sucesso: Metade do dano.
+
+@@ Specter
+## Traços
+Movimento Incorpóreo. O espectro pode atravessar outras criaturas e objetos como se fossem Terreno Difícil. Ele sofre 5 (1d10) de dano de Energia se terminar o turno dentro de um objeto.
+Sensibilidade à Luz Solar. Sob luz do sol, o espectro tem Desvantagem em testes de atributo e jogadas de ataque.
+## Ações
+Drenar Vida. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 7 (2d6) de dano Necrótico. Se o alvo for uma criatura, seu máximo de Pontos de Vida diminui numa quantidade igual ao dano sofrido.
+
+@@ Sphinx of Wonder
+## Traços
+Resistência à Magia. A esfinge tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Dilacerar. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 5 (1d4 + 3) de dano Cortante mais 7 (2d6) de dano Radiante.
+## Reações
+Lampejo de Engenhosidade (2/Dia). Gatilho: A esfinge ou outra criatura a até 9 m faz um teste de atributo ou uma salvaguarda. Resposta: A esfinge soma 2 à rolagem.

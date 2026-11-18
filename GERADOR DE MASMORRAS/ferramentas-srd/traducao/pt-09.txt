@@ -1,0 +1,197 @@
+@@ Sphinx of Lore
+## Traços
+Inescrutável. Nenhuma magia consegue observar a esfinge à distância nem detectar seus pensamentos sem a permissão dela. Testes de Sabedoria (Intuição) para descobrir suas intenções ou sinceridade são feitos com Desvantagem.
+Resistência Lendária (3/Dia, ou 4/Dia no Covil). Se a esfinge falhar numa salvaguarda, ela pode escolher ser bem-sucedida.
+## Ações
+Ataque Múltiplo. A esfinge faz três ataques de Garra.
+Garra. Jogada de Ataque Corpo a Corpo: +8, alcance 1,5 m. Acerto: 14 (3d6 + 4) de dano Cortante.
+Rugido Dilacerador de Mentes (Recarga 5–6). Salvaguarda de Sabedoria: CD 16, cada inimigo numa Emanação de 90 m a partir da esfinge. Falha: 35 (10d6) de dano Psíquico, e o alvo fica na condição Incapacitado até o início do próximo turno da esfinge.
+Conjuração. A esfinge conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Inteligência como atributo de conjuração (CD de salvaguarda de magia 16): À Vontade: Detect Magic, Identify, Mage Hand, Minor Illusion, Prestidigitation. 1/Dia Cada: Dispel Magic, Legend Lore, Locate Object, Plane Shift, Remove Curse, Tongues.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, a esfinge pode gastar um uso para realizar uma das ações a seguir. A esfinge recupera todos os usos gastos no início de cada um de seus turnos.
+Espreita Arcana. A esfinge pode se teletransportar até 9 m para um espaço desocupado que consiga ver e faz um ataque de Garra.
+Peso dos Anos. Salvaguarda de Constituição: CD 16, uma criatura que a esfinge consiga ver a até 36 m. Falha: O alvo ganha 1 nível de Exaustão. Enquanto tiver algum nível de Exaustão, o alvo aparenta 3d10 anos a mais. Falha ou Sucesso: A esfinge não pode realizar esta ação de novo até o início do seu próximo turno.
+
+@@ Sphinx of Valor
+## Traços
+Inescrutável. Nenhuma magia consegue observar a esfinge à distância nem detectar seus pensamentos sem a permissão dela. Testes de Sabedoria (Intuição) para descobrir suas intenções ou sinceridade são feitos com Desvantagem.
+Resistência Lendária (3/Dia, ou 4/Dia no Covil). Se a esfinge falhar numa salvaguarda, ela pode escolher ser bem-sucedida.
+## Ações
+Ataque Múltiplo. A esfinge faz dois ataques de Garra e usa Rugido.
+Garra. Jogada de Ataque Corpo a Corpo: +12, alcance 1,5 m. Acerto: 20 (4d6 + 6) de dano Cortante.
+Rugido (3/Dia). A esfinge emite um rugido mágico. Cada vez que ruge, o rugido tem um efeito diferente, conforme abaixo (a sequência recomeça quando ela faz um Descanso Longo):
+Primeiro Rugido. Salvaguarda de Sabedoria: CD 20, cada inimigo numa Emanação de 150 m a partir da esfinge. Falha: O alvo fica na condição Amedrontado por 1 minuto.
+Segundo Rugido. Salvaguarda de Sabedoria: CD 20, cada inimigo numa Emanação de 150 m a partir da esfinge. Falha: O alvo fica na condição Paralisado e repete a salvaguarda no fim de cada um de seus turnos, encerrando o efeito em si mesmo com um sucesso. Após 1 minuto, ele é bem-sucedido automaticamente.
+Terceiro Rugido. Salvaguarda de Constituição: CD 20, cada inimigo numa Emanação de 150 m a partir da esfinge. Falha: 44 (8d10) de dano Trovejante, e o alvo fica na condição Caído. Sucesso: Apenas metade do dano.
+Conjuração. A esfinge conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Sabedoria como atributo de conjuração (CD de salvaguarda de magia 20): À Vontade: Detect Evil and Good, Thaumaturgy. 1/Dia Cada: Detect Magic, Dispel Magic, Greater Restoration, Heroes' Feast, Zone of Truth.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, a esfinge pode gastar um uso para realizar uma das ações a seguir. A esfinge recupera todos os usos gastos no início de cada um de seus turnos.
+Espreita Arcana. A esfinge pode se teletransportar até 9 m para um espaço desocupado que consiga ver e faz um ataque de Garra.
+Peso dos Anos. Salvaguarda de Constituição: CD 16, uma criatura que a esfinge consiga ver a até 36 m. Falha: O alvo ganha 1 nível de Exaustão. Enquanto tiver algum nível de Exaustão, o alvo aparenta 3d10 anos a mais. Falha ou Sucesso: A esfinge não pode realizar esta ação de novo até o início do seu próximo turno.
+
+@@ Spirit Naga
+## Traços
+Restauração Ínfera. Se morrer, a naga volta à vida em 1d6 dias e recupera todos os seus Pontos de Vida. Só uma magia Wish pode impedir este traço de funcionar.
+## Ações
+Ataque Múltiplo. A naga faz três ataques, usando Mordida ou Raio Necrótico em qualquer combinação.
+Mordida. Jogada de Ataque Corpo a Corpo: +7, alcance 3 m. Acerto: 7 (1d6 + 4) de dano Perfurante mais 14 (4d6) de dano Venenoso.
+Raio Necrótico. Jogada de Ataque à Distância: +6, distância 18 m. Acerto: 21 (6d6) de dano Necrótico.
+Conjuração. A naga conjura uma das magias a seguir, sem precisar de componentes Somáticos ou Materiais e usando Inteligência como atributo de conjuração (CD de salvaguarda de magia 14): À Vontade: Detect Magic, Mage Hand, Minor Illusion, Water Breathing. 2/Dia Cada: Detect Thoughts, Dimension Door, Hold Person (versão de 3º círculo), Lightning Bolt (versão de 4º círculo).
+
+@@ Sprite
+## Ações
+Espada de Agulha. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 6 (1d4 + 4) de dano Perfurante.
+Arco Encantador. Jogada de Ataque à Distância: +6, distância 12/48 m. Acerto: 1 de dano Perfurante, e o alvo fica na condição Enfeitiçado até o início do próximo turno do sprite.
+Ver o Coração. Salvaguarda de Carisma: CD 10, uma criatura a até 1,5 m que o sprite consiga ver (Celestiais, Ínferos e Mortos-Vivos falham automaticamente). Falha: O sprite descobre as emoções e a tendência do alvo.
+Invisibilidade. O sprite conjura Invisibility em si mesmo, sem precisar de componentes de magia e usando Carisma como atributo de conjuração.
+
+@@ Spy
+## Ações
+Espada Curta. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 5 (1d6 + 2) de dano Perfurante mais 7 (2d6) de dano Venenoso.
+Besta de Mão. Jogada de Ataque à Distância: +4, distância 9/36 m. Acerto: 5 (1d6 + 2) de dano Perfurante mais 7 (2d6) de dano Venenoso.
+## Ações Bônus
+Ação Ardilosa. O espião realiza a ação Disparada, Desengajar ou Esconder.
+
+@@ Stirge
+## Ações
+Probóscide. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 6 (1d6 + 3) de dano Perfurante, e a estirge se prende ao alvo. Enquanto presa, a estirge não pode fazer ataques de Probóscide, e o alvo sofre 5 (2d4) de dano Necrótico no início de cada turno da estirge. A estirge pode se soltar gastando 1,5 m de movimento. O alvo ou uma criatura a até 1,5 m dele pode soltar a estirge com uma ação.
+
+@@ Stone Giant
+## Ações
+Ataque Múltiplo. O gigante faz dois ataques, usando Clava de Pedra ou Pedregulho em qualquer combinação.
+Clava de Pedra. Jogada de Ataque Corpo a Corpo: +9, alcance 4,5 m. Acerto: 22 (3d10 + 6) de dano Contundente.
+Pedregulho. Jogada de Ataque à Distância: +9, distância 18/72 m. Acerto: 15 (2d8 + 6) de dano Contundente. Se o alvo for uma criatura Grande ou menor, ele fica na condição Caído.
+## Reações
+Desviar Projétil (Recarga 5–6). Gatilho: O gigante é atingido por uma jogada de ataque à distância e sofre dano Contundente, Perfurante ou Cortante dela. Resposta: O gigante reduz o dano que sofre do ataque em 11 (1d10 + 6) e, se esse dano for reduzido a 0, pode redirecionar parte da força do ataque. Salvaguarda de Destreza: CD 17, uma criatura que o gigante consiga ver a até 18 m. Falha: 11 (1d10 + 6) de dano de Energia.
+
+@@ Stone Golem
+## Traços
+Forma Imutável. O golem não pode mudar de forma.
+Resistência à Magia. O golem tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Ataque Múltiplo. O golem faz dois ataques, usando Pancada ou Raio de Energia em qualquer combinação.
+Pancada. Jogada de Ataque Corpo a Corpo: +10, alcance 1,5 m. Acerto: 15 (2d8 + 6) de dano Contundente mais 9 (2d8) de dano de Energia.
+Raio de Energia. Jogada de Ataque à Distância: +9, distância 36 m. Acerto: 22 (4d10) de dano de Energia.
+## Ações Bônus
+Lentidão (Recarga 5–6). O golem conjura a magia Slow, sem precisar de componentes de magia e usando Constituição como atributo de conjuração (CD de salvaguarda de magia 17).
+
+@@ Storm Giant
+## Traços
+Anfíbio. O gigante consegue respirar ar e água.
+## Ações
+Ataque Múltiplo. O gigante faz dois ataques, usando Espada da Tempestade ou Relâmpago em qualquer combinação.
+Espada da Tempestade. Jogada de Ataque Corpo a Corpo: +14, alcance 3 m. Acerto: 23 (4d6 + 9) de dano Cortante mais 13 (3d8) de dano Elétrico.
+Relâmpago. Jogada de Ataque à Distância: +14, distância 150 m. Acerto: 22 (2d12 + 9) de dano Elétrico, e o alvo fica nas condições Cego e Surdo até o início do próximo turno do gigante.
+Tempestade de Raios (Recarga 5–6). Salvaguarda de Destreza: CD 18, cada criatura num Cilindro de 3 m de raio e 12 m de altura a partir de um ponto que o gigante consiga ver a até 150 m. Falha: 55 (10d10) de dano Elétrico. Sucesso: Metade do dano.
+Conjuração. O gigante conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Sabedoria como atributo de conjuração (CD de salvaguarda de magia 18): À Vontade: Detect Magic, Light. 1/Dia: Control Weather.
+
+@@ Succubus
+## Traços
+Forma de Íncubo. Quando o súcubo termina um Descanso Longo, ele pode se transformar num Íncubo, usando aquela ficha em vez desta.
+## Ações
+Ataque Múltiplo. O súcubo faz um ataque de Toque Ínfero e usa Encanto ou Beijo Drenante.
+Toque Ínfero. Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 16 (2d10 + 5) de dano Psíquico.
+Encanto. O súcubo conjura Dominate Person (versão de 8º círculo), sem precisar de componentes de magia e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 15).
+Beijo Drenante. Salvaguarda de Constituição: CD 15, uma criatura Enfeitiçada pelo súcubo a até 1,5 m. Falha: 13 (3d8) de dano Psíquico. Sucesso: Metade do dano. Falha ou Sucesso: O máximo de Pontos de Vida do alvo diminui numa quantidade igual ao dano sofrido.
+## Ações Bônus
+Mudar de Forma. O súcubo se transforma num Humanoide Médio ou Pequeno, ou volta à sua forma verdadeira. Suas estatísticas de jogo são as mesmas em todas as formas, exceto que o Deslocamento de Voo só existe na forma verdadeira. Equipamentos que esteja vestindo ou carregando não se transformam.
+
+@@ Tarrasque
+## Traços
+Resistência Lendária (6/Dia). Se o tarrasque falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+Resistência à Magia. O tarrasque tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+Carapaça Refletora. Se o tarrasque for alvo de uma magia Magic Missile ou de uma magia que exija jogada de ataque à distância, role 1d6. Com 1–5, o tarrasque não é afetado. Com 6, o tarrasque não é afetado e reflete a magia, transformando o conjurador no alvo.
+Monstro de Cerco. O tarrasque causa dano dobrado a objetos e estruturas.
+## Ações
+Ataque Múltiplo. O tarrasque faz um ataque de Mordida e três outros ataques, usando Garra ou Cauda em qualquer combinação.
+Mordida. Jogada de Ataque Corpo a Corpo: +19, alcance 4,5 m. Acerto: 36 (4d12 + 10) de dano Perfurante, e o alvo fica na condição Agarrado (CD 20 para escapar). Até o agarrão acabar, o alvo fica na condição Impedido e não pode se teletransportar.
+Garra. Jogada de Ataque Corpo a Corpo: +19, alcance 4,5 m. Acerto: 28 (4d8 + 10) de dano Cortante.
+Cauda. Jogada de Ataque Corpo a Corpo: +19, alcance 9 m. Acerto: 23 (3d8 + 10) de dano Contundente. Se o alvo for uma criatura Enorme ou menor, ele fica na condição Caído.
+Bramido Trovejante (Recarga 5–6). Salvaguarda de Constituição: CD 27, cada criatura e cada objeto que ninguém esteja vestindo ou carregando num Cone de 45 m. Falha: 78 (12d12) de dano Trovejante, e o alvo fica nas condições Surdo e Amedrontado até o fim do seu próximo turno. Sucesso: Apenas metade do dano.
+## Ações Bônus
+Engolir. Salvaguarda de Força: CD 27, uma criatura Grande ou menor Agarrada pelo tarrasque (ele pode ter até seis criaturas engolidas ao mesmo tempo). Falha: O alvo é engolido e a condição Agarrado acaba. Uma criatura engolida fica nas condições Cego e Impedido e não pode se teletransportar, tem Cobertura Total contra ataques e outros efeitos de fora do tarrasque e sofre 56 (16d6) de dano Ácido no início de cada turno do tarrasque. Se o tarrasque sofrer 60 ou mais de dano num único turno vindo de uma criatura dentro dele, ele precisa ser bem-sucedido numa salvaguarda de Constituição CD 20 no fim desse turno ou regurgita todas as criaturas engolidas, que caem num espaço a até 3 m dele na condição Caído. Se o tarrasque morrer, qualquer criatura engolida deixa de estar Impedida e pode escapar do cadáver usando 6 m de movimento, saindo Caída.
+## Ações Lendárias
+Usos de Ação Lendária: 3. Imediatamente após o turno de outra criatura, o tarrasque pode gastar um uso para realizar uma das ações a seguir. O tarrasque recupera todos os usos gastos no início de cada um de seus turnos.
+Investida. O tarrasque se move até metade do seu Deslocamento e faz um ataque de Garra ou de Cauda.
+Passo que Abala o Mundo. O tarrasque se move até o seu Deslocamento. No fim desse movimento, ele cria uma onda de choque instantânea numa Emanação de 18 m a partir de si. Criaturas nessa área perdem a Concentração e, se forem Médias ou menores, ficam na condição Caído. O tarrasque não pode realizar esta ação de novo até o início do seu próximo turno.
+
+@@ Tough
+## Traços
+Táticas de Matilha. O brutamontes tem Vantagem numa jogada de ataque contra uma criatura se pelo menos um aliado dele estiver a até 1,5 m dela e não estiver na condição Incapacitado.
+## Ações
+Maça. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 5 (1d6 + 2) de dano Contundente.
+Besta Pesada. Jogada de Ataque à Distância: +3, distância 30/120 m. Acerto: 6 (1d10 + 1) de dano Perfurante.
+
+@@ Tough Boss
+## Traços
+Táticas de Matilha. O brutamontes tem Vantagem numa jogada de ataque contra uma criatura se pelo menos um aliado dele estiver a até 1,5 m dela e não estiver na condição Incapacitado.
+## Ações
+Ataque Múltiplo. O brutamontes faz dois ataques, usando Martelo de Guerra ou Besta Pesada em qualquer combinação.
+Martelo de Guerra. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 12 (2d8 + 3) de dano Contundente. Se o alvo for uma criatura Grande ou menor, o brutamontes o empurra até 3 m em linha reta para longe de si.
+Besta Pesada. Jogada de Ataque à Distância: +4, distância 30/120 m. Acerto: 13 (2d10 + 2) de dano Perfurante.
+
+@@ Treant
+## Traços
+Monstro de Cerco. O treant causa dano dobrado a objetos e estruturas.
+## Ações
+Ataque Múltiplo. O treant faz dois ataques de Pancada.
+Pancada. Jogada de Ataque Corpo a Corpo: +10, alcance 1,5 m. Acerto: 16 (3d6 + 6) de dano Contundente.
+Chuva de Casca. Jogada de Ataque à Distância: +10, distância 54 m. Acerto: 28 (4d10 + 6) de dano Perfurante.
+Animar Árvores (1/Dia). O treant anima magicamente até duas árvores que consiga ver a até 18 m de si. Cada árvore usa a ficha do Treant, exceto que tem Inteligência e Carisma 1, não fala e não tem esta ação. A árvore age logo depois do treant, na mesma contagem de Iniciativa, e obedece ao treant. A árvore permanece animada por 1 dia ou até morrer, até o treant morrer ou até ficar a mais de 36 m dele. Depois, ela finca raízes, se possível.
+
+@@ Troll
+## Traços
+Membros Repugnantes (4/Dia). Se o troll terminar qualquer turno Sangrando e tiver sofrido 15 ou mais de dano Cortante nesse turno, um dos membros do troll é decepado, cai no espaço do troll e se torna um Membro de Troll. O membro age imediatamente após o turno do troll. O troll tem 1 nível de Exaustão para cada membro perdido e faz crescer membros novos na próxima vez que recuperar Pontos de Vida.
+Regeneração. O troll recupera 15 Pontos de Vida no início de cada um de seus turnos. Se o troll sofrer dano Ácido ou de Fogo, este traço não funciona no próximo turno dele. O troll só morre se começar o turno com 0 Pontos de Vida e não regenerar.
+## Ações
+Ataque Múltiplo. O troll faz três ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +7, alcance 3 m. Acerto: 11 (2d6 + 4) de dano Cortante.
+## Ações Bônus
+Investida. O troll se move até metade do seu Deslocamento em linha reta na direção de um inimigo que consiga ver.
+
+@@ Troll Limb
+## Traços
+Regeneração. O membro recupera 5 Pontos de Vida no início de cada um de seus turnos. Se o membro sofrer dano Ácido ou de Fogo, este traço não funciona no próximo turno dele. O membro só morre se começar o turno com 0 Pontos de Vida e não regenerar.
+Cria de Troll. Estranhamente, o membro tem os mesmos sentidos de um troll inteiro. Se o membro não for destruído em 24 horas, role 1d12. Com 12, o membro se transforma num Troll. Caso contrário, o membro definha.
+## Ações
+Dilacerar. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 9 (2d4 + 4) de dano Cortante.
+
+@@ Unicorn
+## Traços
+Resistência Lendária (3/Dia). Se o unicórnio falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+Resistência à Magia. O unicórnio tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Ataque Múltiplo. O unicórnio faz um ataque de Cascos e um ataque de Chifre Radiante.
+Cascos. Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 11 (2d6 + 4) de dano Contundente.
+Chifre Radiante. Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 9 (1d10 + 4) de dano Radiante.
+Conjuração. O unicórnio conjura uma das magias a seguir, sem precisar de componentes de magia e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 14): À Vontade: Detect Evil and Good, Druidcraft. 1/Dia Cada: Calm Emotions, Dispel Evil and Good, Entangle, Pass without Trace, Word of Recall.
+## Ações Bônus
+Bênção do Unicórnio (3/Dia). O unicórnio toca outra criatura com o chifre e conjura Cure Wounds ou Lesser Restoration nela, usando o mesmo atributo de conjuração de Conjuração.
+## Ações Lendárias
+Usos de Ação Lendária: 3. Imediatamente após o turno de outra criatura, o unicórnio pode gastar um uso para realizar uma das ações a seguir. O unicórnio recupera todos os usos gastos no início de cada um de seus turnos.
+Investida do Chifre. O unicórnio se move até metade do seu Deslocamento sem provocar Ataques de Oportunidade e faz um ataque de Chifre Radiante.
+Escudo Cintilante. O unicórnio escolhe a si mesmo ou uma criatura que consiga ver a até 18 m. O alvo ganha 10 (3d6) Pontos de Vida Temporários, e sua CA aumenta em 2 até o fim do próximo turno do unicórnio. O unicórnio não pode realizar esta ação de novo até o início do seu próximo turno.
+
+@@ Vampire Familiar
+## Traços
+Conexão Vampírica. Enquanto o familiar e seu mestre vampiro estiverem no mesmo plano de existência, o vampiro pode se comunicar com o familiar telepaticamente e perceber pelos sentidos dele.
+## Ações
+Ataque Múltiplo. O familiar faz dois ataques de Adaga Umbral.
+Adaga Umbral. Jogada de Ataque Corpo a Corpo ou à Distância: +5, alcance 1,5 m ou distância 6/18 m. Acerto: 5 (1d4 + 3) de dano Perfurante mais 7 (3d4) de dano Necrótico. Se o alvo for reduzido a 0 Pontos de Vida por este ataque, ele fica Estável, mas na condição Envenenado por 1 hora. Enquanto estiver na condição Envenenado, o alvo fica na condição Paralisado.
+## Ações Bônus
+Agilidade Imortal. O familiar realiza a ação Disparada ou Desengajar.
+
+@@ Vampire Spawn
+## Traços
+Patas de Aranha. O vampiro consegue escalar superfícies difíceis, inclusive pelo teto, sem precisar fazer um teste de atributo.
+Fraquezas do Vampiro. O vampiro tem estas fraquezas:
+Proibição. O vampiro não pode entrar numa residência sem o convite de um morador.
+Água Corrente. O vampiro sofre 20 de dano Ácido se terminar o turno em água corrente.
+Estaca no Coração. O vampiro é destruído se uma arma que cause dano Perfurante for cravada no seu coração enquanto ele estiver na condição Incapacitado.
+Luz do Sol. O vampiro sofre 20 de dano Radiante se começar o turno sob luz do sol. Sob luz do sol, ele tem Desvantagem em jogadas de ataque e testes de atributo.
+## Ações
+Ataque Múltiplo. O vampiro faz dois ataques de Garra e usa Mordida.
+Garra. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 8 (2d4 + 3) de dano Cortante. Se o alvo for uma criatura Média ou menor, ele fica na condição Agarrado (CD 13 para escapar) por uma de duas garras.
+Mordida. Salvaguarda de Constituição: CD 14, uma criatura a até 1,5 m que esteja voluntária ou nas condições Agarrado, Incapacitado ou Impedido. Falha: 5 (1d4 + 3) de dano Perfurante mais 10 (3d6) de dano Necrótico. O máximo de Pontos de Vida do alvo diminui numa quantidade igual ao dano Necrótico sofrido, e o vampiro recupera Pontos de Vida iguais a essa quantidade.
+## Ações Bônus
+Agilidade Imortal. O vampiro realiza a ação Disparada ou Desengajar.

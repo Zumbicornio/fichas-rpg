@@ -3,7 +3,12 @@ Precisa do pdftotext (vem com o Git for Windows em /ucrt64/bin) e do node.
 
   pdftotext "../../REFERENCIAS/SRD_CC_v5.2.1.pdf" raw.txt
   node parse.js raw.txt srd.json
-  node build.js srd.json srd-line.js
+  node traducao.js srd.json magias.json        (confere traducao/pt-*.txt e grava traducao.json)
+  node build.js srd.json srd-line.js traducao.json
   node inject.js ../masmorras.html srd-line.js
 
-Os arquivos raw.txt, srd.json e srd-line.js são temporários e não vão para o git.
+magias.json = mapa nome inglês -> nome em português, tirado do SPELL_DB do app de fichas.
+A tradução dos traços e ações fica em traducao/pt-01.txt ... pt-12.txt (um bloco "@@ Nome em inglês"
+por monstro, seções "## Traços/Ações/...", uma linha por traço). Nomes de magia ficam em inglês nesses
+arquivos e são trocados pelo nome do app de fichas na hora de montar.
+Os arquivos raw.txt, srd.json, traducao.json e srd-line.js são temporários e não vão para o git.

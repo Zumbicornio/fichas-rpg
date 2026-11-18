@@ -52,6 +52,7 @@ for (let k = 0; k < idx.length; k++) {
     for (const l0 of body.slice(secStart)) {
       const l = l0.trim(); if (!l) continue;
       if (SECS.includes(l)) { cur = [l, []]; secoes.push(cur); continue; }
+      if (/^System Reference Document 5.2.1$/.test(l)) continue;
       const linhas = cur[1];
       const prev = linhas.length ? linhas[linhas.length - 1] : null;
       const novo = TRAIT_RE.test(l) || !prev || (cur[0] === 'Legendary Actions' && /^Legendary Action Uses/.test(l));

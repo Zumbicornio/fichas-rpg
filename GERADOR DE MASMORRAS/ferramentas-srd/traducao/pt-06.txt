@@ -1,0 +1,204 @@
+@@ Kraken
+## Traços
+Anfíbio. O kraken consegue respirar ar e água.
+Resistência Lendária (4/Dia, ou 5/Dia no Covil). Se o kraken falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+Monstro de Cerco. O kraken causa dano dobrado a objetos e estruturas.
+## Ações
+Ataque Múltiplo. O kraken faz dois ataques de Tentáculo e usa Arremessar, Descarga Elétrica ou Engolir.
+Tentáculo. Jogada de Ataque Corpo a Corpo: +17, alcance 9 m. Acerto: 24 (4d6 + 10) de dano Contundente. O alvo fica na condição Agarrado (CD 20 para escapar) por um de dez tentáculos e na condição Impedido até o agarrão acabar.
+Arremessar. O kraken arremessa uma criatura Grande ou menor que esteja Agarrada por ele para um espaço que consiga ver a até 18 m de si e que não esteja no ar. Salvaguarda de Destreza: CD 25, a criatura arremessada e cada criatura no espaço de destino. Falha: 18 (4d8) de dano Contundente, e o alvo fica na condição Caído. Sucesso: Apenas metade do dano.
+Descarga Elétrica. Salvaguarda de Destreza: CD 23, uma criatura que o kraken consiga ver a até 36 m. Falha: 33 (6d10) de dano Elétrico. Sucesso: Metade do dano.
+Engolir. Salvaguarda de Destreza: CD 25, uma criatura Agarrada pelo kraken (ele pode ter até quatro criaturas engolidas ao mesmo tempo). Falha: 23 (3d8 + 10) de dano Perfurante. Se o alvo for Grande ou menor, ele é engolido e deixa de estar Agarrado. Uma criatura engolida fica na condição Impedido, tem Cobertura Total contra ataques e outros efeitos de fora do kraken e sofre 24 (7d6) de dano Ácido no início de cada um de seus turnos. Se o kraken sofrer 50 ou mais de dano num único turno vindo de uma criatura dentro dele, ele precisa ser bem-sucedido numa salvaguarda de Constituição CD 25 no fim desse turno ou regurgita todas as criaturas engolidas, que caem num espaço a até 3 m do kraken na condição Caído. Se o kraken morrer, qualquer criatura engolida deixa de estar Impedida e pode escapar do cadáver usando 4,5 m de movimento, saindo Caída.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, o kraken pode gastar um uso para realizar uma das ações a seguir. O kraken recupera todos os usos gastos no início de cada um de seus turnos.
+Raio da Tempestade. O kraken usa Descarga Elétrica.
+Tinta Tóxica. Salvaguarda de Constituição: CD 23, cada criatura numa Emanação de 4,5 m a partir do kraken enquanto ele está submerso. Falha: O alvo fica nas condições Cego e Envenenado até o fim do próximo turno do kraken. Depois, o kraken se move até o seu Deslocamento. Falha ou Sucesso: O kraken não pode realizar esta ação de novo até o início do seu próximo turno.
+
+@@ Lamia
+## Ações
+Ataque Múltiplo. A lâmia faz dois ataques de Garra. Ela pode substituir um ataque por um uso de Toque Corruptor.
+Garra. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 7 (1d8 + 3) de dano Cortante mais 7 (2d6) de dano Psíquico.
+Toque Corruptor. Salvaguarda de Sabedoria: CD 13, uma criatura que a lâmia consiga ver a até 1,5 m. Falha: 13 (3d8) de dano Psíquico, e o alvo fica amaldiçoado por 1 hora. Até a maldição acabar, o alvo fica nas condições Enfeitiçado e Envenenado.
+Conjuração. A lâmia conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 13): À Vontade: Disguise Self (pode parecer um bípede Grande ou Médio), Minor Illusion. 1/Dia Cada: Geas, Major Image, Scrying.
+## Ações Bônus
+Salto. A lâmia salta até 9 m gastando 3 m de movimento.
+
+@@ Lemure
+## Traços
+Restauração Infernal. Se o lêmure morrer nos Nove Infernos, ele revive com todos os seus Pontos de Vida em 1d10 dias, a menos que tenha sido morto por uma criatura sob o efeito da magia Bless ou que seus restos sejam aspergidos com Água Benta.
+## Ações
+Gosma Vil. Jogada de Ataque Corpo a Corpo: +2, alcance 1,5 m. Acerto: 2 (1d4) de dano Venenoso.
+
+@@ Lich
+## Traços
+Resistência Lendária (4/Dia, ou 5/Dia no Covil). Se o lich falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+Filactério. Se for destruído, o lich se refaz em 1d10 dias se tiver um filactério, revivendo com todos os seus Pontos de Vida. O novo corpo aparece num espaço desocupado dentro do covil do lich.
+## Ações
+Ataque Múltiplo. O lich faz três ataques, usando Explosão Sobrenatural ou Toque Paralisante em qualquer combinação.
+Explosão Sobrenatural. Jogada de Ataque Corpo a Corpo ou à Distância: +12, alcance 1,5 m ou distância 36 m. Acerto: 31 (4d12 + 5) de dano de Energia.
+Toque Paralisante. Jogada de Ataque Corpo a Corpo: +12, alcance 1,5 m. Acerto: 15 (3d6 + 5) de dano de Frio, e o alvo fica na condição Paralisado até o início do próximo turno do lich.
+Conjuração. O lich conjura uma das magias a seguir, usando Inteligência como atributo de conjuração (CD de salvaguarda de magia 20): À Vontade: Detect Magic, Detect Thoughts, Dispel Magic, Fireball (versão de 5º círculo), Invisibility, Lightning Bolt (versão de 5º círculo), Mage Hand, Prestidigitation. 2/Dia Cada: Animate Dead, Dimension Door, Plane Shift. 1/Dia Cada: Chain Lightning, Finger of Death, Power Word Kill, Scrying.
+## Reações
+Magia Protetora. O lich conjura Counterspell ou Shield em resposta ao gatilho da magia, usando o mesmo atributo de conjuração de Conjuração.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, o lich pode gastar um uso para realizar uma das ações a seguir. O lich recupera todos os usos gastos no início de cada um de seus turnos.
+Teletransporte Mortal. O lich se teletransporta até 18 m para um espaço desocupado que consiga ver, e cada criatura a até 3 m do espaço que ele deixou sofre 11 (2d10) de dano Necrótico.
+Perturbar a Vida. Salvaguarda de Constituição: CD 20, cada criatura que não seja Morto-Vivo numa Emanação de 6 m a partir do lich. Falha: 31 (9d6) de dano Necrótico. Sucesso: Metade do dano. Falha ou Sucesso: O lich não pode realizar esta ação de novo até o início do seu próximo turno.
+Olhar Assustador. O lich conjura Fear, usando o mesmo atributo de conjuração de Conjuração. O lich não pode realizar esta ação de novo até o início do seu próximo turno.
+
+@@ Mage
+## Ações
+Ataque Múltiplo. O mago faz três ataques de Explosão Arcana.
+Explosão Arcana. Jogada de Ataque Corpo a Corpo ou à Distância: +6, alcance 1,5 m ou distância 36 m. Acerto: 16 (3d8 + 3) de dano de Energia.
+Conjuração. O mago conjura uma das magias a seguir, usando Inteligência como atributo de conjuração (CD de salvaguarda de magia 14): À Vontade: Detect Magic, Light, Mage Armor (já incluída na CA), Mage Hand, Prestidigitation. 2/Dia Cada: Fireball (versão de 4º círculo), Invisibility. 1/Dia Cada: Cone of Cold, Fly.
+## Ações Bônus
+Passo Nebuloso (3/Dia). O mago conjura Misty Step, usando o mesmo atributo de conjuração de Conjuração.
+## Reações
+Magia Protetora (3/Dia). O mago conjura Counterspell ou Shield em resposta ao gatilho da magia, usando o mesmo atributo de conjuração de Conjuração.
+
+@@ Archmage
+## Traços
+Resistência à Magia. O arquimago tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Ataque Múltiplo. O arquimago faz quatro ataques de Explosão Arcana.
+Explosão Arcana. Jogada de Ataque Corpo a Corpo ou à Distância: +9, alcance 1,5 m ou distância 45 m. Acerto: 27 (4d10 + 5) de dano de Energia.
+Conjuração. O arquimago conjura uma das magias a seguir, usando Inteligência como atributo de conjuração (CD de salvaguarda de magia 17): À Vontade: Detect Magic, Detect Thoughts, Disguise Self, Invisibility, Light, Mage Armor (já incluída na CA), Mage Hand, Prestidigitation. 2/Dia Cada: Fly, Lightning Bolt (versão de 7º círculo). 1/Dia Cada: Cone of Cold (versão de 9º círculo), Mind Blank (conjurada antes do combate), Scrying, Teleport.
+## Ações Bônus
+Passo Nebuloso (3/Dia). O mago conjura Misty Step, usando o mesmo atributo de conjuração de Conjuração.
+## Reações
+Magia Protetora (3/Dia). O arquimago conjura Counterspell ou Shield em resposta ao gatilho da magia, usando o mesmo atributo de conjuração de Conjuração.
+
+@@ Magmin
+## Traços
+Explosão Mortal. O magmin explode ao morrer. Salvaguarda de Destreza: CD 11, cada criatura numa Emanação de 3 m a partir do magmin. Falha: 7 (2d6) de dano de Fogo. Sucesso: Metade do dano.
+## Ações
+Toque. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 7 (2d4 + 2) de dano de Fogo. Se o alvo for uma criatura ou um objeto inflamável que ninguém esteja vestindo ou carregando, ele começa a queimar.
+## Ações Bônus
+Iluminação Ardente. O magmin se incendeia ou apaga suas chamas. Enquanto em chamas, o magmin emite Luz Plena num raio de 3 m e Penumbra por mais 3 m.
+
+@@ Manticore
+## Ações
+Ataque Múltiplo. A mantícora faz três ataques, usando Dilacerar ou Espinho da Cauda em qualquer combinação.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 7 (1d8 + 3) de dano Cortante.
+Espinho da Cauda. Jogada de Ataque à Distância: +5, distância 30/60 m. Acerto: 7 (1d8 + 3) de dano Perfurante.
+
+@@ Marilith
+## Traços
+Restauração Demoníaca. Se a marilith morrer fora do Abismo, seu corpo se dissolve em icor e ela ganha um novo corpo instantaneamente, revivendo com todos os seus Pontos de Vida em algum lugar do Abismo.
+Resistência à Magia. A marilith tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+Reativa. A marilith pode realizar uma Reação em cada turno de combate.
+## Ações
+Ataque Múltiplo. A marilith faz seis ataques de Lâmina do Pacto e usa Constringir.
+Lâmina do Pacto. Jogada de Ataque Corpo a Corpo: +10, alcance 1,5 m. Acerto: 10 (1d10 + 5) de dano Cortante mais 7 (2d6) de dano Necrótico.
+Constringir. Salvaguarda de Força: CD 17, uma criatura Média ou menor que a marilith consiga ver a até 1,5 m. Falha: 15 (2d10 + 4) de dano Contundente. O alvo fica na condição Agarrado (CD 14 para escapar) e na condição Impedido até o agarrão acabar.
+## Ações Bônus
+Teletransporte (Recarga 5–6). A marilith se teletransporta até 36 m para um espaço desocupado que consiga ver.
+## Reações
+Aparar. Gatilho: A marilith é atingida por uma jogada de ataque corpo a corpo enquanto empunha uma arma. Resposta: A marilith soma 5 à sua CA contra esse ataque, possivelmente fazendo-o errar.
+
+@@ Medusa
+## Ações
+Ataque Múltiplo. A medusa faz dois ataques de Garra e um ataque de Cabelo de Serpentes, ou faz três ataques de Raio Venenoso.
+Garra. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 10 (2d6 + 3) de dano Cortante.
+Cabelo de Serpentes. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 5 (1d4 + 3) de dano Perfurante mais 14 (4d6) de dano Venenoso.
+Raio Venenoso. Jogada de Ataque à Distância: +5, distância 45 m. Acerto: 11 (2d8 + 2) de dano Venenoso.
+## Ações Bônus
+Olhar Petrificante (Recarga 5–6). Salvaguarda de Constituição: CD 13, cada criatura num Cone de 9 m. Se a medusa vir seu reflexo no Cone, ela própria precisa fazer esta salvaguarda. Primeira Falha: O alvo fica na condição Impedido e repete a salvaguarda no fim do seu próximo turno se ainda estiver Impedido, encerrando o efeito em si mesmo com um sucesso. Segunda Falha: O alvo fica na condição Petrificado em vez de Impedido.
+
+@@ Dust Mephit
+## Traços
+Explosão Mortal. O mefite explode ao morrer. Salvaguarda de Destreza: CD 10, cada criatura numa Emanação de 1,5 m a partir do mefite. Falha: 5 (2d4) de dano Contundente. Sucesso: Metade do dano.
+## Ações
+Garra. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 4 (1d4 + 2) de dano Cortante.
+Sopro Cegante (Recarga 6). Salvaguarda de Destreza: CD 10, cada criatura num Cone de 4,5 m. Falha: O alvo fica na condição Cego até o fim do próximo turno do mefite.
+Sono (1/Dia). O mefite conjura a magia Sleep, sem precisar de componentes de magia e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 10).
+
+@@ Ice Mephit
+## Traços
+Explosão Mortal. O mefite explode ao morrer. Salvaguarda de Constituição: CD 10, cada criatura numa Emanação de 1,5 m a partir do mefite. Falha: 5 (2d4) de dano de Frio. Sucesso: Metade do dano.
+## Ações
+Garra. Jogada de Ataque Corpo a Corpo: +3, alcance 1,5 m. Acerto: 3 (1d4 + 1) de dano Cortante mais 2 (1d4) de dano de Frio.
+Nuvem de Névoa (1/Dia). O mefite conjura Fog Cloud, sem precisar de componentes de magia e usando Carisma como atributo de conjuração.
+Sopro Gélido (Recarga 6). Salvaguarda de Constituição: CD 10, cada criatura num Cone de 4,5 m. Falha: 7 (3d4) de dano de Frio. Sucesso: Metade do dano.
+
+@@ Magma Mephit
+## Traços
+Explosão Mortal. O mefite explode ao morrer. Salvaguarda de Destreza: CD 11, cada criatura numa Emanação de 1,5 m a partir do mefite. Falha: 7 (2d6) de dano de Fogo. Sucesso: Metade do dano.
+## Ações
+Garra. Jogada de Ataque Corpo a Corpo: +3, alcance 1,5 m. Acerto: 3 (1d4 + 1) de dano Cortante mais 3 (1d6) de dano de Fogo.
+Sopro de Fogo (Recarga 6). Salvaguarda de Destreza: CD 11, cada criatura num Cone de 4,5 m. Falha: 7 (2d6) de dano de Fogo. Sucesso: Metade do dano.
+
+@@ Steam Mephit
+## Traços
+Forma Borrada. Jogadas de ataque contra o mefite são feitas com Desvantagem, a menos que ele esteja na condição Incapacitado.
+Explosão Mortal. O mefite explode ao morrer. Salvaguarda de Destreza: CD 10, cada criatura numa Emanação de 1,5 m a partir do mefite. Falha: 5 (2d4) de dano de Fogo. Sucesso: Metade do dano.
+## Ações
+Garra. Jogada de Ataque Corpo a Corpo: +2, alcance 1,5 m. Acerto: 2 (1d4) de dano Cortante mais 2 (1d4) de dano de Fogo.
+Sopro de Vapor (Recarga 6). Salvaguarda de Constituição: CD 10, cada criatura num Cone de 4,5 m. Falha: 5 (2d4) de dano de Fogo, e o Deslocamento do alvo diminui em 3 m até o fim do próximo turno do mefite. Sucesso: Apenas metade do dano. Falha ou Sucesso: Estar submerso não concede Resistência a este dano de Fogo.
+
+@@ Merfolk Skirmisher
+## Traços
+Anfíbio. O tritão consegue respirar ar e água.
+## Ações
+Lança Oceânica. Jogada de Ataque Corpo a Corpo ou à Distância: +2, alcance 1,5 m ou distância 6/18 m. Acerto: 3 (1d6) de dano Perfurante mais 2 (1d4) de dano de Frio. Se o alvo for uma criatura, seu Deslocamento diminui em 3 m até o fim do seu próximo turno. Acerto ou Erro: A lança volta magicamente para a mão do tritão logo após um ataque à distância.
+
+@@ Merrow
+## Traços
+Anfíbio. O merrow consegue respirar ar e água.
+## Ações
+Ataque Múltiplo. O merrow faz dois ataques, usando Mordida, Garra ou Arpão em qualquer combinação.
+Mordida. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 6 (1d4 + 4) de dano Perfurante, e o alvo fica na condição Envenenado até o fim do próximo turno do merrow.
+Garra. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 9 (2d4 + 4) de dano Cortante.
+Arpão. Jogada de Ataque Corpo a Corpo ou à Distância: +6, alcance 1,5 m ou distância 6/18 m. Acerto: 11 (2d6 + 4) de dano Perfurante. Se o alvo for uma criatura Grande ou menor, o merrow o puxa até 4,5 m em linha reta na sua direção.
+
+@@ Mimic
+## Traços
+Adesivo (Somente na Forma de Objeto). O mímico gruda em qualquer coisa que o toque. Uma criatura Enorme ou menor grudada no mímico fica na condição Agarrado (CD 13 para escapar). Testes de atributo para escapar desse agarrão têm Desvantagem.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +5 (com Vantagem se o alvo estiver Agarrado pelo mímico), alcance 1,5 m. Acerto: 7 (1d8 + 3) de dano Perfurante (ou 12 (2d8 + 3) de dano Perfurante se o alvo estiver Agarrado pelo mímico) mais 4 (1d8) de dano Ácido.
+Pseudópode. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 7 (1d8 + 3) de dano Contundente mais 4 (1d8) de dano Ácido. Se o alvo for uma criatura Grande ou menor, ele fica na condição Agarrado (CD 13 para escapar). Testes de atributo para escapar desse agarrão têm Desvantagem.
+## Ações Bônus
+Mudar de Forma. O mímico se transforma para parecer um objeto Médio ou Pequeno, mantendo suas estatísticas de jogo, ou volta à sua verdadeira forma de massa amorfa. Equipamentos que esteja vestindo ou carregando não se transformam.
+
+@@ Minotaur of Baphomet
+## Ações
+Glaive Abissal. Jogada de Ataque Corpo a Corpo: +6, alcance 3 m. Acerto: 10 (1d12 + 4) de dano Cortante mais 10 (3d6) de dano Necrótico.
+Chifrada (Recarga 5–6). Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 18 (4d6 + 4) de dano Perfurante. Se o alvo for uma criatura Grande ou menor e o minotauro tiver se movido 3 m ou mais em linha reta na direção dele imediatamente antes do acerto, o alvo sofre 10 (3d6) de dano Perfurante extra e fica na condição Caído.
+
+@@ Mummy
+## Ações
+Ataque Múltiplo. A múmia faz dois ataques de Punho Apodrecido e usa Olhar Aterrador.
+Punho Apodrecido. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 8 (1d10 + 3) de dano Contundente mais 10 (3d6) de dano Necrótico. Se o alvo for uma criatura, ele fica amaldiçoado. Enquanto amaldiçoado, o alvo não pode recuperar Pontos de Vida, seu máximo de Pontos de Vida não volta ao normal ao terminar um Descanso Longo e diminui em 10 (3d6) a cada 24 horas que se passarem. Uma criatura que seja reduzida a 0 Pontos de Vida por este ataque morre e vira pó.
+Olhar Aterrador. Salvaguarda de Sabedoria: CD 11, uma criatura que a múmia consiga ver a até 18 m. Falha: O alvo fica na condição Amedrontado até o fim do próximo turno da múmia. Sucesso: O alvo fica imune ao Olhar Aterrador desta múmia por 24 horas.
+
+@@ Mummy Lord
+## Traços
+Resistência Lendária (3/Dia, ou 4/Dia no Covil). Se a múmia falhar numa salvaguarda, ela pode escolher ser bem-sucedida.
+Resistência à Magia. A múmia tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+Restauração Morta-Viva. Se for destruída, a múmia ganha um novo corpo em 24 horas se seu coração estiver intacto, revivendo com todos os seus Pontos de Vida. O novo corpo aparece num espaço desocupado dentro do covil da múmia. O coração é um objeto Miúdo com CA 17, 10 PV e Imunidade a todo dano, exceto de Fogo.
+## Ações
+Ataque Múltiplo. A múmia faz um ataque de Punho Apodrecido ou de Canalizar Energia Negativa e usa Olhar Aterrador.
+Punho Apodrecido. Jogada de Ataque Corpo a Corpo: +9, alcance 1,5 m. Acerto: 15 (2d10 + 4) de dano Contundente mais 10 (3d6) de dano Necrótico. Se o alvo for uma criatura, ele fica amaldiçoado. Enquanto amaldiçoado, o alvo não pode recuperar Pontos de Vida, não recebe benefício ao terminar um Descanso Longo e seu máximo de Pontos de Vida diminui em 10 (3d6) a cada 24 horas que se passarem. Uma criatura que seja reduzida a 0 Pontos de Vida por este ataque morre e vira pó.
+Canalizar Energia Negativa. Jogada de Ataque à Distância: +9, distância 18 m. Acerto: 25 (6d6 + 4) de dano Necrótico.
+Olhar Aterrador. Salvaguarda de Sabedoria: CD 17, uma criatura que a múmia consiga ver a até 18 m. Falha: 25 (6d6 + 4) de dano Psíquico, e o alvo fica na condição Paralisado até o fim do próximo turno da múmia.
+Conjuração. A múmia conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Sabedoria como atributo de conjuração (CD de salvaguarda de magia 17, +9 para acertar com ataques de magia): À Vontade: Dispel Magic, Thaumaturgy. 1/Dia Cada: Animate Dead, Harm, Insect Plague (versão de 7º círculo).
+## Reações
+Redemoinho de Areia. Gatilho: A múmia é atingida por uma jogada de ataque. Resposta: A múmia soma 2 à sua CA contra o ataque, possivelmente fazendo-o errar, e se teletransporta até 18 m para um espaço desocupado que consiga ver. Cada criatura à sua escolha que ela consiga ver a até 1,5 m do espaço de destino fica na condição Cego até o fim do próximo turno da múmia.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, a múmia pode gastar um uso para realizar uma das ações a seguir. A múmia recupera todos os usos gastos no início de cada um de seus turnos.
+Comando Terrível. A múmia conjura Command (versão de 2º círculo), usando o mesmo atributo de conjuração de Conjuração. A múmia não pode realizar esta ação de novo até o início do seu próximo turno.
+Olhar. A múmia usa Olhar Aterrador. A múmia não pode realizar esta ação de novo até o início do seu próximo turno.
+Golpe Necrótico. A múmia faz um ataque de Punho Apodrecido ou de Canalizar Energia Negativa.
+
+@@ Nalfeshnee
+## Traços
+Restauração Demoníaca. Se o nalfeshnee morrer fora do Abismo, seu corpo se dissolve em icor e ele ganha um novo corpo instantaneamente, revivendo com todos os seus Pontos de Vida em algum lugar do Abismo.
+Resistência à Magia. O nalfeshnee tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Ataque Múltiplo. O nalfeshnee faz três ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +10, alcance 3 m. Acerto: 16 (2d10 + 5) de dano Cortante mais 11 (2d10) de dano de Energia.
+Teletransporte. O nalfeshnee se teletransporta até 36 m para um espaço desocupado que consiga ver.
+## Ações Bônus
+Auréola de Horror (Recarga 5–6). Salvaguarda de Sabedoria: CD 15, cada criatura numa Emanação de 4,5 m a partir do nalfeshnee. Falha: 28 (8d6) de dano Psíquico, e o alvo fica na condição Amedrontado por 1 minuto, até sofrer dano ou até terminar o turno sem linha de visão para o nalfeshnee. Sucesso: O alvo fica imune à Auréola de Horror deste nalfeshnee por 24 horas.
+## Reações
+Perseguição. Gatilho: Outra criatura que o nalfeshnee consiga ver termina seu movimento a até 36 m dele. Resposta: O nalfeshnee usa Teletransporte, mas o espaço de destino precisa estar a até 3 m da criatura que ativou o gatilho.

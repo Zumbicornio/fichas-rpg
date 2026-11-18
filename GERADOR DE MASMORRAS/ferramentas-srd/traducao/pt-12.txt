@@ -1,0 +1,120 @@
+@@ Reef Shark
+## Traços
+Táticas de Matilha. O tubarão tem Vantagem numa jogada de ataque contra uma criatura se pelo menos um aliado do tubarão estiver a até 1,5 m dela e não estiver na condição Incapacitado.
+Respiração Aquática. O tubarão só consegue respirar debaixo d'água.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 7 (2d4 + 2) de dano Perfurante.
+
+@@ Rhinoceros
+## Ações
+Chifrada. Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 14 (2d8 + 5) de dano Perfurante. Se o alvo for uma criatura Grande ou menor e o rinoceronte tiver se movido 6 m ou mais em linha reta na direção dele imediatamente antes do acerto, o alvo sofre 9 (2d8) de dano Perfurante extra e fica na condição Caído.
+
+@@ Riding Horse
+## Ações
+Cascos. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 7 (1d8 + 3) de dano Contundente.
+
+@@ Saber-Toothed Tiger
+## Traços
+Salto com Corrida. Com 3 m de corrida, o tigre pode fazer um Salto em Distância de até 7,5 m.
+## Ações
+Ataque Múltiplo. O tigre faz dois ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 11 (2d6 + 4) de dano Cortante.
+## Ações Bônus
+Fuga Ágil. O tigre realiza a ação Desengajar ou Esconder.
+
+@@ Scorpion
+## Ações
+Ferrão. Jogada de Ataque Corpo a Corpo: +2, alcance 1,5 m. Acerto: 1 de dano Perfurante mais 3 (1d6) de dano Venenoso.
+
+@@ Seahorse
+## Traços
+Respiração Aquática. O cavalo-marinho só consegue respirar debaixo d'água.
+## Ações
+Disparada de Bolhas. Debaixo d'água, o cavalo-marinho se move até o seu Deslocamento de Natação sem provocar Ataques de Oportunidade.
+
+@@ Spider
+## Traços
+Patas de Aranha. A aranha consegue escalar superfícies difíceis, inclusive pelo teto, sem precisar fazer um teste de atributo.
+Andarilha da Teia. A aranha ignora restrições de movimento causadas por teias e sabe a localização de qualquer outra criatura em contato com a mesma teia.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 1 de dano Perfurante mais 2 (1d4) de dano Venenoso.
+
+@@ Swarm of Bats
+## Traços
+Enxame. O enxame pode ocupar o espaço de outra criatura e vice-versa, e pode passar por qualquer abertura grande o bastante para um morcego Miúdo. O enxame não pode recuperar Pontos de Vida nem ganhar Pontos de Vida Temporários.
+## Ações
+Mordidas. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 5 (2d4) de dano Perfurante, ou 2 (1d4) de dano Perfurante se o enxame estiver Sangrando.
+
+@@ Swarm of Insects
+## Traços
+Patas de Aranha. Se o enxame tiver Deslocamento de Escalada, ele consegue escalar superfícies difíceis, inclusive pelo teto, sem precisar fazer um teste de atributo.
+Enxame. O enxame pode ocupar o espaço de outra criatura e vice-versa, e pode passar por qualquer abertura grande o bastante para um inseto Miúdo. O enxame não pode recuperar Pontos de Vida nem ganhar Pontos de Vida Temporários.
+## Ações
+Picadas. Jogada de Ataque Corpo a Corpo: +3, alcance 1,5 m. Acerto: 6 (2d4 + 1) de dano Venenoso, ou 3 (1d4 + 1) de dano Venenoso se o enxame estiver Sangrando.
+
+@@ Swarm of Piranhas
+## Traços
+Enxame. O enxame pode ocupar o espaço de outra criatura e vice-versa, e pode passar por qualquer abertura grande o bastante para uma piranha Miúda. O enxame não pode recuperar Pontos de Vida nem ganhar Pontos de Vida Temporários.
+Respiração Aquática. O enxame só consegue respirar debaixo d'água.
+## Ações
+Mordidas. Jogada de Ataque Corpo a Corpo: +5 (com Vantagem se o alvo não estiver com todos os seus Pontos de Vida), alcance 1,5 m. Acerto: 8 (2d4 + 3) de dano Perfurante, ou 5 (1d4 + 3) de dano Perfurante se o enxame estiver Sangrando.
+
+@@ Swarm of Rats
+## Traços
+Enxame. O enxame pode ocupar o espaço de outra criatura e vice-versa, e pode passar por qualquer abertura grande o bastante para um rato Miúdo. O enxame não pode recuperar Pontos de Vida nem ganhar Pontos de Vida Temporários.
+## Ações
+Mordidas. Jogada de Ataque Corpo a Corpo: +2, alcance 1,5 m. Acerto: 5 (2d4) de dano Perfurante, ou 2 (1d4) de dano Perfurante se o enxame estiver Sangrando.
+
+@@ Swarm of Ravens
+## Traços
+Enxame. O enxame pode ocupar o espaço de outra criatura e vice-versa, e pode passar por qualquer abertura grande o bastante para um corvo Miúdo. O enxame não pode recuperar Pontos de Vida nem ganhar Pontos de Vida Temporários.
+## Ações
+Bicadas. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 5 (1d6 + 2) de dano Perfurante, ou 2 (1d4) de dano Perfurante se o enxame estiver Sangrando.
+Cacofonia (Recarga 6). Salvaguarda de Sabedoria: CD 10, uma criatura no espaço do enxame. Falha: O alvo fica na condição Surdo até o início do próximo turno do enxame. Enquanto Surdo, o alvo também tem Desvantagem em testes de atributo e jogadas de ataque.
+
+@@ Swarm of Venomous Snakes
+## Traços
+Enxame. O enxame pode ocupar o espaço de outra criatura e vice-versa, e pode passar por qualquer abertura grande o bastante para uma cobra Miúda. O enxame não pode recuperar Pontos de Vida nem ganhar Pontos de Vida Temporários.
+## Ações
+Mordidas. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 8 (1d8 + 4) de dano Perfurante (ou 6 (1d4 + 4) de dano Perfurante se o enxame estiver Sangrando) mais 10 (3d6) de dano Venenoso.
+
+@@ Tiger
+## Ações
+Dilacerar. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 10 (2d6 + 3) de dano Cortante. Se o alvo for uma criatura Grande ou menor, ele fica na condição Caído.
+## Ações Bônus
+Fuga Ágil. O tigre realiza a ação Desengajar ou Esconder.
+
+@@ Triceratops
+## Ações
+Ataque Múltiplo. O tricerátops faz dois ataques de Chifrada.
+Chifrada. Jogada de Ataque Corpo a Corpo: +9, alcance 1,5 m. Acerto: 19 (2d12 + 6) de dano Perfurante. Se o alvo for Enorme ou menor e o tricerátops tiver se movido 6 m ou mais em linha reta na direção dele imediatamente antes do acerto, o alvo sofre 9 (2d8) de dano Perfurante extra e fica na condição Caído.
+
+@@ Tyrannosaurus Rex
+## Ações
+Ataque Múltiplo. O tiranossauro faz um ataque de Mordida e um ataque de Cauda.
+Mordida. Jogada de Ataque Corpo a Corpo: +10, alcance 3 m. Acerto: 33 (4d12 + 7) de dano Perfurante. Se o alvo for uma criatura Grande ou menor, ele fica na condição Agarrado (CD 17 para escapar). Enquanto Agarrado, o alvo fica na condição Impedido e não pode ser alvo da Cauda do tiranossauro.
+Cauda. Jogada de Ataque Corpo a Corpo: +10, alcance 4,5 m. Acerto: 25 (4d8 + 7) de dano Contundente. Se o alvo for uma criatura Enorme ou menor, ele fica na condição Caído.
+
+@@ Venomous Snake
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 4 (1d4 + 2) de dano Perfurante mais 3 (1d6) de dano Venenoso.
+
+@@ Vulture
+## Traços
+Táticas de Matilha. O abutre tem Vantagem numa jogada de ataque contra uma criatura se pelo menos um aliado do abutre estiver a até 1,5 m dela e não estiver na condição Incapacitado.
+## Ações
+Bico. Jogada de Ataque Corpo a Corpo: +2, alcance 1,5 m. Acerto: 2 (1d4) de dano Perfurante.
+
+@@ Warhorse
+## Ações
+Cascos. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 9 (2d4 + 4) de dano Contundente. Se o alvo for uma criatura Grande ou menor e o cavalo tiver se movido 6 m ou mais em linha reta na direção dele imediatamente antes do acerto, o alvo sofre 5 (2d4) de dano Contundente extra e fica na condição Caído.
+
+@@ Weasel
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 1 de dano Perfurante.
+
+@@ Wolf
+## Traços
+Táticas de Matilha. O lobo tem Vantagem em jogadas de ataque contra uma criatura se pelo menos um aliado do lobo estiver a até 1,5 m dela e não estiver na condição Incapacitado.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 5 (1d6 + 2) de dano Perfurante. Se o alvo for uma criatura Média ou menor, ele fica na condição Caído.

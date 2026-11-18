@@ -1,0 +1,433 @@
+@@ Ogre Zombie
+## Traços
+Fortitude Morta-Viva. Se um dano reduzir o zumbi a 0 Pontos de Vida, ele faz uma salvaguarda de Constituição (CD 5 mais o dano sofrido), a menos que o dano seja Radiante ou de um Acerto Crítico. Com sucesso, o zumbi cai a 1 Ponto de Vida em vez disso.
+## Ações
+Pancada. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 13 (2d8 + 4) de dano Contundente.
+
+@@ Allosaurus
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 15 (2d10 + 4) de dano Perfurante.
+Garras. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 8 (1d8 + 4) de dano Cortante. Se o alvo for uma criatura Grande ou menor e o alossauro tiver se movido 9 m ou mais em linha reta na direção dele imediatamente antes do acerto, o alvo fica na condição Caído, e o alossauro pode fazer um ataque de Mordida contra ele.
+
+@@ Ankylosaurus
+## Ações
+Ataque Múltiplo. O anquilossauro faz dois ataques de Cauda.
+Cauda. Jogada de Ataque Corpo a Corpo: +6, alcance 3 m. Acerto: 9 (1d10 + 4) de dano Contundente. Se o alvo for uma criatura Enorme ou menor, ele fica na condição Caído.
+
+@@ Ape
+## Ações
+Ataque Múltiplo. O macaco faz dois ataques de Punho.
+Punho. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 5 (1d4 + 3) de dano Contundente.
+Pedra (Recarga 6). Jogada de Ataque à Distância: +5, distância 7,5/15 m. Acerto: 10 (2d6 + 3) de dano Contundente.
+
+@@ Archelon
+## Traços
+Anfíbio. O arquelon consegue respirar ar e água.
+## Ações
+Ataque Múltiplo. O arquelon faz dois ataques de Mordida. Mordida. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 14 (3d6 + 4) de dano Perfurante.
+
+@@ Baboon
+## Traços
+Táticas de Matilha. O babuíno tem Vantagem numa jogada de ataque contra uma criatura se pelo menos um aliado dele estiver a até 1,5 m dela e não estiver na condição Incapacitado.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +1, alcance 1,5 m. Acerto: 1 (1d4 − 1) de dano Perfurante.
+
+@@ Badger
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +2, alcance 1,5 m. Acerto: 1 de dano Perfurante.
+
+@@ Bat
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 1 de dano Perfurante.
+
+@@ Black Bear
+## Ações
+Ataque Múltiplo. O urso faz dois ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 5 (1d6 + 2) de dano Cortante.
+
+@@ Blood Hawk
+## Traços
+Táticas de Matilha. O falcão tem Vantagem numa jogada de ataque contra uma criatura se pelo menos um aliado dele estiver a até 1,5 m dela e não estiver na condição Incapacitado.
+## Ações
+Bico. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 4 (1d4 + 2) de dano Perfurante, ou 6 (1d8 + 2) de dano Perfurante se o alvo estiver Sangrando.
+
+@@ Boar
+## Traços
+Fúria Sangrenta. Enquanto estiver Sangrando, o javali tem Vantagem em jogadas de ataque.
+## Ações
+Chifrada. Jogada de Ataque Corpo a Corpo: +3, alcance 1,5 m. Acerto: 4 (1d6 + 1) de dano Perfurante. Se o alvo for uma criatura Média ou menor e o javali tiver se movido 6 m ou mais em linha reta na direção dele imediatamente antes do acerto, o alvo sofre 3 (1d6) de dano Perfurante extra e fica na condição Caído.
+
+@@ Brown Bear
+## Ações
+Ataque Múltiplo. O urso faz um ataque de Mordida e um ataque de Garra.
+Mordida. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 7 (1d8 + 3) de dano Perfurante.
+Garra. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 5 (1d4 + 3) de dano Cortante. Se o alvo for uma criatura Grande ou menor, ele fica na condição Caído.
+
+@@ Camel
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 4 (1d4 + 2) de dano Contundente.
+
+@@ Cat
+## Traços
+Saltador. A distância de salto do gato é determinada pela Destreza, em vez da Força.
+## Ações
+Arranhão. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 1 de dano Cortante.
+
+@@ Constrictor Snake
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 6 (1d8 + 2) de dano Perfurante.
+Constringir. Salvaguarda de Força: CD 12, uma criatura Média ou menor que a cobra consiga ver a até 1,5 m. Falha: 7 (3d4) de dano Contundente, e o alvo fica na condição Agarrado (CD 12 para escapar).
+
+@@ Crab
+## Traços
+Anfíbio. O caranguejo consegue respirar ar e água.
+## Ações
+Garra. Jogada de Ataque Corpo a Corpo: +2, alcance 1,5 m. Acerto: 1 de dano Contundente.
+
+@@ Crocodile
+## Traços
+Prender a Respiração. O crocodilo consegue prender a respiração por 1 hora.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 6 (1d8 + 2) de dano Perfurante. Se o alvo for uma criatura Média ou menor, ele fica na condição Agarrado (CD 12 para escapar). Enquanto Agarrado, o alvo fica na condição Impedido.
+
+@@ Deer
+## Traços
+Ágil. O cervo não provoca Ataque de Oportunidade quando sai do alcance de um inimigo.
+## Ações
+Marrada. Jogada de Ataque Corpo a Corpo: +2, alcance 1,5 m. Acerto: 2 (1d4) de dano Contundente.
+
+@@ Dire Wolf
+## Traços
+Táticas de Matilha. O lobo tem Vantagem numa jogada de ataque contra uma criatura se pelo menos um aliado do lobo estiver a até 1,5 m dela e não estiver na condição Incapacitado.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 8 (1d10 + 3) de dano Perfurante. Se o alvo for uma criatura Grande ou menor, ele fica na condição Caído.
+
+@@ Draft Horse
+## Ações
+Cascos. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 6 (1d4 + 4) de dano Contundente.
+
+@@ Eagle
+## Ações
+Garras. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 4 (1d4 + 2) de dano Cortante.
+
+@@ Elephant
+## Ações
+Ataque Múltiplo. O elefante faz dois ataques de Chifrada.
+Chifrada. Jogada de Ataque Corpo a Corpo: +8, alcance 1,5 m. Acerto: 15 (2d8 + 6) de dano Perfurante. Se o alvo for uma criatura Enorme ou menor e o elefante tiver se movido 6 m ou mais em linha reta na direção dele imediatamente antes do acerto, o alvo fica na condição Caído.
+## Ações Bônus
+Pisotear. Salvaguarda de Destreza: CD 16, uma criatura a até 1,5 m que esteja na condição Caído. Falha: 17 (2d10 + 6) de dano Contundente. Sucesso: Metade do dano.
+
+@@ Elk
+## Ações
+Marrada. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 6 (1d6 + 3) de dano Contundente. Se o alvo for uma criatura Grande ou menor e o alce tiver se movido 6 m ou mais em linha reta na direção dele imediatamente antes do acerto, o alvo sofre 3 (1d6) de dano Contundente extra e fica na condição Caído.
+
+@@ Flying Snake
+## Traços
+Sobrevoo. A cobra não provoca Ataque de Oportunidade quando voa para fora do alcance de um inimigo.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 1 de dano Perfurante mais 5 (2d4) de dano Venenoso.
+
+@@ Frog
+## Traços
+Anfíbio. O sapo consegue respirar ar e água.
+Salto Parado. O Salto em Distância do sapo é de até 3 m e o Salto em Altura de até 1,5 m, com ou sem corrida.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +3, alcance 1,5 m. Acerto: 1 de dano Perfurante.
+
+@@ Giant Ape
+## Ações
+Ataque Múltiplo. O macaco faz dois ataques de Punho.
+Punho. Jogada de Ataque Corpo a Corpo: +9, alcance 3 m. Acerto: 22 (3d10 + 6) de dano Contundente.
+Arremesso de Pedregulho (Recarga 6). O macaco arremessa um pedregulho num ponto que consiga ver a até 27 m. Salvaguarda de Destreza: CD 17, cada criatura numa Esfera de 1,5 m de raio centrada nesse ponto. Falha: 24 (7d6) de dano Contundente. Se o alvo for uma criatura Grande ou menor, ele fica na condição Caído. Sucesso: Apenas metade do dano.
+## Ações Bônus
+Salto. O macaco salta até 9 m gastando 3 m de movimento.
+
+@@ Giant Badger
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +3, alcance 1,5 m. Acerto: 6 (2d4 + 1) de dano Perfurante.
+
+@@ Giant Bat
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 6 (1d6 + 3) de dano Perfurante.
+
+@@ Giant Boar
+## Traços
+Fúria Sangrenta. O javali tem Vantagem em jogadas de ataque corpo a corpo enquanto estiver Sangrando.
+## Ações
+Chifrada. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 10 (2d6 + 3) de dano Perfurante. Se o alvo for uma criatura Grande ou menor e o javali tiver se movido 6 m ou mais em linha reta na direção dele imediatamente antes do acerto, o alvo sofre 7 (2d6) de dano Perfurante extra e fica na condição Caído.
+
+@@ Giant Centipede
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 4 (1d4 + 2) de dano Perfurante, e o alvo fica na condição Envenenado até o início do próximo turno da centopeia.
+
+@@ Giant Constrictor Snake
+## Ações
+Ataque Múltiplo. A cobra faz um ataque de Mordida e usa Constringir.
+Mordida. Jogada de Ataque Corpo a Corpo: +6, alcance 3 m. Acerto: 11 (2d6 + 4) de dano Perfurante.
+Constringir. Salvaguarda de Força: CD 14, uma criatura Grande ou menor que a cobra consiga ver a até 3 m. Falha: 13 (2d8 + 4) de dano Contundente, e o alvo fica na condição Agarrado (CD 14 para escapar).
+
+@@ Giant Crab
+## Traços
+Anfíbio. O caranguejo consegue respirar ar e água.
+## Ações
+Garra. Jogada de Ataque Corpo a Corpo: +3, alcance 1,5 m. Acerto: 4 (1d6 + 1) de dano Contundente. Se o alvo for uma criatura Média ou menor, ele fica na condição Agarrado (CD 11 para escapar) por uma de duas garras.
+
+@@ Giant Crocodile
+## Traços
+Prender a Respiração. O crocodilo consegue prender a respiração por 1 hora.
+## Ações
+Ataque Múltiplo. O crocodilo faz um ataque de Mordida e um ataque de Cauda.
+Mordida. Jogada de Ataque Corpo a Corpo: +8, alcance 1,5 m. Acerto: 21 (3d10 + 5) de dano Perfurante. Se o alvo for uma criatura Grande ou menor, ele fica na condição Agarrado (CD 15 para escapar). Enquanto Agarrado, o alvo fica na condição Impedido e não pode ser alvo da Cauda do crocodilo.
+Cauda. Jogada de Ataque Corpo a Corpo: +8, alcance 3 m. Acerto: 18 (3d8 + 5) de dano Contundente. Se o alvo for uma criatura Grande ou menor, ele fica na condição Caído.
+
+@@ Giant Eagle
+## Ações
+Ataque Múltiplo. A águia faz dois ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 5 (1d4 + 3) de dano Cortante mais 3 (1d6) de dano Radiante.
+
+@@ Giant Elk
+## Ações
+Marrada. Jogada de Ataque Corpo a Corpo: +6, alcance 3 m. Acerto: 11 (2d6 + 4) de dano Contundente mais 5 (2d4) de dano Radiante. Se o alvo for uma criatura Enorme ou menor e o alce tiver se movido 6 m ou mais em linha reta na direção dele imediatamente antes do acerto, o alvo sofre 5 (2d4) de dano Contundente extra e fica na condição Caído.
+
+@@ Giant Fire Beetle
+## Traços
+Iluminação. O besouro emite Luz Plena num raio de 3 m e Penumbra por mais 3 m.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +1, alcance 1,5 m. Acerto: 1 de dano de Fogo.
+
+@@ Giant Frog
+## Traços
+Anfíbio. O sapo consegue respirar ar e água.
+Salto Parado. O Salto em Distância do sapo é de até 6 m e o Salto em Altura de até 3 m, com ou sem corrida.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +3, alcance 1,5 m. Acerto: 5 (1d6 + 2) de dano Perfurante. Se o alvo for uma criatura Média ou menor, ele fica na condição Agarrado (CD 11 para escapar).
+Engolir. O sapo engole um alvo Pequeno ou menor que esteja agarrando. Enquanto engolido, o alvo não está Agarrado, mas fica nas condições Cego e Impedido e tem Cobertura Total contra ataques e outros efeitos de fora do sapo. Enquanto estiver com o alvo engolido, o sapo não pode usar Mordida e, se o sapo morrer, o alvo engolido deixa de estar Impedido e pode escapar do cadáver usando 1,5 m de movimento, saindo na condição Caído. No fim do próximo turno do sapo, o alvo engolido sofre 5 (2d4) de dano Ácido. Se esse dano não o matar, o sapo o regurgita, e ele sai Caído.
+
+@@ Giant Goat
+## Ações
+Marrada. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 6 (1d6 + 3) de dano Contundente. Se o alvo for uma criatura Grande ou menor e o bode tiver se movido 6 m ou mais em linha reta na direção dele imediatamente antes do acerto, o alvo sofre 5 (2d4) de dano Contundente extra e fica na condição Caído.
+
+@@ Giant Hyena
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 10 (2d6 + 3) de dano Perfurante.
+## Ações Bônus
+Matança (1/Dia). Imediatamente após causar dano a uma criatura que já estava Sangrando, a hiena pode se mover até metade do seu Deslocamento e faz um ataque de Mordida.
+
+@@ Giant Lizard
+## Traços
+Patas de Aranha. O lagarto consegue escalar superfícies difíceis, inclusive pelo teto, sem precisar fazer um teste de atributo.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 6 (1d8 + 2) de dano Perfurante.
+
+@@ Giant Octopus
+## Traços
+Respiração Aquática. O polvo só consegue respirar debaixo d'água. Fora d'água, consegue prender a respiração por 1 hora.
+## Ações
+Tentáculos. Jogada de Ataque Corpo a Corpo: +5, alcance 3 m. Acerto: 10 (2d6 + 3) de dano Contundente. Se o alvo for uma criatura Média ou menor, ele fica na condição Agarrado (CD 13 para escapar) pelos oito tentáculos. Enquanto Agarrado, o alvo fica na condição Impedido.
+## Reações
+Nuvem de Tinta (1/Dia). Gatilho: O polvo sofre dano enquanto está submerso. Resposta: O polvo solta tinta que preenche um Cubo de 3 m centrado em si e se move até o seu Deslocamento de Natação. O Cubo fica Totalmente Obscurecido por 1 minuto ou até uma corrente forte ou efeito parecido dispersar a tinta.
+
+@@ Giant Owl
+## Traços
+Sobrevoo. A coruja não provoca Ataque de Oportunidade quando voa para fora do alcance de um inimigo.
+## Ações
+Garras. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 7 (1d10 + 2) de dano Cortante.
+Conjuração. A coruja conjura uma das magias a seguir, sem precisar de componentes de magia e usando Sabedoria como atributo de conjuração: À Vontade: Detect Evil and Good, Detect Magic. 1/Dia: Clairvoyance.
+
+@@ Giant Rat
+## Traços
+Táticas de Matilha. O rato tem Vantagem numa jogada de ataque contra uma criatura se pelo menos um aliado do rato estiver a até 1,5 m dela e não estiver na condição Incapacitado.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 5 (1d4 + 3) de dano Perfurante.
+
+@@ Giant Scorpion
+## Ações
+Ataque Múltiplo. O escorpião faz dois ataques de Garra e um ataque de Ferrão.
+Garra. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 6 (1d6 + 3) de dano Contundente. Se o alvo for uma criatura Grande ou menor, ele fica na condição Agarrado (CD 13 para escapar) por uma de duas garras.
+Ferrão. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 7 (1d8 + 3) de dano Perfurante mais 11 (2d10) de dano Venenoso.
+
+@@ Giant Seahorse
+## Traços
+Respiração Aquática. O cavalo-marinho só consegue respirar debaixo d'água.
+## Ações
+Marrada. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 9 (2d6 + 2) de dano Contundente, ou 11 (2d8 + 2) de dano Contundente se o cavalo-marinho tiver se movido 6 m ou mais em linha reta na direção do alvo imediatamente antes do acerto.
+## Ações Bônus
+Disparada de Bolhas. Debaixo d'água, o cavalo-marinho se move até metade do seu Deslocamento de Natação sem provocar Ataques de Oportunidade.
+
+@@ Giant Shark
+## Traços
+Respiração Aquática. O tubarão só consegue respirar debaixo d'água.
+## Ações
+Ataque Múltiplo. O tubarão faz dois ataques de Mordida.
+Mordida. Jogada de Ataque Corpo a Corpo: +9 (com Vantagem se o alvo não estiver com todos os seus Pontos de Vida), alcance 1,5 m. Acerto: 22 (3d10 + 6) de dano Perfurante.
+
+@@ Giant Spider
+## Traços
+Patas de Aranha. A aranha consegue escalar superfícies difíceis, inclusive pelo teto, sem precisar fazer um teste de atributo.
+Andarilha da Teia. A aranha ignora restrições de movimento causadas por teias e sabe a localização de qualquer outra criatura em contato com a mesma teia.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 7 (1d8 + 3) de dano Perfurante mais 7 (2d6) de dano Venenoso.
+Teia (Recarga 5–6). Salvaguarda de Destreza: CD 13, uma criatura que a aranha consiga ver a até 18 m. Falha: O alvo fica na condição Impedido até a teia ser destruída (CA 10; PV 5; Vulnerabilidade a dano de Fogo; Imunidade a dano Venenoso e Psíquico).
+
+@@ Giant Toad
+## Traços
+Anfíbio. O sapo consegue respirar ar e água.
+Salto Parado. O Salto em Distância do sapo é de até 6 m e o Salto em Altura de até 3 m, com ou sem corrida.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 5 (1d6 + 2) de dano Perfurante mais 5 (2d4) de dano Venenoso. Se o alvo for uma criatura Média ou menor, ele fica na condição Agarrado (CD 12 para escapar).
+Engolir. O sapo engole um alvo Médio ou menor que esteja agarrando. Enquanto engolido, o alvo não está Agarrado, mas fica nas condições Cego e Impedido e tem Cobertura Total contra ataques e outros efeitos de fora do sapo. Além disso, o alvo sofre 10 (3d6) de dano Ácido no fim de cada turno do sapo. O sapo só pode ter um alvo engolido por vez e não pode usar Mordida enquanto tiver um alvo engolido. Se o sapo morrer, a criatura engolida deixa de estar Impedida e pode escapar do cadáver usando 1,5 m de movimento, saindo na condição Caído.
+
+@@ Giant Venomous Snake
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +6, alcance 3 m. Acerto: 6 (1d4 + 4) de dano Perfurante mais 4 (1d8) de dano Venenoso.
+
+@@ Giant Vulture
+## Traços
+Táticas de Matilha. O abutre tem Vantagem numa jogada de ataque contra uma criatura se pelo menos um aliado do abutre estiver a até 1,5 m dela e não estiver na condição Incapacitado.
+## Ações
+Arrancar. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 9 (2d6 + 2) de dano Perfurante, e o alvo fica na condição Envenenado até o fim do seu próximo turno.
+
+@@ Giant Wasp
+## Traços
+Sobrevoo. A vespa não provoca Ataque de Oportunidade quando voa para fora do alcance de um inimigo.
+## Ações
+Ferrão. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 5 (1d6 + 2) de dano Perfurante mais 5 (2d4) de dano Venenoso.
+
+@@ Giant Weasel
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 5 (1d4 + 3) de dano Perfurante.
+
+@@ Giant Wolf Spider
+## Traços
+Patas de Aranha. A aranha consegue escalar superfícies difíceis, inclusive pelo teto, sem precisar fazer um teste de atributo.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 5 (1d4 + 3) de dano Perfurante mais 5 (2d4) de dano Venenoso.
+
+@@ Goat
+## Ações
+Marrada. Jogada de Ataque Corpo a Corpo: +2, alcance 1,5 m. Acerto: 1 de dano Contundente, ou 2 (1d4) de dano Contundente se o bode tiver se movido 6 m ou mais em linha reta na direção do alvo imediatamente antes do acerto.
+
+@@ Hawk
+## Ações
+Garras. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 1 de dano Cortante.
+
+@@ Hippopotamus
+## Traços
+Prender a Respiração. O hipopótamo consegue prender a respiração por 10 minutos.
+## Ações
+Ataque Múltiplo. O hipopótamo faz dois ataques de Mordida.
+Mordida. Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 16 (2d10 + 5) de dano Perfurante.
+
+@@ Hunter Shark
+## Traços
+Respiração Aquática. O tubarão só consegue respirar debaixo d'água.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +6 (com Vantagem se o alvo não estiver com todos os seus Pontos de Vida), alcance 1,5 m. Acerto: 14 (3d6 + 4) de dano Perfurante.
+
+@@ Hyena
+## Traços
+Táticas de Matilha. A hiena tem Vantagem numa jogada de ataque contra uma criatura se pelo menos um aliado dela estiver a até 1,5 m da criatura e não estiver na condição Incapacitado.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +2, alcance 1,5 m. Acerto: 3 (1d6) de dano Perfurante.
+
+@@ Jackal
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +1, alcance 1,5 m. Acerto: 1 (1d4 − 1) de dano Perfurante.
+
+@@ Killer Whale
+## Traços
+Prender a Respiração. A orca consegue prender a respiração por 30 minutos.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 21 (5d6 + 4) de dano Perfurante.
+
+@@ Lion
+## Traços
+Táticas de Matilha. O leão tem Vantagem numa jogada de ataque contra uma criatura se pelo menos um aliado do leão estiver a até 1,5 m dela e não estiver na condição Incapacitado.
+Salto com Corrida. Com 3 m de corrida, o leão pode fazer um Salto em Distância de até 7,5 m.
+## Ações
+Ataque Múltiplo. O leão faz dois ataques de Dilacerar. Ele pode substituir um ataque por um uso de Rugido.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 7 (1d8 + 3) de dano Cortante.
+Rugido. Salvaguarda de Sabedoria: CD 11, uma criatura a até 4,5 m. Falha: O alvo fica na condição Amedrontado até o início do próximo turno do leão.
+
+@@ Lizard
+## Traços
+Patas de Aranha. O lagarto consegue escalar superfícies difíceis, inclusive pelo teto, sem precisar fazer um teste de atributo.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +2, alcance 1,5 m. Acerto: 1 de dano Perfurante.
+
+@@ Mammoth
+## Ações
+Ataque Múltiplo. O mamute faz dois ataques de Chifrada.
+Chifrada. Jogada de Ataque Corpo a Corpo: +10, alcance 3 m. Acerto: 18 (2d10 + 7) de dano Perfurante. Se o alvo for uma criatura Enorme ou menor e o mamute tiver se movido 6 m ou mais em linha reta na direção dele imediatamente antes do acerto, o alvo fica na condição Caído.
+## Ações Bônus
+Pisotear. Salvaguarda de Destreza: CD 18, uma criatura a até 1,5 m que esteja na condição Caído. Falha: 29 (4d10 + 7) de dano Contundente. Sucesso: Metade do dano.
+
+@@ Mastiff
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +3, alcance 1,5 m. Acerto: 4 (1d6 + 1) de dano Perfurante. Se o alvo for uma criatura Média ou menor, ele fica na condição Caído.
+
+@@ Mule
+## Traços
+Besta de Carga. A mula conta como um tamanho maior para determinar sua capacidade de carga.
+## Ações
+Cascos. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 4 (1d4 + 2) de dano Contundente.
+
+@@ Octopus
+## Traços
+Compressão. O polvo pode passar por um espaço de apenas 2,5 cm de largura sem gastar movimento extra.
+Respiração Aquática. O polvo só consegue respirar debaixo d'água.
+## Ações
+Tentáculos. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 1 de dano Contundente.
+## Reações
+Nuvem de Tinta (1/Dia). Gatilho: Uma criatura termina o turno a até 1,5 m do polvo enquanto ele está submerso. Resposta: O polvo solta tinta que preenche um Cubo de 1,5 m centrado em si e se move até o seu Deslocamento de Natação. O Cubo fica Totalmente Obscurecido por 1 minuto ou até uma corrente forte ou efeito parecido dispersar a tinta.
+
+@@ Owl
+## Traços
+Sobrevoo. A coruja não provoca Ataque de Oportunidade quando voa para fora do alcance de um inimigo.
+## Ações
+Garras. Jogada de Ataque Corpo a Corpo: +3, alcance 1,5 m. Acerto: 1 de dano Cortante.
+
+@@ Panther
+## Ações
+Dilacerar. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 6 (1d6 + 3) de dano Cortante.
+## Ações Bônus
+Fuga Ágil. A pantera realiza a ação Desengajar ou Esconder.
+
+@@ Piranha
+## Traços
+Respiração Aquática. A piranha só consegue respirar debaixo d'água.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +5 (com Vantagem se o alvo não estiver com todos os seus Pontos de Vida), alcance 1,5 m. Acerto: 1 de dano Perfurante.
+
+@@ Plesiosaurus
+## Traços
+Prender a Respiração. O plesiossauro consegue prender a respiração por 1 hora.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +6, alcance 3 m. Acerto: 11 (2d6 + 4) de dano Perfurante.
+
+@@ Polar Bear
+## Ações
+Ataque Múltiplo. O urso faz dois ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 9 (1d8 + 5) de dano Cortante.
+
+@@ Pony
+## Ações
+Cascos. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 4 (1d4 + 2) de dano Contundente.
+
+@@ Pteranodon
+## Traços
+Sobrevoo. O pteranodonte não provoca Ataque de Oportunidade quando voa para fora do alcance de um inimigo.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 6 (1d8 + 2) de dano Perfurante.
+
+@@ Rat
+## Traços
+Ágil. O rato não provoca Ataque de Oportunidade quando sai do alcance de um inimigo.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +2, alcance 1,5 m. Acerto: 1 de dano Perfurante.
+
+@@ Raven
+## Traços
+Mimetismo. O corvo consegue imitar sons simples que já ouviu, como um sussurro ou um chiado. Quem ouve percebe que são imitações com um teste de Sabedoria (Intuição) CD 10 bem-sucedido.
+## Ações
+Bico. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 1 de dano Perfurante.

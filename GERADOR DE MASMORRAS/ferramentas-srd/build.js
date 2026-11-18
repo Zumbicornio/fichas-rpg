@@ -35,6 +35,8 @@ const TIPO = Object.entries({
 const SEC = { Traits: 'Traços', Actions: 'Ações', 'Bonus Actions': 'Ações Bônus', Reactions: 'Reações', 'Legendary Actions': 'Ações Lendárias' };
 const INFO = [['Skills', 'Perícias'], ['Vulnerabilities', 'Vulnerabilidades'], ['Resistances', 'Resistências'], ['Immunities', 'Imunidades'], ['Gear', 'Equipamento'], ['Senses', 'Sentidos'], ['Languages', 'Idiomas']];
 const ATR = ['For', 'Des', 'Con', 'Int', 'Sab', 'Car'];
+// 3º argumento opcional: traducao.json (gerado por traducao.js) com traços e ações em português
+const trad = process.argv[4] ? JSON.parse(fs.readFileSync(process.argv[4], 'utf8')) : null;
 const out = {};
 for (const [nome, s] of Object.entries(srd)) {
   const en = ALIAS[nome] || nome;
@@ -46,9 +48,11 @@ for (const [nome, s] of Object.entries(srd)) {
   out[en] = {
     tipo: rep(s.tipo, TIPO), ca: s.ca, pv: s.pv.replace(/ \+ /g, '+').replace(/ - /g, '−'), desl: metros(rep(s.desl, DESL)), ini: s.ini,
     atr: s.atr, info, cr: s.cr, nomeSrd: nome !== en ? nome : undefined,
-    secoes: s.secoes.map(([t, ls]) => [SEC[t] || t, ls])
+    secoes: (trad && trad[nome]) || s.secoes.map(([t, ls]) => [SEC[t] || t, ls]),
+    secoesEn: trad && trad[nome] ? s.secoes.map(([t, ls]) => [SEC[t] || t, ls]) : undefined
   };
 }
+if (trad) console.log('com tradução', Object.values(out).filter(o => o.secoesEn).length);
 const line = 'const SRD = ' + JSON.stringify(out) + ';';
 fs.writeFileSync(process.argv[3], line);
 console.log('monstros', Object.keys(out).length, 'tamanho', (line.length / 1024).toFixed(0) + ' KB');

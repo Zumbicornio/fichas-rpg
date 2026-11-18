@@ -1,0 +1,215 @@
+@@ Night Hag
+## Traços
+Magia do Conciliábulo. Enquanto estiver a até 9 m de pelo menos duas bruxas aliadas, a bruxa pode conjurar uma das magias a seguir, sem precisar de componentes Materiais, usando o tempo de conjuração normal da magia e Inteligência como atributo de conjuração (CD de salvaguarda de magia 14): Augury, Find Familiar, Identify, Locate Object, Scrying ou Unseen Servant. A bruxa precisa terminar um Descanso Longo antes de usar este traço para conjurar essa mesma magia de novo.
+Resistência à Magia. A bruxa tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+Bolsa de Almas. A bruxa tem uma bolsa de almas. Enquanto segura ou carrega a bolsa, ela pode usar a ação Assombração de Pesadelo. A bolsa tem CA 15, 20 PV e Resistência a todo dano. A bolsa vira pó se for reduzida a 0 Pontos de Vida. Se a bolsa for destruída, as almas que ela guarda são libertadas. A bruxa pode criar uma bolsa nova após 7 dias.
+## Ações
+Ataque Múltiplo. A bruxa faz dois ataques de Garra.
+Garra. Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 13 (2d8 + 4) de dano Cortante.
+Assombração de Pesadelo (1/Dia; Requer Bolsa de Almas). Enquanto está no Plano Etéreo, a bruxa conjura Dream, usando o mesmo atributo de conjuração de Conjuração. Somente a bruxa pode ser a mensageira da magia, e o alvo precisa ser uma criatura que ela consiga ver no Plano Material. A magia falha e é desperdiçada se o alvo estiver sob o efeito da magia Protection from Evil and Good ou dentro de uma magia Magic Circle. Se o alvo sofrer dano da magia Dream, seu máximo de Pontos de Vida diminui numa quantidade igual a esse dano. Se a magia matar o alvo, sua alma fica presa na bolsa de almas da bruxa, e o alvo não pode ser trazido de volta dos mortos até a alma ser libertada.
+Conjuração. A bruxa conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Inteligência como atributo de conjuração (CD de salvaguarda de magia 14): À Vontade: Detect Magic, Etherealness, Magic Missile (versão de 4º círculo). 2/Dia Cada: Phantasmal Killer, Plane Shift (apenas em si mesma).
+## Ações Bônus
+Mudar de Forma. A bruxa se transforma num Humanoide Pequeno ou Médio, ou volta à sua forma verdadeira. Exceto pelo tamanho, suas estatísticas de jogo são as mesmas em todas as formas. Equipamentos que esteja vestindo ou carregando não se transformam.
+
+@@ Nightmare
+## Traços
+Conceder Resistência ao Fogo. O pesadelo pode conceder Resistência a dano de Fogo a quem o montar.
+Iluminação. O pesadelo emite Luz Plena num raio de 3 m e Penumbra por mais 3 m.
+## Ações
+Cascos. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 13 (2d8 + 4) de dano Contundente mais 10 (3d6) de dano de Fogo.
+Passo Etéreo. O pesadelo e até três criaturas voluntárias a até 1,5 m dele se teletransportam do Plano Material para o Plano Etéreo, ou vice-versa.
+
+@@ Noble
+## Ações
+Rapieira. Jogada de Ataque Corpo a Corpo: +3, alcance 1,5 m. Acerto: 5 (1d8 + 1) de dano Perfurante.
+## Reações
+Aparar. Gatilho: O nobre é atingido por uma jogada de ataque corpo a corpo enquanto empunha uma arma. Resposta: O nobre soma 2 à sua CA contra esse ataque, possivelmente fazendo-o errar.
+
+@@ Ochre Jelly
+## Traços
+Amorfo. A gosma pode passar por um espaço de apenas 2,5 cm de largura sem gastar movimento extra.
+Patas de Aranha. A gosma consegue escalar superfícies difíceis, inclusive pelo teto, sem precisar fazer um teste de atributo.
+## Ações
+Pseudópode. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 12 (3d6 + 2) de dano Ácido.
+## Reações
+Dividir. Gatilho: Enquanto for Grande ou Média e tiver 10 ou mais Pontos de Vida, a gosma fica Sangrando ou sofre dano Elétrico ou Cortante. Resposta: A gosma se divide em duas novas Gosmas Ocres. Cada nova gosma é um tamanho menor que a original e age na Iniciativa dela. Os Pontos de Vida da gosma original são divididos igualmente entre as novas (arredondados para baixo).
+
+@@ Ogre
+## Ações
+Clava Grande. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 13 (2d8 + 4) de dano Contundente.
+Azagaia. Jogada de Ataque Corpo a Corpo ou à Distância: +6, alcance 1,5 m ou distância 9/36 m. Acerto: 11 (2d6 + 4) de dano Perfurante.
+
+@@ Oni
+## Traços
+Regeneração. O oni recupera 10 Pontos de Vida no início de cada um de seus turnos se tiver pelo menos 1 Ponto de Vida.
+## Ações
+Ataque Múltiplo. O oni faz dois ataques de Garra ou de Raio de Pesadelo. Ele pode substituir um ataque por um uso de Conjuração.
+Garra. Jogada de Ataque Corpo a Corpo: +7, alcance 3 m. Acerto: 10 (1d12 + 4) de dano Cortante mais 9 (2d8) de dano Necrótico.
+Raio de Pesadelo. Jogada de Ataque à Distância: +5, distância 18 m. Acerto: 9 (2d6 + 2) de dano Psíquico, e o alvo fica na condição Amedrontado até o início do próximo turno do oni.
+Mudar de Forma. O oni se transforma num Humanoide Pequeno ou Médio ou num Gigante Grande, ou volta à sua forma verdadeira. Exceto pelo tamanho, suas estatísticas de jogo são as mesmas em todas as formas. Equipamentos que esteja vestindo ou carregando não se transformam.
+Conjuração. O oni conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 13): 1/Dia Cada: Charm Person (versão de 2º círculo), Darkness, Gaseous Form, Sleep.
+## Ações Bônus
+Invisibilidade. O oni conjura Invisibility em si mesmo, sem precisar de componentes de magia e usando o mesmo atributo de conjuração de Conjuração.
+
+@@ Otyugh
+## Ações
+Ataque Múltiplo. O otyugh faz um ataque de Mordida e dois ataques de Tentáculo.
+Mordida. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 12 (2d8 + 3) de dano Perfurante, e o alvo fica na condição Envenenado. Sempre que o alvo Envenenado terminar um Descanso Longo, ele é submetido ao efeito a seguir. Salvaguarda de Constituição: CD 15. Falha: O máximo de Pontos de Vida do alvo diminui em 5 (1d10) e não volta ao normal até a condição Envenenado acabar. Sucesso: A condição Envenenado acaba.
+Tentáculo. Jogada de Ataque Corpo a Corpo: +6, alcance 3 m. Acerto: 12 (2d8 + 3) de dano Perfurante. Se o alvo for uma criatura Média ou menor, ele fica na condição Agarrado (CD 13 para escapar) por um de dois tentáculos.
+Pancada de Tentáculo. Salvaguarda de Constituição: CD 14, cada criatura Agarrada pelo otyugh. Falha: 16 (3d8 + 3) de dano Contundente, e o alvo fica na condição Atordoado até o início do próximo turno do otyugh. Sucesso: Apenas metade do dano.
+
+@@ Owlbear
+## Ações
+Ataque Múltiplo. O urso-coruja faz dois ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 14 (2d8 + 5) de dano Cortante.
+
+@@ Pegasus
+## Ações
+Cascos. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 7 (1d6 + 4) de dano Contundente mais 5 (2d4) de dano Radiante.
+
+@@ Phase Spider
+## Traços
+Visão Etérea. A aranha consegue enxergar 18 m dentro do Plano Etéreo enquanto está no Plano Material, e vice-versa.
+Patas de Aranha. A aranha consegue escalar superfícies difíceis, inclusive pelo teto, sem precisar fazer um teste de atributo.
+Andarilha da Teia. A aranha ignora restrições de movimento causadas por teias e sabe a localização de qualquer outra criatura em contato com a mesma teia.
+## Ações
+Ataque Múltiplo. A aranha faz dois ataques de Mordida.
+Mordida. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 8 (1d10 + 3) de dano Perfurante mais 9 (2d8) de dano Venenoso. Se esse dano reduzir o alvo a 0 Pontos de Vida, ele fica Estável e na condição Envenenado por 1 hora. Enquanto Envenenado, o alvo também fica na condição Paralisado.
+## Ações Bônus
+Salto Etéreo. A aranha se teletransporta do Plano Material para o Plano Etéreo, ou vice-versa.
+
+@@ Pirate
+## Ações
+Ataque Múltiplo. O pirata faz dois ataques de Adaga. Ele pode substituir um ataque por um uso de Charme Cativante.
+Adaga. Jogada de Ataque Corpo a Corpo ou à Distância: +5, alcance 1,5 m ou distância 6/18 m. Acerto: 5 (1d4 + 3) de dano Perfurante.
+Charme Cativante. Salvaguarda de Sabedoria: CD 12, uma criatura que o pirata consiga ver a até 9 m. Falha: O alvo fica na condição Enfeitiçado até o início do próximo turno do pirata.
+
+@@ Pirate Captain
+## Ações
+Ataque Múltiplo. O pirata faz três ataques, usando Rapieira ou Pistola em qualquer combinação.
+Rapieira. Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 13 (2d8 + 4) de dano Perfurante, e o pirata tem Vantagem na próxima jogada de ataque que fizer antes do fim deste turno.
+Pistola. Jogada de Ataque à Distância: +7, distância 9/27 m. Acerto: 15 (2d10 + 4) de dano Perfurante.
+## Ações Bônus
+Charme do Capitão. Salvaguarda de Sabedoria: CD 14, uma criatura que o pirata consiga ver a até 9 m. Falha: O alvo fica na condição Enfeitiçado até o início do próximo turno do pirata.
+## Reações
+Contra-ataque. Gatilho: O pirata é atingido por uma jogada de ataque corpo a corpo enquanto empunha uma arma. Resposta: O pirata soma 3 à sua CA contra esse ataque, possivelmente fazendo-o errar. Se o ataque errar, o pirata faz um ataque de Rapieira contra a criatura que ativou o gatilho, se ela estiver ao alcance.
+
+@@ Pit Fiend
+## Traços
+Restauração Diabólica. Se o pit fiend morrer fora dos Nove Infernos, seu corpo desaparece em fumaça sulfurosa e ele ganha um novo corpo instantaneamente, revivendo com todos os seus Pontos de Vida em algum lugar dos Nove Infernos.
+Aura de Medo. O pit fiend emana uma aura numa Emanação de 6 m enquanto não estiver na condição Incapacitado. Salvaguarda de Sabedoria: CD 21, qualquer inimigo que comece o turno na aura. Falha: O alvo fica na condição Amedrontado até o início do seu próximo turno. Sucesso: O alvo fica imune à aura deste pit fiend por 24 horas.
+Resistência Lendária (4/Dia). Se o pit fiend falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+Resistência à Magia. O pit fiend tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Ataque Múltiplo. O pit fiend faz um ataque de Mordida, dois ataques de Garra Diabólica e um ataque de Maça Flamejante.
+Mordida. Jogada de Ataque Corpo a Corpo: +14, alcance 3 m. Acerto: 18 (3d6 + 8) de dano Perfurante. Se o alvo for uma criatura, ele precisa fazer a salvaguarda a seguir. Salvaguarda de Constituição: CD 21. Falha: O alvo fica na condição Envenenado. Enquanto Envenenado, o alvo não pode recuperar Pontos de Vida, sofre 21 (6d6) de dano Venenoso no início de cada um de seus turnos e repete a salvaguarda no fim de cada um de seus turnos, encerrando o efeito em si mesmo com um sucesso. Após 1 minuto, ele é bem-sucedido automaticamente.
+Garra Diabólica. Jogada de Ataque Corpo a Corpo: +14, alcance 3 m. Acerto: 26 (4d8 + 8) de dano Necrótico.
+Maça Flamejante. Jogada de Ataque Corpo a Corpo: +14, alcance 3 m. Acerto: 22 (4d6 + 8) de dano de Energia mais 21 (6d6) de dano de Fogo.
+Conjuração do Fogo Infernal (Recarga 4–6). O pit fiend conjura Fireball (versão de 5º círculo) duas vezes, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 21). Ele pode substituir uma das Fireball por Hold Monster (versão de 7º círculo) ou Wall of Fire.
+
+@@ Planetar
+## Traços
+Percepção Divina. O planetar sabe quando ouve uma mentira.
+Restauração Exaltada. Se o planetar morrer fora do Monte Celéstia, seu corpo desaparece e ele ganha um novo corpo instantaneamente, revivendo com todos os seus Pontos de Vida em algum lugar do Monte Celéstia.
+Resistência à Magia. O planetar tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Ataque Múltiplo. O planetar faz três ataques de Espada Radiante ou usa Explosão Sagrada duas vezes.
+Espada Radiante. Jogada de Ataque Corpo a Corpo: +12, alcance 3 m. Acerto: 14 (2d6 + 7) de dano Cortante mais 18 (4d8) de dano Radiante.
+Explosão Sagrada. Salvaguarda de Destreza: CD 20, cada inimigo numa Esfera de 6 m de raio centrada num ponto que o planetar consiga ver a até 36 m. Falha: 24 (7d6) de dano Radiante. Sucesso: Metade do dano.
+Conjuração. O planetar conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 20): À Vontade: Detect Evil and Good. 1/Dia Cada: Commune, Control Weather, Dispel Evil and Good, Raise Dead.
+## Ações Bônus
+Auxílio Divino (2/Dia). O planetar conjura Cure Wounds, Invisibility, Lesser Restoration ou Remove Curse, usando o mesmo atributo de conjuração de Conjuração.
+
+@@ Priest Acolyte
+## Ações
+Maça. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 5 (1d6 + 2) de dano Contundente mais 2 (1d4) de dano Radiante.
+Chama Radiante. Jogada de Ataque à Distância: +4, distância 18 m. Acerto: 7 (2d6) de dano Radiante.
+Conjuração. O sacerdote conjura uma das magias a seguir, usando Sabedoria como atributo de conjuração: À Vontade: Light, Thaumaturgy.
+## Ações Bônus
+Auxílio Divino (1/Dia). O sacerdote conjura Bless, Healing Word ou Sanctuary, usando o mesmo atributo de conjuração de Conjuração.
+
+@@ Priest
+## Ações
+Ataque Múltiplo. O sacerdote faz dois ataques, usando Maça ou Chama Radiante em qualquer combinação.
+Maça. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 6 (1d6 + 3) de dano Contundente mais 5 (2d4) de dano Radiante.
+Chama Radiante. Jogada de Ataque à Distância: +5, distância 18 m. Acerto: 11 (2d10) de dano Radiante.
+Conjuração. O sacerdote conjura uma das magias a seguir, usando Sabedoria como atributo de conjuração (CD de salvaguarda de magia 13): À Vontade: Light, Thaumaturgy. 1/Dia: Spirit Guardians.
+## Ações Bônus
+Auxílio Divino (3/Dia). O sacerdote conjura Bless, Dispel Magic, Healing Word ou Lesser Restoration, usando o mesmo atributo de conjuração de Conjuração.
+
+@@ Pseudodragon
+## Traços
+Resistência à Magia. O pseudodragão tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Ataque Múltiplo. O pseudodragão faz dois ataques de Mordida.
+Mordida. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 4 (1d4 + 2) de dano Perfurante.
+Ferrão. Salvaguarda de Constituição: CD 12, uma criatura que o pseudodragão consiga ver a até 1,5 m. Falha: 5 (2d4) de dano Venenoso, e o alvo fica na condição Envenenado por 1 hora. Falha por 5 ou Mais: Enquanto Envenenado, o alvo também fica na condição Inconsciente, que acaba antes se ele sofrer dano ou se uma criatura a até 1,5 m dele usar uma ação para acordá-lo.
+
+@@ Purple Worm
+## Traços
+Escavador de Túneis. O verme consegue escavar rocha sólida com metade do seu Deslocamento de Escavação e deixa para trás um túnel de 3 m de diâmetro.
+## Ações
+Ataque Múltiplo. O verme faz um ataque de Mordida e um ataque de Ferrão da Cauda.
+Mordida. Jogada de Ataque Corpo a Corpo: +14, alcance 3 m. Acerto: 22 (3d8 + 9) de dano Perfurante. Se o alvo for uma criatura Grande ou menor, ele fica na condição Agarrado (CD 19 para escapar) e na condição Impedido até o agarrão acabar.
+Ferrão da Cauda. Jogada de Ataque Corpo a Corpo: +14, alcance 3 m. Acerto: 16 (2d6 + 9) de dano Perfurante mais 35 (10d6) de dano Venenoso.
+## Ações Bônus
+Engolir. Salvaguarda de Força: CD 19, uma criatura Grande ou menor Agarrada pelo verme (ele pode ter até três criaturas engolidas ao mesmo tempo). Falha: O alvo é engolido pelo verme e a condição Agarrado acaba. Uma criatura engolida fica nas condições Cego e Impedido, tem Cobertura Total contra ataques e outros efeitos de fora do verme e sofre 17 (5d6) de dano Ácido no início de cada turno do verme. Se o verme sofrer 30 ou mais de dano num único turno vindo de uma criatura dentro dele, ele precisa ser bem-sucedido numa salvaguarda de Constituição CD 21 no fim desse turno ou regurgita todas as criaturas engolidas, que caem num espaço a até 1,5 m do verme na condição Caído. Se o verme morrer, qualquer criatura engolida deixa de estar Impedida e pode escapar do cadáver usando 6 m de movimento, saindo Caída.
+
+@@ Quasit
+## Traços
+Resistência à Magia. O quasit tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Dilacerar. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 5 (1d4 + 3) de dano Cortante, e o alvo fica na condição Envenenado até o início do próximo turno do quasit.
+Invisibilidade. O quasit conjura Invisibility em si mesmo, sem precisar de componentes de magia e usando Carisma como atributo de conjuração.
+Assustar (1/Dia). Salvaguarda de Sabedoria: CD 10, uma criatura a até 6 m. Falha: O alvo fica na condição Amedrontado. No fim de cada um de seus turnos, o alvo repete a salvaguarda, encerrando o efeito em si mesmo com um sucesso. Após 1 minuto, ele é bem-sucedido automaticamente.
+Mudar de Forma. O quasit se transforma para parecer um morcego (Deslocamento 3 m, voo 12 m), uma centopeia (12 m, escalada 12 m) ou um sapo (12 m, natação 12 m), ou volta à sua forma verdadeira. Suas estatísticas de jogo são as mesmas em todas as formas, exceto o Deslocamento. Equipamentos que esteja vestindo ou carregando não se transformam.
+
+@@ Rakshasa
+## Traços
+Resistência à Magia Maior. O rakshasa é bem-sucedido automaticamente em salvaguardas contra magias e outros efeitos mágicos, e as jogadas de ataque de magias erram automaticamente contra ele. Sem a permissão do rakshasa, nenhuma magia consegue observá-lo à distância nem detectar seus pensamentos, tipo de criatura ou tendência.
+Restauração Ínfera. Se o rakshasa morrer fora dos Nove Infernos, seu corpo vira icor e ele ganha um novo corpo instantaneamente, revivendo com todos os seus Pontos de Vida em algum lugar dos Nove Infernos.
+## Ações
+Ataque Múltiplo. O rakshasa faz três ataques de Toque Amaldiçoado.
+Toque Amaldiçoado. Jogada de Ataque Corpo a Corpo: +10, alcance 1,5 m. Acerto: 12 (2d6 + 5) de dano Cortante mais 19 (3d12) de dano Necrótico. Se o alvo for uma criatura, ele fica amaldiçoado. Enquanto amaldiçoado, o alvo não recebe benefício ao terminar um Descanso Curto ou Longo.
+Comando Funesto (Recarga 5–6). Salvaguarda de Sabedoria: CD 18, cada inimigo numa Emanação de 9 m a partir do rakshasa. Falha: 28 (8d6) de dano Psíquico, e o alvo fica nas condições Amedrontado e Incapacitado até o início do próximo turno do rakshasa.
+Conjuração. O rakshasa conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 18): À Vontade: Detect Magic, Detect Thoughts, Disguise Self, Mage Hand, Minor Illusion. 1/Dia Cada: Fly, Invisibility, Major Image, Plane Shift.
+
+@@ Red Dragon Wyrmling
+## Ações
+Ataque Múltiplo. O dragão faz dois ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 9 (1d10 + 4) de dano Cortante mais 3 (1d6) de dano de Fogo.
+Sopro de Fogo (Recarga 5–6). Salvaguarda de Destreza: CD 13, cada criatura num Cone de 4,5 m. Falha: 24 (7d6) de dano de Fogo. Sucesso: Metade do dano.
+
+@@ Young Red Dragon
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +10, alcance 3 m. Acerto: 13 (2d6 + 6) de dano Cortante mais 3 (1d6) de dano de Fogo.
+Sopro de Fogo (Recarga 5–6). Salvaguarda de Destreza: CD 17, cada criatura num Cone de 9 m. Falha: 56 (16d6) de dano de Fogo. Sucesso: Metade do dano.
+
+@@ Adult Red Dragon
+## Traços
+Resistência Lendária (3/Dia, ou 4/Dia no Covil). Se o dragão falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar. Ele pode substituir um ataque por um uso de Conjuração para conjurar Scorching Ray.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +14, alcance 3 m. Acerto: 13 (1d10 + 8) de dano Cortante mais 5 (2d4) de dano de Fogo.
+Sopro de Fogo (Recarga 5–6). Salvaguarda de Destreza: CD 21, cada criatura num Cone de 18 m. Falha: 59 (17d6) de dano de Fogo. Sucesso: Metade do dano.
+Conjuração. O dragão conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 20, +12 para acertar com ataques de magia): À Vontade: Command (versão de 2º círculo), Detect Magic, Scorching Ray. 1/Dia: Fireball.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, o dragão pode gastar um uso para realizar uma das ações a seguir. O dragão recupera todos os usos gastos no início de cada um de seus turnos.
+Presença Imperiosa. O dragão usa Conjuração para conjurar Command (versão de 2º círculo). O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Raios Ígneos. O dragão usa Conjuração para conjurar Scorching Ray. O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Bote. O dragão se move até metade do seu Deslocamento e faz um ataque de Dilacerar.
+
+@@ Ancient Red Dragon
+## Traços
+Resistência Lendária (4/Dia, ou 5/Dia no Covil). Se o dragão falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar. Ele pode substituir um ataque por um uso de Conjuração para conjurar Scorching Ray (versão de 3º círculo).
+Dilacerar. Jogada de Ataque Corpo a Corpo: +17, alcance 4,5 m. Acerto: 19 (2d8 + 10) de dano Cortante mais 10 (3d6) de dano de Fogo.
+Sopro de Fogo (Recarga 5–6). Salvaguarda de Destreza: CD 24, cada criatura num Cone de 27 m. Falha: 91 (26d6) de dano de Fogo. Sucesso: Metade do dano.
+Conjuração. O dragão conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 23, +15 para acertar com ataques de magia): À Vontade: Command (versão de 2º círculo), Detect Magic, Scorching Ray (versão de 3º círculo). 1/Dia Cada: Fireball (versão de 6º círculo), Scrying.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, o dragão pode gastar um uso para realizar uma das ações a seguir. O dragão recupera todos os usos gastos no início de cada um de seus turnos.
+Presença Imperiosa. O dragão usa Conjuração para conjurar Command (versão de 2º círculo). O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Raios Ígneos. O dragão usa Conjuração para conjurar Scorching Ray (versão de 3º círculo). O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Bote. O dragão se move até metade do seu Deslocamento e faz um ataque de Dilacerar.
