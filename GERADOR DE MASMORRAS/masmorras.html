@@ -678,6 +678,16 @@ function genMap(rng, tamanho, tema){
       }
     });
   }
+  /* porta secreta só em atalho: sem ela, todas as salas continuam alcançáveis a partir da entrada (sala 1) */
+  const alcancaTudo = bloq => {
+    const seen = new Uint8Array(W*H), [sx,sy] = cen(rooms[0]), fila=[sy*W+sx]; seen[sy*W+sx]=1;
+    while(fila.length){ const c=fila.pop(), x=c%W, y=(c-x)/W;
+      for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){ const i=x+dx, j=y+dy, n=j*W+i;
+        if (at(i,j) && !seen[n] && !bloq.has(n)){ seen[n]=1; fila.push(n); } } }
+    return rooms.every(r=>{ const [cx,cy]=cen(r); return seen[cy*W+cx]; });
+  };
+  const bloq = new Set();
+  for (const dr of dl) if (dr.t==='secreta'){ const n=dr.y*W+dr.x; bloq.add(n); if (!alcancaTudo(bloq)){ bloq.delete(n); dr.t='normal'; } }
   return {w:W, h:H, grid:Array.from(g).join(''), doors:dl, rooms, conex};
 }
 
