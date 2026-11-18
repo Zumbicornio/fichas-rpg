@@ -69,7 +69,7 @@ textarea{width:100%;min-height:80px;resize:vertical}
 .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px}
 .kv dt{color:var(--muted)} .kv dd{margin:0;font-variant-numeric:tabular-nums}
 .chip{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:99px;border:1px solid currentColor;white-space:nowrap}
-.t-entrada{color:var(--gold2)} .t-combate{color:var(--red)} .t-chefe{color:#ff8a6b;background:rgba(207,91,67,.15)} .t-armadilha{color:var(--orange)}
+.t-entrada{color:var(--gold2)} .t-secreta{color:var(--violet);background:rgba(164,139,201,.14)} .t-combate{color:var(--red)} .t-chefe{color:#ff8a6b;background:rgba(207,91,67,.15)} .t-armadilha{color:var(--orange)}
 .t-tesouro{color:var(--gold)} .t-misterio{color:var(--blue)} .t-descanso{color:var(--green)} .t-vazia{color:var(--muted)}
 .rooms{display:flex;flex-direction:column;gap:2px}
 .roomlink{display:grid;grid-template-columns:2.2em 1fr auto;gap:8px;align-items:center;text-align:left;background:none;border:0;border-radius:6px;padding:6px 8px;cursor:pointer}
@@ -444,7 +444,7 @@ const TEMAS = {
 };
 
 /* ================= tabelas genéricas ================= */
-const TIPOS = {entrada:'Entrada',combate:'Combate',chefe:'Chefe',armadilha:'Armadilha',tesouro:'Tesouro',misterio:'Mistério',descanso:'Descanso',vazia:'Vazia'};
+const TIPOS = {entrada:'Entrada',combate:'Combate',chefe:'Chefe',armadilha:'Armadilha',tesouro:'Tesouro',misterio:'Mistério',descanso:'Descanso',vazia:'Vazia',secreta:'Secreta'};
 const COMPORT = ['Estão dormindo; Destreza (Furtividade) CD {det} para passar sem acordá-los.','Montam guarda e atacam ao primeiro sinal de intrusos.','Discutem sobre a divisão de um saque; podem ser negociados.','Estão distraídos com outra coisa; os personagens têm Vantagem na Iniciativa.','Preparam uma emboscada perto da porta: Sabedoria (Percepção) CD {det} para notar.','Patrulham entre esta sala e a sala {k}.','Estão feridos por um combate recente (metade dos Pontos de Vida).','Guardam um prisioneiro acorrentado.','Executam um ritual; interrompê-lo é prioridade deles.','Fogem para avisar o chefe se a luta ficar ruim.'];
 const ARMADILHAS = [
  {nome:'Fosso com estacas', gat:'Placa de pressão no meio da sala', ef:'O chão se abre. Destreza CD {sv}: sucesso, a criatura se agarra à borda; falha, cai sobre estacas e sofre {dano} de dano Perfurante.'},
@@ -475,6 +475,9 @@ const MISTERIOS = [
  'O chão é um mosaico de ladrilhos claros e escuros. Pisar só nos claros é seguro; pisar num escuro causa {leve} de dano Elétrico (Destreza CD {sv} para metade).'
 ];
 const DESCANSOS = ['Um nicho seco e escondido. O grupo pode fazer um Descanso Curto sem ser incomodado.','Uma pequena capela ainda consagrada; mortos-vivos e Infernais evitam entrar.','Uma porta grossa que tranca por dentro e uma fonte de água limpa.','Restos de um acampamento de aventureiros, com 1d4 rações e um kit de curandeiro com 3 usos.'];
+const SECRETA_NOMES = ['Câmara oculta','Cofre esquecido','Esconderijo secreto','Sala selada','Santuário escondido','Depósito escondido'];
+const SECRETA_DESC = ['O ar está parado, como se ninguém entrasse aqui há décadas.','Uma camada grossa de pó cobre tudo, sem nenhuma pegada.','As paredes têm entalhes mais antigos que o resto da masmorra.','Alguém guardou aqui o que não queria que fosse achado.','Prateleiras e baús foram arrumados com cuidado, longe dos olhos de todos.'];
+const SECRETA_GUARDA = ['Guardam o esconderijo e atacam qualquer um que entre.','Estão presos aqui há muito tempo e atacam por fome.','Dormem junto ao tesouro; Destreza (Furtividade) CD {det} para passar sem acordá-los.','Foram deixados aqui para proteger o tesouro e não sabem que o antigo dono morreu.'];
 const PISTA_SECRETA = 'Marcas de arrasto vão até a parede {sdir} e somem sob ela: há uma porta secreta ali (Sabedoria (Percepção) CD {det} para encontrar).';
 const PISTAS = ['Pegadas recentes levam para a sala {k}.','Um diário rasgado menciona um ponto fraco de {n}.','Os restos de um aventureiro ainda carregam {pouco}.','Nada além de poeira e ecos.','Um aviso riscado na parede: "não abram a sala {k}".'];
 
@@ -610,7 +613,7 @@ const RAR_TIER = {1:{comum:6,incomum:4},2:{incomum:6,rara:4},3:{rara:6,muitorara
 
 /* ================= gerador de mapa ================= */
 const SIZES = {pequena:{w:40,h:30,n:[6,8],nome:'Pequena (6–8 salas)'}, media:{w:54,h:38,n:[10,13],nome:'Média (10–13 salas)'}, grande:{w:68,h:48,n:[15,19],nome:'Grande (15–19 salas)'}};
-function genMap(rng, tamanho, tema){
+function genMap(rng, tamanho, tema, rngSec){
   const Z = SIZES[tamanho]||SIZES.media, W=Z.w, H=Z.h, alvo=rng.int(Z.n[0],Z.n[1]);
   const g = new Uint8Array(W*H); let rooms=[];
   for(let a=0; a<900 && rooms.length<alvo; a++){
@@ -679,16 +682,42 @@ function genMap(rng, tamanho, tema){
     });
   }
   /* porta secreta só em atalho: sem ela, todas as salas continuam alcançáveis a partir da entrada (sala 1) */
-  const alcancaTudo = bloq => {
+  const foraDoAlcance = bloq => {
     const seen = new Uint8Array(W*H), [sx,sy] = cen(rooms[0]), fila=[sy*W+sx]; seen[sy*W+sx]=1;
     while(fila.length){ const c=fila.pop(), x=c%W, y=(c-x)/W;
       for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){ const i=x+dx, j=y+dy, n=j*W+i;
         if (at(i,j) && !seen[n] && !bloq.has(n)){ seen[n]=1; fila.push(n); } } }
-    return rooms.every(r=>{ const [cx,cy]=cen(r); return seen[cy*W+cx]; });
+    return rooms.map((r,i)=>i).filter(i=>{ const [cx,cy]=cen(rooms[i]); return !seen[cy*W+cx]; });
   };
+  const alcancaTudo = bloq => !foraDoAlcance(bloq).length;
   const bloq = new Set();
   for (const dr of dl) if (dr.t==='secreta'){ const n=dr.y*W+dr.x; bloq.add(n); if (!alcancaTudo(bloq)){ bloq.delete(n); dr.t='normal'; } }
-  return {w:W, h:H, grid:Array.from(g).join(''), doors:dl, rooms, conex};
+  /* salas secretas: uma sala que só se alcança por uma porta secreta, fora do caminho até o chefe.
+     A porta fica, de preferência, na parede da sala vizinha, escondendo também o corredor. */
+  let secretas = [];
+  if (rngSec){
+    const ultima = rooms.length-1;
+    const qtd = tamanho==='grande' ? rngSec.int(1,2) : tamanho==='pequena' ? (rngSec.chance(.5)?1:0) : (rngSec.chance(.75)?1:0);
+    const encosta = (dr,r) => (dr.x>=r.x && dr.x<r.x+r.w && (dr.y===r.y-1 || dr.y===r.y+r.h)) || (dr.y>=r.y && dr.y<r.y+r.h && (dr.x===r.x-1 || dr.x===r.x+r.w));
+    for (let k=0;k<qtd;k++){
+      const cand = [];
+      for (const dr of dl) if (dr.t!=='secreta'){
+        const n=dr.y*W+dr.x; bloq.add(n); const fora = foraDoAlcance(bloq).filter(ri=>!secretas.some(x=>x.sala===ri)); bloq.delete(n);
+        if (fora.length===1 && fora[0]!==0 && fora[0]!==ultima && !secretas.some(x=>x.sala===fora[0])) cand.push({dr, sala:fora[0], longe:!encosta(dr, rooms[fora[0]])});
+      }
+      const melhores = cand.filter(c=>c.longe); const c = rngSec.pick(melhores.length ? melhores : cand); if (!c) break;
+      c.dr.t='secreta'; bloq.add(c.dr.y*W+c.dr.x); secretas.push({sala:c.sala, x:c.dr.x, y:c.dr.y});
+    }
+    /* salas secretas vão para o fim da numeração (depois do chefe), para não deixar buracos na lista dos jogadores */
+    if (secretas.length){
+      const sec = secretas.map(x=>x.sala), ord = rooms.map((r,i)=>i).filter(i=>!sec.includes(i)).concat(sec);
+      const novo = {}; ord.forEach((old,nw)=>novo[old]=nw);
+      rooms = ord.map(i=>rooms[i]);
+      conex.forEach(c=>{ c.a=novo[c.a]; c.b=novo[c.b]; });
+      secretas = secretas.map(x=>({...x, sala:novo[x.sala]}));
+    }
+  }
+  return {w:W, h:H, grid:Array.from(g).join(''), doors:dl, rooms, conex, secretas};
 }
 
 /* ================= gerador de conteúdo ================= */
@@ -834,6 +863,10 @@ function genTesouro(rng, t, tipo, qtd, usados){
   }
   return {moedas, itens:[...itens, ...mag]};
 }
+function portaNaParede(dr, r, dir){
+  const dentroX = dr.x>=r.x && dr.x<r.x+r.w, dentroY = dr.y>=r.y && dr.y<r.y+r.h;
+  return dir==='norte' ? dentroX && dr.y===r.y-1 : dir==='sul' ? dentroX && dr.y===r.y+r.h : dir==='oeste' ? dentroY && dr.x===r.x-1 : dentroY && dr.x===r.x+r.w;
+}
 /* portas secretas do mapa: em que sala ficam e em qual parede */
 function portasSecretas(m){
   const out = [];
@@ -846,10 +879,38 @@ function portasSecretas(m){
   });
   return out;
 }
+/* salas secretas ainda não reveladas pelo mestre ficam fora da visão do jogador */
+const ocultasJog = d => isMestre() ? [] : (d.mapa.secretas||[]).filter(x=>!(d.salas[x.sala]&&d.salas[x.sala].revelada));
+const salaVisivel = (d,i) => !ocultasJog(d).some(x=>x.sala===i);
+function celulasOcultas(d){
+  const m = d.mapa, oc = ocultasJog(d); if (!oc.length) return null;
+  const W=m.w, H=m.h, G=m.grid, bloq = new Set(m.doors.filter(x=>x.t==='secreta').map(x=>x.y*W+x.x));
+  (m.secretas||[]).forEach(x=>{ if (!oc.includes(x)) bloq.delete(x.y*W+x.x); });
+  const seen = new Uint8Array(W*H), fila = [];
+  m.rooms.forEach((r,i)=>{ if (oc.some(x=>x.sala===i)) return; const n=(r.y+(r.h>>1))*W+r.x+(r.w>>1); seen[n]=1; fila.push(n); });
+  while(fila.length){ const c=fila.pop(), x=c%W, y=(c-x)/W;
+    for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){ const i=x+dx, j=y+dy, n=j*W+i;
+      if (i<0||j<0||i>=W||j>=H||G[n]==='0'||seen[n]||bloq.has(n)) continue; seen[n]=1; fila.push(n); } }
+  const out = new Set(); for(let n=0;n<W*H;n++) if (G[n]!=='0' && !seen[n]) out.add(n);
+  m.doors.forEach(x=>{ if (x.t==='secreta' && bloq.has(x.y*W+x.x)) out.add(x.y*W+x.x); });
+  return out;
+}
+/* para onde leva uma porta secreta encostada na sala i (busca pelo corredor até a próxima sala) */
+function destinoPorta(m, dr, i){
+  const W=m.w, H=m.h, G=m.grid, dentro=(x,y,r)=>x>=r.x&&x<r.x+r.w&&y>=r.y&&y<r.y+r.h;
+  const seen = new Set([dr.y*W+dr.x]), fila=[[dr.x,dr.y]];
+  while(fila.length){ const [x,y]=fila.shift();
+    for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){ const a=x+dx, b=y+dy, n=b*W+a;
+      if (a<0||b<0||a>=W||b>=H||G[n]==='0'||seen.has(n)||dentro(a,b,m.rooms[i])) continue;
+      const r = m.rooms.findIndex(rr=>dentro(a,b,rr)); if (r>=0) return r;
+      seen.add(n); fila.push([a,b]); } }
+  return -1;
+}
 function genSala(rng, d, i, tipo, nomeUsado){
   const p=d.params, T=TEMAS[p.tema], t=tierOf(p.nivel), r=d.mapa.rooms[i], ns=d.mapa.rooms.length;
   const US = usadosNa(d, i);
-  let k = rng.int(1,ns); if (k===i+1) k = (k % ns)+1;
+  const nsv = ns - (d.mapa.secretas||[]).length; /* {k} só aponta salas comuns */
+  let k = rng.int(1,nsv); if (k===i+1) k = (k % nsv)+1;
   const ctx = {det:TDC.det[t-1], sv:TDC.sv[t-1], dano:TDC.dano[t-1], leve:TDC.leve[t-1], k, n:d.vilao, pouco:pouco(rng,t)};
   const s = {tipo, nome:'', desc:'', sentido:rng.pick(T.sentidos), encontro:null, armadilha:null, tesouro:null, misterio:'', descanso:'', pista:'', notas:''};
   const det = rng.shuffle(T.detalhes);
@@ -857,6 +918,7 @@ function genSala(rng, d, i, tipo, nomeUsado){
   else if (tipo==='chefe'){ s.nome = fill(rng.pick(T.chefe), ctx);
     if (d.chefe){ const c=d.chefe, cx=ctxChefe(c); s.desc = fill(rng.pick(PRESENCA[c.papel||c.tipo]), cx)+' '+rng.pick(COVIL_CAT[c.cat]||COVIL_CAT.monstro)+' '+det[0]; }
     else s.desc = det[0]+' '+det[1]; }
+  else if (tipo==='secreta'){ s.nome = rng.pick(SECRETA_NOMES); s.desc = rng.pick(SECRETA_DESC)+' '+det[0]; }
   else { s.nome = nomeUsado || rng.pick(T.salas); s.desc = det[0] + (rng.chance(.5)?' '+det[1]:''); }
   const ritmo = {leve:{0:6,1:3,2:1}, padrao:{0:4,1:4,2:2}, pesado:{0:2,1:4,2:4}}[p.ritmo] || {0:4,1:4,2:2};
   const enc = chefe => { const e = buildEncounter(rng, p, chefe?2:+rng.weighted(ritmo), chefe, chefe ? chefeForcado(d) : null);
@@ -866,6 +928,11 @@ function genSala(rng, d, i, tipo, nomeUsado){
   if (tipo==='entrada' && rng.chance(.35)){ s.encontro = buildEncounter(rng,p,0,false); s.encontro.comport = 'Vigiam a entrada; um deles corre para dar o alarme na sala '+Math.min(2,ns)+'.'; }
   if (tipo==='armadilha'){ const a=rng.pick(ARMADILHAS); s.armadilha = {nome:a.nome, gatilho:a.gat, efeito:fill(a.ef,ctx), det:ctx.det}; if (rng.chance(.35)) s.tesouro = genTesouro(rng,t,'individual',p.itens,US); }
   if (tipo==='tesouro'){ s.tesouro = genTesouro(rng,t,'tesouro',p.itens,US); if (rng.chance(.4)){ const a=rng.pick(ARMADILHAS); s.armadilha={nome:a.nome, gatilho:'Mexer no tesouro', efeito:fill(a.ef,ctx), det:ctx.det}; } }
+  if (tipo==='secreta'){
+    s.tesouro = genTesouro(rng,t,'tesouro',p.itens,US);
+    if (rng.chance(.6)){ s.encontro = buildEncounter(rng,p,1,false); s.encontro.comport = fill(rng.pick(SECRETA_GUARDA), ctx); }
+    else if (rng.chance(.5)){ const a=rng.pick(ARMADILHAS); s.armadilha={nome:a.nome, gatilho:'Mexer no tesouro', efeito:fill(a.ef,ctx), det:ctx.det}; }
+  }
   const sec = portasSecretas(d.mapa);
   if (tipo==='misterio'){
     const outras = sec.filter(x=>x.sala!==i), alvo = outras.length ? rng.pick(outras) : (sec.length ? rng.pick(sec) : null);
@@ -892,17 +959,19 @@ function genDungeon(params){
   const chefe = montarChefe(rng, T, buildEncounter(rng, p, 2, true).grupos[0].en);
   const cx = ctxChefe(chefe), vilao = chefe.nome;
   const nomeTit = T.titulo==='pessoa' && chefe.tipo==='pessoa' ? vilao : chefe.lugar;
-  const mapa = genMap(rng, p.tamanho, p.tema);
+  const mapa = genMap(rng, p.tamanho, p.tema, makeRng(semente+'|secretas|'+p.tamanho+'|'+p.tema));
   const ns = mapa.rooms.length;
   const d = {id:null, nome:(p.nome||'').trim() || fill(rng.pick(T.titulos),{n:nomeTit}), vilao, chefe, gancho:fill(rng.pick(T.ganchos[chefe.tipo==='fera'?'fera':'pessoa']), cx), semente,
     params:{tema:p.tema, tamanho:p.tamanho, nivel:p.nivel, jogadores:p.jogadores, ritmo:p.ritmo, itens:ITEM_QTD[p.itens]?p.itens:'normal'}, mapa, salas:[], errantes:[], publicada:false, criada:Date.now(), atualizada:Date.now()};
+  const nb = ns - mapa.secretas.length; /* salas comuns; a última delas é a do chefe, depois vêm as secretas */
   const tipos = ['entrada'];
-  for(let i=1;i<ns-1;i++) tipos.push(rng.weighted({combate:40, armadilha:13, tesouro:9, vazia:18, misterio:12, descanso:5}));
+  for(let i=1;i<nb-1;i++) tipos.push(rng.weighted({combate:40, armadilha:13, tesouro:9, vazia:18, misterio:12, descanso:5}));
   tipos.push('chefe');
-  if (ns>=6){
-    if (!tipos.includes('tesouro')) tipos[rng.int(1,ns-2)]='tesouro';
-    if (!tipos.includes('armadilha')){ let j=rng.int(1,ns-2); if (tipos[j]==='tesouro') j = j===1?2:j-1; tipos[j]='armadilha'; }
+  if (nb>=6){
+    if (!tipos.includes('tesouro')) tipos[rng.int(1,nb-2)]='tesouro';
+    if (!tipos.includes('armadilha')){ let j=rng.int(1,nb-2); if (tipos[j]==='tesouro') j = j===1?2:j-1; tipos[j]='armadilha'; }
   }
+  for(let i=nb;i<ns;i++) tipos.push('secreta');
   const nomes = rng.shuffle(T.salas); let ni=0;
   tipos.forEach((tp,i)=>{ d.salas.push(genSala(rng, d, i, tp, nomes[(ni++)%nomes.length])); });
   d.errantes = genErrantes(rng, d);
@@ -966,7 +1035,7 @@ function drawMap(d){
   cv.width = Math.round(cssW*dpr); cv.height = Math.round(cssH*dpr); cv.style.width = cssW+'px'; cv.style.height = cssH+'px';
   const x = cv.getContext('2d'); x.setTransform(dpr,0,0,dpr,0,0);
   const css = getComputedStyle(document.documentElement), col = n => css.getPropertyValue(n).trim();
-  const G = m.grid, at = (i,j) => (i<0||j<0||i>=m.w||j>=m.h) ? 0 : +G[j*m.w+i];
+  const G = m.grid, oculto = celulasOcultas(d), at = (i,j) => (i<0||j<0||i>=m.w||j>=m.h||(oculto&&oculto.has(j*m.w+i))) ? 0 : +G[j*m.w+i];
   x.fillStyle = col('--rock'); x.fillRect(0,0,cssW,cssH);
   /* hachura da rocha junto às paredes */
   x.strokeStyle = col('--hatch'); x.lineWidth = 1; x.beginPath();
@@ -995,8 +1064,10 @@ function drawMap(d){
   /* portas */
   const showSecret = isMestre();
   m.doors.forEach(dr=>{
+    if (oculto && oculto.has(dr.y*m.w+dr.x)) return;
+    const revelada = !showSecret && dr.t==='secreta' && (m.secretas||[]).some(x=>x.x===dr.x&&x.y===dr.y);
     const cx=dr.x*c+c/2, cy=dr.y*c+c/2, horiz = dr.o==='h'; const dw = horiz? c*.32 : c*.86, dh = horiz? c*.86 : c*.32;
-    if (dr.t==='secreta'){
+    if (dr.t==='secreta' && !revelada){
       x.strokeStyle = col('--wall'); x.lineWidth = Math.max(2,c*.18); x.beginPath();
       if (horiz){ x.moveTo(cx,dr.y*c); x.lineTo(cx,dr.y*c+c); } else { x.moveTo(dr.x*c,cy); x.lineTo(dr.x*c+c,cy); } x.stroke();
       if (showSecret){ x.fillStyle = col('--sel'); x.font = `700 ${Math.max(8,c*.7)}px ${col('--display')}`; x.textAlign='center'; x.textBaseline='middle'; x.fillText('S', cx + (horiz? c*.32:0), cy + (horiz?0:-c*.32)); }
@@ -1012,6 +1083,7 @@ function drawMap(d){
   /* números das salas */
   x.textAlign='center'; x.textBaseline='middle';
   m.rooms.forEach((r,i)=>{
+    if (!salaVisivel(d,i)) return;
     const fs = Math.max(9, Math.min(c*1.1, 22)); x.font = `700 ${fs}px ${col('--display')}`;
     const cx=(r.x+r.w/2)*c, cy=(r.y+r.h/2)*c;
     x.fillStyle = col('--ink'); x.fillText(String(i+1), cx, cy);
@@ -1022,7 +1094,7 @@ function mapClick(e, d){
   const cv = e.currentTarget, rc = cv.getBoundingClientRect(), m = d.mapa;
   const i = Math.floor((e.clientX-rc.left)/rc.width*m.w), j = Math.floor((e.clientY-rc.top)/rc.height*m.h);
   const idx = m.rooms.findIndex(r => i>=r.x && i<r.x+r.w && j>=r.y && j<r.y+r.h);
-  if (idx>=0){ S.sel = S.sel===idx ? null : idx; render(); const side=document.querySelector('.side'); if (side && window.innerWidth<=920) side.scrollIntoView({behavior:'smooth', block:'start'}); }
+  if (idx>=0 && salaVisivel(d,idx)){ S.sel = S.sel===idx ? null : idx; render(); const side=document.querySelector('.side'); if (side && window.innerWidth<=920) side.scrollIntoView({behavior:'smooth', block:'start'}); }
 }
 
 /* ================= telas ================= */
@@ -1050,17 +1122,27 @@ function encHtml(e){
 }
 function roomView(d, i, edit){
   const s = d.salas[i], r = d.mapa.rooms[i];
-  const ns = d.salas.length;
+  const vis = d.salas.map((_,j)=>j).filter(j=>salaVisivel(d,j)), pos = vis.indexOf(i), ant = vis[(pos-1+vis.length)%vis.length], prox = vis[(pos+1)%vis.length];
+  const secreta = (d.mapa.secretas||[]).some(x=>x.sala===i);
+  const tiposOpc = Object.entries(TIPOS).filter(([k])=>k!=='secreta' || secreta || s.tipo==='secreta');
+  const det = TDC.det[tierOf(d.params.nivel)-1];
+  const portasSec = !edit ? [] : d.mapa.doors.filter(o=>o.t==='secreta').map(dr=>{
+    const dir = ['norte','sul','oeste','leste'].find(dd=>portaNaParede(dr, r, dd)); if (!dir) return null;
+    const dst = destinoPorta(d.mapa, dr, i);
+    return 'Parede '+dir+(dst>=0?' → sala '+(dst+1)+((d.mapa.secretas||[]).some(y=>y.sala===dst)?' (secreta)':''):'');
+  }).filter(Boolean);
   return `<div class="panel" style="display:flex;flex-direction:column;gap:10px">
       <div class="row" style="justify-content:space-between"><button class="btn sm" data-act="sel" data-i="">← Visão geral</button>
-        <span class="row"><button class="btn sm" data-act="sel" data-i="${(i-1+ns)%ns}" aria-label="Sala anterior">‹</button><button class="btn sm" data-act="sel" data-i="${(i+1)%ns}" aria-label="Próxima sala">›</button></span></div>
+        <span class="row"><button class="btn sm" data-act="sel" data-i="${ant}" aria-label="Sala anterior">‹</button><button class="btn sm" data-act="sel" data-i="${prox}" aria-label="Próxima sala">›</button></span></div>
       <div class="row"><span class="chip t-${h(s.tipo)}">${h(TIPOS[s.tipo]||s.tipo)}</span><span class="muted small num">${fmt(r.w*1.5)} × ${fmt(r.h*1.5)} m</span></div>
       <h2>${i+1}. ${h(s.nome)}</h2>
       <p class="prose" style="margin:0">${h(s.desc)}</p>
       <p class="muted" style="margin:0"><i>${h(s.sentido)}</i></p>
       ${edit?`<div class="row"><button class="btn sm" data-act="reroll-sala" data-i="${i}">Gerar sala de novo</button>${s.encontro?`<button class="btn sm" data-act="reroll-enc" data-i="${i}">Trocar encontro</button>`:''}
-        <select id="tipo-${i}" class="btn sm" data-act-change="tipo" data-i="${i}" aria-label="Mudar tipo da sala">${Object.entries(TIPOS).map(([k,v])=>opt(k,s.tipo,'Tipo: '+v)).join('')}</select></div>`:''}
+        <select id="tipo-${i}" class="btn sm" data-act-change="tipo" data-i="${i}" aria-label="Mudar tipo da sala">${tiposOpc.map(([k,v])=>opt(k,s.tipo,'Tipo: '+v)).join('')}</select></div>`:''}
+      ${edit && secreta ? `<div class="row"><span class="muted small">${s.revelada?'Os jogadores já veem esta sala no mapa.':'Escondida dos jogadores até você revelar.'}</span><button class="btn sm" data-act="revelar" data-i="${i}">${s.revelada?'Esconder dos jogadores':'Revelar aos jogadores'}</button></div>` : ''}
     </div>
+    ${portasSec.length ? `<div class="panel"><h3>Porta secreta</h3><ul class="plain">${portasSec.map(t=>`<li>${h(t)}</li>`).join('')}</ul><p class="muted small" style="margin:6px 0 0">Sabedoria (Percepção) CD ${det} para encontrar. Os jogadores não veem este quadro.</p></div>` : ''}
     ${encHtml(s.encontro)}
     ${s.armadilha?`<div class="panel"><h3>Armadilha · ${h(s.armadilha.nome)}</h3><dl class="kv"><dt>Gatilho</dt><dd>${h(s.armadilha.gatilho)}</dd><dt>Perceber</dt><dd>Sabedoria (Percepção) CD ${s.armadilha.det}</dd><dt>Desarmar</dt><dd>Destreza (Prestidigitação) com Ferramentas de Ladrão CD ${s.armadilha.det}</dd></dl><p style="margin:8px 0 0">${h(s.armadilha.efeito)}</p></div>`:''}
     ${s.misterio?`<div class="panel"><h3>Mistério</h3><p class="prose" style="margin:0">${h(s.misterio)}</p></div>`:''}
@@ -1070,15 +1152,16 @@ function roomView(d, i, edit){
     ${edit?`<div class="panel"><h3>Anotações do mestre</h3><textarea id="notas-${i}" data-notas="${i}" placeholder="Só você vê estas anotações.">${h(s.notas||'')}</textarea></div>`:''}`;
 }
 function overview(d, edit){
-  const p = d.params, xpTot = d.salas.reduce((t,s)=>t+(s.encontro?s.encontro.xp:0),0);
-  const portas = d.mapa.doors.reduce((o,x)=>(o[x.t]=(o[x.t]||0)+1,o),{});
+  const p = d.params, vis = d.salas.map((_,j)=>j).filter(j=>salaVisivel(d,j)), xpTot = vis.reduce((t,j)=>t+(d.salas[j].encontro?d.salas[j].encontro.xp:0),0);
+  const oc = celulasOcultas(d), nSec = (d.mapa.secretas||[]).length;
+  const portas = d.mapa.doors.filter(x=>!oc||!oc.has(x.y*d.mapa.w+x.x)).reduce((o,x)=>(o[x.t]=(o[x.t]||0)+1,o),{});
   return `<div class="panel" style="display:flex;flex-direction:column;gap:10px">
-      <div class="row"><span class="badge gold">${h(TEMAS[p.tema].nome)}</span><span class="badge">Nível ${p.nivel}</span><span class="badge">${p.jogadores} personagens</span><span class="badge">${d.salas.length} salas</span></div>
+      <div class="row"><span class="badge gold">${h(TEMAS[p.tema].nome)}</span><span class="badge">Nível ${p.nivel}</span><span class="badge">${p.jogadores} personagens</span><span class="badge">${vis.length} salas${edit&&nSec?` (${nSec} secreta${nSec>1?'s':''})`:''}</span></div>
       <h3 style="margin:0">Gancho</h3><p class="prose" style="margin:0">${h(d.gancho)}</p>
       <dl class="kv"><dt>${d.chefe?'Chefe':'Mente por trás'}</dt><dd>${h(cap(d.vilao))}${d.chefe&&MON_BY_EN[d.chefe.en]?`, <button class="rl" data-act="mon" data-en="${h(d.chefe.en)}">${h(d.chefe.b)}</button>`:''}</dd><dt>XP dos encontros</dt><dd>${fmt(xpTot)} XP no total</dd>
         <dt>Portas</dt><dd>${portas.normal||0} comuns · ${portas.trancada||0} trancadas (Destreza (Prestidigitação) CD ${TDC.det[tierOf(p.nivel)-1]}) · ${portas.emperrada||0} emperradas (Força (Atletismo) CD ${TDC.det[tierOf(p.nivel)-1]-2})${edit?` · ${portas.secreta||0} secretas`:''}</dd></dl>
     </div>
-    <div class="panel"><h3>Salas</h3><div class="rooms">${d.salas.map((s,i)=>`<button class="roomlink" data-act="sel" data-i="${i}"><span class="n">${i+1}</span><span>${h(s.nome)}</span><span class="chip t-${h(s.tipo)}">${h(TIPOS[s.tipo]||s.tipo)}</span></button>`).join('')}</div></div>
+    <div class="panel"><h3>Salas</h3><div class="rooms">${d.salas.map((s,i)=>!salaVisivel(d,i)?'':`<button class="roomlink" data-act="sel" data-i="${i}"><span class="n">${i+1}</span><span>${h(s.nome)}</span><span class="chip t-${h(s.tipo)}">${h(TIPOS[s.tipo]||s.tipo)}</span></button>`).join('')}</div></div>
     <div class="panel"><h3>Monstros errantes (role 1d6 a cada 30 minutos; 6 = encontro)</h3><table class="d6"><tbody>${d.errantes.map((e,i)=>`<tr><td>${i+1}</td><td>${linkMon(e)}</td></tr>`).join('')}</tbody></table></div>`;
 }
 function statLinesHtml(lines){
@@ -1194,13 +1277,13 @@ function viewMesa(d, edit){
   return `${toolbar}<div class="mesa">
     <div class="mapbox"><div class="mapwrap ${S.zoom?'zoom':''}"><canvas id="mapa" role="img" aria-label="Mapa da masmorra ${h(d.nome)}"></canvas></div>
       <div class="legend"><span>1 quadrado = 1,5 m · toque numa sala para ver os detalhes${edit?' · S = porta secreta':''} · porta escura = trancada</span><button class="btn sm" data-act="zoom">${S.zoom?'Ajustar à tela':'Ampliar mapa'}</button></div></div>
-    <aside class="side">${S.sel==null ? overview(d,edit) : roomView(d,S.sel,edit)}</aside></div>`;
+    <aside class="side">${S.sel==null || !salaVisivel(d,S.sel) ? overview(d,edit) : roomView(d,S.sel,edit)}</aside></div>`;
 }
 function cards(map, actOpen, master){
   const list = Object.values(map).sort((a,b)=>(b.atualizada||0)-(a.atualizada||0));
   return `<div class="grid-cards">${list.map(d=>`<div class="card" tabindex="0" role="button" data-act="${actOpen}" data-id="${h(d.id)}">
     <h2>${h(d.nome)}</h2>
-    <div class="row"><span class="badge gold">${h(TEMAS[d.params.tema]?.nome||'')}</span><span class="badge">Nível ${d.params.nivel}</span><span class="badge">${d.salas.length} salas</span>${master?(d.publicada?'<span class="badge gold">Visível aos jogadores</span>':'<span class="badge">Só o mestre</span>'):''}</div>
+    <div class="row"><span class="badge gold">${h(TEMAS[d.params.tema]?.nome||'')}</span><span class="badge">Nível ${d.params.nivel}</span><span class="badge">${d.salas.length-(master?0:(d.mapa.secretas||[]).filter(x=>!(d.salas[x.sala]&&d.salas[x.sala].revelada)).length)} salas</span>${master?(d.publicada?'<span class="badge gold">Visível aos jogadores</span>':'<span class="badge">Só o mestre</span>'):''}</div>
     <p class="muted small" style="margin:0">${h(d.gancho)}</p>
     ${master?`<div class="row"><button class="btn sm danger" data-act="excluir" data-id="${h(d.id)}">${S.delArm===d.id?'Confirmar exclusão':'Excluir'}</button></div>`:''}
   </div>`).join('')}</div>`;
@@ -1281,12 +1364,13 @@ document.addEventListener('click', e=>{
   }
   else if (a==='sel'){ e.stopPropagation(); S.sel = t.dataset.i===''?null:+t.dataset.i; render(); }
   else if (a==='zoom'){ S.zoom = !S.zoom; render(); }
+  else if (a==='revelar'){ const sl = S.cur && S.cur.salas[+t.dataset.i]; if (!sl) return; sl.revelada = !sl.revelada; S.dirty = true; render(); }
   else if (a==='salvar') salvar();
   else if (a==='publicar'){ if (!S.cur) return; S.cur.publicada = !S.cur.publicada; S.dirty = true; salvar(); }
   else if (a==='reroll-sala' || a==='reroll-enc'){
     const i = +t.dataset.i, d = S.cur, rng = makeRng(d.semente+':'+i+':'+Date.now()+Math.random());
     const old = d.salas[i];
-    if (a==='reroll-sala'){ const ns = genSala(rng, d, i, old.tipo, rng.pick(TEMAS[d.params.tema].salas)); ns.notas = old.notas||''; if (old.tipo!=='entrada' && old.tipo!=='chefe') ns.nome = rng.pick(TEMAS[d.params.tema].salas); d.salas[i] = ns; }
+    if (a==='reroll-sala'){ const ns = genSala(rng, d, i, old.tipo, rng.pick(TEMAS[d.params.tema].salas)); ns.notas = old.notas||''; if (old.tipo!=='entrada' && old.tipo!=='chefe' && old.tipo!=='secreta') ns.nome = rng.pick(TEMAS[d.params.tema].salas); ns.revelada = old.revelada; d.salas[i] = ns; }
     else { const enc = buildEncounter(rng, d.params, old.tipo==='chefe'?2:old.encontro.dif, old.tipo==='chefe', old.tipo==='chefe' ? chefeForcado(d) : null); enc.comport = old.encontro.comport; old.encontro = enc; }
     S.dirty = true; render();
   }
@@ -1314,7 +1398,7 @@ document.addEventListener('change', e=>{
   if (t.dataset.p){ S.params[t.dataset.p] = t.tagName==='SELECT' && t.dataset.p!=='tema' && t.dataset.p!=='tamanho' && t.dataset.p!=='ritmo' && t.dataset.p!=='itens' ? +t.value : t.value; return; }
   if (t.dataset.actChange==='tipo' && S.cur){
     const i = +t.dataset.i, d = S.cur, rng = makeRng(d.semente+':t:'+i+':'+Date.now());
-    const old = d.salas[i]; const ns = genSala(rng, d, i, t.value, old.nome); ns.notas = old.notas||''; if (t.value!=='entrada' && t.value!=='chefe') ns.nome = old.tipo==='entrada'||old.tipo==='chefe' ? rng.pick(TEMAS[d.params.tema].salas) : old.nome;
+    const old = d.salas[i]; const ns = genSala(rng, d, i, t.value, old.nome); ns.notas = old.notas||''; if (t.value!=='entrada' && t.value!=='chefe' && t.value!=='secreta') ns.nome = old.tipo==='entrada'||old.tipo==='chefe' ? rng.pick(TEMAS[d.params.tema].salas) : old.nome; ns.revelada = old.revelada;
     d.salas[i] = ns; S.dirty = true; render();
   }
 });
