@@ -454,11 +454,23 @@ const ARTE = {25:['Cálice de prata','Estatueta de marfim','Pulseira de ouro','E
 const ARMAS = ['Espada Longa','Machado de Batalha','Arco Longo','Adaga','Maça','Lança','Martelo de Guerra','Rapieira','Besta Leve','Espada Curta'];
 const ARMADURAS = ['Cota de Malha','Couro Batido','Meia-Armadura','Brunea','Placas','Camisão de Malha'];
 const ITENS = {
- comum:['Poção de Cura','Pergaminho de Magia (truque)','Pergaminho de Magia (1º círculo)','Espada Tocada pela Lua','Manto de Muitas Modas'],
- incomum:['Poção de Cura Maior','{arma} +1','Escudo +1','Bolsa de Contenção','Botas Élficas','Manto Élfico','Capa de Proteção','Óculos da Noite','Varinha de Mísseis Mágicos','Manoplas de Poder Ogro','Pergaminho de Magia (2º círculo)','Pergaminho de Magia (3º círculo)','Corda de Escalada','Bastão Imóvel'],
- rara:['Poção de Cura Superior','{arma} +2','{armadura} +1','Escudo +2','Anel de Proteção','Anel de Resistência','Amuleto da Saúde','Varinha de Bolas de Fogo','Cinto de Força de Gigante da Colina','Botas da Velocidade','Manto de Deslocamento','Pergaminho de Magia (4º círculo)','Pergaminho de Magia (5º círculo)'],
- muitorara:['Poção de Cura Suprema','{arma} +3','{armadura} +2','Escudo +3','Anel de Regeneração','Cajado do Poder','Espada Dançante','Tapete Voador','Cinto de Força de Gigante de Fogo','Pergaminho de Magia (6º círculo)','Pergaminho de Magia (7º círculo)','Pergaminho de Magia (8º círculo)'],
- lendaria:['Espada Vorpal','Manto de Invisibilidade','{armadura} +3','Anel de Três Desejos','Cajado dos Magos','Cinto de Força de Gigante da Tempestade','Pergaminho de Magia (9º círculo)']
+ comum:['Poção de Cura','Pergaminho de Magia (truque)','Pergaminho de Magia (1º círculo)','Espada Tocada pela Lua','Manto de Muitas Modas',
+   'Poção de Escalada','Amuleto Mecânico','Chave Misteriosa','Rubi do Mago de Guerra','Vela das Profundezas','Grimório Durável'],
+ incomum:['Poção de Cura Maior','{arma} +1','Escudo +1','Bolsa de Contenção','Botas Élficas','Manto Élfico','Capa de Proteção','Óculos da Noite','Varinha de Mísseis Mágicos','Manoplas de Poder Ogro','Pergaminho de Magia (2º círculo)','Pergaminho de Magia (3º círculo)','Corda de Escalada','Bastão Imóvel',
+   'Poção de Respirar na Água','Poção de Força de Gigante da Colina','Poção de Resistência','Óleo Escorregadio','Elmo de Compreender Idiomas','Pedras Mensageiras','Lanterna da Revelação','Braceletes de Arquearia','Escudo Sentinela','Pedra da Sorte','Chapéu do Disfarce','Pérola do Poder'],
+ rara:['Poção de Cura Superior','{arma} +2','{armadura} +1','Escudo +2','Anel de Proteção','Anel de Resistência','Amuleto da Saúde','Varinha de Bolas de Fogo','Cinto de Força de Gigante da Colina','Botas da Velocidade','Manto de Deslocamento','Pergaminho de Magia (4º círculo)','Pergaminho de Magia (5º círculo)',
+   'Poção de Heroísmo','Poção de Força de Gigante de Pedra','Anel de Evasão','Anel de Ação Livre','Anel de Armazenar Magias','Botas de Levitação','Espada Língua Flamejante','Espada Matadora de Dragões','Varinha de Relâmpagos','Colar de Bolas de Fogo'],
+ muitorara:['Poção de Cura Suprema','{arma} +3','{armadura} +2','Escudo +3','Anel de Regeneração','Cajado do Poder','Espada Dançante','Tapete Voador','Cinto de Força de Gigante de Fogo','Pergaminho de Magia (6º círculo)','Pergaminho de Magia (7º círculo)','Pergaminho de Magia (8º círculo)',
+   'Poção de Invisibilidade','Poção de Velocidade','Poção de Voo','Poção de Força de Gigante das Nuvens','Anel de Telecinese','Espada Afiada','Varinha da Polimorfia','Bola de Cristal','Manual de Saúde Corporal','Manual de Exercício Benéfico','Tomo do Pensamento Claro'],
+ lendaria:['Espada Vorpal','Manto de Invisibilidade','{armadura} +3','Anel de Três Desejos','Cajado dos Magos','Cinto de Força de Gigante da Tempestade','Pergaminho de Magia (9º círculo)',
+   'Poção de Força de Gigante da Tempestade','Manto do Arquimago','Armadura de Invulnerabilidade','Defensora','Vingadora Sagrada','Anel de Invisibilidade']
+};
+/* quantidade de itens mágicos (campo do formulário). chefe: [mín,máx] nos tiers 1–2 e 3–4; tes: garantidos + chance de mais um; ind: chance */
+const ITEM_QTD = {
+  poucos:{nome:'Poucos', chefe:[[1,2],[1,2]], tes:[0,.25], ind:.08},
+  normal:{nome:'Normal', chefe:[[1,3],[1,4]], tes:[0,.45], ind:.15},
+  muitos:{nome:'Muitos', chefe:[[2,4],[3,5]], tes:[1,.5], ind:.3},
+  fartura:{nome:'Fartura', chefe:[[3,6],[4,7]], tes:[2,.6], ind:.5}
 };
 const RAR_NOME = {comum:'comum',incomum:'incomum',rara:'raro',muitorara:'muito raro',lendaria:'lendário'};
 
@@ -508,6 +520,51 @@ I_('Espada Vorpal','Exige sintonia','Bônus. +3 nas jogadas de ataque e de dano;
 I_('Manto de Invisibilidade','Exige sintonia','Invisível. Com o capuz posto, você fica Invisível. Tirar o capuz encerra o efeito.|Limite. A edição 2024 limita o uso por cargas que se recuperam ao amanhecer; confira os números no Livro do Mestre.');
 I_('Anel de Três Desejos','','Desejos. 3 cargas. Gaste 1 para conjurar Desejo. Quando a última carga é gasta, vira um anel comum.');
 I_('Cajado dos Magos','Exige sintonia por Bruxo, Feiticeiro ou Mago','Bônus. Como arma, +2 nas jogadas de ataque e de dano, e +2 nas jogadas de ataque de magia.|Cargas. 50 cargas para conjurar uma longa lista de magias (Bola de Fogo, Muralha de Fogo, Invisibilidade, Teia, Passagem e outras). Recupera 4d6 + 2 ao amanhecer.|Absorver Magia. Vantagem nas salvaguardas contra magias; com uma Reação, pode absorver uma magia que mira só você e ganhar cargas.|Golpe Retributivo. Quebrar o cajado libera uma explosão enorme. Confira os detalhes no Livro do Mestre.');
+I_('Poção de Escalada','','Efeito. Por 1 hora você ganha deslocamento de escalada igual ao seu deslocamento e Vantagem em testes de Força (Atletismo) para escalar.');
+I_('Amuleto Mecânico','','Precisão. Uma vez por dia, ao fazer uma jogada de ataque com o amuleto no pescoço, você pode tratar o d20 como 10, em vez de rolar.');
+I_('Chave Misteriosa','','Sorte. Ao tentar abrir uma fechadura com a chave, há 5% de chance de ela abrir. Se abrir, a chave some.');
+I_('Rubi do Mago de Guerra','','Foco. Preso a uma arma simples ou marcial, deixa você usar essa arma como foco de conjuração. Leva 10 minutos para fixar ou soltar.');
+I_('Vela das Profundezas','','Chama. A chama da vela continua acesa debaixo d\'água e não se apaga com vento. Ilumina como uma vela comum e dura 1 hora.');
+I_('Grimório Durável','','Resistência. Este grimório não é danificado por fogo nem por água, e o texto não desbota com o tempo.');
+I_('Poção de Respirar na Água','','Efeito. Por 1 hora você consegue respirar debaixo d\'água.');
+I_('Poção de Força de Gigante da Colina','','Efeito. Por 1 hora sua Força passa a ser 21 (sem efeito se já for igual ou maior).');
+I_('Poção de Resistência','','Efeito. Por 1 hora você tem Resistência a um tipo de dano, definido pelo mestre ou rolado (Ácido, Elétrico, Frio, Fogo, Energia, Necrótico, Venenoso, Psíquico, Radiante, Trovejante).');
+I_('Óleo Escorregadio','','Na pele. Aplicado em uma criatura (10 minutos), ela ganha os efeitos de Movimentação Livre por 8 horas.|No chão. Derramado, cobre um quadrado de 3 m como a magia Área Escorregadia, por 8 horas.');
+I_('Elmo de Compreender Idiomas','','Idiomas. Enquanto usa o elmo, você pode conjurar Compreender Idiomas à vontade, sem gastar espaço de magia.');
+I_('Pedras Mensageiras','','Par. Duas pedras ligadas. Quem segura uma pode conjurar Enviar Mensagem para quem segura a outra.|Limite. Uma vez por dia; recarrega ao amanhecer. Se uma pedra for destruída, a outra perde a magia.');
+I_('Lanterna da Revelação','','Luz. Acesa, ilumina como uma lanterna com capuz (Luz Plena 9 m, Penumbra mais 9 m). Criaturas e objetos Invisíveis ficam visíveis na luz plena dela.|Combustível. Queima 6 horas com 0,5 litro de óleo.');
+I_('Braceletes de Arquearia','Exige sintonia','Arcos. Você ganha proficiência com arco longo e arco curto e +2 nas jogadas de dano com eles.');
+I_('Escudo Sentinela','','Alerta. Enquanto empunha o escudo, você tem Vantagem nas jogadas de Iniciativa e nos testes de Sabedoria (Percepção). Também dá o bônus normal de escudo na CA.');
+I_('Pedra da Sorte','Exige sintonia','Sorte. +1 em testes de atributo e salvaguardas enquanto a pedra está com você.');
+I_('Chapéu do Disfarce','Exige sintonia','Disfarce. Enquanto usa o chapéu, você pode conjurar Disfarçar-se à vontade. A magia acaba se o chapéu for removido.');
+I_('Pérola do Poder','Exige sintonia por um conjurador','Recuperar. Com uma ação Utilizar, recupera um espaço de magia gasto de até 3º círculo. Uma vez por dia; recarrega ao amanhecer.');
+I_('Poção de Heroísmo','','Efeito. Você ganha 10 PV temporários que duram 1 hora e fica sob o efeito da magia Bênção (sem precisar de Concentração) pelo mesmo tempo.');
+I_('Poção de Força de Gigante de Pedra','','Efeito. Por 1 hora sua Força passa a ser 23 (sem efeito se já for igual ou maior).');
+I_('Anel de Evasão','Exige sintonia','Cargas. 3 cargas; recupera 1d3 ao amanhecer.|Esquivar. Quando falha numa salvaguarda de Destreza, com uma Reação você gasta 1 carga e transforma a falha em sucesso.');
+I_('Anel de Ação Livre','Exige sintonia','Liberdade. Terreno Difícil não custa movimento extra, e magia não pode reduzir seu deslocamento nem deixar você Paralisado ou Impedido.');
+I_('Anel de Armazenar Magias','Exige sintonia','Guardar. Armazena magias somando até 5 círculos. Qualquer criatura pode conjurar uma magia de 1º a 5º círculo no anel para guardá-la.|Usar. Quem está sintonizado pode conjurar as magias guardadas, usando a CD, o bônus e o atributo de quem as guardou. A magia sai do anel ao ser usada.');
+I_('Botas de Levitação','Exige sintonia','Levitar. Enquanto usa as botas, você pode conjurar Levitação em si mesmo à vontade.');
+I_('Espada Língua Flamejante','Exige sintonia','Acender. Com uma Ação Bônus, a lâmina pega fogo até você apagá-la (outra Ação Bônus) ou soltá-la.|Em chamas. Ataques com ela causam 2d6 de dano de Fogo extra, e ela emite Luz Plena em 12 m e Penumbra por mais 12 m.');
+I_('Espada Matadora de Dragões','','Bônus. +1 nas jogadas de ataque e de dano.|Dragões. Contra um Dragão, causa 3d6 de dano extra do mesmo tipo da arma.');
+I_('Varinha de Relâmpagos','Exige sintonia por um conjurador','Cargas. 7 cargas. Gaste 1 para conjurar Relâmpago (3º círculo, CD 15); cada carga extra sobe um círculo.|Recarga. Recupera 1d6 + 1 cargas ao amanhecer. Se gastar a última, role 1d20: com 1, a varinha vira cinzas.');
+I_('Colar de Bolas de Fogo','','Contas. 1d6 + 3 contas. Com uma ação Magia, você arranca uma e a arremessa até 18 m: ela explode como Bola de Fogo de 3º círculo (CD 15).|Mais forte. Pode arremessar várias contas juntas; cada conta extra aumenta o círculo em 1.');
+I_('Poção de Invisibilidade','','Efeito. Você fica Invisível por 1 hora. O efeito acaba se você fizer uma jogada de ataque, causar dano ou conjurar uma magia.');
+I_('Poção de Velocidade','','Efeito. Por 1 minuto você recebe os efeitos da magia Velocidade, sem precisar de Concentração e sem o cansaço quando acaba.');
+I_('Poção de Voo','','Efeito. Por 1 hora você ganha deslocamento de voo igual ao seu deslocamento e pode pairar. Se o efeito acabar em pleno voo, você cai.');
+I_('Poção de Força de Gigante das Nuvens','','Efeito. Por 1 hora sua Força passa a ser 27 (sem efeito se já for igual ou maior).');
+I_('Anel de Telecinese','Exige sintonia','Telecinese. Enquanto usa o anel, você pode conjurar Telecinese à vontade, mas só sobre objetos que ninguém esteja segurando ou vestindo.');
+I_('Espada Afiada','Exige sintonia','Corte. Ignora Resistência a dano Cortante. Contra objetos, o dano é máximo.|Decepar. Num 20 no d20, o alvo sofre 14 de dano Cortante extra; role outro d20: com 20, você decepa um membro (o mestre decide o efeito).|Luz. Com uma Ação Bônus, a lâmina emite Luz Plena em 3 m e Penumbra por mais 3 m.');
+I_('Varinha da Polimorfia','Exige sintonia por um conjurador','Cargas. 7 cargas. Gaste 1 para conjurar Metamorfose (CD 15).|Recarga. Recupera 1d6 + 1 cargas ao amanhecer. Se gastar a última, role 1d20: com 1, a varinha vira cinzas.');
+I_('Bola de Cristal','Exige sintonia','Observar. Com a bola nas mãos, você pode conjurar Vidência (CD 17) com ela.|Variantes. Existem versões lendárias que também leem mentes, permitem falar à distância ou ver com visão verdadeira; o mestre decide qual é esta.');
+I_('Manual de Saúde Corporal','','Estudo. Quem passar 48 horas, num período de 6 dias ou menos, estudando o livro ganha +2 em Constituição e no máximo de Constituição.|Depois. O manual perde a magia e só volta a funcionar depois de um século.');
+I_('Manual de Exercício Benéfico','','Estudo. Quem passar 48 horas, num período de 6 dias ou menos, estudando o livro ganha +2 em Força e no máximo de Força.|Depois. O manual perde a magia e só volta a funcionar depois de um século.');
+I_('Tomo do Pensamento Claro','','Estudo. Quem passar 48 horas, num período de 6 dias ou menos, estudando o livro ganha +2 em Inteligência e no máximo de Inteligência.|Depois. O tomo perde a magia e só volta a funcionar depois de um século.');
+I_('Poção de Força de Gigante da Tempestade','','Efeito. Por 1 hora sua Força passa a ser 29 (sem efeito se já for igual ou maior).');
+I_('Manto do Arquimago','Exige sintonia por Bruxo, Feiticeiro ou Mago','Proteção. Sem armadura, sua CA base é 15 + modificador de Destreza.|Magia. Vantagem nas salvaguardas contra magias e outros efeitos mágicos, e +2 na CD das suas magias e nos seus ataques de magia.');
+I_('Armadura de Invulnerabilidade','Exige sintonia','Proteção. Armadura de placas que dá Resistência a dano Contundente, Cortante e Perfurante.|Invulnerável. Com uma ação Utilizar, fica Imune a esses três tipos de dano por 10 minutos (ou até tirar a armadura). Uma vez por dia; recarrega ao amanhecer.');
+I_('Defensora','Exige sintonia','Bônus. Espada com +3 nas jogadas de ataque e de dano.|Defender. No início do seu turno, você pode transferir parte ou todo o bônus para a sua CA até o seu próximo turno (o ataque perde o que foi transferido).');
+I_('Vingadora Sagrada','Exige sintonia por Paladino','Bônus. Espada com +3 nas jogadas de ataque e de dano. Contra Ínferos e Mortos-Vivos, causa 2d10 de dano Radiante extra.|Aura. Com a espada desembainhada, você e aliados a até 3 m têm Vantagem nas salvaguardas contra magias e outros efeitos mágicos (30 m se você tiver nível 17 de Paladino).');
+I_('Anel de Invisibilidade','Exige sintonia','Invisível. Com uma ação Magia, você fica Invisível até atacar, conjurar uma magia ou usar outra ação Magia para voltar a ser visível. Confira no Livro do Mestre se a edição 2024 limita o uso.');
 /* "Espada Longa +1 · incomum" -> "Arma +1"; "Pergaminho de Magia (2º círculo)" -> "Pergaminho de Magia" */
 function itemKey(txt){
   const nome = String(txt).split(' · ')[0].trim();
@@ -616,31 +673,57 @@ function buildEncounter(rng, p, dif, chefe){
   return {dif, orcamento:alvo, xp, grupos, comport:''};
 }
 const fill = (txt, ctx) => txt.replace(/\{(\w+)\}/g,(m,k)=>ctx[k]!==undefined?ctx[k]:m).replace(/\bde o /g,'do ').replace(/\bde a /g,'da ').replace(/^(o|a) /,c=>c.toUpperCase());
-function pickItem(rng, rar){ return fill(rng.pick(ITENS[rar]), {arma:rng.pick(ARMAS), armadura:rng.pick(ARMADURAS)}) + ' · '+RAR_NOME[rar]; }
+/* sorteia um item mágico que ainda não está na masmorra (usados = Set de nomes sem raridade).
+   Se a raridade esgotou, tenta as outras do mesmo tier e depois as menores; sem opção, devolve null. */
+const RAR_ORDEM = ['comum','incomum','rara','muitorara','lendaria'];
+const itemNome = txt => String(txt).split(' · ')[0].trim();
+function pickItem(rng, rar, usados, t){
+  usados = usados || new Set();
+  const ordem = [rar, ...(t ? Object.keys(RAR_TIER[t]).filter(r=>r!==rar) : []), ...RAR_ORDEM.slice(0, RAR_ORDEM.indexOf(rar)).reverse()];
+  for (const r of [...new Set(ordem)]){
+    const livres = [];
+    for (const tpl of ITENS[r]){
+      const vs = tpl.includes('{arma}') ? ARMAS.map(a=>tpl.replace('{arma}',a)) : tpl.includes('{armadura}') ? ARMADURAS.map(a=>tpl.replace('{armadura}',a)) : [tpl];
+      const ok = vs.filter(v=>!usados.has(v)); if (ok.length) livres.push(ok);
+    }
+    if (livres.length){ const nome = rng.pick(rng.pick(livres)); usados.add(nome); return nome+' · '+RAR_NOME[r]; }
+  }
+  return null;
+}
+function usadosNa(d, excetoI){
+  const u = new Set();
+  (d.salas||[]).forEach((s,j)=>{ if (j!==excetoI && s && s.tesouro) s.tesouro.itens.forEach(it=>u.add(itemNome(it))); });
+  return u;
+}
 function gem(rng, v){ return rng.pick(GEMAS[v])+' ('+fmt(v)+' PO)'; }
 function individual(rng,t){ return t===1?rng.roll(3,6)+' PO' : t===2?fmt(rng.roll(2,8)*10)+' PO' : t===3?fmt(rng.roll(2,10)*10)+' PL' : fmt(rng.roll(2,8)*100)+' PL'; }
 function pouco(rng,t){ return individual(rng,t); }
-function genTesouro(rng, t, tipo){
-  const itens=[]; let moedas;
+function genTesouro(rng, t, tipo, qtd, usados){
+  const Q = ITEM_QTD[qtd] || ITEM_QTD.normal; usados = usados || new Set();
+  const itens=[], mag=[]; let moedas;
+  const add = rar => { const it = pickItem(rng, rar, usados, t); if (it) mag.push(it); };
+  const baixa = Object.keys(RAR_TIER[t])[0];
   if (tipo==='chefe'){
     moedas = t===1 ? fmt(rng.roll(2,4)*100)+' PO' : t===2 ? fmt(rng.roll(2,6)*100)+' PO e '+fmt(rng.roll(3,6)*10)+' PL' : t===3 ? fmt(rng.roll(4,6)*1000)+' PO e '+fmt(rng.roll(5,6)*100)+' PL' : fmt(rng.roll(12,6)*1000)+' PO e '+fmt(rng.roll(8,6)*1000)+' PL';
     const gv = {1:[10,50],2:[50,100],3:[100,500,1000],4:[1000,5000]}[t]; const ng=rng.int(1,3)+t-1;
     for(let i=0;i<ng;i++) itens.push(gem(rng, rng.pick(gv)));
     const av = {1:25,2:250,3:750,4:2500}[t]; if (rng.chance(.6)) itens.push(rng.pick(ARTE[av])+' ('+fmt(av)+' PO)');
-    const nm = t<=2 ? rng.int(1,3) : rng.int(1,4);
-    for(let i=0;i<nm;i++) itens.push(pickItem(rng, rng.weighted(RAR_TIER[t])));
+    const [lo,hi] = Q.chefe[t<=2?0:1], nm = rng.int(lo,hi);
+    for(let i=0;i<nm;i++) add(rng.weighted(RAR_TIER[t]));
   } else if (tipo==='tesouro'){
     moedas = individual(rng,t)+' + '+individual(rng,t)+' + '+individual(rng,t);
     itens.push(gem(rng, {1:10,2:50,3:100,4:1000}[t]));
-    if (rng.chance(.45)){ const r=RAR_TIER[t]; const low=Object.keys(r)[0]; itens.push(pickItem(rng, low)); }
+    for(let i=0;i<Q.tes[0];i++) add(i===0 ? baixa : rng.weighted(RAR_TIER[t]));
+    if (rng.chance(Q.tes[1])) add(Q.tes[0] ? rng.weighted(RAR_TIER[t]) : baixa);
   } else {
     moedas = individual(rng,t);
-    if (rng.chance(.15)) itens.push(pickItem(rng, Object.keys(RAR_TIER[t])[0]));
+    if (rng.chance(Q.ind)) add(baixa);
   }
-  return {moedas, itens};
+  return {moedas, itens:[...itens, ...mag]};
 }
 function genSala(rng, d, i, tipo, nomeUsado){
   const p=d.params, T=TEMAS[p.tema], t=tierOf(p.nivel), r=d.mapa.rooms[i], ns=d.mapa.rooms.length;
+  const US = usadosNa(d, i);
   let k = rng.int(1,ns); if (k===i+1) k = (k % ns)+1;
   const ctx = {det:TDC.det[t-1], sv:TDC.sv[t-1], dano:TDC.dano[t-1], leve:TDC.leve[t-1], k, n:d.vilao, pouco:pouco(rng,t)};
   const s = {tipo, nome:'', desc:'', sentido:rng.pick(T.sentidos), encontro:null, armadilha:null, tesouro:null, misterio:'', descanso:'', pista:'', notas:''};
@@ -650,11 +733,11 @@ function genSala(rng, d, i, tipo, nomeUsado){
   else { s.nome = nomeUsado || rng.pick(T.salas); s.desc = det[0] + (rng.chance(.5)?' '+det[1]:''); }
   const ritmo = {leve:{0:6,1:3,2:1}, padrao:{0:4,1:4,2:2}, pesado:{0:2,1:4,2:4}}[p.ritmo] || {0:4,1:4,2:2};
   const enc = chefe => { const e = buildEncounter(rng, p, chefe?2:+rng.weighted(ritmo), chefe); e.comport = fill(chefe?'O chefe, {n}, lidera os defensores e luta até o fim, a menos que os personagens ofereçam algo que deseje mais do que a vitória.':rng.pick(COMPORT), ctx); return e; };
-  if (tipo==='combate'){ s.encontro = enc(false); if (rng.chance(.5)) s.tesouro = genTesouro(rng,t,'individual'); }
-  if (tipo==='chefe'){ s.encontro = enc(true); s.tesouro = genTesouro(rng,t,'chefe'); }
+  if (tipo==='combate'){ s.encontro = enc(false); if (rng.chance(.5)) s.tesouro = genTesouro(rng,t,'individual',p.itens,US); }
+  if (tipo==='chefe'){ s.encontro = enc(true); s.tesouro = genTesouro(rng,t,'chefe',p.itens,US); }
   if (tipo==='entrada' && rng.chance(.35)){ s.encontro = buildEncounter(rng,p,0,false); s.encontro.comport = 'Vigiam a entrada; um deles corre para dar o alarme na sala '+Math.min(2,ns)+'.'; }
-  if (tipo==='armadilha'){ const a=rng.pick(ARMADILHAS); s.armadilha = {nome:a.nome, gatilho:a.gat, efeito:fill(a.ef,ctx), det:ctx.det}; if (rng.chance(.35)) s.tesouro = genTesouro(rng,t,'individual'); }
-  if (tipo==='tesouro'){ s.tesouro = genTesouro(rng,t,'tesouro'); if (rng.chance(.4)){ const a=rng.pick(ARMADILHAS); s.armadilha={nome:a.nome, gatilho:'Mexer no tesouro', efeito:fill(a.ef,ctx), det:ctx.det}; } }
+  if (tipo==='armadilha'){ const a=rng.pick(ARMADILHAS); s.armadilha = {nome:a.nome, gatilho:a.gat, efeito:fill(a.ef,ctx), det:ctx.det}; if (rng.chance(.35)) s.tesouro = genTesouro(rng,t,'individual',p.itens,US); }
+  if (tipo==='tesouro'){ s.tesouro = genTesouro(rng,t,'tesouro',p.itens,US); if (rng.chance(.4)){ const a=rng.pick(ARMADILHAS); s.armadilha={nome:a.nome, gatilho:'Mexer no tesouro', efeito:fill(a.ef,ctx), det:ctx.det}; } }
   if (tipo==='misterio') s.misterio = fill(rng.pick(MISTERIOS), ctx);
   if (tipo==='descanso') s.descanso = rng.pick(DESCANSOS);
   if (tipo==='vazia') s.pista = fill(rng.pick(PISTAS), ctx);
@@ -673,7 +756,7 @@ function genDungeon(params){
   const mapa = genMap(rng, p.tamanho, p.tema);
   const ns = mapa.rooms.length;
   const d = {id:null, nome:(p.nome||'').trim() || fill(rng.pick(T.titulos),{n:vilao}), vilao, gancho:fill(rng.pick(T.ganchos),{n:vilao}), semente,
-    params:{tema:p.tema, tamanho:p.tamanho, nivel:p.nivel, jogadores:p.jogadores, ritmo:p.ritmo}, mapa, salas:[], errantes:[], publicada:false, criada:Date.now(), atualizada:Date.now()};
+    params:{tema:p.tema, tamanho:p.tamanho, nivel:p.nivel, jogadores:p.jogadores, ritmo:p.ritmo, itens:ITEM_QTD[p.itens]?p.itens:'normal'}, mapa, salas:[], errantes:[], publicada:false, criada:Date.now(), atualizada:Date.now()};
   const tipos = ['entrada'];
   for(let i=1;i<ns-1;i++) tipos.push(rng.weighted({combate:40, armadilha:13, tesouro:9, vazia:18, misterio:12, descanso:5}));
   tipos.push('chefe');
@@ -682,7 +765,7 @@ function genDungeon(params){
     if (!tipos.includes('armadilha')){ let j=rng.int(1,ns-2); if (tipos[j]==='tesouro') j = j===1?2:j-1; tipos[j]='armadilha'; }
   }
   const nomes = rng.shuffle(T.salas); let ni=0;
-  d.salas = tipos.map((tp,i)=>genSala(rng, d, i, tp, nomes[(ni++)%nomes.length]));
+  tipos.forEach((tp,i)=>{ d.salas.push(genSala(rng, d, i, tp, nomes[(ni++)%nomes.length])); });
   d.errantes = genErrantes(rng, d);
   return d;
 }
@@ -690,7 +773,7 @@ function genDungeon(params){
 /* ================= estado ================= */
 const S = {
   mode:'local', isOwner:true, viewAs:'mestre', tab:'gerar', myId:null,
-  params:{tema:'cripta', tamanho:'media', nivel:3, jogadores:4, ritmo:'padrao', semente:'', nome:''},
+  params:{tema:'cripta', tamanho:'media', nivel:3, jogadores:4, ritmo:'padrao', itens:'normal', semente:'', nome:''},
   cur:null, sel:null, dirty:false, genArm:false, zoom:false,
   lista:{}, publicas:{}, openPub:null, notice:'', saving:false, delArm:null, loaded:false,
   monTxt:{}, pop:null, popEdit:false, popResetArm:false
@@ -813,6 +896,7 @@ function viewForm(){
     <label class="f">Nível do grupo<select id="p-nivel" data-p="nivel">${Array.from({length:20},(_,i)=>opt(i+1,p.nivel,'Nível '+(i+1))).join('')}</select></label>
     <label class="f">Personagens<select id="p-jog" data-p="jogadores">${Array.from({length:8},(_,i)=>opt(i+1,p.jogadores,(i+1)+(i?' personagens':' personagem'))).join('')}</select></label>
     <label class="f">Ritmo dos combates<select id="p-ritmo" data-p="ritmo">${opt('leve',p.ritmo,'Leve')}${opt('padrao',p.ritmo,'Equilibrado')}${opt('pesado',p.ritmo,'Pesado')}</select></label>
+    <label class="f">Itens mágicos<select id="p-itens" data-p="itens">${Object.entries(ITEM_QTD).map(([k,q])=>opt(k,p.itens||'normal',q.nome)).join('')}</select></label>
     <label class="f">Semente (opcional)<input id="p-semente" data-p="semente" value="${h(p.semente)}" placeholder="aleatória" autocomplete="off"></label>
     <label class="f wide">Nome (opcional)<input id="p-nome" data-p="nome" value="${h(p.nome)}" placeholder="gerado com o tema" autocomplete="off"></label>
     <button class="btn pri" data-act="gerar">${S.genArm?'Gerar e descartar alterações':'Gerar masmorra'}</button>
@@ -1029,7 +1113,7 @@ document.addEventListener('input', e=>{
 });
 document.addEventListener('change', e=>{
   const t = e.target;
-  if (t.dataset.p){ S.params[t.dataset.p] = t.tagName==='SELECT' && t.dataset.p!=='tema' && t.dataset.p!=='tamanho' && t.dataset.p!=='ritmo' ? +t.value : t.value; return; }
+  if (t.dataset.p){ S.params[t.dataset.p] = t.tagName==='SELECT' && t.dataset.p!=='tema' && t.dataset.p!=='tamanho' && t.dataset.p!=='ritmo' && t.dataset.p!=='itens' ? +t.value : t.value; return; }
   if (t.dataset.actChange==='tipo' && S.cur){
     const i = +t.dataset.i, d = S.cur, rng = makeRng(d.semente+':t:'+i+':'+Date.now());
     const old = d.salas[i]; const ns = genSala(rng, d, i, t.value, old.nome); ns.notas = old.notas||''; if (t.value!=='entrada' && t.value!=='chefe') ns.nome = old.tipo==='entrada'||old.tipo==='chefe' ? rng.pick(TEMAS[d.params.tema].salas) : old.nome;
