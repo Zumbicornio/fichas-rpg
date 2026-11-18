@@ -104,6 +104,10 @@ table.d6 td:first-child{width:2em;color:var(--gold);font-family:var(--display);f
 .atr b{display:block;font-size:11px;letter-spacing:.08em;color:var(--gold)}
 .atr span{font-variant-numeric:tabular-nums;font-size:13px}
 .sb p{margin:0 0 6px} .sb p b{color:var(--gold2)}
+.mon-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.atr-ed label{display:flex;flex-direction:column;gap:4px;align-items:center}
+.atr-ed input{width:100%;max-width:56px;text-align:center}
+.pop textarea{min-height:200px}
 .sb textarea{min-height:240px;font-size:13px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -795,7 +799,7 @@ function makeLocalStore(){
     async save(d){ mem.masmorras[d.id]=clone(d); if (d.publicada) mem.publicas[d.id]=playerCopy(d); else delete mem.publicas[d.id]; persist(); L.forEach(f=>f(clone(mem.masmorras))); P.forEach(f=>f(clone(mem.publicas))); },
     async remove(id){ delete mem.masmorras[id]; delete mem.publicas[id]; persist(); L.forEach(f=>f(clone(mem.masmorras))); P.forEach(f=>f(clone(mem.publicas))); },
     onMonstros(cb){ M.push(cb); setTimeout(()=>cb(clone(mem.monstros||{}))); },
-    async saveMonstro(slug, texto){ mem.monstros = mem.monstros||{}; mem.monstros[slug] = {texto}; persist(); M.forEach(f=>f(clone(mem.monstros))); },
+    async saveMonstro(slug, dados){ mem.monstros = mem.monstros||{}; mem.monstros[slug] = clone(dados); persist(); M.forEach(f=>f(clone(mem.monstros))); },
     async delMonstro(slug){ if (mem.monstros) delete mem.monstros[slug]; persist(); M.forEach(f=>f(clone(mem.monstros||{}))); }
   };
 }
@@ -813,7 +817,7 @@ function makeDbStore(db){
     }); },
     remove(id){ return q(id, async ()=>{ await db.doc('publicas/'+id).delete().catch(()=>{}); await db.doc('masmorras/'+id).delete(); }); },
     onMonstros(cb, err){ return db.collection('monstros').onSnapshot(s=>cb(toMap(s)), err); },
-    saveMonstro(slug, texto){ return q('mon:'+slug, ()=>db.doc('monstros/'+slug).set({texto})); },
+    saveMonstro(slug, dados){ return q('mon:'+slug, ()=>db.doc('monstros/'+slug).set(dados)); },
     delMonstro(slug){ return q('mon:'+slug, ()=>db.doc('monstros/'+slug).delete()); }
   };
 }
@@ -964,24 +968,56 @@ function itemPopView(){
       ${isMestre()?`<span class="row"><button class="btn sm" data-act="mon-edit">Editar texto</button>${custom!=null?`<button class="btn sm danger" data-act="mon-reset">${S.popResetArm?'Confirmar: voltar ao resumo':'Voltar ao resumo'}</button>`:''}</span>`:''}</div>`}
   </div></div>`;
 }
+/* junta o resumo embutido (STATS) com o que o mestre salvou em monstros/{slug}.
+   Campo salvo (mesmo vazio/null) vence o embutido; docs antigos só têm "texto". */
+function monFicha(en, cu){
+  const s = STATS[en], c = cu && typeof cu==='object' ? cu : null;
+  const has = k => !!c && Object.prototype.hasOwnProperty.call(c, k);
+  const txt = v => v==null ? '' : String(v);
+  let atr = has('atr') ? c.atr : (s ? s.atr : null);
+  atr = Array.isArray(atr) && atr.length===6 && atr.every(v=>Number.isFinite(Number(v)) && String(v).trim()!=='') ? atr.map(Number) : null;
+  return {
+    ca: has('ca') ? (c.ca==null || c.ca==='' ? null : txt(c.ca)) : (s ? s.ca : null),
+    pv: has('pv') ? txt(c.pv) : (s ? s.pv : ''),
+    desl: has('desl') ? txt(c.desl) : (s ? s.desl : ''),
+    atr, pag: has('pag') ? txt(c.pag) : '',
+    texto: has('texto') && typeof c.texto==='string' ? c.texto : (s ? s.linhas.join('\n') : ''),
+    editada: !!c
+  };
+}
+function lerFichaForm(){
+  const v = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+  const a = [0,1,2,3,4,5].map(i=>v('mf-a'+i));
+  const algum = a.some(x=>x!==''), todos = a.every(x=>/^\d{1,2}$/.test(x));
+  if (algum && !todos) return {erro:'Preencha os seis atributos com números (ex.: 14) ou deixe todos vazios.'};
+  return {dados:{ca:v('mf-ca') || null, pv:v('mf-pv'), desl:v('mf-desl'), pag:v('mf-pag'), atr: algum ? a.map(Number) : null, texto: (document.getElementById('mon-txt')||{}).value || ''}};
+}
 function popView(){
   if (isItemPop()) return itemPopView();
   const m = MON_BY_EN[S.pop]; if (!m) return '';
-  const st = STATS[m.en], slug = monSlug(m.en), custom = S.monTxt[slug] && typeof S.monTxt[slug].texto==='string' ? S.monTxt[slug].texto : null;
-  const base = st ? st.linhas.join('\n') : '';
+  const slug = monSlug(m.en), st = monFicha(m.en, S.monTxt[slug]);
   const NOMES_ATR = ['FOR','DES','CON','INT','SAB','CAR'];
-  let body;
-  if (S.popEdit) body = `<textarea id="mon-txt" aria-label="Texto da ficha">${h(custom ?? base)}</textarea>
-      <p class="small muted" style="margin:0">Uma linha por item. O trecho até o primeiro ponto aparece em destaque.</p>
-      <div class="row"><button class="btn pri" data-act="mon-save">Salvar texto</button><button class="btn" data-act="mon-cancel">Cancelar</button></div>`;
-  else body = statLinesHtml((custom ?? base).split('\n').filter(x=>x.trim())) || '<p class="muted">Ficha completa no Livro dos Monstros 2024 (em inglês: '+h(m.en)+'). O app ainda não tem um resumo deste monstro'+(isMestre()?'; use Editar texto para escrever o seu.':'.')+'</p>';
+  const temFicha = st.ca!=null || st.pv || st.desl || st.atr;
+  let corpo;
+  if (S.popEdit) corpo = `<div class="mon-form">
+      <label class="f">Classe de Armadura<input id="mf-ca" inputmode="numeric" value="${h(st.ca ?? '')}" placeholder="ex.: 15"></label>
+      <label class="f">Pontos de Vida<input id="mf-pv" value="${h(st.pv ?? '')}" placeholder="ex.: 45 (6d10+12)"></label>
+      <label class="f">Deslocamento<input id="mf-desl" value="${h(st.desl ?? '')}" placeholder="ex.: 9 m, voo 18 m"></label>
+      <label class="f">Página do livro<input id="mf-pag" value="${h(st.pag ?? '')}" placeholder="ex.: 213"></label>
+    </div>
+    <div class="atr atr-ed">${NOMES_ATR.map((n,i)=>`<label><b>${n}</b><input id="mf-a${i}" inputmode="numeric" value="${h(st.atr ? st.atr[i] : '')}" aria-label="${n}"></label>`).join('')}</div>
+    <label class="f">Traços, ações e o resto da ficha<textarea id="mon-txt" aria-label="Texto da ficha">${h(st.texto)}</textarea></label>
+    <p class="small muted" style="margin:0">Uma linha por traço ou ação. O trecho até o primeiro ponto aparece em destaque, ex.: "Mordida. Corpo a corpo +5 (1,5 m). Acerto: 8 (1d10+3) Perfurante." Campos vazios ficam de fora.</p>
+    <p id="mf-err" class="dirty" role="alert" style="margin:0"></p>
+    <div class="row"><button class="btn pri" data-act="mon-save">Salvar ficha</button><button class="btn" data-act="mon-cancel">Cancelar</button></div>`;
+  else corpo = `${temFicha?`<dl class="kv">${st.ca!=null?`<dt>Classe de Armadura</dt><dd>${h(st.ca)}</dd>`:''}${st.pv?`<dt>Pontos de Vida</dt><dd>${h(st.pv)}</dd>`:''}${st.desl?`<dt>Deslocamento</dt><dd>${h(st.desl)}</dd>`:''}</dl>
+    ${st.atr?`<div class="atr">${st.atr.map((v,i)=>`<div><b>${NOMES_ATR[i]}</b><span>${v} (${mod(v)})</span></div>`).join('')}</div>`:''}`:''}
+    <div class="sb">${statLinesHtml(st.texto.split('\n').filter(x=>x.trim())) || `<p class="muted">O app ainda não tem a ficha deste monstro. Consulte o Livro dos Monstros 2024${st.pag?'':' (no livro em inglês: '+h(m.en)+')'}${isMestre()?'; com o botão Preencher ficha você copia CA, PV, atributos e ações do seu livro para cá.':'.'}</p>`}</div>`;
   return `<div class="pop-bg" data-act="pop-bg"><div class="pop" data-act="noop" role="dialog" aria-modal="true" aria-label="Ficha de ${h(m.pt)}">
-    <div class="row" style="justify-content:space-between;align-items:flex-start"><div><h2>${h(m.pt)}</h2><div class="en">${h(m.en)} · ND ${h(m.cr)} · ${fmt(m.xp)} XP</div></div><button class="btn sm" data-act="pop-close" id="pop-close">Fechar</button></div>
-    ${st?`<dl class="kv"><dt>Classe de Armadura</dt><dd>${st.ca}</dd><dt>Pontos de Vida</dt><dd>${h(st.pv)}</dd><dt>Deslocamento</dt><dd>${h(st.desl)}</dd></dl>
-    <div class="atr">${st.atr.map((v,i)=>`<div><b>${NOMES_ATR[i]}</b><span>${v} (${mod(v)})</span></div>`).join('')}</div>`:''}
-    <div class="sb">${body}</div>
-    ${S.popEdit?'':`<div class="row" style="justify-content:space-between"><span class="small muted">${custom!=null?'Texto editado pelo mestre.':st?'Resumo do SRD; confira o livro em caso de dúvida.':''}</span>
-      ${isMestre()?`<span class="row"><button class="btn sm" data-act="mon-edit">Editar texto</button>${custom!=null?`<button class="btn sm danger" data-act="mon-reset">${S.popResetArm?'Confirmar: voltar ao resumo':'Voltar ao resumo'}</button>`:''}</span>`:''}</div>`}
+    <div class="row" style="justify-content:space-between;align-items:flex-start"><div><h2>${h(m.pt)}</h2><div class="en">${h(m.en)} · ND ${h(m.cr)} · ${fmt(m.xp)} XP${st.pag?` · <b>Livro dos Monstros 2024, p. ${h(st.pag)}</b>`:''}</div></div><button class="btn sm" data-act="pop-close" id="pop-close">Fechar</button></div>
+    ${corpo}
+    ${S.popEdit?'':`<div class="row" style="justify-content:space-between"><span class="small muted">${st.editada?'Ficha preenchida pelo mestre.':STATS[m.en]?'Resumo do SRD; confira o livro em caso de dúvida.':''}</span>
+      ${isMestre()?`<span class="row"><button class="btn sm" data-act="mon-edit">${STATS[m.en]||st.editada?'Editar ficha':'Preencher ficha'}</button>${st.editada?`<button class="btn sm danger" data-act="mon-reset">${S.popResetArm?'Confirmar: apagar o que escrevi':'Apagar o que escrevi'}</button>`:''}</span>`:''}</div>`}
   </div></div>`;
 }
 function viewMesa(d, edit){
@@ -1064,9 +1100,11 @@ document.addEventListener('click', e=>{
   if (a==='mon-edit'){ S.popEdit = true; render(); const ta=document.getElementById('mon-txt'); if (ta) ta.focus(); return; }
   if (a==='mon-cancel'){ S.popEdit = false; render(); return; }
   if (a==='mon-save'){
-    const ta = document.getElementById('mon-txt'), slug = popSlug(), txt = ta ? ta.value : '';
-    S.monTxt[slug] = {texto:txt}; S.popEdit = false; render();
-    store.saveMonstro(slug, txt).catch(err=>{ S.notice='Não foi possível salvar o texto do monstro ('+h(err && (err.code||err.message))+').'; render(); });
+    const slug = popSlug(); let dados;
+    if (isItemPop()){ const ta = document.getElementById('mon-txt'); dados = {texto: ta ? ta.value : ''}; }
+    else { const r = lerFichaForm(); if (r.erro){ const el = document.getElementById('mf-err'); if (el) el.textContent = r.erro; return; } dados = r.dados; }
+    S.monTxt[slug] = dados; S.popEdit = false; render();
+    store.saveMonstro(slug, dados).catch(err=>{ S.notice='Não foi possível salvar o texto do monstro ('+h(err && (err.code||err.message))+').'; render(); });
     return;
   }
   if (a==='mon-reset'){
