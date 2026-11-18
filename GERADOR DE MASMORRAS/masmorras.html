@@ -27,6 +27,7 @@ header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:s
 header h1{font-size:20px;color:var(--gold2)}
 header .sub{color:var(--muted);font-size:12px}
 .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.mlist{display:flex;flex-direction:column;margin:0 0 14px}.mlist .li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}.mlist .li:last-child{border-bottom:0}
 .badge{padding:3px 10px;border-radius:99px;border:1px solid var(--line2);font-size:12px;color:var(--muted);white-space:nowrap}
 .badge.gold{color:var(--gold2);border-color:var(--gold)}
 nav{display:flex;gap:4px;padding-top:6px;border-bottom:1px solid var(--line);overflow-x:auto}
@@ -1044,9 +1045,12 @@ const S = {
   params:{tema:'cripta', tamanho:'media', nivel:3, jogadores:4, ritmo:'padrao', itens:'normal', semente:'', nome:''},
   cur:null, sel:null, dirty:false, genArm:false, zoom:false,
   lista:{}, publicas:{}, openPub:null, notice:'', saving:false, delArm:null, loaded:false,
-  monTxt:{}, pop:null, popEdit:false, popResetArm:false
+  monTxt:{}, pop:null, popEdit:false, popResetArm:false,
+  mestres:[], pessoas:[], nomes:{}, busca:'', achados:[], userApi:null
 };
-const isMestre = () => S.isOwner && S.viewAs==='mestre';
+/* mestre = dono do app ou alguém que o dono pôs na lista (config/mestres) */
+const podeMestrar = () => S.isOwner || (!!S.myId && S.mestres.includes(S.myId));
+const isMestre = () => podeMestrar() && S.viewAs==='mestre';
 let store = null;
 
 /* cópia para os jogadores: por enquanto tudo, menos as anotações do mestre */
@@ -1062,6 +1066,8 @@ function makeLocalStore(){
     onPublicas(cb){ P.push(cb); setTimeout(()=>cb(clone(mem.publicas))); },
     async save(d){ mem.masmorras[d.id]=clone(d); if (d.publicada) mem.publicas[d.id]=playerCopy(d); else delete mem.publicas[d.id]; persist(); L.forEach(f=>f(clone(mem.masmorras))); P.forEach(f=>f(clone(mem.publicas))); },
     async remove(id){ delete mem.masmorras[id]; delete mem.publicas[id]; persist(); L.forEach(f=>f(clone(mem.masmorras))); P.forEach(f=>f(clone(mem.publicas))); },
+    onMestres(cb){ setTimeout(()=>cb([])); },
+    async saveMestres(){}, registrar(){ return Promise.resolve(); }, onPessoas(){},
     onMonstros(cb){ M.push(cb); setTimeout(()=>cb(clone(mem.monstros||{}))); },
     async saveMonstro(slug, dados){ mem.monstros = mem.monstros||{}; mem.monstros[slug] = clone(dados); persist(); M.forEach(f=>f(clone(mem.monstros))); },
     async delMonstro(slug){ if (mem.monstros) delete mem.monstros[slug]; persist(); M.forEach(f=>f(clone(mem.monstros||{}))); }
@@ -1080,6 +1086,11 @@ function makeDbStore(db){
       else { await db.doc('publicas/'+id).delete().catch(()=>{}); }
     }); },
     remove(id){ return q(id, async ()=>{ await db.doc('publicas/'+id).delete().catch(()=>{}); await db.doc('masmorras/'+id).delete(); }); },
+    onMestres(cb, err){ return db.collection('config').onSnapshot(s=>{ const m = toMap(s).mestres; cb(m && Array.isArray(m.ids) ? m.ids.filter(x=>typeof x==='string') : []); }, err); },
+    saveMestres(ids){ return q('config/mestres', ()=>db.doc('config/mestres').set({ids:[...ids]})); },
+    /* cada pessoa que abre o app deixa um registro (só o id), para o dono poder escolhê-la como mestre */
+    registrar(id){ return db.doc('pessoas/'+id).set({visto:Date.now()}); },
+    onPessoas(cb, err){ return db.collection('pessoas').onSnapshot(s=>cb(Object.keys(toMap(s))), err); },
     onMonstros(cb, err){ return db.collection('monstros').onSnapshot(s=>cb(toMap(s)), err); },
     saveMonstro(slug, dados){ return q('mon:'+slug, ()=>db.doc('monstros/'+slug).set(dados)); },
     delMonstro(slug){ return q('mon:'+slug, ()=>db.doc('monstros/'+slug).delete()); }
@@ -1345,6 +1356,7 @@ function cards(map, actOpen, master){
     <h2>${h(d.nome)}</h2>
     <div class="row"><span class="badge gold">${h(TEMAS[d.params.tema]?.nome||'')}</span><span class="badge">Nível ${d.params.nivel}</span><span class="badge">${d.salas.length-(master?0:(d.mapa.secretas||[]).filter(x=>!(d.salas[x.sala]&&d.salas[x.sala].revelada)).length)} salas</span>${master?(d.publicada?'<span class="badge gold">Visível aos jogadores</span>':'<span class="badge">Só o mestre</span>'):''}</div>
     <p class="muted small" style="margin:0">${h(d.gancho)}</p>
+    ${master && S.mestres.length && d.autor ? `<div class="muted small">Criada por ${h(nomeDe(d.autor))}</div>` : ''}
     ${master?`<div class="row"><button class="btn sm danger" data-act="excluir" data-id="${h(d.id)}">${S.delArm===d.id?'Confirmar exclusão':'Excluir'}</button></div>`:''}
   </div>`).join('')}</div>`;
 }
@@ -1352,6 +1364,28 @@ function viewSalvas(){
   const n = Object.keys(S.lista).length;
   if (!n) return `<div class="panel empty"><h2>Nenhuma masmorra salva</h2><p>Gere uma masmorra na aba Gerador e clique em Salvar. Ela aparece aqui para você abrir depois.</p><button class="btn pri" data-act="tab" data-tab="gerar">Ir para o Gerador</button></div>`;
   return cards(S.lista, 'abrir', true);
+}
+function nomeDe(id){ return id===S.myId ? 'Você' : (S.nomes[id] || 'Pessoa sem nome'); }
+async function carregarNomes(){
+  if (!S.userApi) return;
+  const ids = [...new Set([...S.mestres, ...S.pessoas, ...Object.values(S.lista).map(d=>d.autor)].filter(x=>typeof x==='string' && !(x in S.nomes)))];
+  if (!ids.length) return;
+  ids.forEach(i=>S.nomes[i]='');
+  try { const ps = await S.userApi.profiles(ids); ids.forEach(i=>{ S.nomes[i] = (ps && ps[i] && ps[i].name) || ''; }); } catch {}
+  render();
+}
+function viewMestres(){
+  const cand = [...new Set([...S.achados.map(p=>p.id), ...S.pessoas])].filter(id=>id && id!==S.myId && !S.mestres.includes(id));
+  return `<div class="panel" style="max-width:680px"><h2>Mestres do gerador</h2>
+    <p class="muted small" style="margin-top:0">Você é o mestre principal, por ser o dono do app. Quem estiver nesta lista também vira mestre: gera, salva, edita e mostra masmorras aos jogadores, e vê todas as masmorras salvas (as suas também). Só você pode mudar esta lista.</p>
+    <div class="mlist">
+      <div class="li"><span>${h(nomeDe(S.myId))} <span class="muted small">· dono do app</span></span></div>
+      ${S.mestres.map(id=>`<div class="li"><span>${h(nomeDe(id))}</span><button class="btn sm danger" data-act="mestre-rem" data-id="${h(id)}">Remover</button></div>`).join('')}
+    </div>
+    <label class="f" for="busca-mestre">Adicionar mestre</label>
+    <input style="width:100%" type="search" id="busca-mestre" data-busca-mestre value="${h(S.busca)}" placeholder="Buscar pelo nome ou e-mail…" autocomplete="off">
+    <div class="mlist" style="margin-top:8px">${cand.length ? cand.map(id=>{ const a = S.achados.find(p=>p.id===id); return `<div class="li"><span>${h(a ? a.name : nomeDe(id))}${a && a.email ? ` <span class="muted small">· ${h(a.email)}</span>` : ''}</span><button class="btn sm pri" data-act="mestre-add" data-id="${h(id)}">Tornar mestre</button></div>`; }).join('') : '<div class="muted small">Ninguém para mostrar ainda.</div>'}</div>
+    <p class="muted small">A pessoa precisa ter acesso de <b>Editor</b> a este app (menu Compartilhar) e aparece nesta lista depois de abrir o app uma vez.</p></div>`;
 }
 function viewJogador(){
   if (S.openPub && S.publicas[S.openPub]) return viewMesa(S.publicas[S.openPub], false);
@@ -1363,16 +1397,19 @@ function render(){
   const mestre = isMestre();
   if (!mestre) S.tab = 'jogador'; else if (S.tab==='jogador') S.tab='gerar';
   const nl = Object.keys(S.lista).length;
+  if (S.tab==='mestres' && !(mestre && S.isOwner)) S.tab = 'gerar';
   const tabs = mestre ? [['gerar','Gerador'],['salvas','Masmorras salvas',nl]] : [['jogador','Masmorras']];
+  if (mestre && S.isOwner && S.mode==='db') tabs.push(['mestres','Mestres',S.mestres.length]);
   let body = '';
   if (S.tab==='gerar') body = viewForm() + (S.cur ? viewMesa(S.cur, true) : '');
   else if (S.tab==='salvas') body = viewSalvas();
+  else if (S.tab==='mestres') body = viewMestres();
   else body = viewJogador();
   const ae = document.activeElement, focusId = ae && ae.id, selStart = ae && 'selectionStart' in ae ? ae.selectionStart : null;
   const scroll = window.scrollY;
   document.getElementById('app').innerHTML = `
   <header class="gut"><div><h1>Gerador de Masmorras</h1><div class="sub">D&amp;D 5.5 · ${mestre?'visão do mestre':'visão do jogador'}</div></div>
-    <div class="row">${S.isOwner?`<span class="muted small">Ver como:</span><button class="btn sm ${S.viewAs==='mestre'?'pri':''}" data-act="ver-como" data-v="mestre">Mestre</button><button class="btn sm ${S.viewAs==='jogador'?'pri':''}" data-act="ver-como" data-v="jogador">Jogador</button>`:'<span class="badge">Jogador</span>'}</div></header>
+    <div class="row">${podeMestrar()?`<span class="muted small">Ver como:</span><button class="btn sm ${S.viewAs==='mestre'?'pri':''}" data-act="ver-como" data-v="mestre">Mestre</button><button class="btn sm ${S.viewAs==='jogador'?'pri':''}" data-act="ver-como" data-v="jogador">Jogador</button>`:'<span class="badge">Jogador</span>'}</div></header>
   <nav class="gut">${tabs.map(([k,l,c])=>`<button class="${S.tab===k?'on':''}" data-act="tab" data-tab="${k}">${l}${c?`<span class="count">${c}</span>`:''}</button>`).join('')}</nav>
   <main class="gut">${S.notice?`<div class="notice">${S.notice}</div>`:''}${body}</main>${S.pop?popView():''}`;
   if (focusId){ const el=document.getElementById(focusId); if (el){ el.focus(); if (selStart!=null && el.setSelectionRange) try{ el.setSelectionRange(selStart,selStart); }catch{} } }
@@ -1387,6 +1424,7 @@ function markDirty(){ if (!S.dirty){ S.dirty = true; render(); } }
 async function salvar(){
   const d = S.cur; if (!d || S.saving) return;
   if (!d.id) d.id = newId();
+  if (!d.autor && S.myId) d.autor = S.myId;
   d.atualizada = Date.now(); S.saving = true; render();
   try { await store.save(d); S.dirty = false; S.notice = ''; }
   catch(err){ S.notice = 'Não foi possível salvar ('+h(err && (err.code||err.message) || 'erro')+'). Tente de novo.'; }
@@ -1414,6 +1452,13 @@ document.addEventListener('click', e=>{
     if (!S.popResetArm){ S.popResetArm = true; render(); return; }
     S.popResetArm = false; const slug = popSlug(); delete S.monTxt[slug]; render();
     store.delMonstro(slug).catch(err=>{ S.notice='Não foi possível restaurar o resumo ('+h(err && (err.code||err.message))+').'; render(); });
+    return;
+  }
+  if (a==='mestre-add' || a==='mestre-rem'){
+    const id = t.dataset.id; if (!S.isOwner || !id || id===S.myId) return;
+    const ids = a==='mestre-add' ? [...new Set([...S.mestres, id])] : S.mestres.filter(x=>x!==id);
+    t.disabled = true;
+    store.saveMestres(ids).then(()=>{ S.notice = ''; }).catch(err=>{ S.notice = 'Não foi possível salvar a lista de mestres ('+h(err && (err.code||err.message) || 'erro')+').'; render(); });
     return;
   }
   if (a==='tab'){ S.tab = t.dataset.tab; S.sel = null; render(); }
@@ -1450,6 +1495,12 @@ document.addEventListener('keydown', e=>{ if (e.key==='Escape' && S.pop){ S.pop 
 document.addEventListener('input', e=>{
   const t = e.target;
   if (t.dataset.p){ S.params[t.dataset.p] = t.value; return; }
+  if (t.dataset.buscaMestre!==undefined){
+    S.busca = t.value; const q = t.value.trim();
+    if (!q || !S.userApi || !S.userApi.search){ S.achados = []; render(); return; }
+    S.userApi.search(q).then(hits=>{ if (S.busca.trim()!==q) return; S.achados = (hits||[]).filter(p=>p.id && p.name); S.achados.forEach(p=>{ S.nomes[p.id] = p.name; }); render(); }).catch(()=>{});
+    return;
+  }
   if (t.dataset.notas!==undefined && S.cur){ S.cur.salas[+t.dataset.notas].notas = t.value; if (!S.dirty){ S.dirty = true; const tb=document.querySelector('.toolbar .row'); if (tb) render(); } return; }
   if (t.dataset.nome!==undefined && S.cur){ S.cur.nome = t.value; if (!S.dirty){ S.dirty = true; render(); } }
 });
@@ -1468,9 +1519,30 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(()=>{ cons
 /* ================= início ================= */
 function subscribe(){
   const err = what => e => { S.notice = 'Não foi possível carregar '+what+' ('+h(e && (e.code||e.message))+').'; render(); };
-  if (S.isOwner) store.onLista(m=>{ S.lista = m; render(); }, err('as masmorras salvas'));
+  store.onMestres(ids=>{ S.mestres = ids; aplicarPapel(); carregarNomes(); }, ()=>{});
+  if (S.mode==='db' && S.isOwner) store.onPessoas(ids=>{ S.pessoas = ids; carregarNomes(); render(); }, ()=>{});
+  if (S.mode==='db' && S.myId && !S.isOwner) store.registrar(S.myId).catch(()=>{});
+  aplicarPapel();
   store.onMonstros(m=>{ S.monTxt = m; if (!S.popEdit) render(); }, err('os textos dos monstros'));
   store.onPublicas(m=>{ S.publicas = m; if (S.openPub && !m[S.openPub]) S.openPub = null; render(); }, err('as masmorras visíveis'));
+}
+/* liga/desliga a visão de mestre quando a lista de mestres muda */
+let listaUnsub = null, eraMestre = null;
+function aplicarPapel(){
+  const pode = podeMestrar();
+  if (pode && !listaUnsub){
+    listaUnsub = store.onLista(m=>{ S.lista = m; carregarNomes(); render(); }, e=>{ S.notice = 'Não foi possível carregar as masmorras salvas ('+h(e && (e.code||e.message))+').'; render(); }) || (()=>{});
+  }
+  if (!pode && listaUnsub){ try { listaUnsub(); } catch {} listaUnsub = null; S.lista = {}; }
+  if (pode !== eraMestre){
+    if (eraMestre !== null || !S.isOwner){
+      S.viewAs = pode ? 'mestre' : 'jogador'; S.sel = null; S.openPub = null; S.tab = pode ? 'gerar' : 'jogador';
+      if (pode && !S.cur){ S.cur = genDungeon({...S.params, semente:'exemplo-cripta'}); S.dirty = true; }
+      if (!pode){ S.cur = null; S.dirty = false; }
+    }
+    eraMestre = pode;
+  }
+  render();
 }
 async function init(){
   S.cur = genDungeon({...S.params, semente:'exemplo-cripta'}); S.dirty = true;
@@ -1486,6 +1558,7 @@ async function init(){
     S.mode = 'db'; store = makeDbStore(db);
     try { S.isOwner = !!(await user.isOwner()); } catch { S.isOwner = false; }
     try { S.myId = await user.id(); } catch {}
+    S.userApi = user;
     S.viewAs = S.isOwner ? 'mestre' : 'jogador';
     if (!S.isOwner){ S.cur = null; S.dirty = false; }
   } else {
