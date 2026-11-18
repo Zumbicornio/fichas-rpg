@@ -461,6 +461,64 @@ const ITENS = {
  lendaria:['Espada Vorpal','Manto de Invisibilidade','{armadura} +3','Anel de Três Desejos','Cajado dos Magos','Cinto de Força de Gigante da Tempestade','Pergaminho de Magia (9º círculo)']
 };
 const RAR_NOME = {comum:'comum',incomum:'incomum',rara:'raro',muitorara:'muito raro',lendaria:'lendário'};
+
+/* lembrete dos itens mágicos: resumo próprio (regras de 2024 onde conhecidas). O mestre pode substituir o texto.
+   I_(chave, sintonia, "Linha|Linha") — sintonia: '' (não exige) ou o texto de quem pode se sintonizar */
+const ITEM_DESC = {};
+function I_(k, sint, txt){ ITEM_DESC[k] = {sint, linhas:txt.split('|')}; }
+I_('Poção de Cura','','Efeito. Beber ou dar a alguém é uma Ação Bônus. Recupera 2d4 + 2 PV.');
+I_('Poção de Cura Maior','','Efeito. Beber ou dar a alguém é uma Ação Bônus. Recupera 4d4 + 4 PV.');
+I_('Poção de Cura Superior','','Efeito. Beber ou dar a alguém é uma Ação Bônus. Recupera 8d4 + 8 PV.');
+I_('Poção de Cura Suprema','','Efeito. Beber ou dar a alguém é uma Ação Bônus. Recupera 10d4 + 20 PV.');
+I_('Pergaminho de Magia','','Uso. Se a magia está na lista da sua classe, você pode conjurá-la lendo o pergaminho, sem precisar de componentes materiais. Depois, o pergaminho vira pó.|Círculo alto demais. Se o círculo é maior do que você consegue conjurar, faça um teste do seu atributo de conjuração com CD 10 + círculo; se falhar, a magia se perde.|CD e ataque. Truque e 1º: CD 13, +5. 2º: CD 13, +5. 3º: CD 15, +7. 4º: CD 15, +7. 5º: CD 17, +9. 6º: CD 17, +9. 7º: CD 18, +10. 8º: CD 18, +10. 9º: CD 19, +11.|Copiar. Um mago pode copiar a magia para o grimório (teste de Inteligência (Arcanismo) CD 10 + círculo; o pergaminho é destruído de qualquer forma).');
+I_('Espada Tocada pela Lua','','Luar. Desembainhada no escuro, a lâmina emite Luz Plena em 4,5 m e Penumbra por mais 4,5 m. Só isso: é um item curioso, sem bônus de combate.');
+I_('Manto de Muitas Modas','','Moda. Com uma Ação Bônus, você muda o estilo, a cor e a aparente qualidade do manto. O peso não muda e ele não ganha propriedades novas.');
+I_('Arma +1','','Bônus. +1 nas jogadas de ataque e de dano com esta arma.');
+I_('Arma +2','','Bônus. +2 nas jogadas de ataque e de dano com esta arma.');
+I_('Arma +3','','Bônus. +3 nas jogadas de ataque e de dano com esta arma.');
+I_('Armadura +1','','Bônus. +1 na Classe de Armadura enquanto vestida.');
+I_('Armadura +2','','Bônus. +2 na Classe de Armadura enquanto vestida.');
+I_('Armadura +3','','Bônus. +3 na Classe de Armadura enquanto vestida.');
+I_('Escudo +1','','Bônus. +1 na Classe de Armadura, além do bônus normal do escudo.');
+I_('Escudo +2','','Bônus. +2 na Classe de Armadura, além do bônus normal do escudo.');
+I_('Escudo +3','','Bônus. +3 na Classe de Armadura, além do bônus normal do escudo.');
+I_('Bolsa de Contenção','','Espaço. Por dentro cabem até 225 kg, num volume de cerca de 1,8 m³. A bolsa pesa sempre 7 kg.|Pegar algo. Tirar um item da bolsa usa a ação Utilizar.|Cuidado. Se rasgada, o conteúdo se espalha no Plano Astral. Colocar a bolsa dentro de outro espaço extradimensional (ou vice-versa) abre um portal para o Plano Astral que suga tudo a até 3 m.|Criatura dentro. Uma criatura que respira sobrevive lá dentro por cerca de 10 minutos.');
+I_('Botas Élficas','','Silêncio. Seus passos não fazem som.|Furtividade. Vantagem em testes de Destreza (Furtividade).');
+I_('Manto Élfico','Exige sintonia','Capuz. Com o capuz posto, testes de Sabedoria (Percepção) para ver você têm Desvantagem, e você tem Vantagem em testes de Destreza (Furtividade).|Vestir e tirar o capuz. Usa uma ação Utilizar.');
+I_('Capa de Proteção','Exige sintonia','Bônus. +1 na Classe de Armadura e nas salvaguardas.');
+I_('Óculos da Noite','','Visão. Você ganha Visão no Escuro de 18 m. Se já tiver, o alcance aumenta em 18 m.');
+I_('Varinha de Mísseis Mágicos','','Cargas. 7 cargas. Gaste 1 para conjurar Mísseis Mágicos (1º círculo); cada carga extra sobe um círculo.|Recarga. Recupera 1d6 + 1 cargas ao amanhecer. Se gastar a última, role 1d20: com 1, a varinha vira cinzas.');
+I_('Manoplas de Poder Ogro','Exige sintonia','Força. Sua Força passa a ser 19. Não tem efeito se a sua já for 19 ou mais.');
+I_('Corda de Escalada','','Corda. 18 m de corda de seda que obedece a comandos: anda até 3 m por turno na direção que você mandar, amarra-se num ponto, desamarra-se e forma nós a cada 30 cm (Vantagem para escalar).|Resistência. CA 20 e 20 PV; recupera 1 PV a cada 5 minutos se tiver pelo menos 1 PV.');
+I_('Bastão Imóvel','','Botão. Com uma ação Utilizar, o bastão fica preso magicamente no lugar, mesmo no ar. Pressionar de novo solta.|Limite. Aguenta até 3.600 kg. Uma criatura pode empurrá-lo com um teste de Força (Atletismo) CD 30, movendo-o até 3 m.');
+I_('Anel de Proteção','Exige sintonia','Bônus. +1 na Classe de Armadura e nas salvaguardas.');
+I_('Anel de Resistência','Exige sintonia','Resistência. Você tem Resistência a um tipo de dano, indicado pela pedra do anel (o mestre escolhe ou rola: Ácido, Elétrico, Frio, Fogo, Energia, Necrótico, Venenoso, Psíquico, Radiante, Trovejante).');
+I_('Amuleto da Saúde','Exige sintonia','Constituição. Sua Constituição passa a ser 19. Não tem efeito se a sua já for 19 ou mais. Lembre de recalcular os PV.');
+I_('Varinha de Bolas de Fogo','Exige sintonia por um conjurador','Cargas. 7 cargas. Gaste 1 para conjurar Bola de Fogo (3º círculo, CD 15); cada carga extra sobe um círculo.|Recarga. Recupera 1d6 + 1 cargas ao amanhecer. Se gastar a última, role 1d20: com 1, a varinha vira cinzas.');
+I_('Cinto de Força de Gigante da Colina','Exige sintonia','Força. Sua Força passa a ser 21. Não tem efeito se a sua já for igual ou maior.');
+I_('Cinto de Força de Gigante de Fogo','Exige sintonia','Força. Sua Força passa a ser 25. Não tem efeito se a sua já for igual ou maior.');
+I_('Cinto de Força de Gigante da Tempestade','Exige sintonia','Força. Sua Força passa a ser 29. Não tem efeito se a sua já for igual ou maior.');
+I_('Botas da Velocidade','Exige sintonia','Ativar. Com uma Ação Bônus você bate os calcanhares: seu deslocamento dobra e ataques de oportunidade contra você têm Desvantagem. Outra Ação Bônus desliga.|Limite. Até 10 minutos no total; recarrega num Descanso Longo.');
+I_('Manto de Deslocamento','Exige sintonia','Ilusão. Jogadas de ataque contra você têm Desvantagem.|Falha. Ao sofrer dano, o efeito some até o início do seu próximo turno. Também não funciona se você estiver Incapacitado, Impedido ou com deslocamento 0.');
+I_('Anel de Regeneração','Exige sintonia','Cura. Recupera 1d6 PV a cada 10 minutos, se tiver pelo menos 1 PV.|Membros. Partes do corpo perdidas crescem de novo em 1d6 + 1 dias.');
+I_('Cajado do Poder','Exige sintonia por Bruxo, Feiticeiro ou Mago','Bônus. Como arma, +2 nas jogadas de ataque e de dano. Também dá +2 na CA, nas salvaguardas e nas jogadas de ataque de magia.|Cargas. 20 cargas para conjurar magias como Bola de Fogo, Relâmpago, Cone de Frio, Imobilizar Monstro, Levitação, Muralha de Força, Globo de Invulnerabilidade e Mísseis Mágicos. Recupera 2d8 + 4 ao amanhecer.|Golpe Retributivo. Quebrar o cajado libera uma explosão enorme. Confira os detalhes no Livro do Mestre.');
+I_('Espada Dançante','Exige sintonia','Dançar. Com uma Ação Bônus, você solta a espada: ela voa até 9 m e ataca uma criatura, usando seus bônus. Repita a Ação Bônus para ela atacar de novo.|Retorno. Depois do quarto ataque ela volta para a sua mão (ou cai, se não puder).');
+I_('Tapete Voador','','Voo. Com uma palavra de comando o tapete voa. Deslocamento de voo de 9 a 24 m, conforme o tamanho e a carga (o tapete maior leva até 4 pessoas). Se levar mais que o dobro da carga, cai.');
+I_('Espada Vorpal','Exige sintonia','Bônus. +3 nas jogadas de ataque e de dano; ignora Resistência a dano Cortante.|Decapitar. Num 20 no d20 contra uma criatura com cabeça, você a decepa: ela morre se não puder viver sem a cabeça. Se a criatura for imune ou não tiver cabeça, sofre 30 de dano Cortante extra.');
+I_('Manto de Invisibilidade','Exige sintonia','Invisível. Com o capuz posto, você fica Invisível. Tirar o capuz encerra o efeito.|Limite. A edição 2024 limita o uso por cargas que se recuperam ao amanhecer; confira os números no Livro do Mestre.');
+I_('Anel de Três Desejos','','Desejos. 3 cargas. Gaste 1 para conjurar Desejo. Quando a última carga é gasta, vira um anel comum.');
+I_('Cajado dos Magos','Exige sintonia por Bruxo, Feiticeiro ou Mago','Bônus. Como arma, +2 nas jogadas de ataque e de dano, e +2 nas jogadas de ataque de magia.|Cargas. 50 cargas para conjurar uma longa lista de magias (Bola de Fogo, Muralha de Fogo, Invisibilidade, Teia, Passagem e outras). Recupera 4d6 + 2 ao amanhecer.|Absorver Magia. Vantagem nas salvaguardas contra magias; com uma Reação, pode absorver uma magia que mira só você e ganhar cargas.|Golpe Retributivo. Quebrar o cajado libera uma explosão enorme. Confira os detalhes no Livro do Mestre.');
+/* "Espada Longa +1 · incomum" -> "Arma +1"; "Pergaminho de Magia (2º círculo)" -> "Pergaminho de Magia" */
+function itemKey(txt){
+  const nome = String(txt).split(' · ')[0].trim();
+  if (ITEM_DESC[nome]) return nome;
+  const m = nome.match(/^(.+) \+([123])$/);
+  if (m){ if (ARMAS.includes(m[1])) return 'Arma +'+m[2]; if (ARMADURAS.includes(m[1])) return 'Armadura +'+m[2]; }
+  if (nome.startsWith('Pergaminho de Magia')) return 'Pergaminho de Magia';
+  return null;
+}
+const itemSlug = k => 'item-'+String(k).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+const linkItem = txt => itemKey(txt) ? `<button class="rl" data-act="item" data-it="${h(txt)}">${h(txt)}</button>` : h(txt);
 const RAR_TIER = {1:{comum:6,incomum:4},2:{incomum:6,rara:4},3:{rara:6,muitorara:4},4:{muitorara:6,lendaria:4}};
 
 /* ================= gerador de mapa ================= */
@@ -785,7 +843,7 @@ function roomView(d, i, edit){
     ${s.misterio?`<div class="panel"><h3>Mistério</h3><p class="prose" style="margin:0">${h(s.misterio)}</p></div>`:''}
     ${s.descanso?`<div class="panel"><h3>Lugar seguro</h3><p style="margin:0">${h(s.descanso)}</p></div>`:''}
     ${s.pista?`<div class="panel"><h3>Pista</h3><p style="margin:0">${h(s.pista)}</p></div>`:''}
-    ${s.tesouro?`<div class="panel"><h3>Tesouro</h3><dl class="kv"><dt>Moedas</dt><dd>${h(s.tesouro.moedas)}</dd></dl>${s.tesouro.itens.length?`<ul class="plain" style="margin-top:8px">${s.tesouro.itens.map(t=>`<li>${h(t)}</li>`).join('')}</ul>`:''}</div>`:''}
+    ${s.tesouro?`<div class="panel"><h3>Tesouro</h3><dl class="kv"><dt>Moedas</dt><dd>${h(s.tesouro.moedas)}</dd></dl>${s.tesouro.itens.length?`<ul class="plain" style="margin-top:8px">${s.tesouro.itens.map(t=>`<li>${linkItem(t)}</li>`).join('')}</ul>`:''}</div>`:''}
     ${edit?`<div class="panel"><h3>Anotações do mestre</h3><textarea id="notas-${i}" data-notas="${i}" placeholder="Só você vê estas anotações.">${h(s.notas||'')}</textarea></div>`:''}`;
 }
 function overview(d, edit){
@@ -803,7 +861,27 @@ function overview(d, edit){
 function statLinesHtml(lines){
   return lines.map(l=>{ const i = l.indexOf('. '); return (i>0 && i<70) ? `<p><b>${h(l.slice(0,i+1))}</b> ${h(l.slice(i+2))}</p>` : `<p>${h(l)}</p>`; }).join('');
 }
+/* textos do mestre de monstros e itens ficam na mesma coleção "monstros" (itens com prefixo "item-") */
+const isItemPop = () => typeof S.pop==='string' && S.pop.startsWith('item:');
+const popSlug = () => isItemPop() ? itemSlug(itemKey(S.pop.slice(5))) : monSlug(S.pop);
+function itemPopView(){
+  const txt = S.pop.slice(5), k = itemKey(txt); if (!k) return '';
+  const [nome, rar] = txt.split(' · '), it = ITEM_DESC[k], slug = itemSlug(k);
+  const custom = S.monTxt[slug] && typeof S.monTxt[slug].texto==='string' ? S.monTxt[slug].texto : null;
+  const base = it.linhas.join('\n');
+  const body = S.popEdit ? `<textarea id="mon-txt" aria-label="Descrição do item">${h(custom ?? base)}</textarea>
+      <p class="small muted" style="margin:0">Uma linha por item. O trecho até o primeiro ponto aparece em destaque.${k!==nome?' O texto vale para todos os itens "'+h(k)+'".':''}</p>
+      <div class="row"><button class="btn pri" data-act="mon-save">Salvar texto</button><button class="btn" data-act="mon-cancel">Cancelar</button></div>`
+    : statLinesHtml((custom ?? base).split('\n').filter(x=>x.trim()));
+  return `<div class="pop-bg" data-act="pop-bg"><div class="pop" data-act="noop" role="dialog" aria-modal="true" aria-label="Descrição de ${h(nome)}">
+    <div class="row" style="justify-content:space-between;align-items:flex-start"><div><h2>${h(nome)}</h2><div class="en">Item mágico${rar?' '+h(rar):''} · ${h(it.sint||'Não exige sintonia')}</div></div><button class="btn sm" data-act="pop-close" id="pop-close">Fechar</button></div>
+    <div class="sb">${body}</div>
+    ${S.popEdit?'':`<div class="row" style="justify-content:space-between"><span class="small muted">${custom!=null?'Texto editado pelo mestre.':'Resumo do app; confira o Livro do Mestre em caso de dúvida.'}</span>
+      ${isMestre()?`<span class="row"><button class="btn sm" data-act="mon-edit">Editar texto</button>${custom!=null?`<button class="btn sm danger" data-act="mon-reset">${S.popResetArm?'Confirmar: voltar ao resumo':'Voltar ao resumo'}</button>`:''}</span>`:''}</div>`}
+  </div></div>`;
+}
 function popView(){
+  if (isItemPop()) return itemPopView();
   const m = MON_BY_EN[S.pop]; if (!m) return '';
   const st = STATS[m.en], slug = monSlug(m.en), custom = S.monTxt[slug] && typeof S.monTxt[slug].texto==='string' ? S.monTxt[slug].texto : null;
   const base = st ? st.linhas.join('\n') : '';
@@ -897,19 +975,19 @@ document.addEventListener('click', e=>{
   if (a!=='excluir') S.delArm = null;
   if (a!=='mon-reset') S.popResetArm = false;
   if (a==='noop') return;
-  if (a==='mon'){ S.pop = t.dataset.en; S.popEdit = false; render(); const c=document.getElementById('pop-close'); if (c) c.focus(); return; }
+  if (a==='mon' || a==='item'){ S.pop = a==='item' ? 'item:'+t.dataset.it : t.dataset.en; S.popEdit = false; render(); const c=document.getElementById('pop-close'); if (c) c.focus(); return; }
   if (a==='pop-close' || (a==='pop-bg' && e.target===t)){ S.pop = null; S.popEdit = false; render(); return; }
   if (a==='mon-edit'){ S.popEdit = true; render(); const ta=document.getElementById('mon-txt'); if (ta) ta.focus(); return; }
   if (a==='mon-cancel'){ S.popEdit = false; render(); return; }
   if (a==='mon-save'){
-    const ta = document.getElementById('mon-txt'), slug = monSlug(S.pop), txt = ta ? ta.value : '';
+    const ta = document.getElementById('mon-txt'), slug = popSlug(), txt = ta ? ta.value : '';
     S.monTxt[slug] = {texto:txt}; S.popEdit = false; render();
     store.saveMonstro(slug, txt).catch(err=>{ S.notice='Não foi possível salvar o texto do monstro ('+h(err && (err.code||err.message))+').'; render(); });
     return;
   }
   if (a==='mon-reset'){
     if (!S.popResetArm){ S.popResetArm = true; render(); return; }
-    S.popResetArm = false; const slug = monSlug(S.pop); delete S.monTxt[slug]; render();
+    S.popResetArm = false; const slug = popSlug(); delete S.monTxt[slug]; render();
     store.delMonstro(slug).catch(err=>{ S.notice='Não foi possível restaurar o resumo ('+h(err && (err.code||err.message))+').'; render(); });
     return;
   }
