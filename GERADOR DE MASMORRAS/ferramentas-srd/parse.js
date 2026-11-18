@@ -2,7 +2,7 @@
 const fs = require('fs');
 const raw = fs.readFileSync(process.argv[2], 'utf8').split(/\r?\n/);
 const start = raw.findIndex((l, i) => i > 14000 && l.trim() === 'Monsters A-Z');
-let L = raw.slice(start).map(l => l.replace(/\f/g, '').trimEnd().replace(/-footwide/g, '-foot-wide').replace(/^Con22 /, 'Con 22 ').replace(/^Int 6 -2 2 Wis/, 'Int 6 -2 -2 Wis'));
+let L = raw.slice(start).map(l => l.replace(/\f/g, '').trimEnd().replace(/-footwide/g, '-foot-wide').replace(/(\w) � (\d)/g, '$1 × $2').replace(/([a-z])�([a-z])/g, '$1$2').replace(/�/g, '•').replace(/^Con22 /, 'Con 22 ').replace(/^Int 6 -2 2 Wis/, 'Int 6 -2 -2 Wis'));
 // tira rodapés de página
 L = L.filter(l => !/^\d+ System Reference Document 5\.2\.1$/.test(l.trim()) && !/^\d+$/.test(l.trim()));
 const TYPE_RE = /^(Tiny|Small|Medium|Large|Huge|Gargantuan)\b[^.]*, (Lawful|Neutral|Chaotic|Unaligned|Any)[\w ]*$/;
