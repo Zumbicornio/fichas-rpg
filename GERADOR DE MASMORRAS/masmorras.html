@@ -461,7 +461,7 @@ const ARMADILHAS = [
  {nome:'Rampa escorregadia', gat:'Placa de pressão na descida', ef:'Os degraus viram uma rampa. Destreza CD {sv}: falha, a criatura escorrega até o fundo, sofre {leve} de dano Contundente e fica Caída.'}
 ];
 const MISTERIOS = [
- 'Uma estátua de mãos estendidas segura uma tigela vazia. Uma oferenda de valor (10 PO ou mais) abre uma passagem secreta para a sala {k}.',
+ 'Uma estátua de mãos estendidas segura uma tigela vazia. Quem deixa nela uma oferenda de valor (10 PO ou mais) recebe uma bênção: Vantagem na próxima salvaguarda dentro desta masmorra.',
  'Quatro alavancas na parede, cada uma com um símbolo (sol, lua, estrela, olho). A ordem certa está num mural da sala {k} (Inteligência (Investigação) CD {det}). A ordem errada dispara um alarme.',
  'Uma fonte de água prateada. Quem bebe rola 1d4: 1, recupera 2d4 + 2 Pontos de Vida; 2, fica Envenenado por 1 hora; 3, ganha Visão no Escuro de 18 m por 1 hora; 4, nada acontece.',
  'Um espelho de corpo inteiro mostra os personagens alguns segundos no futuro. Uma vez por dia, quem o toca pode fazer ao mestre uma pergunta de sim ou não.',
@@ -471,11 +471,12 @@ const MISTERIOS = [
  'Um prisioneiro acorrentado implora por liberdade. Ele conhece o caminho até a sala {k}, mas pode ser um traidor (role 1d6: par, aliado; ímpar, traidor).',
  'Três baús idênticos. Um tem {pouco}, outro está vazio, e o terceiro tem uma agulha envenenada (Constituição CD {sv} ou {leve} de dano Venenoso).',
  'Uma esfera de Escuridão mágica preenche metade da sala. De dentro dela, uma voz oferece uma barganha em troca de uma lembrança querida.',
- 'Um mural mostra a planta desta masmorra. Sabedoria (Percepção) CD {det} encontra a marca de uma porta secreta perto da sala {k}.',
+ 'Um mural mostra a planta desta masmorra. Sabedoria (Percepção) CD {det} encontra a marca de uma porta secreta na parede {sdir} da sala {ks}.',
  'O chão é um mosaico de ladrilhos claros e escuros. Pisar só nos claros é seguro; pisar num escuro causa {leve} de dano Elétrico (Destreza CD {sv} para metade).'
 ];
 const DESCANSOS = ['Um nicho seco e escondido. O grupo pode fazer um Descanso Curto sem ser incomodado.','Uma pequena capela ainda consagrada; mortos-vivos e Infernais evitam entrar.','Uma porta grossa que tranca por dentro e uma fonte de água limpa.','Restos de um acampamento de aventureiros, com 1d4 rações e um kit de curandeiro com 3 usos.'];
-const PISTAS = ['Pegadas recentes levam para a sala {k}.','Um diário rasgado menciona um ponto fraco de {n}.','Os restos de um aventureiro ainda carregam {pouco}.','Marcas de arrasto vão até uma parede (porta secreta? Sabedoria (Percepção) CD {det}).','Nada além de poeira e ecos.','Um aviso riscado na parede: "não abram a sala {k}".'];
+const PISTA_SECRETA = 'Marcas de arrasto vão até a parede {sdir} e somem sob ela: há uma porta secreta ali (Sabedoria (Percepção) CD {det} para encontrar).';
+const PISTAS = ['Pegadas recentes levam para a sala {k}.','Um diário rasgado menciona um ponto fraco de {n}.','Os restos de um aventureiro ainda carregam {pouco}.','Nada além de poeira e ecos.','Um aviso riscado na parede: "não abram a sala {k}".'];
 
 /* tesouro */
 const GEMAS = {10:['Ágata musgo','Quartzo azul','Hematita','Malaquita','Obsidiana','Turquesa'],50:['Calcedônia','Cornalina','Jaspe','Ônix','Pedra-da-lua','Zircão'],100:['Âmbar','Ametista','Coral','Granada','Jade','Pérola'],500:['Alexandrita','Água-marinha','Pérola negra','Topázio'],1000:['Esmeralda','Opala de fogo','Safira','Opala negra'],5000:['Diamante','Rubi','Jacinto','Safira-estrela']};
@@ -823,6 +824,18 @@ function genTesouro(rng, t, tipo, qtd, usados){
   }
   return {moedas, itens:[...itens, ...mag]};
 }
+/* portas secretas do mapa: em que sala ficam e em qual parede */
+function portasSecretas(m){
+  const out = [];
+  for (const dr of m.doors) if (dr.t==='secreta') m.rooms.forEach((r,ri)=>{
+    const dentroX = dr.x>=r.x && dr.x<r.x+r.w, dentroY = dr.y>=r.y && dr.y<r.y+r.h;
+    let dir = null;
+    if (dentroX && dr.y===r.y-1) dir='norte'; else if (dentroX && dr.y===r.y+r.h) dir='sul';
+    else if (dentroY && dr.x===r.x-1) dir='oeste'; else if (dentroY && dr.x===r.x+r.w) dir='leste';
+    if (dir) out.push({sala:ri, dir});
+  });
+  return out;
+}
 function genSala(rng, d, i, tipo, nomeUsado){
   const p=d.params, T=TEMAS[p.tema], t=tierOf(p.nivel), r=d.mapa.rooms[i], ns=d.mapa.rooms.length;
   const US = usadosNa(d, i);
@@ -843,9 +856,18 @@ function genSala(rng, d, i, tipo, nomeUsado){
   if (tipo==='entrada' && rng.chance(.35)){ s.encontro = buildEncounter(rng,p,0,false); s.encontro.comport = 'Vigiam a entrada; um deles corre para dar o alarme na sala '+Math.min(2,ns)+'.'; }
   if (tipo==='armadilha'){ const a=rng.pick(ARMADILHAS); s.armadilha = {nome:a.nome, gatilho:a.gat, efeito:fill(a.ef,ctx), det:ctx.det}; if (rng.chance(.35)) s.tesouro = genTesouro(rng,t,'individual',p.itens,US); }
   if (tipo==='tesouro'){ s.tesouro = genTesouro(rng,t,'tesouro',p.itens,US); if (rng.chance(.4)){ const a=rng.pick(ARMADILHAS); s.armadilha={nome:a.nome, gatilho:'Mexer no tesouro', efeito:fill(a.ef,ctx), det:ctx.det}; } }
-  if (tipo==='misterio') s.misterio = fill(rng.pick(MISTERIOS), ctx);
+  const sec = portasSecretas(d.mapa);
+  if (tipo==='misterio'){
+    const outras = sec.filter(x=>x.sala!==i), alvo = outras.length ? rng.pick(outras) : (sec.length ? rng.pick(sec) : null);
+    if (alvo){ ctx.ks = alvo.sala+1; ctx.sdir = alvo.dir; }
+    s.misterio = fill(rng.pick(alvo ? MISTERIOS : MISTERIOS.filter(x=>!x.includes('{ks}'))), ctx);
+  }
   if (tipo==='descanso') s.descanso = rng.pick(DESCANSOS);
-  if (tipo==='vazia') s.pista = fill(rng.pick(PISTAS), ctx);
+  if (tipo==='vazia'){
+    const aqui = sec.filter(x=>x.sala===i);
+    if (aqui.length){ ctx.sdir = rng.pick(aqui).dir; s.pista = fill(PISTA_SECRETA, ctx); }
+    else s.pista = fill(rng.pick(PISTAS), ctx);
+  }
   return s;
 }
 function genErrantes(rng, d){
