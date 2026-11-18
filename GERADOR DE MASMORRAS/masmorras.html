@@ -644,19 +644,67 @@ function genMap(rng, tamanho, tema, rngSec){
   rooms.forEach(r=>{ for(let j=r.y;j<r.y+r.h;j++) for(let i=r.x;i<r.x+r.w;i++) g[j*W+i]=1; });
   const roomAt = (x,y) => rooms.findIndex(r => x>=r.x && x<r.x+r.w && y>=r.y && y<r.y+r.h);
   const doors = new Map();
-  for(const {a,b} of conex){
+  /* corredor em L entre os centros; "paralelo" conta quantos quadrados novos correm lado a lado
+     (a 1 ou 2 quadrados) com um corredor que já existe */
+  const caminho = (a,b,xPrimeiro) => {
     const [x0,y0]=cen(rooms[a]), [x1,y1]=cen(rooms[b]); const path=[[x0,y0]]; let x=x0, y=y0;
     const sx=()=>{ while(x!==x1){ x+=Math.sign(x1-x); path.push([x,y]); } }, sy=()=>{ while(y!==y1){ y+=Math.sign(y1-y); path.push([x,y]); } };
-    if (rng.chance(.5)){ sx(); sy(); } else { sy(); sx(); }
-    let prev = roomAt(x0,y0);
+    if (xPrimeiro){ sx(); sy(); } else { sy(); sx(); }
+    return path;
+  };
+  const corr = (i,j) => i>=0 && j>=0 && i<W && j<H && g[j*W+i]===2;
+  const paralelo = path => {
+    let n=0;
     for(let k=1;k<path.length;k++){
-      const [px,py]=path[k], ri=roomAt(px,py);
+      const [px,py]=path[k], [qx,qy]=path[k-1]; if (roomAt(px,py)>=0 || g[py*W+px]!==0) continue;
+      const hor = py===qy, lado = d => hor ? corr(px,py+d)||corr(px,py-d) : corr(px+d,py)||corr(px-d,py);
+      if (lado(1) || lado(2)) n++;
+    }
+    return n;
+  };
+  const feitas = [], viaCorr = new Set(); /* quadrados por onde passa algum corredor (a erosão da caverna não pode cortá-los) */
+  /* distância andando pelo que já foi escavado (salas e corredores), de centro a centro */
+  const distJa = (a,b) => {
+    const [x0,y0]=cen(rooms[a]), [x1,y1]=cen(rooms[b]), alvo=y1*W+x1, dist=new Int32Array(W*H).fill(-1), fila=[y0*W+x0]; dist[fila[0]]=0;
+    for (let q=0;q<fila.length;q++){ const c=fila[q]; if (c===alvo) return dist[c]; const x=c%W, y=(c-x)/W;
+      for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){ const i=x+dx, j=y+dy, n=j*W+i;
+        if (i>=0 && j>=0 && i<W && j<H && g[n] && dist[n]<0){ dist[n]=dist[c]+1; fila.push(n); } } }
+    return Infinity;
+  };
+  const perto = (a,b) => { if (a===b) return true; const [ax,ay]=cen(rooms[a]), [bx,by]=cen(rooms[b]); return distJa(a,b) <= 1.5*(Math.abs(ax-bx)+Math.abs(ay-by)) + 4; };
+  conex.forEach(({a,b}, idx)=>{
+    /* salas que já estão ligadas por um caminho curto (por exemplo, um corredor que passou por dentro de uma delas) não ganham outro corredor */
+    if (perto(a,b)){ rng.chance(.5); return; }
+    /* entre os dois L, prefere o que não corre paralelo a outro corredor e atravessa menos salas */
+    const pref = rng.chance(.5), p1 = caminho(a,b,pref), p2 = caminho(a,b,!pref), s1 = paralelo(p1), s2 = paralelo(p2);
+    const raspa = p => { let n=0; for(let k=1;k<p.length-1;k++){ const [x,y]=p[k]; if (roomAt(x,y)>=0) continue;
+      const viz = [roomAt(...p[k-1]), roomAt(...p[k+1])];
+      if ([[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy])=>{ const r=roomAt(x+dx,y+dy); return r>=0 && !viz.includes(r); })) n++; } return n; };
+    const nota = (p,sp) => sp*10 + raspa(p)*6 + new Set(p.map(([x,y])=>roomAt(x,y)).filter(r=>r>=0 && r!==a && r!==b)).size*3;
+    const path = nota(p2,s2) < nota(p1,s1) ? p2 : p1, atalho = idx >= rooms.length-1;
+    /* atalho que duplicaria um corredor ou rasparia na parede de outra sala é descartado */
+    if (atalho && (Math.min(s1,s2) >= 2 || raspa(path) > 0)) return;
+    /* se o L atravessa outras salas, só escava o trecho que falta: começa na última sala já perto de a
+       e para na primeira sala já perto de b */
+    const salaK = path.map(([x,y])=>roomAt(x,y));
+    let ini = 0, fim = path.length-1;
+    for (let k=1;k<path.length;k++){ const r=salaK[k]; if (r>=0 && r!==b && r!==salaK[k-1] && perto(a,r)){ ini=k; } }
+    while (ini<fim && salaK[ini]>=0 && salaK[ini+1]===salaK[ini]) ini++;
+    for (let k=ini+1;k<path.length;k++){ const r=salaK[k]; if (r>=0 && r!==salaK[k-1] && (r===b || perto(r,b))){ fim=k; break; } }
+    if (salaK[ini]>=0 && salaK[ini]===salaK[fim]) return;
+    feitas.push(conex[idx]);
+    const [x0,y0]=path[ini];
+    let prev = salaK[ini];
+    for(let k=ini+1;k<=fim;k++){
+      const [px,py]=path[k], ri=salaK[k];
+      viaCorr.add(py*W+px);
       if (ri<0 && g[py*W+px]===0) g[py*W+px]=2;
       if (prev>=0 && ri<0) doors.set(px+','+py,{x:px,y:py});
       if (prev<0 && ri>=0){ const [qx,qy]=path[k-1]; doors.set(qx+','+qy,{x:qx,y:qy}); }
       prev=ri;
     }
-  }
+  });
+  conex.splice(0, conex.length, ...feitas);
   const at = (i,j) => (i<0||j<0||i>=W||j>=H) ? 0 : g[j*W+i];
   /* porta só onde a passagem tem exatamente dois lados abertos e opostos */
   const dl = [];
@@ -664,13 +712,14 @@ function genMap(rng, tamanho, tema, rngSec){
     const L=!!at(d.x-1,d.y), R=!!at(d.x+1,d.y), U=!!at(d.x,d.y-1), D=!!at(d.x,d.y+1);
     if ((L&&R&&!U&&!D) || (U&&D&&!L&&!R)) dl.push({x:d.x, y:d.y, o:(L&&R)?'h':'v', t:rng.weighted({normal:70,trancada:14,secreta:8,emperrada:8})});
   }
+  const g0 = tema==='caverna' ? g.slice() : null;
   if (tema==='caverna'){
     /* bordas irregulares nas grutas */
     const keep = new Set(); dl.forEach(d=>{ for(let dy=-1;dy<=1;dy++) for(let dx=-1;dx<=1;dx++) keep.add((d.x+dx)+','+(d.y+dy)); });
     rooms.forEach(r=>{
       for(let j=r.y;j<r.y+r.h;j++) for(let i=r.x;i<r.x+r.w;i++){
         const edge = i===r.x||j===r.y||i===r.x+r.w-1||j===r.y+r.h-1, corner=(i===r.x||i===r.x+r.w-1)&&(j===r.y||j===r.y+r.h-1);
-        if (!edge || keep.has(i+','+j)) continue;
+        if (!edge || keep.has(i+','+j) || viaCorr.has(j*W+i)) continue;
         const nearCorr = [[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy])=>at(i+dx,j+dy)===2);
         if (!nearCorr && (corner || rng.chance(.35))) g[j*W+i]=0;
       }
@@ -690,6 +739,8 @@ function genMap(rng, tamanho, tema, rngSec){
     return rooms.map((r,i)=>i).filter(i=>{ const [cx,cy]=cen(rooms[i]); return !seen[cy*W+cx]; });
   };
   const alcancaTudo = bloq => !foraDoAlcance(bloq).length;
+  /* se as bordas irregulares da caverna cortaram alguma passagem, desfaz a erosão neste mapa */
+  if (g0 && !alcancaTudo(new Set())) g.set(g0);
   const bloq = new Set();
   /* ...e atalho de verdade: sem a porta, o outro caminho entre os dois lados dela tem que ser bem mais longo */
   const desvio = (dr, bl) => {
