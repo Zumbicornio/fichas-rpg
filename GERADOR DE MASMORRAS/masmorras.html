@@ -136,7 +136,7 @@ const newId = () => 'm'+Date.now().toString(36)+Math.random().toString(36).slice
 /* XP por personagem: [Baixa, Moderada, Alta] */
 const BUD = {1:[50,75,100],2:[100,150,200],3:[150,225,400],4:[250,375,500],5:[500,750,1100],6:[600,1000,1400],7:[750,1300,1700],8:[1000,1700,2100],9:[1300,2000,2600],10:[1600,2300,3100],11:[1900,2900,4100],12:[2200,3700,4700],13:[2600,4200,5400],14:[2900,4900,6200],15:[3300,5400,7800],16:[3800,6100,9800],17:[4500,7200,11700],18:[5000,8700,14200],19:[5500,10700,17200],20:[6400,13200,22000]};
 const DIFS = ['Baixa','Moderada','Alta'];
-const CRXP = {'0':10,'1/8':25,'1/4':50,'1/2':100,'1':200,'2':450,'3':700,'4':1100,'5':1800,'6':2300,'7':2900,'8':3900,'9':5000,'10':5900,'11':7200,'12':8400,'13':10000,'14':11500,'15':13000,'16':15000,'17':18000,'18':20000,'19':22000,'20':25000,'21':33000};
+const CRXP = {'0':10,'1/8':25,'1/4':50,'1/2':100,'1':200,'2':450,'3':700,'4':1100,'5':1800,'6':2300,'7':2900,'8':3900,'9':5000,'10':5900,'11':7200,'12':8400,'13':10000,'14':11500,'15':13000,'16':15000,'17':18000,'18':20000,'19':22000,'20':25000,'21':33000,'22':41000,'23':50000,'24':62000,'25':75000,'26':90000,'27':105000,'28':120000,'29':135000,'30':155000};
 const tierOf = l => l<=4?1:l<=10?2:l<=16?3:4;
 const TDC = {det:[12,14,16,18], sv:[13,15,17,19], dano:['2d10','4d10','8d10','12d10'], leve:['1d10','2d10','4d10','6d10']};
 
@@ -165,7 +165,63 @@ const MON = [
 ['Behir','Behir','11','v'],['Diabo Chifrudo','Horned Devil','11','t'],['Arquimago','Archmage','12','a'],
 ['Vampiro','Vampire','13','c'],['Nalfeshnee','Nalfeshnee','13','t'],['Dragão Negro Adulto','Adult Black Dragon','14','ve'],
 ['Múmia Senhora','Mummy Lord','15','c'],['Verme Púrpura','Purple Worm','15','v'],['Golem de Ferro','Iron Golem','16','a'],['Marilith','Marilith','16','t'],
-['Dragão Vermelho Adulto','Adult Red Dragon','17','vfg'],['Balor','Balor','19','t'],['Pit Fiend','Pit Fiend','20','t'],['Lich','Lich','21','ca'],['Dragão Negro Ancião','Ancient Black Dragon','21','ve']
+['Dragão Vermelho Adulto','Adult Red Dragon','17','vfg'],['Balor','Balor','19','t'],['Pit Fiend','Pit Fiend','20','t'],['Lich','Lich','21','ca'],['Dragão Negro Ancião','Ancient Black Dragon','21','ve'],
+/* Livro dos Monstros 2024 (demais criaturas). Etiqueta 'x' = só ao ar livre: não entra nos sorteios de masmorra. */
+['Rato','Rat','0','e'],['Morcego','Bat','0','v'],['Gato','Cat','0','x'],['Sapo','Frog','0','e'],['Lagarto','Lizard','0','v'],['Aranha','Spider','0','v'],['Escorpião','Scorpion','0','v'],['Corvo','Raven','0','x'],['Coruja','Owl','0','x'],
+['Falcão','Hawk','0','x'],['Águia','Eagle','0','x'],['Hiena','Hyena','0','x'],['Chacal','Jackal','0','x'],['Babuíno','Baboon','0','x'],['Texugo','Badger','0','x'],['Bode','Goat','0','x'],['Abutre','Vulture','0','x'],['Doninha','Weasel','0','x'],
+['Caranguejo','Crab','0','e'],['Polvo','Octopus','0','e'],['Piranha','Quipper','0','e'],['Arbusto Desperto','Awakened Shrub','0','x'],['Mão Rastejante','Crawling Claw','0','c'],['Lêmure','Lemure','0','t'],['Homúnculo','Homunculus','0','a'],
+['Fungo Guinchador','Shrieker Fungus','0','v'],['Broto Miconídeo','Myconid Sprout','0','v'],['Besouro de Fogo Gigante','Giant Fire Beetle','0','v'],['Rato Craniano','Cranium Rat','0','e'],['Plebeu','Commoner','0','f'],
+['Falcão Sangrento','Blood Hawk','1/8','x'],['Camelo','Camel','1/8','x'],['Mula','Mule','1/8','x'],['Pônei','Pony','1/8','x'],['Mastim','Mastiff','1/8','x'],['Cobra Venenosa','Venomous Snake','1/8','ve'],['Caranguejo Gigante','Giant Crab','1/8','e'],
+['Doninha Gigante','Giant Weasel','1/8','x'],['Estirge','Stirge','1/8','vc'],['Flumph','Flumph','1/8','v'],['Manes','Manes','1/8','t'],['Goblin Lacaio','Goblin Minion','1/8','g'],['Guerreiro de Infantaria','Warrior Infantry','1/8','f'],['Nobre','Noble','1/8','f'],
+['Tritão Escaramuçador','Merfolk Skirmisher','1/8','e'],['Girino de Slaad','Slaad Tadpole','1/8','a'],['Monodrone','Monodrone','1/8','a'],['Arbusto de Galhos','Twig Blight','1/8','x'],
+['Cavalo de Montaria','Riding Horse','1/4','x'],['Cavalo de Tração','Draft Horse','1/4','x'],['Javali','Boar','1/4','x'],['Alce','Elk','1/4','x'],['Pantera','Panther','1/4','x'],['Bico-de-Machado','Axe Beak','1/4','x'],['Cão Intermitente','Blink Dog','1/4','x'],
+['Cobra Constritora','Constrictor Snake','1/4','e'],['Texugo Gigante','Giant Badger','1/4','g'],['Centopeia Gigante','Giant Centipede','1/4','v'],['Sapo Gigante','Giant Frog','1/4','e'],['Lagarto Gigante','Giant Lizard','1/4','v'],['Coruja Gigante','Giant Owl','1/4','x'],
+['Cobra Venenosa Gigante','Giant Venomous Snake','1/4','ve'],['Aranha-Lobo Gigante','Giant Wolf Spider','1/4','v'],['Pteranodonte','Pteranodon','1/4','x'],['Enxame de Morcegos','Swarm of Bats','1/4','vc'],['Enxame de Corvos','Swarm of Ravens','1/4','x'],
+['Arbusto de Agulhas','Needle Blight','1/4','x'],['Pixie','Pixie','1/4','x'],['Sprite','Sprite','1/4','x'],['Pseudodragão','Pseudodragon','1/4','a'],['Kobold Inventor','Kobold Inventor','1/4','v'],['Kuo-toa','Kuo-toa','1/4','e'],['Troglodita','Troglodyte','1/4','v'],
+['Guerreiro Bullywug','Bullywug Warrior','1/4','e'],['Escaramuçador Aarakocra','Aarakocra Skirmisher','1/4','x'],['Duodrone','Duodrone','1/4','a'],['Mefite da Lama','Mud Mephit','1/4','e'],['Mefite da Fumaça','Smoke Mephit','1/4','a'],['Mefite do Vapor','Steam Mephit','1/4','a'],
+['Macaco','Ape','1/2','x'],['Urso Negro','Black Bear','1/2','x'],['Cavalo de Guerra','Warhorse','1/2','x'],['Bode Gigante','Giant Goat','1/2','x'],['Vespa Gigante','Giant Wasp','1/2','x'],['Cavalo-Marinho Gigante','Giant Seahorse','1/2','e'],['Tubarão de Recife','Reef Shark','1/2','e'],
+['Enxame de Insetos','Swarm of Insects','1/2','ec'],['Arbusto de Vinhas','Vine Blight','1/2','x'],['Sátiro','Satyr','1/2','x'],['Homem-Chacal','Jackalwere','1/2','x'],['Manto Escuro','Darkmantle','1/2','v'],['Perfurador','Piercer','1/2','v'],
+['Monstro da Ferrugem','Rust Monster','1/2','v'],['Esporo Gasoso','Gas Spore Fungus','1/2','v'],['Miconídeo Adulto','Myconid Adult','1/2','v'],['Magmin','Magmin','1/2','a'],['Mefite da Poeira','Dust Mephit','1/2','ac'],['Mefite do Gelo','Ice Mephit','1/2','a'],
+['Mefite do Magma','Magma Mephit','1/2','a'],['Tridrone','Tridrone','1/2','a'],['Homem-Lagarto','Lizardfolk','1/2','e'],['Guerreiro Sahuagin','Sahuagin Warrior','1/2','e'],['Esqueleto de Cavalo de Guerra','Warhorse Skeleton','1/2','c'],
+['Urso Pardo','Brown Bear','1','g'],['Leão','Lion','1','x'],['Tigre','Tiger','1','x'],['Lobo Atroz','Dire Wolf','1','g'],['Hiena Gigante','Giant Hyena','1','g'],['Águia Gigante','Giant Eagle','1','x'],['Abutre Gigante','Giant Vulture','1','x'],
+['Polvo Gigante','Giant Octopus','1','e'],['Sapo-Boi Gigante','Giant Toad','1','e'],['Cão da Morte','Death Dog','1','g'],['Harpia','Harpy','1','x'],['Hipogrifo','Hippogriff','1','x'],['Dríade','Dryad','1','x'],['Kobold Escudo-Dracônico','Kobold Dragonshield','1','v'],
+['Kobold Feiticeiro de Escamas','Kobold Scale Sorcerer','1','v'],['Chicote Kuo-toa','Kuo-toa Whip','1','e'],['Quadrone','Quadrone','1','a'],['Cobra de Fogo','Salamander Fire Snake','1','a'],['Esfinge da Maravilha','Sphinx of Wonder','1','t'],['Enxame de Piranhas','Swarm of Quippers','1','e'],
+['Filhote de Dragão de Latão','Brass Dragon Wyrmling','1','x'],['Filhote de Dragão de Cobre','Copper Dragon Wyrmling','1','x'],
+['Alossauro','Allosaurus','2','x'],['Plesiossauro','Plesiosaurus','2','e'],['Urso Polar','Polar Bear','2','x'],['Javali Gigante','Giant Boar','2','x'],['Alce Gigante','Giant Elk','2','x'],['Cobra Constritora Gigante','Giant Constrictor Snake','2','ev'],
+['Tubarão Caçador','Hunter Shark','2','e'],['Rinoceronte','Rhinoceros','2','x'],['Tigre-Dentes-de-Sabre','Saber-Toothed Tiger','2','x'],['Enxame de Cobras Venenosas','Swarm of Venomous Snakes','2','e'],['Árvore Desperta','Awakened Tree','2','x'],
+['Grifo','Griffon','2','x'],['Pégaso','Pegasus','2','x'],['Peryton','Peryton','2','x'],['Centauro Combatente','Centaur Trooper','2','x'],['Rastejador Carniceiro','Carrion Crawler','2','vc'],['Bocarra Balbuciante','Gibbering Mouther','2','v'],
+['Devorador de Intelecto','Intellect Devourer','2','v'],['Nothic','Nothic','2','a'],['Quaggoth','Quaggoth','2','v'],['Miconídeo Soberano','Myconid Sovereign','2','v'],['Fogo-Fátuo',"Will-o'-Wisp",'2','c'],['Diabo Espinhoso','Spined Devil','2','t'],
+['Bruxa do Mar','Sea Hag','2','e'],['Merrow','Merrow','2','e'],['Sacerdote Sahuagin','Sahuagin Priest','2','e'],['Sentinela Azer','Azer Sentinel','2','f'],['Monge Githzerai','Githzerai Monk','2','a'],['Pentadrone','Pentadrone','2','a'],
+['Berserker','Berserker','2','fg'],['Druida','Druid','2','x'],['Aprendiz de Mago','Mage Apprentice','2','a'],['Senhor da Matilha Gnoll','Gnoll Pack Lord','2','g'],
+['Filhote de Dragão Negro','Black Dragon Wyrmling','2','ve'],['Filhote de Dragão Verde','Green Dragon Wyrmling','2','vg'],['Filhote de Dragão Branco','White Dragon Wyrmling','2','vg'],['Filhote de Dragão de Bronze','Bronze Dragon Wyrmling','2','e'],['Filhote de Dragão de Prata','Silver Dragon Wyrmling','2','x'],
+['Anquilossauro','Ankylosaurus','3','x'],['Escorpião Gigante','Giant Scorpion','3','v'],['Orca','Killer Whale','3','e'],['Lobisomem','Werewolf','3','x'],['Lobo Invernal','Winter Wolf','3','g'],['Yeti','Yeti','3','g'],['Besta Deslocadora','Displacer Beast','3','g'],
+['Aranha de Fase','Phase Spider','3','va'],['Horror Gancho','Hook Horror','3','v'],['Espectador','Spectator','3','a'],['Doppelganger','Doppelganger','3','f'],['Pesadelo','Nightmare','3','t'],['Bruxa Verde','Green Hag','3','x'],['Estranho da Água','Water Weird','3','ae'],
+['Minotauro de Baphomet','Minotaur of Baphomet','3','g'],['Guerreiro Githyanki','Githyanki Warrior','3','a'],['Malison Yuan-ti','Yuan-ti Malison','3','t'],['Filhote de Dragão Azul','Blue Dragon Wyrmling','3','vg'],['Filhote de Dragão de Ouro','Gold Dragon Wyrmling','3','x'],
+['Elefante','Elephant','4','x'],['Javali-Lobisomem','Wereboar','4','x'],['Tigre-Lobisomem','Weretiger','4','x'],['Ettin','Ettin','4','g'],['Chuul','Chuul','4','e'],['Couatl','Couatl','4','t'],['Lâmia','Lamia','4','t'],['Súcubo','Succubus','4','t'],['Íncubo','Incubus','4','t'],
+['Demônio das Sombras','Shadow Demon','4','tc'],['Caveira Flamejante','Flameskull','4','ca'],['Naga Óssea','Bone Naga','4','c'],['Horror de Elmo','Helmed Horror','4','af'],['Capitão da Guarda','Guard Captain','4','f'],['Aeromante Aarakocra','Aarakocra Aeromancer','4','x'],
+['Presa de Yeenoghu','Gnoll Fang of Yeenoghu','4','g'],['Filhote de Dragão Vermelho','Red Dragon Wyrmling','4','vg'],
+['Triceratops','Triceratops','5','x'],['Tubarão Gigante','Giant Shark','5','e'],['Urso-Lobisomem','Werebear','5','x'],['Unicórnio','Unicorn','5','x'],['Elemental do Ar','Air Elemental','5','a'],['Elemental do Fogo','Fire Elemental','5','af'],['Elemental da Água','Water Elemental','5','ae'],
+['Salamandra','Salamander','5','a'],['Xorn','Xorn','5','v'],['Bulette','Bulette','5','v'],['Górgona','Gorgon','5','g'],['Remorhaz Jovem','Young Remorhaz','5','v'],['Monte Rastejante','Shambling Mound','5','e'],['Enxame de Ratos Cranianos','Swarm of Cranium Rats','5','e'],
+['Zumbi Observador','Beholder Zombie','5','c'],['Revenant','Revenant','5','c'],['Meio-Dragão','Half-Dragon','5','g'],['Bruxa da Noite','Night Hag','5','t'],['Cambion','Cambion','5','t'],['Diabo Farpado','Barbed Devil','5','t'],['Barlgura','Barlgura','5','t'],
+['Mezzoloth','Mezzoloth','5','t'],['Slaad Vermelho','Red Slaad','5','a'],['Barão Sahuagin','Sahuagin Baron','5','e'],
+['Mamute','Mammoth','6','x'],['Drider','Drider','6','v'],['Galeb Duhr','Galeb Duhr','6','v'],['Perseguidor Invisível','Invisible Stalker','6','a'],['Chasme','Chasme','6','t'],['Ciclope Sentinela','Cyclops Sentry','6','g'],['Piromante Azer','Azer Pyromancer','6','f'],
+['Arquissacerdote Kuo-toa','Kuo-toa Archpriest','6','e'],['Zerth Githzerai','Githzerai Zerth','6','a'],['Dragão Branco Jovem','Young White Dragon','6','vg'],['Dragão de Latão Jovem','Young Brass Dragon','6','x'],
+['Macaco Gigante','Giant Ape','7','x'],['Devorador de Mentes','Mind Flayer','7','v'],['Oni','Oni','7','g'],['Slaad Azul','Blue Slaad','7','a'],['Abominação Yuan-ti','Yuan-ti Abomination','7','t'],['Dragão de Cobre Jovem','Young Copper Dragon','7','x'],
+['Tiranossauro Rex','Tyrannosaurus Rex','8','x'],['Manto Sombrio','Cloaker','8','v'],['Fomoriano','Fomorian','8','v'],['Naga Espiritual','Spirit Naga','8','t'],['Slaad Verde','Green Slaad','8','a'],['Cavaleiro Githyanki','Githyanki Knight','8','a'],
+['Cavaleiro Sombrio','Blackguard','8','f'],['Dragão Verde Jovem','Young Green Dragon','8','vg'],['Dragão de Bronze Jovem','Young Bronze Dragon','8','e'],
+['Yeti Abominável','Abominable Yeti','9','g'],['Treant','Treant','9','x'],['Gigante das Nuvens','Cloud Giant','9','g'],['Nycaloth','Nycaloth','9','t'],['Slaad Cinzento','Gray Slaad','9','a'],['Campeão','Champion','9','f'],
+['Dragão Azul Jovem','Young Blue Dragon','9','vg'],['Dragão de Prata Jovem','Young Silver Dragon','9','x'],
+['Naga Guardiã','Guardian Naga','10','t'],['Deva','Deva','10','t'],['Slaad da Morte','Death Slaad','10','a'],['Dragão de Ouro Jovem','Young Gold Dragon','10','x'],
+['Remorhaz','Remorhaz','11','v'],['Roca','Roc','11','x'],['Esfinge do Saber','Sphinx of Lore','11','t'],['Djinni','Djinni','11','a'],['Efreeti','Efreeti','11','af'],['Dao','Dao','11','av'],['Marid','Marid','11','ae'],
+['Arcanaloth','Arcanaloth','12','ta'],['Erínia','Erinyes','12','t'],['Arquissacerdote','Archpriest','12','t'],
+['Observador','Beholder','13','v'],['Rakshasa','Rakshasa','13','t'],['Gigante da Tempestade','Storm Giant','13','g'],['Ultroloth','Ultroloth','13','t'],['Dragão Branco Adulto','Adult White Dragon','13','vg'],['Dragão de Latão Adulto','Adult Brass Dragon','13','x'],
+['Tirano da Morte','Death Tyrant','14','c'],['Diabo do Gelo','Ice Devil','14','t'],['Dragão de Cobre Adulto','Adult Copper Dragon','14','x'],
+['Dragão Verde Adulto','Adult Green Dragon','15','vg'],['Dragão de Bronze Adulto','Adult Bronze Dragon','15','e'],
+['Planetar','Planetar','16','t'],['Dragão Azul Adulto','Adult Blue Dragon','16','vg'],['Dragão de Prata Adulto','Adult Silver Dragon','16','x'],
+['Cavaleiro da Morte','Death Knight','17','cf'],['Tartaruga-Dragão','Dragon Turtle','17','e'],['Goristro','Goristro','17','t'],['Esfinge do Valor','Sphinx of Valor','17','t'],['Dragão de Ouro Adulto','Adult Gold Dragon','17','x'],
+['Semilich','Demilich','18','c'],['Dragão Branco Ancião','Ancient White Dragon','20','vg'],['Dragão de Latão Ancião','Ancient Brass Dragon','20','x'],['Solar','Solar','21','t'],['Dragão de Cobre Ancião','Ancient Copper Dragon','21','x'],
+['Dragão Verde Ancião','Ancient Green Dragon','22','vg'],['Dragão de Bronze Ancião','Ancient Bronze Dragon','22','e'],['Dragão Azul Ancião','Ancient Blue Dragon','23','vg'],['Dragão de Prata Ancião','Ancient Silver Dragon','23','x'],
+['Kraken','Kraken','23','e'],['Empíreo','Empyrean','23','t'],['Dragão Vermelho Ancião','Ancient Red Dragon','24','vfg'],['Dragão de Ouro Ancião','Ancient Gold Dragon','24','x'],['Tarrasque','Tarrasque','30','x']
 ].map(([pt,en,cr,tags]) => ({pt,en,cr,xp:CRXP[cr],tags}));
 const MON_BY_EN = Object.fromEntries(MON.map(m=>[m.en,m]));
 const MON_BY_PT = Object.fromEntries(MON.map(m=>[m.pt,m]));
@@ -481,20 +537,21 @@ function genMap(rng, tamanho, tema){
 }
 
 /* ================= gerador de conteúdo ================= */
+const MON_DG = MON.filter(m=>m.tags!=='x'); /* reserva quando o tema não tem opções: só criaturas de masmorra */
 function poolFor(tema){ const t=TEMAS[tema].tag; return MON.filter(m=>m.tags.includes(t)); }
 function buildEncounter(rng, p, dif, chefe){
   const per = BUD[p.nivel][dif]; let alvo = per*p.jogadores; if (chefe && p.ritmo==='pesado') alvo=Math.round(alvo*1.25);
   const pool = poolFor(p.tema);
   const fits = (list,lo,hi) => list.filter(m=>m.xp<=hi && m.xp>=lo);
-  let cand = fits(pool, alvo/(chefe?4:10), alvo*(chefe?.85:1)); if (cand.length<2) cand = fits(MON, alvo/(chefe?4:10), alvo*(chefe?.85:1));
-  if (!cand.length) cand = [MON.filter(m=>m.xp<=alvo).sort((a,b)=>b.xp-a.xp)[0] || MON[0]];
+  let cand = fits(pool, alvo/(chefe?4:10), alvo*(chefe?.85:1)); if (cand.length<2) cand = fits(MON_DG, alvo/(chefe?4:10), alvo*(chefe?.85:1));
+  if (!cand.length) cand = [MON_DG.filter(m=>m.xp<=alvo).sort((a,b)=>b.xp-a.xp)[0] || MON[0]];
   let prim, n;
   if (chefe){ const sorted=[...cand].sort((a,b)=>b.xp-a.xp); prim = rng.pick(sorted.slice(0,Math.max(1,Math.ceil(sorted.length/3)))); n=1; }
   else { prim = rng.pick(cand); const maxN=Math.max(1,Math.min(8,Math.floor(alvo/prim.xp))); n=Math.max(1,Math.round(maxN*(.6+.4*rng.f()))); }
   const grupos=[{pt:prim.pt,en:prim.en,cr:prim.cr,xp:prim.xp,qtd:n}];
   let resto = alvo - n*prim.xp;
   if (resto >= alvo*.2){
-    let c2 = pool.filter(m=>m.xp<=resto && m.pt!==prim.pt && m.xp>=resto/6); if(!c2.length) c2 = MON.filter(m=>m.xp<=resto && m.pt!==prim.pt && m.xp>=resto/6);
+    let c2 = pool.filter(m=>m.xp<=resto && m.pt!==prim.pt && m.xp>=resto/6); if(!c2.length) c2 = MON_DG.filter(m=>m.xp<=resto && m.pt!==prim.pt && m.xp>=resto/6);
     if (c2.length){ const s=rng.pick(c2); const k=Math.max(1,Math.min(6,Math.floor(resto/s.xp))); grupos.push({pt:s.pt,en:s.en,cr:s.cr,xp:s.xp,qtd:k}); }
   }
   const xp = grupos.reduce((t,gp)=>t+gp.xp*gp.qtd,0);
@@ -755,13 +812,13 @@ function popView(){
   if (S.popEdit) body = `<textarea id="mon-txt" aria-label="Texto da ficha">${h(custom ?? base)}</textarea>
       <p class="small muted" style="margin:0">Uma linha por item. O trecho até o primeiro ponto aparece em destaque.</p>
       <div class="row"><button class="btn pri" data-act="mon-save">Salvar texto</button><button class="btn" data-act="mon-cancel">Cancelar</button></div>`;
-  else body = statLinesHtml((custom ?? base).split('\n').filter(x=>x.trim())) || '<p class="muted">Ainda não há resumo para este monstro.</p>';
+  else body = statLinesHtml((custom ?? base).split('\n').filter(x=>x.trim())) || '<p class="muted">Ficha completa no Livro dos Monstros 2024 (em inglês: '+h(m.en)+'). O app ainda não tem um resumo deste monstro'+(isMestre()?'; use Editar texto para escrever o seu.':'.')+'</p>';
   return `<div class="pop-bg" data-act="pop-bg"><div class="pop" data-act="noop" role="dialog" aria-modal="true" aria-label="Ficha de ${h(m.pt)}">
     <div class="row" style="justify-content:space-between;align-items:flex-start"><div><h2>${h(m.pt)}</h2><div class="en">${h(m.en)} · ND ${h(m.cr)} · ${fmt(m.xp)} XP</div></div><button class="btn sm" data-act="pop-close" id="pop-close">Fechar</button></div>
     ${st?`<dl class="kv"><dt>Classe de Armadura</dt><dd>${st.ca}</dd><dt>Pontos de Vida</dt><dd>${h(st.pv)}</dd><dt>Deslocamento</dt><dd>${h(st.desl)}</dd></dl>
     <div class="atr">${st.atr.map((v,i)=>`<div><b>${NOMES_ATR[i]}</b><span>${v} (${mod(v)})</span></div>`).join('')}</div>`:''}
     <div class="sb">${body}</div>
-    ${S.popEdit?'':`<div class="row" style="justify-content:space-between"><span class="small muted">${custom!=null?'Texto editado pelo mestre.':'Resumo do SRD; confira o livro em caso de dúvida.'}</span>
+    ${S.popEdit?'':`<div class="row" style="justify-content:space-between"><span class="small muted">${custom!=null?'Texto editado pelo mestre.':st?'Resumo do SRD; confira o livro em caso de dúvida.':''}</span>
       ${isMestre()?`<span class="row"><button class="btn sm" data-act="mon-edit">Editar texto</button>${custom!=null?`<button class="btn sm danger" data-act="mon-reset">${S.popResetArm?'Confirmar: voltar ao resumo':'Voltar ao resumo'}</button>`:''}</span>`:''}</div>`}
   </div></div>`;
 }
