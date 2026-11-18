@@ -1,0 +1,198 @@
+@@ Cockatrice
+## Ações
+Mordida Petrificante. Jogada de Ataque Corpo a Corpo: +3, alcance 1,5 m. Acerto: 3 (1d4 + 1) de dano Perfurante. Se o alvo for uma criatura, ele é submetido ao efeito a seguir. Salvaguarda de Constituição: CD 11. Primeira Falha: O alvo fica na condição Impedido. Ele repete a salvaguarda no fim do seu próximo turno se ainda estiver Impedido, encerrando o efeito em si mesmo com um sucesso. Segunda Falha: O alvo fica na condição Petrificado, em vez de Impedido, por 24 horas.
+
+@@ Commoner
+## Traços
+Treinamento. O plebeu tem proficiência em uma perícia à escolha do mestre e tem Vantagem sempre que faz um teste de atributo usando essa perícia.
+## Ações
+Clava. Jogada de Ataque Corpo a Corpo: +2, alcance 1,5 m. Acerto: 2 (1d4) de dano Contundente.
+
+@@ Copper Dragon Wyrmling
+## Ações
+Dilacerar. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 7 (1d10 + 2) de dano Cortante.
+Sopro Ácido (Recarga 5–6). Salvaguarda de Destreza: CD 11, cada criatura numa Linha de 6 m de comprimento e 1,5 m de largura. Falha: 18 (4d8) de dano Ácido. Sucesso: Metade do dano.
+Sopro Retardante. Salvaguarda de Constituição: CD 11, cada criatura num Cone de 4,5 m. Falha: O alvo não pode realizar Reações, seu Deslocamento cai pela metade e ele pode realizar uma ação ou uma Ação Bônus no seu turno, não ambas. O efeito dura até o fim do seu próximo turno.
+
+@@ Young Copper Dragon
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar. Ele pode substituir um ataque por um uso de Sopro Retardante.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +7, alcance 3 m. Acerto: 15 (2d10 + 4) de dano Cortante.
+Sopro Ácido (Recarga 5–6). Salvaguarda de Destreza: CD 14, cada criatura numa Linha de 12 m de comprimento e 1,5 m de largura. Falha: 40 (9d8) de dano Ácido. Sucesso: Metade do dano.
+Sopro Retardante. Salvaguarda de Constituição: CD 14, cada criatura num Cone de 9 m. Falha: O alvo não pode realizar Reações, seu Deslocamento cai pela metade e ele pode realizar uma ação ou uma Ação Bônus no seu turno, não ambas. O efeito dura até o fim do seu próximo turno.
+
+@@ Adult Copper Dragon
+## Traços
+Resistência Lendária (3/Dia, ou 4/Dia no Covil). Se o dragão falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar. Ele pode substituir um ataque por um uso de (A) Sopro Retardante ou (B) Conjuração para conjurar Mind Spike (versão de 4º círculo).
+Dilacerar. Jogada de Ataque Corpo a Corpo: +11, alcance 3 m. Acerto: 17 (2d10 + 6) de dano Cortante mais 4 (1d8) de dano Ácido.
+Sopro Ácido (Recarga 5–6). Salvaguarda de Destreza: CD 18, cada criatura numa Linha de 18 m de comprimento e 1,5 m de largura. Falha: 54 (12d8) de dano Ácido. Sucesso: Metade do dano.
+Sopro Retardante. Salvaguarda de Constituição: CD 18, cada criatura num Cone de 18 m. Falha: O alvo não pode realizar Reações, seu Deslocamento cai pela metade e ele pode realizar uma ação ou uma Ação Bônus no seu turno, não ambas. O efeito dura até o fim do seu próximo turno.
+Conjuração. O dragão conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 17): À Vontade: Detect Magic, Mind Spike (versão de 4º círculo), Minor Illusion, Shapechange (apenas formas de Fera ou Humanoide, sem ganhar Pontos de Vida Temporários pela magia e sem precisar de Concentração ou Pontos de Vida Temporários para mantê-la). 1/Dia Cada: Greater Restoration, Major Image.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, o dragão pode gastar um uso para realizar uma das ações a seguir. O dragão recupera todos os usos gastos no início de cada um de seus turnos.
+Magia Risonha. Salvaguarda de Carisma: CD 17, uma criatura que o dragão consiga ver a até 27 m. Falha: 24 (7d6) de dano Psíquico. Até o fim do seu próximo turno, o alvo rola 1d6 sempre que faz um teste de atributo ou uma jogada de ataque e subtrai o resultado do Teste de D20. Falha ou Sucesso: O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Choque Mental. O dragão usa Conjuração para conjurar Mind Spike (versão de 4º círculo). O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Bote. O dragão se move até metade do seu Deslocamento e faz um ataque de Dilacerar.
+
+@@ Ancient Copper Dragon
+## Traços
+Resistência Lendária (4/Dia, ou 5/Dia no Covil). Se o dragão falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar. Ele pode substituir um ataque por um uso de (A) Sopro Retardante ou (B) Conjuração para conjurar Mind Spike (versão de 5º círculo).
+Dilacerar. Jogada de Ataque Corpo a Corpo: +15, alcance 4,5 m. Acerto: 19 (2d10 + 8) de dano Cortante mais 9 (2d8) de dano Ácido.
+Sopro Ácido (Recarga 5–6). Salvaguarda de Destreza: CD 22, cada criatura numa Linha de 27 m de comprimento e 3 m de largura. Falha: 63 (14d8) de dano Ácido. Sucesso: Metade do dano.
+Sopro Retardante. Salvaguarda de Constituição: CD 22, cada criatura num Cone de 27 m. Falha: O alvo não pode realizar Reações, seu Deslocamento cai pela metade e ele pode realizar uma ação ou uma Ação Bônus no seu turno, não ambas. O efeito dura até o fim do seu próximo turno.
+Conjuração. O dragão conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 21): À Vontade: Detect Magic, Mind Spike (versão de 5º círculo), Minor Illusion, Shapechange (apenas formas de Fera ou Humanoide, sem ganhar Pontos de Vida Temporários pela magia e sem precisar de Concentração ou Pontos de Vida Temporários para mantê-la). 1/Dia Cada: Greater Restoration, Major Image, Project Image.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, o dragão pode gastar um uso para realizar uma das ações a seguir. O dragão recupera todos os usos gastos no início de cada um de seus turnos.
+Magia Risonha. Salvaguarda de Carisma: CD 21, uma criatura que o dragão consiga ver a até 36 m. Falha: 31 (9d6) de dano Psíquico. Até o fim do seu próximo turno, o alvo rola 1d8 sempre que faz um teste de atributo ou uma jogada de ataque e subtrai o resultado do Teste de D20. Falha ou Sucesso: O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Choque Mental. O dragão usa Conjuração para conjurar Mind Spike (versão de 5º círculo). O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Bote. O dragão se move até metade do seu Deslocamento e faz um ataque de Dilacerar.
+
+@@ Couatl
+## Traços
+Mente Protegida. Os pensamentos do couatl não podem ser lidos por nenhum meio, e outras criaturas só podem se comunicar com ele telepaticamente se ele permitir.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 11 (1d12 + 5) de dano Perfurante, e o alvo fica na condição Envenenado até o fim do próximo turno do couatl.
+Constringir. Salvaguarda de Força: CD 15, uma criatura Média ou menor que o couatl consiga ver a até 1,5 m. Falha: 8 (1d6 + 5) de dano Contundente. O alvo fica na condição Agarrado (CD 13 para escapar) e na condição Impedido até o agarrão acabar.
+Conjuração. O couatl conjura uma das magias a seguir, sem precisar de componentes de magia e usando Sabedoria como atributo de conjuração (CD de salvaguarda de magia 15): À Vontade: Detect Evil and Good, Detect Magic, Detect Thoughts, Shapechange (apenas formas de Fera ou Humanoide, sem ganhar Pontos de Vida Temporários pela magia e sem precisar de Concentração ou Pontos de Vida Temporários para mantê-la). 1/Dia Cada: Create Food and Water, Dream, Greater Restoration, Scrying, Sleep.
+## Ações Bônus
+Auxílio Divino (2/Dia). O couatl conjura Bless, Lesser Restoration ou Sanctuary, sem precisar de componentes de magia e usando o mesmo atributo de conjuração de Conjuração.
+
+@@ Swarm of Crawling Claws
+## Traços
+Enxame. O enxame pode ocupar o espaço de outra criatura e vice-versa, e pode passar por qualquer abertura grande o bastante para uma criatura Miúda. O enxame não pode recuperar Pontos de Vida nem ganhar Pontos de Vida Temporários.
+## Ações
+Enxame de Mãos Agarradoras. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 20 (4d8 + 2) de dano Necrótico, ou 11 (2d8 + 2) de dano Necrótico se o enxame estiver Sangrando. Se o alvo for uma criatura Média ou menor, ele fica na condição Caído.
+
+@@ Cultist
+## Ações
+Foice Ritual. Jogada de Ataque Corpo a Corpo: +3, alcance 1,5 m. Acerto: 3 (1d4 + 1) de dano Cortante mais 1 de dano Necrótico.
+
+@@ Cultist Fanatic
+## Ações
+Lâmina do Pacto. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 6 (1d8 + 2) de dano Cortante mais 7 (2d6) de dano Necrótico.
+Conjuração. O cultista conjura uma das magias a seguir, usando Sabedoria como atributo de conjuração (CD de salvaguarda de magia 12, +4 para acertar com ataques de magia): À Vontade: Light, Thaumaturgy. 2/Dia: Command. 1/Dia: Hold Person.
+## Ações Bônus
+Arma Espiritual (2/Dia). O cultista conjura a magia Spiritual Weapon, usando o mesmo atributo de conjuração de Conjuração.
+
+@@ Darkmantle
+## Ações
+Esmagar. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 6 (1d6 + 3) de dano Contundente, e o manto escuro se prende ao alvo. Se o alvo for uma criatura Média ou menor e o manto escuro teve Vantagem na jogada de ataque, ele cobre o alvo, que fica na condição Cego e está sufocando enquanto o manto escuro estiver preso assim. Enquanto preso a um alvo, o manto escuro só pode atacar esse alvo, mas tem Vantagem nas jogadas de ataque. Seu Deslocamento passa a 0, ele não se beneficia de bônus ao Deslocamento e se move junto com o alvo. Uma criatura pode usar uma ação para tentar soltar o manto escuro de si, conseguindo com um teste de Força (Atletismo) CD 13 bem-sucedido. No seu turno, o manto escuro pode se soltar usando 1,5 m de movimento.
+Aura de Escuridão (1/Dia). Escuridão mágica preenche uma Emanação de 4,5 m a partir do manto escuro. O efeito dura enquanto o manto escuro mantiver Concentração nele, até 10 minutos. Visão no Escuro não penetra essa área, e nenhuma luz consegue iluminá-la.
+
+@@ Death Dog
+## Ações
+Ataque Múltiplo. O cão da morte faz dois ataques de Mordida.
+Mordida. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 4 (1d4 + 2) de dano Perfurante. Se o alvo for uma criatura, ele é submetido ao efeito a seguir. Salvaguarda de Constituição: CD 12. Primeira Falha: O alvo fica na condição Envenenado. Enquanto Envenenado, o máximo de Pontos de Vida do alvo não volta ao normal ao terminar um Descanso Longo, e ele repete a salvaguarda a cada 24 horas que se passarem, encerrando o efeito em si mesmo com um sucesso. Falhas Seguintes: O máximo de Pontos de Vida do alvo Envenenado diminui em 5 (1d10).
+
+@@ Deva
+## Traços
+Restauração Exaltada. Se o deva morrer fora do Monte Celéstia, seu corpo desaparece e ele ganha um novo corpo instantaneamente, revivendo com todos os seus Pontos de Vida em algum lugar do Monte Celéstia.
+Resistência à Magia. O deva tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Ataque Múltiplo. O deva faz dois ataques de Maça Sagrada.
+Maça Sagrada. Jogada de Ataque Corpo a Corpo: +8, alcance 1,5 m. Acerto: 7 (1d6 + 4) de dano Contundente mais 18 (4d8) de dano Radiante.
+Conjuração. O deva conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 17): À Vontade: Detect Evil and Good, Shapechange (apenas formas de Fera ou Humanoide, sem ganhar Pontos de Vida Temporários pela magia e sem precisar de Concentração ou Pontos de Vida Temporários para mantê-la). 1/Dia Cada: Commune, Raise Dead.
+## Ações Bônus
+Auxílio Divino (2/Dia). O deva conjura Cure Wounds, Lesser Restoration ou Remove Curse, usando o mesmo atributo de conjuração de Conjuração.
+
+@@ Djinni
+## Traços
+Restauração Elemental. Se o djinni morrer fora do Plano Elemental do Ar, seu corpo se dissolve em névoa e ele ganha um novo corpo em 1d4 dias, revivendo com todos os seus Pontos de Vida em algum lugar do Plano do Ar.
+Resistência à Magia. O djinni tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+Desejos. O djinni tem 30% de chance de conhecer a magia Wish. Se conhecer, só pode conjurá-la em nome de uma criatura que não seja um gênio e que expresse um desejo de um jeito que o djinni entenda. Se conjurar a magia para a criatura, o djinni não sofre nenhum dos desgastes da magia. Depois de conjurá-la três vezes, o djinni não pode fazê-lo de novo por 365 dias.
+## Ações
+Ataque Múltiplo. O djinni faz três ataques, usando Lâmina da Tempestade ou Raio da Tempestade em qualquer combinação.
+Lâmina da Tempestade. Jogada de Ataque Corpo a Corpo: +9, alcance 1,5 m. Acerto: 12 (2d6 + 5) de dano Cortante mais 7 (2d6) de dano Elétrico.
+Raio da Tempestade. Jogada de Ataque à Distância: +9, distância 36 m. Acerto: 13 (3d8) de dano Trovejante. Se o alvo for uma criatura Grande ou menor, ele fica na condição Caído.
+Criar Redemoinho. O djinni conjura um redemoinho num ponto que consiga ver a até 36 m. O redemoinho preenche um Cilindro de 6 m de raio e 18 m de altura centrado nesse ponto e dura até a Concentração do djinni nele acabar. O djinni pode mover o redemoinho até 6 m no início de cada um de seus turnos. Sempre que o redemoinho entrar no espaço de uma criatura ou uma criatura entrar no redemoinho, ela é submetida ao efeito a seguir. Salvaguarda de Força: CD 17 (uma criatura só faz esta salvaguarda uma vez por turno, e o djinni não é afetado). Falha: Enquanto estiver no redemoinho, o alvo fica na condição Impedido e se move junto com ele. No início de cada um de seus turnos, o alvo Impedido sofre 21 (6d6) de dano Trovejante. No fim de cada um de seus turnos, o alvo repete a salvaguarda, encerrando o efeito em si mesmo com um sucesso.
+Conjuração. O djinni conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 17): À Vontade: Detect Evil and Good, Detect Magic. 2/Dia Cada: Create Food and Water (pode criar vinho em vez de água), Tongues, Wind Walk. 1/Dia Cada: Creation, Gaseous Form, Invisibility, Major Image, Plane Shift.
+
+@@ Doppelganger
+## Ações
+Ataque Múltiplo. O doppelganger faz dois ataques de Pancada e usa Aparência Perturbadora, se disponível.
+Pancada. Jogada de Ataque Corpo a Corpo: +6 (com Vantagem durante a primeira rodada de cada combate), alcance 1,5 m. Acerto: 11 (2d6 + 4) de dano Contundente.
+Ler Pensamentos. O doppelganger conjura Detect Thoughts, sem precisar de componentes de magia e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 12).
+Aparência Perturbadora (Recarga 6). Salvaguarda de Sabedoria: CD 12, cada criatura numa Emanação de 4,5 m a partir do doppelganger que consiga vê-lo. Falha: O alvo fica na condição Amedrontado e repete a salvaguarda no fim de cada um de seus turnos, encerrando o efeito em si mesmo com um sucesso. Após 1 minuto, ele é bem-sucedido automaticamente.
+## Ações Bônus
+Mudar de Forma. O doppelganger se transforma num Humanoide Médio ou Pequeno, ou volta à sua forma verdadeira. Suas estatísticas de jogo, exceto o tamanho, são as mesmas em todas as formas. Equipamentos que esteja vestindo ou carregando não se transformam.
+
+@@ Dragon Turtle
+## Traços
+Anfíbio. O dragão consegue respirar ar e água.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Mordida. Ele pode substituir um ataque por um ataque de Cauda.
+Mordida. Jogada de Ataque Corpo a Corpo: +13, alcance 4,5 m. Acerto: 23 (3d10 + 7) de dano Perfurante mais 7 (2d6) de dano de Fogo. Estar submerso não concede Resistência a este dano de Fogo.
+Cauda. Jogada de Ataque Corpo a Corpo: +13, alcance 4,5 m. Acerto: 18 (2d10 + 7) de dano Contundente. Se o alvo for uma criatura Enorme ou menor, ele fica na condição Caído.
+Sopro de Vapor (Recarga 5–6). Salvaguarda de Constituição: CD 19, cada criatura num Cone de 18 m. Falha: 56 (16d6) de dano de Fogo. Sucesso: Metade do dano. Falha ou Sucesso: Estar submerso não concede Resistência a este dano de Fogo.
+
+@@ Dretch
+## Ações
+Dilacerar. Jogada de Ataque Corpo a Corpo: +3, alcance 1,5 m. Acerto: 4 (1d6 + 1) de dano Cortante.
+Nuvem Fétida (1/Dia). Salvaguarda de Constituição: CD 11, cada criatura numa Emanação de 3 m a partir do dretch. Falha: O alvo fica na condição Envenenado até o fim do seu próximo turno. Enquanto Envenenada, a criatura pode realizar uma ação ou uma Ação Bônus no seu turno, não ambas, e não pode realizar Reações.
+
+@@ Drider
+## Traços
+Patas de Aranha. O drider consegue escalar superfícies difíceis, inclusive pelo teto, sem precisar fazer um teste de atributo.
+Sensibilidade à Luz Solar. Sob luz do sol, o drider tem Desvantagem em testes de atributo e jogadas de ataque.
+Andarilho da Teia. O drider ignora restrições de movimento causadas por teias e sabe a localização de qualquer outra criatura em contato com a mesma teia.
+## Ações
+Ataque Múltiplo. O drider faz três ataques, usando Pata Dianteira ou Jato de Veneno em qualquer combinação.
+Pata Dianteira. Jogada de Ataque Corpo a Corpo: +7, alcance 3 m. Acerto: 13 (2d8 + 4) de dano Perfurante.
+Jato de Veneno. Jogada de Ataque à Distância: +6, distância 36 m. Acerto: 13 (3d6 + 3) de dano Venenoso.
+## Ações Bônus
+Magia da Rainha Aranha (Recarga 5–6). O drider conjura Darkness, Faerie Fire ou Web, sem precisar de componentes Materiais e usando Sabedoria como atributo de conjuração (CD de salvaguarda de magia 14).
+
+@@ Druid
+## Ações
+Ataque Múltiplo. O druida faz dois ataques, usando Cajado de Vinhas ou Lume Verdejante em qualquer combinação.
+Cajado de Vinhas. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 7 (1d8 + 3) de dano Contundente mais 2 (1d4) de dano Venenoso.
+Lume Verdejante. Jogada de Ataque à Distância: +5, distância 27 m. Acerto: 10 (3d6) de dano Radiante.
+Conjuração. O druida conjura uma das magias a seguir, usando Sabedoria como atributo de conjuração (CD de salvaguarda de magia 13): À Vontade: Druidcraft, Speak with Animals. 2/Dia Cada: Entangle, Thunderwave. 1/Dia Cada: Animal Messenger, Longstrider, Moonbeam.
+
+@@ Dryad
+## Traços
+Resistência à Magia. A dríade tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+Falar com Feras e Plantas. A dríade consegue se comunicar com Feras e Plantas como se compartilhassem um idioma.
+## Ações
+Ataque Múltiplo. A dríade faz um ataque de Chicote de Vinha ou Rajada de Espinhos e pode usar Conjuração para conjurar Charm Monster.
+Chicote de Vinha. Jogada de Ataque Corpo a Corpo: +6, alcance 3 m. Acerto: 8 (1d8 + 4) de dano Cortante.
+Rajada de Espinhos. Jogada de Ataque à Distância: +6, distância 18 m. Acerto: 7 (1d6 + 4) de dano Perfurante.
+Conjuração. A dríade conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 14): À Vontade: Animal Friendship, Charm Monster (dura 24 horas; acaba antes se a dríade conjurar a magia de novo), Druidcraft. 1/Dia Cada: Entangle, Pass without Trace.
+## Ações Bônus
+Passo Arbóreo. Se estiver a até 1,5 m de uma árvore Grande ou maior, a dríade se teletransporta para um espaço desocupado a até 1,5 m de uma segunda árvore Grande ou maior que esteja a até 18 m da primeira.
+
+@@ Earth Elemental
+## Traços
+Deslizar pela Terra. O elemental consegue escavar terra e pedra não mágicas e não trabalhadas. Ao fazer isso, ele não perturba o material por onde passa.
+Monstro de Cerco. O elemental causa dano dobrado a objetos e estruturas.
+## Ações
+Ataque Múltiplo. O elemental faz dois ataques, usando Pancada ou Arremesso de Rocha em qualquer combinação.
+Pancada. Jogada de Ataque Corpo a Corpo: +8, alcance 3 m. Acerto: 14 (2d8 + 5) de dano Contundente.
+Arremesso de Rocha. Jogada de Ataque à Distância: +8, distância 18 m. Acerto: 8 (1d6 + 5) de dano Contundente. Se o alvo for uma criatura Grande ou menor, ele fica na condição Caído.
+
+@@ Efreeti
+## Traços
+Restauração Elemental. Se o efreeti morrer fora do Plano Elemental do Fogo, seu corpo se desfaz em cinzas e ele ganha um novo corpo em 1d4 dias, revivendo com todos os seus Pontos de Vida em algum lugar do Plano do Fogo.
+Resistência à Magia. O efreeti tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+Desejos. O efreeti tem 30% de chance de conhecer a magia Wish. Se conhecer, só pode conjurá-la em nome de uma criatura que não seja um gênio e que expresse um desejo de um jeito que o efreeti entenda. Se conjurar a magia para a criatura, o efreeti não sofre nenhum dos desgastes da magia. Depois de conjurá-la três vezes, o efreeti não pode fazê-lo de novo por 365 dias.
+## Ações
+Ataque Múltiplo. O efreeti faz três ataques, usando Lâmina Incandescente ou Arremessar Chama em qualquer combinação.
+Lâmina Incandescente. Jogada de Ataque Corpo a Corpo: +10, alcance 1,5 m. Acerto: 13 (2d6 + 6) de dano Cortante mais 13 (2d12) de dano de Fogo.
+Arremessar Chama. Jogada de Ataque à Distância: +8, distância 36 m. Acerto: 24 (7d6) de dano de Fogo.
+Conjuração. O efreeti conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 16): À Vontade: Detect Magic, Elementalism. 1/Dia Cada: Gaseous Form, Invisibility, Major Image, Plane Shift, Tongues, Wall of Fire (versão de 7º círculo).
+
+@@ Erinyes
+## Traços
+Restauração Diabólica. Se a erínia morrer fora dos Nove Infernos, seu corpo desaparece em fumaça sulfurosa e ela ganha um novo corpo instantaneamente, revivendo com todos os seus Pontos de Vida em algum lugar dos Nove Infernos.
+Resistência à Magia. A erínia tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+Corda Mágica. A erínia tem uma corda mágica. Enquanto a carrega, ela pode usar a ação Corda Enredante. A corda tem CA 20, 90 PV e Imunidade a dano Venenoso e Psíquico. A corda vira pó se for reduzida a 0 Pontos de Vida, se ficar a 1,5 m ou mais da erínia por 1 hora ou mais, ou se a erínia morrer. Se a corda for danificada ou destruída, a erínia pode restaurá-la totalmente ao terminar um Descanso Curto ou Longo.
+## Ações
+Ataque Múltiplo. A erínia faz três ataques de Espada Definhante e pode usar Corda Enredante.
+Espada Definhante. Jogada de Ataque Corpo a Corpo: +8, alcance 1,5 m. Acerto: 13 (2d8 + 4) de dano Cortante mais 11 (2d10) de dano Necrótico.
+Corda Enredante (Requer Corda Mágica). Salvaguarda de Força: CD 16, uma criatura que a erínia consiga ver a até 36 m. Falha: 14 (4d6) de dano de Energia, e o alvo fica na condição Impedido até a corda ser destruída, a erínia usar uma Ação Bônus para soltá-lo ou usar Corda Enredante de novo.
+## Reações
+Aparar. Gatilho: A erínia é atingida por uma jogada de ataque corpo a corpo enquanto empunha uma arma. Resposta: A erínia soma 4 à sua CA contra esse ataque, possivelmente fazendo-o errar.

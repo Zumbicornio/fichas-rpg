@@ -1,0 +1,207 @@
+@@ Ettercap
+## Traços
+Patas de Aranha. O ettercap consegue escalar superfícies difíceis, inclusive pelo teto, sem precisar fazer um teste de atributo.
+Andarilho da Teia. O ettercap ignora restrições de movimento causadas por teias e sabe a localização de qualquer outra criatura em contato com a mesma teia.
+## Ações
+Ataque Múltiplo. O ettercap faz um ataque de Mordida e um ataque de Garra.
+Mordida. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 5 (1d6 + 2) de dano Perfurante mais 2 (1d4) de dano Venenoso, e o alvo fica na condição Envenenado até o início do próximo turno do ettercap.
+Garra. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 7 (2d4 + 2) de dano Cortante.
+Fio de Teia (Recarga 5–6). Salvaguarda de Destreza: CD 12, uma criatura Grande ou menor que o ettercap consiga ver a até 9 m. Falha: O alvo fica na condição Impedido até a teia ser destruída (CA 10; PV 5; Vulnerabilidade a dano de Fogo; Imunidade a dano Contundente, Venenoso e Psíquico).
+## Ações Bônus
+Puxar. O ettercap puxa uma criatura a até 9 m que esteja Impedida pelo seu Fio de Teia até 7,5 m em linha reta na sua direção.
+
+@@ Ettin
+## Ações
+Ataque Múltiplo. O ettin faz um ataque de Machado de Batalha e um ataque de Maça Estrela.
+Machado de Batalha. Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 14 (2d8 + 5) de dano Cortante. Se o alvo for uma criatura Grande ou menor, ele fica na condição Caído.
+Maça Estrela. Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 14 (2d8 + 5) de dano Perfurante, e o alvo tem Desvantagem na próxima jogada de ataque que fizer antes do fim do seu próximo turno.
+
+@@ Fire Elemental
+## Traços
+Aura de Fogo. No fim de cada turno do elemental, cada criatura numa Emanação de 3 m a partir do elemental sofre 5 (1d10) de dano de Fogo. Criaturas e objetos inflamáveis na Emanação começam a queimar.
+Forma de Fogo. O elemental pode passar por um espaço de apenas 2,5 cm de largura sem gastar movimento extra e pode entrar no espaço de uma criatura e parar ali. Na primeira vez que entrar no espaço de uma criatura num turno, ela sofre 5 (1d10) de dano de Fogo.
+Iluminação. O elemental emite Luz Plena num raio de 9 m e Penumbra por mais 9 m.
+Vulnerável à Água. O elemental sofre 3 (1d6) de dano de Frio a cada 1,5 m que se mover na água ou a cada 4 litros de água jogados nele.
+## Ações
+Ataque Múltiplo. O elemental faz dois ataques de Queimar.
+Queimar. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 10 (2d6 + 3) de dano de Fogo. Se o alvo for uma criatura ou um objeto inflamável, ele começa a queimar.
+
+@@ Fire Giant
+## Ações
+Ataque Múltiplo. O gigante faz dois ataques, usando Espada Flamejante ou Arremesso de Martelo em qualquer combinação.
+Espada Flamejante. Jogada de Ataque Corpo a Corpo: +11, alcance 3 m. Acerto: 21 (4d6 + 7) de dano Cortante mais 10 (3d6) de dano de Fogo.
+Arremesso de Martelo. Jogada de Ataque à Distância: +11, distância 18/72 m. Acerto: 23 (3d10 + 7) de dano Contundente mais 4 (1d8) de dano de Fogo, e o alvo é empurrado até 4,5 m em linha reta para longe do gigante e tem Desvantagem na próxima jogada de ataque que fizer antes do fim do seu próximo turno.
+
+@@ Flesh Golem
+## Traços
+Aversão ao Fogo. Se o golem sofrer dano de Fogo, ele tem Desvantagem em jogadas de ataque e testes de atributo até o fim do seu próximo turno.
+Fúria Cega. Sempre que o golem começar o turno Sangrando, role 1d6. Com 6, o golem entra em fúria. Em cada turno enquanto estiver em fúria, o golem ataca a criatura mais próxima que consiga ver. Se nenhuma criatura estiver perto o bastante para ele se mover e atacar, o golem ataca um objeto. Depois de entrar em fúria, o golem continua assim até ser destruído ou deixar de estar Sangrando. O criador do golem, se estiver a até 18 m dele, pode tentar acalmá-lo usando uma ação para fazer um teste de Carisma (Persuasão) CD 15; o golem precisa conseguir ouvir o criador. Se o teste for bem-sucedido, o golem deixa a fúria até o início do seu próximo turno, quando volta a rolar para o traço Fúria Cega se ainda estiver Sangrando.
+Forma Imutável. O golem não pode mudar de forma.
+Absorção Elétrica. Sempre que o golem for submetido a dano Elétrico, ele recupera Pontos de Vida iguais ao dano Elétrico causado.
+Resistência à Magia. O golem tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Ataque Múltiplo. O golem faz dois ataques de Pancada.
+Pancada. Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 13 (2d8 + 4) de dano Contundente mais 4 (1d8) de dano Elétrico.
+
+@@ Frost Giant
+## Ações
+Ataque Múltiplo. O gigante faz dois ataques, usando Machado Gélido ou Grande Arco em qualquer combinação.
+Machado Gélido. Jogada de Ataque Corpo a Corpo: +9, alcance 3 m. Acerto: 19 (2d12 + 6) de dano Cortante mais 9 (2d8) de dano de Frio.
+Grande Arco. Jogada de Ataque à Distância: +9, distância 45/180 m. Acerto: 17 (2d10 + 6) de dano Perfurante mais 7 (2d6) de dano de Frio, e o Deslocamento do alvo diminui em 3 m até o fim do seu próximo turno.
+## Ações Bônus
+Grito de Guerra (Recarga 5–6). O gigante ou uma criatura à escolha dele que consiga vê-lo ou ouvi-lo ganha 16 (2d10 + 5) Pontos de Vida Temporários e tem Vantagem em jogadas de ataque até o início do próximo turno do gigante.
+
+@@ Shrieker Fungus
+## Reações
+Guincho. Gatilho: Uma criatura ou uma fonte de Luz Plena se move a até 9 m do fungo. Resposta: O fungo emite um guincho audível a até 90 m de distância por 1 minuto ou até morrer.
+
+@@ Violet Fungus
+## Ações
+Ataque Múltiplo. O fungo faz dois ataques de Toque Apodrecedor.
+Toque Apodrecedor. Jogada de Ataque Corpo a Corpo: +2, alcance 3 m. Acerto: 4 (1d8) de dano Necrótico.
+
+@@ Gargoyle
+## Traços
+Sobrevoo. A gárgula não provoca Ataque de Oportunidade quando voa para fora do alcance de um inimigo.
+## Ações
+Ataque Múltiplo. A gárgula faz dois ataques de Garra.
+Garra. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 7 (2d4 + 2) de dano Cortante.
+
+@@ Gelatinous Cube
+## Traços
+Cubo de Gosma. O cubo preenche todo o seu espaço e é transparente. Outras criaturas podem entrar nesse espaço, mas quem faz isso é submetido ao Engolfar do cubo e tem Desvantagem na salvaguarda. Criaturas dentro do cubo têm Cobertura Total, e o cubo pode conter uma criatura Grande ou até quatro criaturas Médias ou Pequenas ao mesmo tempo. Com uma ação, uma criatura a até 1,5 m do cubo pode puxar uma criatura ou objeto para fora dele com um teste de Força (Atletismo) CD 12 bem-sucedido, e quem puxa sofre 10 (3d6) de dano Ácido.
+Transparente. Mesmo com o cubo à vista, uma criatura precisa ser bem-sucedida num teste de Sabedoria (Percepção) CD 15 para notá-lo, se não o viu se mover ou agir de outra forma.
+## Ações
+Pseudópode. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 12 (3d6 + 2) de dano Ácido.
+Engolfar. O cubo se move até o seu Deslocamento sem provocar Ataques de Oportunidade. Ele pode atravessar o espaço de criaturas Grandes ou menores se tiver lugar dentro de si para contê-las (veja o traço Cubo de Gosma). Salvaguarda de Destreza: CD 12, cada criatura em cujo espaço o cubo entrar pela primeira vez durante esse movimento. Falha: 10 (3d6) de dano Ácido, e o alvo é engolfado. Um alvo engolfado está sufocando, não pode conjurar magias com componente Verbal, fica na condição Impedido e sofre 10 (3d6) de dano Ácido no início de cada turno do cubo. Quando o cubo se move, o alvo engolfado se move junto. Um alvo engolfado pode tentar escapar usando uma ação para fazer um teste de Força (Atletismo) CD 12. Com sucesso, o alvo escapa e entra no espaço desocupado mais próximo. Sucesso: Metade do dano, e o alvo se move para um espaço desocupado a até 1,5 m do cubo. Se não houver espaço desocupado, o alvo falha na salvaguarda.
+
+@@ Ghast
+## Traços
+Fedor. Salvaguarda de Constituição: CD 10, qualquer criatura que comece o turno numa Emanação de 1,5 m a partir do lívido. Falha: O alvo fica na condição Envenenado até o início do seu próximo turno. Sucesso: O alvo fica imune ao Fedor deste lívido por 24 horas.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 7 (1d8 + 3) de dano Perfurante mais 9 (2d8) de dano Necrótico.
+Garra. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 10 (2d6 + 3) de dano Cortante. Se o alvo for uma criatura que não seja Morto-Vivo, ele é submetido ao efeito a seguir. Salvaguarda de Constituição: CD 10. Falha: O alvo fica na condição Paralisado até o fim do seu próximo turno.
+
+@@ Ghost
+## Traços
+Visão Etérea. O fantasma consegue enxergar 18 m dentro do Plano Etéreo quando está no Plano Material.
+Movimento Incorpóreo. O fantasma pode atravessar outras criaturas e objetos como se fossem Terreno Difícil. Ele sofre 5 (1d10) de dano de Energia se terminar o turno dentro de um objeto.
+## Ações
+Ataque Múltiplo. O fantasma faz dois ataques de Toque Definhante.
+Toque Definhante. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 19 (3d10 + 3) de dano Necrótico.
+Etereidade. O fantasma conjura a magia Etherealness, sem precisar de componentes de magia e usando Carisma como atributo de conjuração. O fantasma fica visível no Plano Material enquanto está na Fronteira Etérea e vice-versa, mas não pode afetar nem ser afetado por nada no outro plano.
+Aparência Horripilante. Salvaguarda de Sabedoria: CD 13, cada criatura num Cone de 18 m que consiga ver o fantasma e não seja Morto-Vivo. Falha: 10 (2d6 + 3) de dano Psíquico, e o alvo fica na condição Amedrontado até o início do próximo turno do fantasma. Sucesso: O alvo fica imune à Aparência Horripilante deste fantasma por 24 horas.
+Possessão (Recarga 6). Salvaguarda de Carisma: CD 13, um Humanoide que o fantasma consiga ver a até 1,5 m. Falha: O alvo é possuído pelo fantasma; o fantasma desaparece e o alvo fica na condição Incapacitado e perde o controle do corpo. O fantasma passa a controlar o corpo, mas o alvo continua consciente. O fantasma não pode ser alvo de nenhum ataque, magia ou outro efeito, exceto os que afetam especificamente Mortos-Vivos. As estatísticas do fantasma continuam as mesmas, exceto que ele usa o Deslocamento do alvo possuído, assim como os modificadores de Força, Destreza e Constituição do alvo. A possessão dura até o corpo cair a 0 Pontos de Vida ou o fantasma sair como Ação Bônus. Quando a possessão acaba, o fantasma aparece num espaço desocupado a até 1,5 m do alvo, e o alvo fica imune à Possessão deste fantasma por 24 horas. Sucesso: O alvo fica imune à Possessão deste fantasma por 24 horas.
+
+@@ Ghoul
+## Ações
+Ataque Múltiplo. O carniçal faz dois ataques de Mordida.
+Mordida. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 5 (1d6 + 2) de dano Perfurante mais 3 (1d6) de dano Necrótico.
+Garra. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 4 (1d4 + 2) de dano Cortante. Se o alvo for uma criatura que não seja Morto-Vivo nem elfo, ele é submetido ao efeito a seguir. Salvaguarda de Constituição: CD 10. Falha: O alvo fica na condição Paralisado até o fim do seu próximo turno.
+
+@@ Gibbering Mouther
+## Traços
+Solo Aberrante. O chão numa Emanação de 3 m a partir da bocarra é Terreno Difícil.
+Balbucio. A bocarra balbucia de forma incoerente enquanto não estiver na condição Incapacitado. Salvaguarda de Sabedoria: CD 10, qualquer criatura que comece o turno a até 6 m da bocarra enquanto ela balbucia. Falha: O alvo rola 1d8 para determinar o que faz durante o turno atual:
+1–4. O alvo não faz nada. 5–6. O alvo não realiza ação nem Ação Bônus e usa todo o seu movimento para se mover numa direção aleatória. 7–8. O alvo faz um ataque corpo a corpo contra uma criatura determinada aleatoriamente ao seu alcance, ou não faz nada se não puder fazer esse ataque.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +2, alcance 1,5 m. Acerto: 7 (2d6) de dano Perfurante. Se o alvo for uma criatura Média ou menor, ele fica na condição Caído. O alvo morre se for reduzido a 0 Pontos de Vida por este ataque. Seu corpo é então absorvido pela bocarra, deixando apenas o equipamento para trás.
+Cuspe Cegante (Recarga 5–6). Salvaguarda de Destreza: CD 10, cada criatura numa Esfera de 3 m de raio centrada num ponto a até 9 m. Falha: 7 (2d6) de dano Radiante, e o alvo fica na condição Cego até o fim do próximo turno da bocarra.
+
+@@ Glabrezu
+## Traços
+Restauração Demoníaca. Se o glabrezu morrer fora do Abismo, seu corpo se dissolve em icor e ele ganha um novo corpo instantaneamente, revivendo com todos os seus Pontos de Vida em algum lugar do Abismo.
+Resistência à Magia. O glabrezu tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Ataque Múltiplo. O glabrezu faz dois ataques de Pinça e usa Esmurrar ou Conjuração.
+Pinça. Jogada de Ataque Corpo a Corpo: +9, alcance 3 m. Acerto: 16 (2d10 + 5) de dano Cortante. Se o alvo for uma criatura Média ou menor, ele fica na condição Agarrado (CD 15 para escapar) por uma de duas pinças.
+Esmurrar. Salvaguarda de Destreza: CD 17, uma criatura Agarrada pelo glabrezu. Falha: 15 (3d6 + 5) de dano Contundente. Sucesso: Metade do dano.
+Conjuração. O glabrezu conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Inteligência como atributo de conjuração (CD de salvaguarda de magia 16): À Vontade: Darkness, Detect Magic, Dispel Magic. 1/Dia Cada: Confusion, Fly, Power Word Stun.
+
+@@ Gladiator
+## Ações
+Ataque Múltiplo. O gladiador faz três ataques de Lança. Ele pode substituir um ataque por um uso de Golpe de Escudo.
+Lança. Jogada de Ataque Corpo a Corpo ou à Distância: +7, alcance 1,5 m ou distância 6/18 m. Acerto: 11 (2d6 + 4) de dano Perfurante.
+Golpe de Escudo. Salvaguarda de Força: CD 15, uma criatura a até 1,5 m que o gladiador consiga ver. Falha: 9 (2d4 + 4) de dano Contundente. Se o alvo for uma criatura Média ou menor, ele fica na condição Caído.
+## Reações
+Aparar. Gatilho: O gladiador é atingido por uma jogada de ataque corpo a corpo enquanto empunha uma arma. Resposta: O gladiador soma 3 à sua CA contra esse ataque, possivelmente fazendo-o errar.
+
+@@ Gnoll Warrior
+## Ações
+Dilacerar. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 5 (1d6 + 2) de dano Perfurante.
+Arco de Osso. Jogada de Ataque à Distância: +3, distância 45/180 m. Acerto: 6 (1d10 + 1) de dano Perfurante.
+## Ações Bônus
+Matança (1/Dia). Imediatamente após causar dano a uma criatura que já esteja Sangrando, o gnoll se move até metade do seu Deslocamento e faz um ataque de Dilacerar.
+
+@@ Goblin Minion
+## Ações
+Adaga. Jogada de Ataque Corpo a Corpo ou à Distância: +4, alcance 1,5 m ou distância 6/18 m. Acerto: 4 (1d4 + 2) de dano Perfurante.
+## Ações Bônus
+Fuga Ágil. O goblin realiza a ação Desengajar ou Esconder.
+
+@@ Goblin Warrior
+## Ações
+Cimitarra. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 5 (1d6 + 2) de dano Cortante, mais 2 (1d4) de dano Cortante se a jogada de ataque teve Vantagem.
+Arco Curto. Jogada de Ataque à Distância: +4, distância 24/96 m. Acerto: 5 (1d6 + 2) de dano Perfurante, mais 2 (1d4) de dano Perfurante se a jogada de ataque teve Vantagem.
+## Ações Bônus
+Fuga Ágil. O goblin realiza a ação Desengajar ou Esconder.
+
+@@ Goblin Boss
+## Ações
+Ataque Múltiplo. O goblin faz dois ataques, usando Cimitarra ou Arco Curto em qualquer combinação.
+Cimitarra. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 5 (1d6 + 2) de dano Cortante, mais 2 (1d4) de dano Cortante se a jogada de ataque teve Vantagem.
+Arco Curto. Jogada de Ataque à Distância: +4, distância 24/96 m. Acerto: 5 (1d6 + 2) de dano Perfurante, mais 2 (1d4) de dano Perfurante se a jogada de ataque teve Vantagem.
+## Ações Bônus
+Fuga Ágil. O goblin realiza a ação Desengajar ou Esconder.
+## Reações
+Redirecionar Ataque. Gatilho: Uma criatura que o goblin consiga ver faz uma jogada de ataque contra ele. Resposta: O goblin escolhe um aliado Pequeno ou Médio a até 1,5 m. O goblin e esse aliado trocam de lugar, e o aliado passa a ser o alvo do ataque.
+
+@@ Gold Dragon Wyrmling
+## Traços
+Anfíbio. O dragão consegue respirar ar e água.
+## Ações
+Ataque Múltiplo. O dragão faz dois ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 9 (1d10 + 4) de dano Cortante.
+Sopro de Fogo (Recarga 5–6). Salvaguarda de Destreza: CD 13, cada criatura num Cone de 4,5 m. Falha: 22 (4d10) de dano de Fogo. Sucesso: Metade do dano.
+Sopro Enfraquecedor. Salvaguarda de Força: CD 13, cada criatura num Cone de 4,5 m que não esteja sob efeito deste sopro. Falha: O alvo tem Desvantagem em Testes de D20 baseados em Força e subtrai 2 (1d4) das suas jogadas de dano. Ele repete a salvaguarda no fim de cada um de seus turnos, encerrando o efeito em si mesmo com um sucesso. Após 1 minuto, ele é bem-sucedido automaticamente.
+
+@@ Young Gold Dragon
+## Traços
+Anfíbio. O dragão consegue respirar ar e água.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar. Ele pode substituir um ataque por um uso de Sopro Enfraquecedor.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +10, alcance 3 m. Acerto: 17 (2d10 + 6) de dano Cortante.
+Sopro de Fogo (Recarga 5–6). Salvaguarda de Destreza: CD 17, cada criatura num Cone de 9 m. Falha: 55 (10d10) de dano de Fogo. Sucesso: Metade do dano.
+Sopro Enfraquecedor. Salvaguarda de Força: CD 17, cada criatura num Cone de 9 m que não esteja sob efeito deste sopro. Falha: O alvo tem Desvantagem em Testes de D20 baseados em Força e subtrai 3 (1d6) das suas jogadas de dano. Ele repete a salvaguarda no fim de cada um de seus turnos, encerrando o efeito em si mesmo com um sucesso. Após 1 minuto, ele é bem-sucedido automaticamente.
+
+@@ Adult Gold Dragon
+## Traços
+Anfíbio. O dragão consegue respirar ar e água.
+Resistência Lendária (3/Dia, ou 4/Dia no Covil). Se o dragão falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar. Ele pode substituir um ataque por um uso de (A) Conjuração para conjurar Guiding Bolt (versão de 2º círculo) ou (B) Sopro Enfraquecedor.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +14, alcance 3 m. Acerto: 17 (2d8 + 8) de dano Cortante mais 4 (1d8) de dano de Fogo.
+Sopro de Fogo (Recarga 5–6). Salvaguarda de Destreza: CD 21, cada criatura num Cone de 18 m. Falha: 66 (12d10) de dano de Fogo. Sucesso: Metade do dano.
+Conjuração. O dragão conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 21, +13 para acertar com ataques de magia): À Vontade: Detect Magic, Guiding Bolt (versão de 2º círculo), Shapechange (apenas formas de Fera ou Humanoide, sem ganhar Pontos de Vida Temporários pela magia e sem precisar de Concentração ou Pontos de Vida Temporários para mantê-la). 1/Dia Cada: Flame Strike, Zone of Truth.
+Sopro Enfraquecedor. Salvaguarda de Força: CD 21, cada criatura num Cone de 18 m que não esteja sob efeito deste sopro. Falha: O alvo tem Desvantagem em Testes de D20 baseados em Força e subtrai 3 (1d6) das suas jogadas de dano. Ele repete a salvaguarda no fim de cada um de seus turnos, encerrando o efeito em si mesmo com um sucesso. Após 1 minuto, ele é bem-sucedido automaticamente.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, o dragão pode gastar um uso para realizar uma das ações a seguir. O dragão recupera todos os usos gastos no início de cada um de seus turnos.
+Banir. Salvaguarda de Carisma: CD 21, uma criatura que o dragão consiga ver a até 36 m. Falha: 10 (3d6) de dano de Energia, e o alvo fica na condição Incapacitado e é levado para um semiplano inofensivo até o início do próximo turno do dragão, quando reaparece num espaço desocupado à escolha do dragão a até 36 m dele. Falha ou Sucesso: O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Luz Guia. O dragão usa Conjuração para conjurar Guiding Bolt (versão de 2º círculo).
+Bote. O dragão se move até metade do seu Deslocamento e faz um ataque de Dilacerar.
+
+@@ Ancient Gold Dragon
+## Traços
+Anfíbio. O dragão consegue respirar ar e água.
+Resistência Lendária (4/Dia, ou 5/Dia no Covil). Se o dragão falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar. Ele pode substituir um ataque por um uso de (A) Conjuração para conjurar Guiding Bolt (versão de 4º círculo) ou (B) Sopro Enfraquecedor.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +17, alcance 4,5 m. Acerto: 19 (2d8 + 10) de dano Cortante mais 9 (2d8) de dano de Fogo.
+Sopro de Fogo (Recarga 5–6). Salvaguarda de Destreza: CD 24, cada criatura num Cone de 27 m. Falha: 71 (13d10) de dano de Fogo. Sucesso: Metade do dano.
+Conjuração. O dragão conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 24, +16 para acertar com ataques de magia): À Vontade: Detect Magic, Guiding Bolt (versão de 4º círculo), Shapechange (apenas formas de Fera ou Humanoide, sem ganhar Pontos de Vida Temporários pela magia e sem precisar de Concentração ou Pontos de Vida Temporários para mantê-la). 1/Dia Cada: Flame Strike (versão de 6º círculo), Word of Recall, Zone of Truth.
+Sopro Enfraquecedor. Salvaguarda de Força: CD 24, cada criatura num Cone de 27 m que não esteja sob efeito deste sopro. Falha: O alvo tem Desvantagem em Testes de D20 baseados em Força e subtrai 5 (1d10) das suas jogadas de dano. Ele repete a salvaguarda no fim de cada um de seus turnos, encerrando o efeito em si mesmo com um sucesso. Após 1 minuto, ele é bem-sucedido automaticamente.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, o dragão pode gastar um uso para realizar uma das ações a seguir. O dragão recupera todos os usos gastos no início de cada um de seus turnos.
+Banir. Salvaguarda de Carisma: CD 24, uma criatura que o dragão consiga ver a até 36 m. Falha: 24 (7d6) de dano de Energia, e o alvo fica na condição Incapacitado e é levado para um semiplano inofensivo até o início do próximo turno do dragão, quando reaparece num espaço desocupado à escolha do dragão a até 36 m dele. Falha ou Sucesso: O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Luz Guia. O dragão usa Conjuração para conjurar Guiding Bolt (versão de 4º círculo).
+Bote. O dragão se move até metade do seu Deslocamento e faz um ataque de Dilacerar.

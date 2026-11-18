@@ -1,0 +1,208 @@
+@@ Ancient Blue Dragon
+## Traços
+Resistência Lendária (4/Dia, ou 5/Dia no Covil). Se o dragão falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar. Ele pode substituir um ataque por um uso de Conjuração para conjurar Shatter (versão de 3º círculo).
+Dilacerar. Jogada de Ataque Corpo a Corpo: +16, alcance 4,5 m. Acerto: 18 (2d8 + 9) de dano Cortante mais 11 (2d10) de dano Elétrico.
+Sopro Relampejante (Recarga 5–6). Salvaguarda de Destreza: CD 23, cada criatura numa Linha de 36 m de comprimento e 3 m de largura. Falha: 88 (16d10) de dano Elétrico. Sucesso: Metade do dano.
+Conjuração. O dragão conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 22): À Vontade: Detect Magic, Invisibility, Mage Hand, Shatter (versão de 3º círculo). 1/Dia Cada: Scrying, Sending.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, o dragão pode gastar um uso para realizar uma das ações a seguir. O dragão recupera todos os usos gastos no início de cada um de seus turnos.
+Voo Encoberto. O dragão usa Conjuração para conjurar Invisibility em si mesmo e pode voar até metade do seu Deslocamento de Voo. O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Estrondo Sônico. O dragão usa Conjuração para conjurar Shatter (versão de 3º círculo). O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Golpe de Cauda. O dragão faz um ataque de Dilacerar.
+
+@@ Bone Devil
+## Traços
+Restauração Diabólica. Se o diabo morrer fora dos Nove Infernos, seu corpo desaparece em fumaça sulfurosa e ele ganha um novo corpo instantaneamente, revivendo com todos os seus Pontos de Vida em algum lugar dos Nove Infernos.
+Resistência à Magia. O diabo tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Ataque Múltiplo. O diabo faz dois ataques de Garra e um ataque de Ferrão Infernal.
+Garra. Jogada de Ataque Corpo a Corpo: +8, alcance 3 m. Acerto: 13 (2d8 + 4) de dano Cortante.
+Ferrão Infernal. Jogada de Ataque Corpo a Corpo: +8, alcance 3 m. Acerto: 15 (2d10 + 4) de dano Perfurante mais 18 (4d8) de dano Venenoso, e o alvo fica na condição Envenenado até o início do próximo turno do diabo. Enquanto Envenenado, o alvo não pode recuperar Pontos de Vida.
+
+@@ Brass Dragon Wyrmling
+## Ações
+Dilacerar. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 7 (1d10 + 2) de dano Cortante.
+Sopro de Fogo (Recarga 5–6). Salvaguarda de Destreza: CD 11, cada criatura numa Linha de 6 m de comprimento e 1,5 m de largura. Falha: 14 (4d6) de dano de Fogo. Sucesso: Metade do dano.
+Sopro do Sono. Salvaguarda de Constituição: CD 11, cada criatura num Cone de 4,5 m. Falha: O alvo fica na condição Incapacitado até o fim do seu próximo turno, quando repete a salvaguarda. Segunda Falha: O alvo fica na condição Inconsciente por 1 minuto. O efeito acaba para o alvo se ele sofrer dano ou se uma criatura a até 1,5 m dele usar uma ação para acordá-lo.
+
+@@ Young Brass Dragon
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar. Ele pode substituir dois ataques por um uso de Sopro do Sono.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +7, alcance 3 m. Acerto: 15 (2d10 + 4) de dano Cortante.
+Sopro de Fogo (Recarga 5–6). Salvaguarda de Destreza: CD 14, cada criatura numa Linha de 12 m de comprimento e 1,5 m de largura. Falha: 38 (11d6) de dano de Fogo. Sucesso: Metade do dano.
+Sopro do Sono. Salvaguarda de Constituição: CD 14, cada criatura num Cone de 9 m. Falha: O alvo fica na condição Incapacitado até o fim do seu próximo turno, quando repete a salvaguarda. Segunda Falha: O alvo fica na condição Inconsciente por 1 minuto. O efeito acaba para o alvo se ele sofrer dano ou se uma criatura a até 1,5 m dele usar uma ação para acordá-lo.
+
+@@ Adult Brass Dragon
+## Traços
+Resistência Lendária (3/Dia, ou 4/Dia no Covil). Se o dragão falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar. Ele pode substituir um ataque por um uso de (A) Sopro do Sono ou (B) Conjuração para conjurar Scorching Ray.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +11, alcance 3 m. Acerto: 17 (2d10 + 6) de dano Cortante mais 4 (1d8) de dano de Fogo.
+Sopro de Fogo (Recarga 5–6). Salvaguarda de Destreza: CD 18, cada criatura numa Linha de 18 m de comprimento e 1,5 m de largura. Falha: 45 (10d8) de dano de Fogo. Sucesso: Metade do dano.
+Sopro do Sono. Salvaguarda de Constituição: CD 18, cada criatura num Cone de 18 m. Falha: O alvo fica na condição Incapacitado até o fim do seu próximo turno, quando repete a salvaguarda. Segunda Falha: O alvo fica na condição Inconsciente por 10 minutos. O efeito acaba para o alvo se ele sofrer dano ou se uma criatura a até 1,5 m dele usar uma ação para acordá-lo.
+Conjuração. O dragão conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 16): À Vontade: Detect Magic, Minor Illusion, Scorching Ray, Shapechange (apenas formas de Fera ou Humanoide, sem ganhar Pontos de Vida Temporários pela magia e sem precisar de Concentração ou Pontos de Vida Temporários para mantê-la), Speak with Animals. 1/Dia Cada: Detect Thoughts, Control Weather.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, o dragão pode gastar um uso para realizar uma das ações a seguir. O dragão recupera todos os usos gastos no início de cada um de seus turnos.
+Luz Abrasadora. O dragão usa Conjuração para conjurar Scorching Ray.
+Bote. O dragão se move até metade do seu Deslocamento e faz um ataque de Dilacerar.
+Areias Escaldantes. Salvaguarda de Destreza: CD 16, uma criatura que o dragão consiga ver a até 36 m. Falha: 27 (6d8) de dano de Fogo, e o Deslocamento do alvo cai pela metade até o fim do seu próximo turno. Falha ou Sucesso: O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+
+@@ Ancient Brass Dragon
+## Traços
+Resistência Lendária (4/Dia, ou 5/Dia no Covil). Se o dragão falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar. Ele pode substituir um ataque por um uso de (A) Sopro do Sono ou (B) Conjuração para conjurar Scorching Ray (versão de 3º círculo).
+Dilacerar. Jogada de Ataque Corpo a Corpo: +14, alcance 4,5 m. Acerto: 19 (2d10 + 8) de dano Cortante mais 7 (2d6) de dano de Fogo.
+Sopro de Fogo (Recarga 5–6). Salvaguarda de Destreza: CD 21, cada criatura numa Linha de 27 m de comprimento e 1,5 m de largura. Falha: 58 (13d8) de dano de Fogo. Sucesso: Metade do dano.
+Sopro do Sono. Salvaguarda de Constituição: CD 21, cada criatura num Cone de 27 m. Falha: O alvo fica na condição Incapacitado até o fim do seu próximo turno, quando repete a salvaguarda. Segunda Falha: O alvo fica na condição Inconsciente por 10 minutos. O efeito acaba para o alvo se ele sofrer dano ou se uma criatura a até 1,5 m dele usar uma ação para acordá-lo.
+Conjuração. O dragão conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 20): À Vontade: Detect Magic, Minor Illusion, Scorching Ray (versão de 3º círculo), Shapechange (apenas formas de Fera ou Humanoide, sem ganhar Pontos de Vida Temporários pela magia e sem precisar de Concentração ou Pontos de Vida Temporários para mantê-la), Speak with Animals. 1/Dia Cada: Control Weather, Detect Thoughts.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, o dragão pode gastar um uso para realizar uma das ações a seguir. O dragão recupera todos os usos gastos no início de cada um de seus turnos.
+Luz Abrasadora. O dragão usa Conjuração para conjurar Scorching Ray (versão de 3º círculo).
+Bote. O dragão se move até metade do seu Deslocamento e faz um ataque de Dilacerar.
+Areias Escaldantes. Salvaguarda de Destreza: CD 20, uma criatura que o dragão consiga ver a até 36 m. Falha: 36 (8d8) de dano de Fogo, e o Deslocamento do alvo cai pela metade até o fim do seu próximo turno. Falha ou Sucesso: O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+
+@@ Bronze Dragon Wyrmling
+## Traços
+Anfíbio. O dragão consegue respirar ar e água.
+## Ações
+Ataque Múltiplo. O dragão faz dois ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 8 (1d10 + 3) de dano Cortante.
+Sopro Relampejante (Recarga 5–6). Salvaguarda de Destreza: CD 12, cada criatura numa Linha de 12 m de comprimento e 1,5 m de largura. Falha: 16 (3d10) de dano Elétrico. Sucesso: Metade do dano.
+Sopro de Repulsão. Salvaguarda de Força: CD 12, cada criatura num Cone de 9 m. Falha: O alvo é empurrado até 9 m em linha reta para longe do dragão e fica na condição Caído.
+
+@@ Young Bronze Dragon
+## Traços
+Anfíbio. O dragão consegue respirar ar e água.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar. Ele pode substituir um ataque por um uso de Sopro de Repulsão.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +8, alcance 3 m. Acerto: 16 (2d10 + 5) de dano Cortante.
+Sopro Relampejante (Recarga 5–6). Salvaguarda de Destreza: CD 15, cada criatura numa Linha de 18 m de comprimento e 1,5 m de largura. Falha: 49 (9d10) de dano Elétrico. Sucesso: Metade do dano.
+Sopro de Repulsão. Salvaguarda de Força: CD 15, cada criatura num Cone de 9 m. Falha: O alvo é empurrado até 12 m em linha reta para longe do dragão e fica na condição Caído.
+
+@@ Adult Bronze Dragon
+## Traços
+Anfíbio. O dragão consegue respirar ar e água.
+Resistência Lendária (3/Dia, ou 4/Dia no Covil). Se o dragão falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar. Ele pode substituir um ataque por um uso de (A) Sopro de Repulsão ou (B) Conjuração para conjurar Guiding Bolt (versão de 2º círculo).
+Dilacerar. Jogada de Ataque Corpo a Corpo: +12, alcance 3 m. Acerto: 16 (2d8 + 7) de dano Cortante mais 5 (1d10) de dano Elétrico.
+Sopro Relampejante (Recarga 5–6). Salvaguarda de Destreza: CD 19, cada criatura numa Linha de 27 m de comprimento e 1,5 m de largura. Falha: 55 (10d10) de dano Elétrico. Sucesso: Metade do dano.
+Sopro de Repulsão. Salvaguarda de Força: CD 19, cada criatura num Cone de 9 m. Falha: O alvo é empurrado até 18 m em linha reta para longe do dragão e fica na condição Caído.
+Conjuração. O dragão conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 17, +10 para acertar com ataques de magia): À Vontade: Detect Magic, Guiding Bolt (versão de 2º círculo), Shapechange (apenas formas de Fera ou Humanoide, sem ganhar Pontos de Vida Temporários pela magia e sem precisar de Concentração ou Pontos de Vida Temporários para mantê-la), Speak with Animals, Thaumaturgy. 1/Dia Cada: Detect Thoughts, Water Breathing.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, o dragão pode gastar um uso para realizar uma das ações a seguir. O dragão recupera todos os usos gastos no início de cada um de seus turnos.
+Luz Guia. O dragão usa Conjuração para conjurar Guiding Bolt (versão de 2º círculo).
+Bote. O dragão se move até metade do seu Deslocamento e faz um ataque de Dilacerar.
+Trovoada. Salvaguarda de Constituição: CD 17, cada criatura numa Esfera de 6 m de raio centrada num ponto que o dragão consiga ver a até 27 m. Falha: 10 (3d6) de dano Trovejante, e o alvo fica na condição Surdo até o fim do seu próximo turno.
+
+@@ Ancient Bronze Dragon
+## Traços
+Anfíbio. O dragão consegue respirar ar e água.
+Resistência Lendária (4/Dia, ou 5/Dia no Covil). Se o dragão falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar. Ele pode substituir um ataque por um uso de (A) Sopro de Repulsão ou (B) Conjuração para conjurar Guiding Bolt (versão de 2º círculo).
+Dilacerar. Jogada de Ataque Corpo a Corpo: +16, alcance 4,5 m. Acerto: 18 (2d8 + 9) de dano Cortante mais 9 (2d8) de dano Elétrico.
+Sopro Relampejante (Recarga 5–6). Salvaguarda de Destreza: CD 23, cada criatura numa Linha de 36 m de comprimento e 3 m de largura. Falha: 82 (15d10) de dano Elétrico. Sucesso: Metade do dano.
+Sopro de Repulsão. Salvaguarda de Força: CD 23, cada criatura num Cone de 9 m. Falha: O alvo é empurrado até 18 m em linha reta para longe do dragão e fica na condição Caído.
+Conjuração. O dragão conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 22, +14 para acertar com ataques de magia): À Vontade: Detect Magic, Guiding Bolt (versão de 2º círculo), Shapechange (apenas formas de Fera ou Humanoide, sem ganhar Pontos de Vida Temporários pela magia e sem precisar de Concentração ou Pontos de Vida Temporários para mantê-la), Speak with Animals, Thaumaturgy. 1/Dia Cada: Detect Thoughts, Control Water, Scrying, Water Breathing.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, o dragão pode gastar um uso para realizar uma das ações a seguir. O dragão recupera todos os usos gastos no início de cada um de seus turnos.
+Luz Guia. O dragão usa Conjuração para conjurar Guiding Bolt (versão de 2º círculo).
+Bote. O dragão se move até metade do seu Deslocamento e faz um ataque de Dilacerar.
+Trovoada. Salvaguarda de Constituição: CD 22, cada criatura numa Esfera de 6 m de raio centrada num ponto que o dragão consiga ver a até 36 m. Falha: 13 (3d8) de dano Trovejante, e o alvo fica na condição Surdo até o fim do seu próximo turno.
+
+@@ Bugbear Stalker
+## Traços
+Raptar. O bugbear não precisa gastar movimento extra para mover uma criatura que esteja agarrando.
+## Ações
+Ataque Múltiplo. O bugbear faz dois ataques de Azagaia ou Maça Estrela.
+Azagaia. Jogada de Ataque Corpo a Corpo ou à Distância: +5, alcance 3 m ou distância 9/36 m. Acerto: 13 (3d6 + 3) de dano Perfurante.
+Maça Estrela. Jogada de Ataque Corpo a Corpo: +5 (com Vantagem se o alvo estiver Agarrado pelo bugbear), alcance 3 m. Acerto: 12 (2d8 + 3) de dano Perfurante.
+## Ações Bônus
+Agarrão Rápido. Salvaguarda de Destreza: CD 13, uma criatura Média ou menor que o bugbear consiga ver a até 3 m. Falha: O alvo fica na condição Agarrado (CD 13 para escapar).
+
+@@ Bugbear Warrior
+## Traços
+Raptar. O bugbear não precisa gastar movimento extra para mover uma criatura que esteja agarrando.
+## Ações
+Agarrar. Jogada de Ataque Corpo a Corpo: +4, alcance 3 m. Acerto: 9 (2d6 + 2) de dano Contundente. Se o alvo for uma criatura Média ou menor, ele fica na condição Agarrado (CD 12 para escapar).
+Martelo Leve. Jogada de Ataque Corpo a Corpo ou à Distância: +4 (com Vantagem se o alvo estiver Agarrado pelo bugbear), alcance 3 m ou distância 6/18 m. Acerto: 9 (3d4 + 2) de dano Contundente.
+
+@@ Bulette
+## Ações
+Ataque Múltiplo. A bulette faz dois ataques de Mordida.
+Mordida. Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 17 (2d12 + 4) de dano Perfurante.
+Salto Mortal. A bulette gasta 1,5 m de movimento para saltar até um espaço a até 4,5 m que contenha uma ou mais criaturas Grandes ou menores. Salvaguarda de Destreza: CD 15, cada criatura no espaço de destino da bulette. Falha: 19 (3d12) de dano Contundente, e o alvo fica na condição Caído. Sucesso: Metade do dano, e o alvo é empurrado 1,5 m em linha reta para longe da bulette.
+## Ações Bônus
+Salto. A bulette salta até 9 m gastando 3 m de movimento.
+
+@@ Centaur Trooper
+## Ações
+Ataque Múltiplo. O centauro faz dois ataques, usando Pique ou Arco Longo em qualquer combinação.
+Pique. Jogada de Ataque Corpo a Corpo: +6, alcance 3 m. Acerto: 9 (1d10 + 4) de dano Perfurante.
+Arco Longo. Jogada de Ataque à Distância: +4, distância 45/180 m. Acerto: 6 (1d8 + 2) de dano Perfurante.
+## Ações Bônus
+Investida Atropeladora (Recarga 5–6). O centauro se move até o seu Deslocamento sem provocar Ataques de Oportunidade e pode atravessar o espaço de criaturas Médias ou menores. Cada criatura em cujo espaço o centauro entrar é alvo do efeito a seguir uma vez. Salvaguarda de Força: CD 14. Falha: 7 (1d6 + 4) de dano Contundente, e o alvo fica na condição Caído.
+
+@@ Chain Devil
+## Traços
+Restauração Diabólica. Se o diabo morrer fora dos Nove Infernos, seu corpo desaparece em fumaça sulfurosa e ele ganha um novo corpo instantaneamente, revivendo com todos os seus Pontos de Vida em algum lugar dos Nove Infernos.
+Resistência à Magia. O diabo tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Ataque Múltiplo. O diabo faz dois ataques de Corrente e usa Conjurar Corrente Infernal.
+Corrente. Jogada de Ataque Corpo a Corpo: +7, alcance 3 m. Acerto: 11 (2d6 + 4) de dano Cortante. Se o alvo for uma criatura Grande ou menor, ele fica na condição Agarrado (CD 14 para escapar) por uma de duas correntes e na condição Impedido até o agarrão acabar.
+Conjurar Corrente Infernal. O diabo conjura uma corrente flamejante para prender uma criatura. Salvaguarda de Destreza: CD 15, uma criatura que o diabo consiga ver a até 18 m. Falha: 9 (2d4 + 4) de dano de Fogo, e o alvo fica na condição Impedido até o fim do próximo turno do diabo, quando a corrente desaparece. Se o alvo for Grande ou menor, o diabo o move até 9 m em linha reta na sua direção. Sucesso: A corrente desaparece.
+## Reações
+Olhar Perturbador. Gatilho: Uma criatura que o diabo consiga ver começa o turno a até 9 m dele e consegue vê-lo. Resposta — Salvaguarda de Sabedoria: CD 15, a criatura que ativou o gatilho. Falha: O alvo fica na condição Amedrontado até o fim do seu turno. Sucesso: O alvo fica imune ao Olhar Perturbador deste diabo por 24 horas.
+
+@@ Chimera
+## Ações
+Ataque Múltiplo. A quimera faz um ataque de Marrada, um de Mordida e um de Garra. Ela pode substituir o ataque de Garra por um uso de Sopro de Fogo, se disponível.
+Mordida. Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 11 (2d6 + 4) de dano Perfurante, ou 18 (4d6 + 4) de dano Perfurante se a quimera teve Vantagem na jogada de ataque.
+Garra. Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 7 (1d6 + 4) de dano Cortante.
+Marrada. Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 10 (1d12 + 4) de dano Contundente. Se o alvo for uma criatura Média ou menor, ele fica na condição Caído.
+Sopro de Fogo (Recarga 5–6). Salvaguarda de Destreza: CD 15, cada criatura num Cone de 4,5 m. Falha: 31 (7d8) de dano de Fogo. Sucesso: Metade do dano.
+
+@@ Chuul
+## Traços
+Anfíbio. O chuul consegue respirar ar e água.
+Sentir Magia. O chuul sente magia a até 36 m de si. No resto, este traço funciona como a magia Detect Magic, mas não é mágico.
+## Ações
+Ataque Múltiplo. O chuul faz dois ataques de Pinça e usa Tentáculos Paralisantes.
+Pinça. Jogada de Ataque Corpo a Corpo: +6, alcance 3 m. Acerto: 9 (1d10 + 4) de dano Contundente. Se o alvo for uma criatura Grande ou menor, ele fica na condição Agarrado (CD 14 para escapar) por uma de duas pinças.
+Tentáculos Paralisantes. Salvaguarda de Constituição: CD 13, uma criatura Agarrada pelo chuul. Falha: O alvo fica na condição Envenenado e repete a salvaguarda no fim de cada um de seus turnos, encerrando o efeito em si mesmo com um sucesso. Após 1 minuto, ele é bem-sucedido automaticamente. Enquanto Envenenado, o alvo fica na condição Paralisado.
+
+@@ Clay Golem
+## Traços
+Absorção de Ácido. Sempre que o golem for submetido a dano Ácido, ele não sofre dano e, em vez disso, recupera Pontos de Vida iguais ao dano Ácido causado.
+Fúria Cega. Sempre que o golem começar o turno Sangrando, role 1d6. Com 6, o golem entra em fúria. Em cada turno enquanto estiver em fúria, o golem ataca a criatura mais próxima que consiga ver. Se nenhuma criatura estiver perto o bastante para ele se mover e atacar, o golem ataca um objeto. Depois de entrar em fúria, o golem continua assim até ser destruído ou deixar de estar Sangrando.
+Forma Imutável. O golem não pode mudar de forma.
+Resistência à Magia. O golem tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Ataque Múltiplo. O golem faz dois ataques de Pancada, ou três ataques de Pancada se usou Apressar neste turno.
+Pancada. Jogada de Ataque Corpo a Corpo: +9, alcance 1,5 m. Acerto: 10 (1d10 + 5) de dano Contundente mais 6 (1d12) de dano Ácido, e o máximo de Pontos de Vida do alvo diminui numa quantidade igual ao dano Ácido sofrido.
+## Ações Bônus
+Apressar (Recarga 5–6). O golem realiza as ações Disparada e Desengajar.
+
+@@ Cloaker
+## Traços
+Sensibilidade à Luz. Sob Luz Plena, o manto sombrio tem Desvantagem em jogadas de ataque.
+## Ações
+Ataque Múltiplo. O manto sombrio faz um ataque de Grudar e dois ataques de Cauda.
+Grudar. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 13 (3d6 + 3) de dano Perfurante. Se o alvo for uma criatura Grande ou menor, o manto sombrio gruda nele. Enquanto estiver grudado, o alvo fica na condição Cego e o manto sombrio não pode fazer ataques de Grudar contra outros alvos. Além disso, o manto sombrio sofre apenas metade do dano que recebe (arredondado para baixo), e o alvo sofre a mesma quantidade de dano. O manto sombrio pode se soltar gastando 1,5 m de movimento. O alvo ou uma criatura a até 1,5 m dele pode usar uma ação para tentar soltar o manto sombrio, conseguindo com um teste de Força (Atletismo) CD 14 bem-sucedido.
+Cauda. Jogada de Ataque Corpo a Corpo: +6, alcance 3 m. Acerto: 8 (1d10 + 3) de dano Cortante.
+## Ações Bônus
+Gemido. Salvaguarda de Sabedoria: CD 13, cada criatura numa Emanação de 18 m a partir do manto sombrio. Falha: O alvo fica na condição Amedrontado até o fim do próximo turno do manto sombrio. Sucesso: O alvo fica imune ao Gemido deste manto sombrio pelas próximas 24 horas.
+Fantasmas (Recarga após Descanso Curto ou Longo). O manto sombrio conjura a magia Mirror Image, sem precisar de componentes e usando Sabedoria como atributo de conjuração. A magia acaba antes se o manto sombrio começar ou terminar o turno sob Luz Plena.
+
+@@ Cloud Giant
+## Ações
+Ataque Múltiplo. O gigante faz dois ataques, usando Maça Trovejante ou Nuvem de Trovão em qualquer combinação. Ele pode substituir um ataque por um uso de Conjuração para conjurar Fog Cloud.
+Maça Trovejante. Jogada de Ataque Corpo a Corpo: +12, alcance 3 m. Acerto: 21 (3d8 + 8) de dano Contundente mais 7 (2d6) de dano Trovejante.
+Nuvem de Trovão. Jogada de Ataque à Distância: +12, distância 72 m. Acerto: 18 (3d6 + 8) de dano Trovejante, e o alvo fica na condição Incapacitado até o fim do seu próximo turno.
+Conjuração. O gigante conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 15): À Vontade: Detect Magic, Fog Cloud, Light. 1/Dia Cada: Control Weather, Gaseous Form, Telekinesis.
+## Ações Bônus
+Passo Nebuloso. O gigante conjura a magia Misty Step, usando o mesmo atributo de conjuração de Conjuração.

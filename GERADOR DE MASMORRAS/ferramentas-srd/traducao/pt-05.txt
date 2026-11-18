@@ -1,0 +1,253 @@
+@@ Gorgon
+## Ações
+Chifrada. Jogada de Ataque Corpo a Corpo: +8, alcance 1,5 m. Acerto: 18 (2d12 + 5) de dano Perfurante. Se o alvo for uma criatura Grande ou menor e a górgona tiver se movido 6 m ou mais em linha reta na direção dele imediatamente antes do acerto, o alvo fica na condição Caído.
+Sopro Petrificante (Recarga 5–6). Salvaguarda de Constituição: CD 15, cada criatura num Cone de 9 m. Primeira Falha: O alvo fica na condição Impedido e repete a salvaguarda no fim do seu próximo turno se ainda estiver Impedido, encerrando o efeito em si mesmo com um sucesso. Segunda Falha: O alvo fica na condição Petrificado em vez de Impedido.
+## Ações Bônus
+Pisotear. Salvaguarda de Destreza: CD 16, uma criatura a até 1,5 m que esteja na condição Caído. Falha: 16 (2d10 + 5) de dano Contundente. Sucesso: Metade do dano.
+
+@@ Gray Ooze
+## Traços
+Amorfo. O lodo pode passar por um espaço de apenas 2,5 cm de largura sem gastar movimento extra.
+Forma Corrosiva. Munição não mágica é destruída logo após atingir o lodo e causar dano. Qualquer arma não mágica sofre uma penalidade cumulativa de −1 nas jogadas de ataque logo após causar dano ao lodo e entrar em contato com ele. A arma é destruída se a penalidade chegar a −5. A penalidade pode ser removida conjurando a magia Mending na arma. O lodo consegue corroer 5 cm de metal ou madeira não mágicos em 1 rodada.
+## Ações
+Pseudópode. Jogada de Ataque Corpo a Corpo: +3, alcance 1,5 m. Acerto: 10 (2d8 + 1) de dano Ácido. A armadura não mágica vestida pelo alvo sofre uma penalidade de −1 na CA que concede. A armadura é destruída se a penalidade reduzir sua CA a 10. A penalidade pode ser removida conjurando a magia Mending na armadura.
+
+@@ Green Dragon Wyrmling
+## Traços
+Anfíbio. O dragão consegue respirar ar e água.
+## Ações
+Ataque Múltiplo. O dragão faz dois ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 7 (1d10 + 2) de dano Cortante mais 3 (1d6) de dano Venenoso.
+Sopro Venenoso (Recarga 5–6). Salvaguarda de Constituição: CD 11, cada criatura num Cone de 4,5 m. Falha: 21 (6d6) de dano Venenoso. Sucesso: Metade do dano.
+
+@@ Young Green Dragon
+## Traços
+Anfíbio. O dragão consegue respirar ar e água.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +7, alcance 3 m. Acerto: 11 (2d6 + 4) de dano Cortante mais 7 (2d6) de dano Venenoso.
+Sopro Venenoso (Recarga 5–6). Salvaguarda de Constituição: CD 14, cada criatura num Cone de 9 m. Falha: 42 (12d6) de dano Venenoso. Sucesso: Metade do dano.
+
+@@ Adult Green Dragon
+## Traços
+Anfíbio. O dragão consegue respirar ar e água.
+Resistência Lendária (3/Dia, ou 4/Dia no Covil). Se o dragão falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar. Ele pode substituir um ataque por um uso de Conjuração para conjurar Mind Spike (versão de 3º círculo).
+Dilacerar. Jogada de Ataque Corpo a Corpo: +11, alcance 3 m. Acerto: 15 (2d8 + 6) de dano Cortante mais 7 (2d6) de dano Venenoso.
+Sopro Venenoso (Recarga 5–6). Salvaguarda de Constituição: CD 18, cada criatura num Cone de 18 m. Falha: 56 (16d6) de dano Venenoso. Sucesso: Metade do dano.
+Conjuração. O dragão conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 17): À Vontade: Detect Magic, Mind Spike (versão de 3º círculo). 1/Dia: Geas.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, o dragão pode gastar um uso para realizar uma das ações a seguir. O dragão recupera todos os usos gastos no início de cada um de seus turnos.
+Invasão Mental. O dragão usa Conjuração para conjurar Mind Spike (versão de 3º círculo).
+Miasma Nocivo. Salvaguarda de Constituição: CD 17, cada criatura numa Esfera de 6 m de raio centrada num ponto que o dragão consiga ver a até 27 m. Falha: 7 (2d6) de dano Venenoso, e o alvo sofre uma penalidade de −2 na CA até o fim do seu próximo turno. Falha ou Sucesso: O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Bote. O dragão se move até metade do seu Deslocamento e faz um ataque de Dilacerar.
+
+@@ Ancient Green Dragon
+## Traços
+Anfíbio. O dragão consegue respirar ar e água.
+Resistência Lendária (4/Dia, ou 5/Dia no Covil). Se o dragão falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar. Ele pode substituir um ataque por um uso de Conjuração para conjurar Mind Spike (versão de 5º círculo).
+Dilacerar. Jogada de Ataque Corpo a Corpo: +15, alcance 4,5 m. Acerto: 17 (2d8 + 8) de dano Cortante mais 10 (3d6) de dano Venenoso.
+Sopro Venenoso (Recarga 5–6). Salvaguarda de Constituição: CD 22, cada criatura num Cone de 27 m. Falha: 77 (22d6) de dano Venenoso. Sucesso: Metade do dano.
+Conjuração. O dragão conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 21): À Vontade: Detect Magic, Mind Spike (versão de 5º círculo). 1/Dia Cada: Geas, Modify Memory.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, o dragão pode gastar um uso para realizar uma das ações a seguir. O dragão recupera todos os usos gastos no início de cada um de seus turnos.
+Invasão Mental. O dragão usa Conjuração para conjurar Mind Spike (versão de 5º círculo).
+Miasma Nocivo. Salvaguarda de Constituição: CD 21, cada criatura numa Esfera de 9 m de raio centrada num ponto que o dragão consiga ver a até 27 m. Falha: 17 (5d6) de dano Venenoso, e o alvo sofre uma penalidade de −2 na CA até o fim do seu próximo turno. Falha ou Sucesso: O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Bote. O dragão se move até metade do seu Deslocamento e faz um ataque de Dilacerar.
+
+@@ Green Hag
+## Traços
+Anfíbio. A bruxa consegue respirar ar e água.
+Magia do Conciliábulo. Enquanto estiver a até 9 m de pelo menos duas bruxas aliadas, a bruxa pode conjurar uma das magias a seguir, sem precisar de componentes Materiais, usando o tempo de conjuração normal da magia e Inteligência como atributo de conjuração (CD de salvaguarda de magia 11): Augury, Find Familiar, Identify, Locate Object, Scrying ou Unseen Servant. A bruxa precisa terminar um Descanso Longo antes de usar este traço para conjurar essa mesma magia de novo.
+Mimetismo. A bruxa consegue imitar sons de animais e vozes humanoides. Uma criatura que ouça os sons só percebe que são imitações com um teste de Sabedoria (Intuição) CD 14 bem-sucedido.
+## Ações
+Ataque Múltiplo. A bruxa faz dois ataques de Garra.
+Garra. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 8 (1d8 + 4) de dano Cortante mais 3 (1d6) de dano Venenoso.
+Conjuração. A bruxa conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Sabedoria como atributo de conjuração (CD de salvaguarda de magia 12, +4 para acertar com ataques de magia): À Vontade: Dancing Lights, Disguise Self (duração de 24 horas), Invisibility (apenas em si mesma, e a bruxa não deixa rastros enquanto estiver Invisível), Minor Illusion, Ray of Sickness (versão de 3º círculo).
+
+@@ Grick
+## Ações
+Ataque Múltiplo. O grick faz um ataque de Bico e um ataque de Tentáculos.
+Bico. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 9 (2d6 + 2) de dano Perfurante.
+Tentáculos. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 7 (1d10 + 2) de dano Cortante. Se o alvo for uma criatura Média ou menor, ele fica na condição Agarrado (CD 12 para escapar) pelos quatro tentáculos.
+
+@@ Griffon
+## Ações
+Ataque Múltiplo. O grifo faz dois ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 8 (1d8 + 4) de dano Perfurante. Se o alvo for uma criatura Média ou menor, ele fica na condição Agarrado (CD 14 para escapar) pelas duas garras dianteiras do grifo.
+
+@@ Grimlock
+## Ações
+Porrete de Osso. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 6 (1d6 + 3) de dano Contundente mais 2 (1d4) de dano Psíquico.
+
+@@ Guardian Naga
+## Traços
+Restauração Celestial. Se a naga morrer, ela volta à vida em 1d6 dias e recupera todos os seus Pontos de Vida, a menos que Dispel Evil and Good seja conjurada sobre seus restos.
+## Ações
+Ataque Múltiplo. A naga faz dois ataques de Mordida. Ela pode substituir qualquer ataque por um uso de Cuspe Venenoso.
+Mordida. Jogada de Ataque Corpo a Corpo: +8, alcance 3 m. Acerto: 17 (2d12 + 4) de dano Perfurante mais 22 (4d10) de dano Venenoso.
+Cuspe Venenoso. Salvaguarda de Constituição: CD 16, uma criatura que a naga consiga ver a até 18 m. Falha: 31 (7d8) de dano Venenoso, e o alvo fica na condição Cego até o início do próximo turno da naga. Sucesso: Apenas metade do dano.
+Conjuração. A naga conjura uma das magias a seguir, sem precisar de componentes Somáticos ou Materiais e usando Sabedoria como atributo de conjuração (CD de salvaguarda de magia 16): À Vontade: Thaumaturgy. 1/Dia Cada: Clairvoyance, Cure Wounds (versão de 6º círculo), Flame Strike (versão de 6º círculo), Geas, True Seeing.
+
+@@ Guard
+## Ações
+Lança. Jogada de Ataque Corpo a Corpo ou à Distância: +3, alcance 1,5 m ou distância 6/18 m. Acerto: 4 (1d6 + 1) de dano Perfurante.
+
+@@ Guard Captain
+## Ações
+Ataque Múltiplo. O capitão faz dois ataques, usando Azagaia ou Espada Longa em qualquer combinação.
+Azagaia. Jogada de Ataque Corpo a Corpo ou à Distância: +6, alcance 1,5 m ou distância 9/36 m. Acerto: 14 (3d6 + 4) de dano Perfurante.
+Espada Longa. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 15 (2d10 + 4) de dano Cortante.
+
+@@ Half-Dragon
+## Traços
+Origem Dracônica. O meio-dragão é aparentado de um tipo de dragão associado a um dos tipos de dano a seguir (à escolha do mestre): Ácido, Frio, Fogo, Elétrico ou Venenoso. Essa escolha afeta outros pontos da ficha.
+## Ações
+Ataque Múltiplo. O meio-dragão faz dois ataques de Garra.
+Garra. Jogada de Ataque Corpo a Corpo: +7, alcance 3 m. Acerto: 6 (1d4 + 4) de dano Cortante mais 7 (2d6) de dano do tipo escolhido no traço Origem Dracônica.
+Sopro de Dragão (Recarga 5–6). Salvaguarda de Destreza: CD 14, cada criatura num Cone de 9 m. Falha: 28 (8d6) de dano do tipo escolhido no traço Origem Dracônica. Sucesso: Metade do dano.
+## Ações Bônus
+Salto. O meio-dragão salta até 9 m gastando 3 m de movimento.
+
+@@ Harpy
+## Ações
+Garra. Jogada de Ataque Corpo a Corpo: +3, alcance 1,5 m. Acerto: 6 (2d4 + 1) de dano Cortante.
+Canção Sedutora. A harpia canta uma melodia mágica, que dura até a Concentração da harpia nela acabar. Salvaguarda de Sabedoria: CD 11, cada Humanoide e Gigante numa Emanação de 90 m a partir da harpia quando a canção começa. Falha: O alvo fica na condição Enfeitiçado até a canção acabar e repete a salvaguarda no fim de cada um de seus turnos. Enquanto Enfeitiçado, o alvo fica na condição Incapacitado e ignora a Canção Sedutora de outras harpias. Se o alvo estiver a mais de 1,5 m da harpia, ele se move no seu turno na direção dela pelo caminho mais direto, tentando chegar a até 1,5 m. Ele não evita Ataques de Oportunidade; porém, antes de entrar em terreno perigoso (como lava ou um poço) e sempre que sofrer dano de uma fonte que não seja a harpia, o alvo repete a salvaguarda. Sucesso: O alvo fica imune à Canção Sedutora desta harpia por 24 horas.
+
+@@ Hell Hound
+## Traços
+Táticas de Matilha. O cão tem Vantagem numa jogada de ataque contra uma criatura se pelo menos um aliado do cão estiver a até 1,5 m dela e não estiver na condição Incapacitado.
+## Ações
+Ataque Múltiplo. O cão faz dois ataques de Mordida.
+Mordida. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 7 (1d8 + 3) de dano Perfurante mais 3 (1d6) de dano de Fogo.
+Sopro de Fogo (Recarga 5–6). Salvaguarda de Destreza: CD 12, cada criatura num Cone de 4,5 m. Falha: 17 (5d6) de dano de Fogo. Sucesso: Metade do dano.
+
+@@ Hezrou
+## Traços
+Restauração Demoníaca. Se o hezrou morrer fora do Abismo, seu corpo se dissolve em icor e ele ganha um novo corpo instantaneamente, revivendo com todos os seus Pontos de Vida em algum lugar do Abismo.
+Resistência à Magia. O hezrou tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+Fedor. Salvaguarda de Constituição: CD 16, qualquer criatura que comece o turno numa Emanação de 3 m a partir do hezrou. Falha: O alvo fica na condição Envenenado até o início do seu próximo turno.
+## Ações
+Ataque Múltiplo. O hezrou faz três ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 6 (1d4 + 4) de dano Cortante mais 9 (2d8) de dano Venenoso.
+## Ações Bônus
+Salto. O hezrou salta até 9 m gastando 3 m de movimento.
+
+@@ Hill Giant
+## Ações
+Ataque Múltiplo. O gigante faz dois ataques, usando Clava de Árvore ou Arremesso de Lixo em qualquer combinação.
+Clava de Árvore. Jogada de Ataque Corpo a Corpo: +8, alcance 3 m. Acerto: 18 (3d8 + 5) de dano Contundente. Se o alvo for uma criatura Grande ou menor, ele fica na condição Caído.
+Arremesso de Lixo. Jogada de Ataque à Distância: +8, distância 18/72 m. Acerto: 16 (2d10 + 5) de dano Contundente, e o alvo fica na condição Envenenado até o fim do seu próximo turno.
+
+@@ Hippogriff
+## Traços
+Sobrevoo. O hipogrifo não provoca Ataque de Oportunidade quando voa para fora do alcance de um inimigo.
+## Ações
+Ataque Múltiplo. O hipogrifo faz dois ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 7 (1d8 + 3) de dano Cortante.
+
+@@ Hobgoblin Warrior
+## Traços
+Táticas de Matilha. O hobgoblin tem Vantagem numa jogada de ataque contra uma criatura se pelo menos um aliado do hobgoblin estiver a até 1,5 m dela e não estiver na condição Incapacitado.
+## Ações
+Espada Longa. Jogada de Ataque Corpo a Corpo: +3, alcance 1,5 m. Acerto: 12 (2d10 + 1) de dano Cortante.
+Arco Longo. Jogada de Ataque à Distância: +3, distância 45/180 m. Acerto: 5 (1d8 + 1) de dano Perfurante mais 7 (3d4) de dano Venenoso.
+
+@@ Hobgoblin Captain
+## Traços
+Aura de Autoridade. Enquanto estiverem numa Emanação de 3 m a partir do hobgoblin, ele e seus aliados têm Vantagem em jogadas de ataque e salvaguardas, desde que o hobgoblin não esteja na condição Incapacitado.
+## Ações
+Ataque Múltiplo. O hobgoblin faz dois ataques, usando Montante ou Arco Longo em qualquer combinação.
+Montante. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 9 (2d6 + 2) de dano Cortante mais 3 (1d6) de dano Venenoso.
+Arco Longo. Jogada de Ataque à Distância: +4, distância 45/180 m. Acerto: 6 (1d8 + 2) de dano Perfurante mais 5 (2d4) de dano Venenoso.
+
+@@ Homunculus
+## Traços
+Vínculo Telepático. Enquanto o homúnculo estiver no mesmo plano de existência que seu mestre, os dois podem se comunicar telepaticamente.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 1 de dano Perfurante, e o alvo é submetido ao efeito a seguir. Salvaguarda de Constituição: CD 12. Falha: O alvo fica na condição Envenenado até o fim do próximo turno do homúnculo. Falha por 5 ou Mais: O alvo fica na condição Envenenado por 1 minuto. Enquanto Envenenado, o alvo fica na condição Inconsciente, que acaba antes se ele sofrer qualquer dano.
+
+@@ Horned Devil
+## Traços
+Restauração Diabólica. Se o diabo morrer fora dos Nove Infernos, seu corpo desaparece em fumaça sulfurosa e ele ganha um novo corpo instantaneamente, revivendo com todos os seus Pontos de Vida em algum lugar dos Nove Infernos.
+Resistência à Magia. O diabo tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Ataque Múltiplo. O diabo faz três ataques, usando Forcado Abrasador ou Arremessar Chama em qualquer combinação. Ele pode substituir um ataque por um uso de Cauda Infernal.
+Forcado Abrasador. Jogada de Ataque Corpo a Corpo: +10, alcance 3 m. Acerto: 15 (2d8 + 6) de dano Perfurante mais 9 (2d8) de dano de Fogo.
+Arremessar Chama. Jogada de Ataque à Distância: +8, distância 45 m. Acerto: 26 (5d8 + 4) de dano de Fogo. Se o alvo for um objeto inflamável que ninguém esteja vestindo ou carregando, ele começa a queimar.
+Cauda Infernal. Salvaguarda de Destreza: CD 17, uma criatura que o diabo consiga ver a até 3 m. Falha: 10 (1d8 + 6) de dano Necrótico, e o alvo recebe um ferimento infernal se ainda não tiver um. Enquanto estiver ferido, o alvo perde 10 (3d6) Pontos de Vida no início de cada um de seus turnos. O ferimento se fecha após 1 minuto, depois que uma magia restaurar Pontos de Vida do alvo, ou depois que o alvo ou uma criatura a até 1,5 m dele usar uma ação para estancar o ferimento, sendo bem-sucedida num teste de Sabedoria (Medicina) CD 17.
+
+@@ Hydra
+## Traços
+Prender a Respiração. A hidra consegue prender a respiração por 1 hora.
+Várias Cabeças. A hidra tem cinco cabeças. Sempre que sofrer 25 ou mais de dano num único turno, uma das cabeças morre. A hidra morre se todas as cabeças estiverem mortas. No fim de cada um de seus turnos em que tiver pelo menos uma cabeça viva, a hidra faz crescer duas cabeças para cada cabeça que morreu desde o seu último turno, a menos que tenha sofrido dano de Fogo desde o seu último turno. A hidra recupera 20 Pontos de Vida quando novas cabeças crescem.
+Cabeças Reativas. Para cada cabeça além da primeira, a hidra ganha uma Reação extra que só pode ser usada para Ataques de Oportunidade.
+## Ações
+Ataque Múltiplo. A hidra faz tantos ataques de Mordida quanto o número de cabeças que tem.
+Mordida. Jogada de Ataque Corpo a Corpo: +8, alcance 3 m. Acerto: 10 (1d10 + 5) de dano Perfurante.
+
+@@ Ice Devil
+## Traços
+Restauração Diabólica. Se o diabo morrer fora dos Nove Infernos, seu corpo desaparece em fumaça sulfurosa e ele ganha um novo corpo instantaneamente, revivendo com todos os seus Pontos de Vida em algum lugar dos Nove Infernos.
+Resistência à Magia. O diabo tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Ataque Múltiplo. O diabo faz três ataques de Lança de Gelo. Ele pode substituir um ataque por um ataque de Cauda.
+Lança de Gelo. Jogada de Ataque Corpo a Corpo ou à Distância: +10, alcance 1,5 m ou distância 9/36 m. Acerto: 14 (2d8 + 5) de dano Perfurante mais 10 (3d6) de dano de Frio. Até o fim do seu próximo turno, o alvo não pode realizar Ação Bônus nem Reação, seu Deslocamento diminui em 3 m, e ele pode se mover ou realizar uma ação no seu turno, não ambos. Acerto ou Erro: A lança volta magicamente para a mão do diabo logo após um ataque à distância.
+Cauda. Jogada de Ataque Corpo a Corpo: +10, alcance 3 m. Acerto: 15 (3d6 + 5) de dano Contundente mais 18 (4d8) de dano de Frio.
+Muralha de Gelo (Recarga 6). O diabo conjura Wall of Ice (versão de 8º círculo), sem precisar de componentes de magia e usando Inteligência como atributo de conjuração (CD de salvaguarda de magia 17).
+
+@@ Imp
+## Traços
+Resistência à Magia. O diabrete tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Ferrão. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 6 (1d6 + 3) de dano Perfurante mais 7 (2d6) de dano Venenoso.
+Invisibilidade. O diabrete conjura Invisibility em si mesmo, sem precisar de componentes de magia e usando Carisma como atributo de conjuração.
+Mudar de Forma. O diabrete se transforma para parecer um rato (Deslocamento 6 m), um corvo (6 m, voo 18 m) ou uma aranha (6 m, escalada 6 m), ou volta à sua forma verdadeira. Suas estatísticas de jogo são as mesmas em todas as formas, exceto o Deslocamento. Equipamentos que esteja vestindo ou carregando não se transformam.
+
+@@ Incubus
+## Traços
+Forma de Súcubo. Quando o íncubo termina um Descanso Longo, ele pode se transformar num Súcubo, usando aquela ficha em vez desta. Equipamentos que esteja vestindo ou carregando não se transformam.
+## Ações
+Ataque Múltiplo. O íncubo faz dois ataques de Toque Inquietante.
+Toque Inquietante. Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 15 (3d6 + 5) de dano Psíquico, e o alvo fica amaldiçoado por 24 horas ou até o íncubo morrer. Até a maldição acabar, o alvo não recebe nenhum benefício ao terminar Descansos Curtos.
+Conjuração. O íncubo conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 15): À Vontade: Disguise Self, Etherealness. 1/Dia Cada: Dream, Hypnotic Pattern.
+## Ações Bônus
+Pesadelo (Recarga 6). Salvaguarda de Sabedoria: CD 15, uma criatura que o íncubo consiga ver a até 18 m. Falha: Se o alvo tiver 20 Pontos de Vida ou menos, ele fica na condição Inconsciente por 1 hora, até sofrer dano ou até uma criatura a até 1,5 m dele usar uma ação para acordá-lo. Caso contrário, o alvo sofre 18 (4d8) de dano Psíquico.
+
+@@ Invisible Stalker
+## Traços
+Forma Aérea. O perseguidor pode entrar no espaço de um inimigo e parar ali. Ele pode passar por um espaço de apenas 2,5 cm de largura sem gastar movimento extra.
+Invisibilidade. O perseguidor está na condição Invisível.
+## Ações
+Ataque Múltiplo. O perseguidor faz três ataques de Golpe de Vento. Ele pode substituir um ataque por um uso de Vórtice.
+Golpe de Vento. Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 11 (2d6 + 4) de dano de Energia.
+Vórtice. Salvaguarda de Constituição: CD 14, uma criatura Grande ou menor no espaço do perseguidor. Falha: 7 (1d8 + 3) de dano Trovejante, e o alvo fica na condição Agarrado (CD 13 para escapar). Até o agarrão acabar, o alvo não pode conjurar magias com componente Verbal e sofre 7 (2d6) de dano Trovejante no início de cada turno do perseguidor.
+
+@@ Iron Golem
+## Traços
+Absorção de Fogo. Sempre que o golem for submetido a dano de Fogo, ele recupera Pontos de Vida iguais ao dano de Fogo causado.
+Forma Imutável. O golem não pode mudar de forma.
+Resistência à Magia. O golem tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Ataque Múltiplo. O golem faz dois ataques, usando Braço de Lâmina ou Raio Flamejante em qualquer combinação.
+Braço de Lâmina. Jogada de Ataque Corpo a Corpo: +12, alcance 3 m. Acerto: 20 (3d8 + 7) de dano Cortante mais 10 (3d6) de dano de Fogo.
+Raio Flamejante. Jogada de Ataque à Distância: +10, distância 36 m. Acerto: 36 (8d8) de dano de Fogo.
+Sopro Venenoso (Recarga 6). Salvaguarda de Constituição: CD 18, cada criatura num Cone de 18 m. Falha: 55 (10d10) de dano Venenoso. Sucesso: Metade do dano.
+
+@@ Knight
+## Ações
+Ataque Múltiplo. O cavaleiro faz dois ataques, usando Montante ou Besta Pesada em qualquer combinação.
+Montante. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 10 (2d6 + 3) de dano Cortante mais 4 (1d8) de dano Radiante.
+Besta Pesada. Jogada de Ataque à Distância: +2, distância 30/120 m. Acerto: 11 (2d10) de dano Perfurante mais 4 (1d8) de dano Radiante.
+## Reações
+Aparar. Gatilho: O cavaleiro é atingido por uma jogada de ataque corpo a corpo enquanto empunha uma arma. Resposta: O cavaleiro soma 2 à sua CA contra esse ataque, possivelmente fazendo-o errar.
+
+@@ Kobold Warrior
+## Traços
+Táticas de Matilha. O kobold tem Vantagem numa jogada de ataque contra uma criatura se pelo menos um aliado do kobold estiver a até 1,5 m dela e não estiver na condição Incapacitado.
+Sensibilidade à Luz Solar. Sob luz do sol, o kobold tem Desvantagem em testes de atributo e jogadas de ataque.
+## Ações
+Adaga. Jogada de Ataque Corpo a Corpo ou à Distância: +4, alcance 1,5 m ou distância 6/18 m. Acerto: 4 (1d4 + 2) de dano Perfurante.

@@ -2,7 +2,7 @@
 const fs = require('fs');
 const raw = fs.readFileSync(process.argv[2], 'utf8').split(/\r?\n/);
 const start = raw.findIndex((l, i) => i > 14000 && l.trim() === 'Monsters A-Z');
-let L = raw.slice(start).map(l => l.replace(/\f/g, '').trimEnd().replace(/-footwide/g, '-foot-wide').replace(/(\w) � (\d)/g, '$1 × $2').replace(/([a-z])�([a-z])/g, '$1$2').replace(/�/g, '•').replace(/^Con22 /, 'Con 22 ').replace(/^Int 6 -2 2 Wis/, 'Int 6 -2 -2 Wis'));
+let L = raw.slice(start).map(l => l.replace(/\f/g, '').trimEnd().replace(/ ?System Reference Document 5\.2\.1$/, '').replace(/-footwide/g, '-foot-wide').replace(/(\w) � (\d)/g, '$1 × $2').replace(/([a-z])�([a-z])/g, '$1$2').replace(/�/g, '•').replace(/^Con22 /, 'Con 22 ').replace(/^Int 6 -2 2 Wis/, 'Int 6 -2 -2 Wis'));
 // tira rodapés de página
 L = L.filter(l => !/^\d+ System Reference Document 5\.2\.1$/.test(l.trim()) && !/^\d+$/.test(l.trim()));
 const TYPE_RE = /^(Tiny|Small|Medium|Large|Huge|Gargantuan)\b[^.]*, (Lawful|Neutral|Chaotic|Unaligned|Any)[\w ]*$/;
@@ -18,7 +18,9 @@ for (let k = 0; k < idx.length; k++) {
   // remove títulos soltos no fim (nome repetido do próximo bloco / título de grupo)
   while (body.length) {
     const t = body[body.length - 1].trim();
-    if (!t || (t.length < 45 && !/[.:]$/.test(t) && /^[A-Z]/.test(t) && !/\d/.test(t) && !SECS.includes(t))) body.pop(); else break;
+    const antes = body.length > 1 ? body[body.length - 2].trim() : '';
+    // título solto (nome do próximo bloco / título de grupo) só se vier depois de uma linha em branco
+    if (!t || (!antes && t.length < 45 && !/[.:]$/.test(t) && /^[A-Z]/.test(t) && !/\d/.test(t) && !SECS.includes(t))) body.pop(); else break;
   }
   const secStart = body.findIndex(l => SECS.includes(l.trim()));
   const head = (secStart < 0 ? body : body.slice(0, secStart)).filter(l => l.trim() && l.trim() !== 'MOD SAVE');

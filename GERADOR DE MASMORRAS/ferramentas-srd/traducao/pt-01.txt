@@ -1,0 +1,227 @@
+@@ Aboleth
+## Traços
+Anfíbio. O aboleth consegue respirar ar e água.
+Restauração Sobrenatural. Se for destruído, o aboleth ganha um novo corpo em 5d10 dias, revivendo com todos os seus Pontos de Vida no Reino Distante ou em outro local escolhido pelo mestre.
+Resistência Lendária (3/Dia, ou 4/Dia no Covil). Se o aboleth falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+Nuvem de Muco. Enquanto está submerso, o aboleth fica envolto em muco. Salvaguarda de Constituição: CD 14, cada criatura numa Emanação de 1,5 m a partir do aboleth, no fim do turno do aboleth. Falha: O alvo é amaldiçoado. Até a maldição acabar, a pele do alvo fica viscosa, ele consegue respirar ar e água e não pode recuperar Pontos de Vida a menos que esteja submerso. Enquanto a criatura amaldiçoada estiver fora de um corpo d'água, ela sofre 6 (1d12) de dano Ácido ao fim de cada 10 minutos, a menos que sua pele seja umedecida antes desse tempo passar.
+Telepatia Invasiva. Se uma criatura que o aboleth consegue ver se comunicar telepaticamente com ele, o aboleth descobre os maiores desejos dessa criatura.
+## Ações
+Ataque Múltiplo. O aboleth faz dois ataques de Tentáculo e usa Consumir Memórias ou Dominar Mente, se disponível.
+Tentáculo. Jogada de Ataque Corpo a Corpo: +9, alcance 4,5 m. Acerto: 12 (2d6 + 5) de dano Contundente. Se o alvo for uma criatura Grande ou menor, ele fica na condição Agarrado (CD 14 para escapar) por um de quatro tentáculos.
+Consumir Memórias. Salvaguarda de Inteligência: CD 16, uma criatura a até 9 m que esteja Enfeitiçada ou Agarrada pelo aboleth. Falha: 10 (3d6) de dano Psíquico. Sucesso: Metade do dano. Falha ou Sucesso: O aboleth obtém as memórias do alvo se ele for um Humanoide e for reduzido a 0 Pontos de Vida por esta ação.
+Dominar Mente (2/Dia). Salvaguarda de Sabedoria: CD 16, uma criatura que o aboleth consiga ver a até 9 m. Falha: O alvo fica na condição Enfeitiçado até o aboleth morrer ou estar em outro plano de existência. Enquanto Enfeitiçado, o alvo age como aliado do aboleth e fica sob seu controle enquanto estiver a até 18 m dele. Além disso, o aboleth e o alvo podem se comunicar telepaticamente a qualquer distância. O alvo repete a salvaguarda sempre que sofre dano e também após cada 24 horas que passar a pelo menos 1,5 km do aboleth, encerrando o efeito em si mesmo com um sucesso.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, o aboleth pode gastar um uso para realizar uma das ações a seguir. O aboleth recupera todos os usos gastos no início de cada um de seus turnos.
+Açoite. O aboleth faz um ataque de Tentáculo.
+Dreno Psíquico. Se o aboleth tiver pelo menos uma criatura Enfeitiçada ou Agarrada, ele usa Consumir Memórias e recupera 5 (1d10) Pontos de Vida.
+
+@@ Air Elemental
+## Traços
+Forma Aérea. O elemental pode entrar no espaço de uma criatura e parar ali. Ele pode passar por um espaço de apenas 2,5 cm de largura sem gastar movimento extra.
+## Ações
+Ataque Múltiplo. O elemental faz dois ataques de Pancada Trovejante.
+Pancada Trovejante. Jogada de Ataque Corpo a Corpo: +8, alcance 3 m. Acerto: 14 (2d8 + 5) de dano Trovejante.
+Redemoinho (Recarga 4–6). Salvaguarda de Força: CD 13, uma criatura Média ou menor no espaço do elemental. Falha: 24 (4d10 + 2) de dano Trovejante, e o alvo é empurrado até 6 m em linha reta para longe do elemental e fica na condição Caído. Sucesso: Apenas metade do dano.
+
+@@ Animated Armor
+## Ações
+Ataque Múltiplo. A armadura faz dois ataques de Pancada.
+Pancada. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 5 (1d6 + 2) de dano Contundente.
+
+@@ Animated Flying Sword
+## Ações
+Talho. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 6 (1d8 + 2) de dano Cortante.
+
+@@ Animated Rug of Smothering
+## Ações
+Sufocar. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 10 (2d6 + 3) de dano Contundente. Se o alvo for uma criatura Média ou menor, o tapete pode deixá-lo na condição Agarrado (CD 13 para escapar) em vez de causar dano. Até o agarrão acabar, o alvo fica nas condições Cego e Impedido, está sufocando e sofre 10 (2d6 + 3) de dano Contundente no início de cada um de seus turnos. O tapete só consegue sufocar uma criatura por vez. Enquanto agarra o alvo, o tapete não pode usar esta ação, sofre apenas metade do dano que recebe (arredondado para baixo), e o alvo sofre a mesma quantidade de dano.
+
+@@ Ankheg
+## Traços
+Escavador de Túneis. O ankheg consegue escavar rocha sólida com metade do seu Deslocamento de Escavação e deixa para trás um túnel de 3 m de diâmetro.
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +5 (com Vantagem se o alvo estiver Agarrado pelo ankheg), alcance 1,5 m. Acerto: 10 (2d6 + 3) de dano Cortante mais 3 (1d6) de dano Ácido. Se o alvo for uma criatura Grande ou menor, ele fica na condição Agarrado (CD 13 para escapar).
+Jato Ácido (Recarga 6). Salvaguarda de Destreza: CD 12, cada criatura numa Linha de 9 m de comprimento e 1,5 m de largura. Falha: 14 (4d6) de dano Ácido. Sucesso: Metade do dano.
+
+@@ Assassin
+## Traços
+Evasão. Se o assassino for alvo de um efeito que permite uma salvaguarda de Destreza para sofrer apenas metade do dano, ele não sofre dano algum se for bem-sucedido e sofre apenas metade se falhar. Ele não pode usar este traço se estiver na condição Incapacitado.
+## Ações
+Ataque Múltiplo. O assassino faz três ataques, usando Espada Curta ou Besta Leve em qualquer combinação.
+Espada Curta. Jogada de Ataque Corpo a Corpo: +7, alcance 1,5 m. Acerto: 7 (1d6 + 4) de dano Perfurante mais 17 (5d6) de dano Venenoso, e o alvo fica na condição Envenenado até o início do próximo turno do assassino.
+Besta Leve. Jogada de Ataque à Distância: +7, distância 24/96 m. Acerto: 8 (1d8 + 4) de dano Perfurante mais 21 (6d6) de dano Venenoso.
+## Ações Bônus
+Ação Ardilosa. O assassino realiza a ação Disparada, Desengajar ou Esconder.
+
+@@ Awakened Shrub
+## Ações
+Arranhão. Jogada de Ataque Corpo a Corpo: +1, alcance 1,5 m. Acerto: 1 de dano Cortante.
+
+@@ Awakened Tree
+## Ações
+Pancada. Jogada de Ataque Corpo a Corpo: +6, alcance 3 m. Acerto: 14 (3d6 + 4) de dano Contundente.
+
+@@ Axe Beak
+## Ações
+Bico. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 6 (1d8 + 2) de dano Cortante.
+
+@@ Azer Sentinel
+## Traços
+Aura de Fogo. No fim de cada turno do azer, cada criatura à escolha dele numa Emanação de 1,5 m a partir do azer sofre 5 (1d10) de dano de Fogo, a menos que o azer esteja na condição Incapacitado.
+Iluminação. O azer emite Luz Plena num raio de 3 m e Penumbra por mais 3 m.
+## Ações
+Martelo Ardente. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 8 (1d10 + 3) de dano Contundente mais 3 (1d6) de dano de Fogo.
+
+@@ Balor
+## Traços
+Estertores da Morte. O balor explode ao morrer. Salvaguarda de Destreza: CD 20, cada criatura numa Emanação de 9 m a partir do balor. Falha: 31 (9d6) de dano de Fogo mais 31 (9d6) de dano de Energia. Sucesso: Metade do dano. Falha ou Sucesso: Se o balor morrer fora do Abismo, ele ganha um novo corpo instantaneamente, revivendo com todos os seus Pontos de Vida em algum lugar do Abismo.
+Aura de Fogo. No fim de cada turno do balor, cada criatura numa Emanação de 1,5 m a partir do balor sofre 13 (3d8) de dano de Fogo.
+Resistência Lendária (3/Dia). Se o balor falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+Resistência à Magia. O balor tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Ataque Múltiplo. O balor faz um ataque de Chicote de Chamas e um ataque de Lâmina Relampejante.
+Chicote de Chamas. Jogada de Ataque Corpo a Corpo: +14, alcance 9 m. Acerto: 18 (3d6 + 8) de dano de Energia mais 17 (5d6) de dano de Fogo. Se o alvo for uma criatura Enorme ou menor, o balor o puxa até 7,5 m em linha reta na sua direção, e o alvo fica na condição Caído.
+Lâmina Relampejante. Jogada de Ataque Corpo a Corpo: +14, alcance 3 m. Acerto: 21 (3d8 + 8) de dano de Energia mais 22 (4d10) de dano Elétrico, e o alvo não pode realizar Reações até o início do próximo turno do balor.
+## Ações Bônus
+Teletransporte. O balor teletransporta a si mesmo ou um demônio voluntário a até 3 m dele por até 18 m, para um espaço desocupado que o balor consiga ver.
+
+@@ Bandit
+## Ações
+Cimitarra. Jogada de Ataque Corpo a Corpo: +3, alcance 1,5 m. Acerto: 4 (1d6 + 1) de dano Cortante.
+Besta Leve. Jogada de Ataque à Distância: +3, distância 24/96 m. Acerto: 5 (1d8 + 1) de dano Perfurante.
+
+@@ Bandit Captain
+## Ações
+Ataque Múltiplo. O bandido faz dois ataques, usando Cimitarra e Pistola em qualquer combinação.
+Cimitarra. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 6 (1d6 + 3) de dano Cortante.
+Pistola. Jogada de Ataque à Distância: +5, distância 9/27 m. Acerto: 8 (1d10 + 3) de dano Perfurante.
+## Reações
+Aparar. Gatilho: O bandido é atingido por uma jogada de ataque corpo a corpo enquanto empunha uma arma. Resposta: O bandido soma 2 à sua CA contra esse ataque, possivelmente fazendo-o errar.
+
+@@ Barbed Devil
+## Traços
+Couro Farpado. No início de cada um de seus turnos, o diabo causa 5 (1d10) de dano Perfurante a qualquer criatura que ele esteja agarrando ou que o esteja agarrando.
+Restauração Diabólica. Se o diabo morrer fora dos Nove Infernos, seu corpo desaparece em fumaça sulfurosa e ele ganha um novo corpo instantaneamente, revivendo com todos os seus Pontos de Vida em algum lugar dos Nove Infernos.
+Resistência à Magia. O diabo tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Ataque Múltiplo. O diabo faz um ataque de Garras e um ataque de Cauda, ou faz dois ataques de Arremessar Chama.
+Garras. Jogada de Ataque Corpo a Corpo: +6, alcance 1,5 m. Acerto: 10 (2d6 + 3) de dano Perfurante. Se o alvo for uma criatura Grande ou menor, ele fica na condição Agarrado (CD 13 para escapar) pelas duas garras.
+Cauda. Jogada de Ataque Corpo a Corpo: +6, alcance 3 m. Acerto: 14 (2d10 + 3) de dano Cortante.
+Arremessar Chama. Jogada de Ataque à Distância: +5, distância 45 m. Acerto: 17 (5d6) de dano de Fogo. Se o alvo for um objeto inflamável que ninguém esteja vestindo ou carregando, ele começa a queimar.
+
+@@ Basilisk
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 10 (2d6 + 3) de dano Perfurante mais 7 (2d6) de dano Venenoso.
+## Ações Bônus
+Olhar Petrificante (Recarga 4–6). Salvaguarda de Constituição: CD 12, cada criatura num Cone de 9 m. Se o basilisco vir seu reflexo no Cone, ele próprio precisa fazer esta salvaguarda. Primeira Falha: O alvo fica na condição Impedido e repete a salvaguarda no fim do seu próximo turno se ainda estiver Impedido, encerrando o efeito em si mesmo com um sucesso. Segunda Falha: O alvo fica na condição Petrificado em vez de Impedido.
+
+@@ Bearded Devil
+## Traços
+Resistência à Magia. O diabo tem Vantagem em salvaguardas contra magias e outros efeitos mágicos.
+## Ações
+Ataque Múltiplo. O diabo faz um ataque de Barba e um ataque de Glaive Infernal.
+Barba. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 7 (1d8 + 3) de dano Perfurante, e o alvo fica na condição Envenenado até o início do próximo turno do diabo. Enquanto esse veneno durar, o alvo não pode recuperar Pontos de Vida.
+Glaive Infernal. Jogada de Ataque Corpo a Corpo: +5, alcance 3 m. Acerto: 8 (1d10 + 3) de dano Cortante. Se o alvo for uma criatura e ainda não tiver um ferimento infernal, ele é submetido ao efeito a seguir. Salvaguarda de Constituição: CD 12. Falha: O alvo recebe um ferimento infernal. Enquanto estiver ferido, o alvo perde 5 (1d10) Pontos de Vida no início de cada um de seus turnos. O ferimento se fecha após 1 minuto, depois que uma magia restaurar Pontos de Vida do alvo, ou depois que o alvo ou uma criatura a até 1,5 m dele usar uma ação para estancar o ferimento, sendo bem-sucedida num teste de Sabedoria (Medicina) CD 12.
+
+@@ Behir
+## Ações
+Ataque Múltiplo. O behir faz um ataque de Mordida e usa Constringir.
+Mordida. Jogada de Ataque Corpo a Corpo: +10, alcance 3 m. Acerto: 19 (2d12 + 6) de dano Perfurante mais 11 (2d10) de dano Elétrico.
+Constringir. Salvaguarda de Força: CD 18, uma criatura Grande ou menor que o behir consiga ver a até 1,5 m. Falha: 28 (5d8 + 6) de dano Contundente. O alvo fica na condição Agarrado (CD 16 para escapar) e na condição Impedido até o agarrão acabar.
+Sopro Relampejante (Recarga 5–6). Salvaguarda de Destreza: CD 16, cada criatura numa Linha de 27 m de comprimento e 1,5 m de largura. Falha: 66 (12d10) de dano Elétrico. Sucesso: Metade do dano.
+## Ações Bônus
+Engolir. Salvaguarda de Destreza: CD 18, uma criatura Grande ou menor Agarrada pelo behir (o behir só pode ter uma criatura engolida por vez). Falha: O behir engole o alvo, que deixa de estar Agarrado. Enquanto engolida, a criatura fica nas condições Cego e Impedido, tem Cobertura Total contra ataques e outros efeitos de fora do behir e sofre 21 (6d6) de dano Ácido no início de cada turno do behir. Se o behir sofrer 30 ou mais de dano num único turno vindo da criatura engolida, ele precisa ser bem-sucedido numa salvaguarda de Constituição CD 14 no fim desse turno ou regurgita a criatura, que cai num espaço a até 3 m do behir na condição Caído. Se o behir morrer, a criatura engolida deixa de estar Impedida e pode escapar do cadáver usando 4,5 m de movimento, saindo Caída.
+
+@@ Berserker
+## Traços
+Frenesi Sangrento. Enquanto estiver Sangrando, o berserker tem Vantagem em jogadas de ataque e salvaguardas.
+## Ações
+Machado Grande. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 9 (1d12 + 3) de dano Cortante.
+
+@@ Black Dragon Wyrmling
+## Traços
+Anfíbio. O dragão consegue respirar ar e água.
+## Ações
+Ataque Múltiplo. O dragão faz dois ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +4, alcance 1,5 m. Acerto: 5 (1d6 + 2) de dano Cortante mais 2 (1d4) de dano Ácido.
+Sopro Ácido (Recarga 5–6). Salvaguarda de Destreza: CD 11, cada criatura numa Linha de 4,5 m de comprimento e 1,5 m de largura. Falha: 22 (5d8) de dano Ácido. Sucesso: Metade do dano.
+
+@@ Young Black Dragon
+## Traços
+Anfíbio. O dragão consegue respirar ar e água.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +7, alcance 3 m. Acerto: 9 (2d4 + 4) de dano Cortante mais 3 (1d6) de dano Ácido.
+Sopro Ácido (Recarga 5–6). Salvaguarda de Destreza: CD 14, cada criatura numa Linha de 9 m de comprimento e 1,5 m de largura. Falha: 49 (14d6) de dano Ácido. Sucesso: Metade do dano.
+
+@@ Adult Black Dragon
+## Traços
+Anfíbio. O dragão consegue respirar ar e água.
+Resistência Lendária (3/Dia, ou 4/Dia no Covil). Se o dragão falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar. Ele pode substituir um ataque por um uso de Conjuração para conjurar Acid Arrow (versão de 3º círculo).
+Dilacerar. Jogada de Ataque Corpo a Corpo: +11, alcance 3 m. Acerto: 13 (2d6 + 6) de dano Cortante mais 4 (1d8) de dano Ácido.
+Sopro Ácido (Recarga 5–6). Salvaguarda de Destreza: CD 18, cada criatura numa Linha de 18 m de comprimento e 1,5 m de largura. Falha: 54 (12d8) de dano Ácido. Sucesso: Metade do dano.
+Conjuração. O dragão conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 17, +9 para acertar com ataques de magia): À Vontade: Acid Arrow (versão de 3º círculo), Detect Magic, Fear. 1/Dia Cada: Speak with Dead, Vitriolic Sphere.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, o dragão pode gastar um uso para realizar uma das ações a seguir. O dragão recupera todos os usos gastos no início de cada um de seus turnos.
+Nuvem de Insetos. Salvaguarda de Destreza: CD 17, uma criatura que o dragão consiga ver a até 36 m. Falha: 22 (4d10) de dano Venenoso, e o alvo tem Desvantagem em salvaguardas para manter Concentração até o fim do seu próximo turno. Falha ou Sucesso: O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Presença Aterradora. O dragão usa Conjuração para conjurar Fear. O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Bote. O dragão se move até metade do seu Deslocamento e faz um ataque de Dilacerar.
+
+@@ Ancient Black Dragon
+## Traços
+Anfíbio. O dragão consegue respirar ar e água.
+Resistência Lendária (4/Dia, ou 5/Dia no Covil). Se o dragão falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar. Ele pode substituir um ataque por um uso de Conjuração para conjurar Acid Arrow (versão de 4º círculo).
+Dilacerar. Jogada de Ataque Corpo a Corpo: +15, alcance 4,5 m. Acerto: 17 (2d8 + 8) de dano Cortante mais 9 (2d8) de dano Ácido.
+Sopro Ácido (Recarga 5–6). Salvaguarda de Destreza: CD 22, cada criatura numa Linha de 27 m de comprimento e 3 m de largura. Falha: 67 (15d8) de dano Ácido. Sucesso: Metade do dano.
+Conjuração. O dragão conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 21, +13 para acertar com ataques de magia): À Vontade: Acid Arrow (versão de 4º círculo), Detect Magic, Fear. 1/Dia Cada: Create Undead, Speak with Dead, Vitriolic Sphere (versão de 5º círculo).
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, o dragão pode gastar um uso para realizar uma das ações a seguir. O dragão recupera todos os usos gastos no início de cada um de seus turnos.
+Nuvem de Insetos. Salvaguarda de Destreza: CD 21, uma criatura que o dragão consiga ver a até 36 m. Falha: 33 (6d10) de dano Venenoso, e o alvo tem Desvantagem em salvaguardas para manter Concentração até o fim do seu próximo turno. Falha ou Sucesso: O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Presença Aterradora. O dragão usa Conjuração para conjurar Fear. O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Bote. O dragão se move até metade do seu Deslocamento e faz um ataque de Dilacerar.
+
+@@ Black Pudding
+## Traços
+Amorfo. O pudim pode passar por um espaço de apenas 2,5 cm de largura sem gastar movimento extra.
+Forma Corrosiva. Uma criatura que atinja o pudim com uma jogada de ataque corpo a corpo sofre 4 (1d8) de dano Ácido. Munição não mágica é destruída logo após atingir o pudim e causar dano. Qualquer arma não mágica sofre uma penalidade cumulativa de −1 nas jogadas de ataque logo após causar dano ao pudim e entrar em contato com ele. A arma é destruída se a penalidade chegar a −5. A penalidade pode ser removida conjurando a magia Mending na arma. Em 1 minuto, o pudim consegue corroer 60 cm de madeira ou metal não mágicos.
+Patas de Aranha. O pudim consegue escalar superfícies difíceis, inclusive pelo teto, sem precisar fazer um teste de atributo.
+## Ações
+Pseudópode Dissolvente. Jogada de Ataque Corpo a Corpo: +5, alcance 3 m. Acerto: 17 (4d6 + 3) de dano Ácido. A armadura não mágica vestida pelo alvo sofre uma penalidade de −1 na CA que concede. A armadura é destruída se a penalidade reduzir sua CA a 10. A penalidade pode ser removida conjurando a magia Mending na armadura.
+## Reações
+Dividir. Gatilho: Enquanto for Grande ou Médio e tiver 10 ou mais Pontos de Vida, o pudim fica Sangrando ou sofre dano Elétrico ou Cortante. Resposta: O pudim se divide em dois novos Pudins Negros. Cada novo pudim é um tamanho menor que o original e age na Iniciativa dele. Os Pontos de Vida do pudim original são divididos igualmente entre os novos (arredondados para baixo).
+
+@@ Blink Dog
+## Ações
+Mordida. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 5 (1d4 + 3) de dano Perfurante.
+## Ações Bônus
+Teletransporte (Recarga 4–6). O cão se teletransporta até 12 m para um espaço desocupado que consiga ver.
+
+@@ Blue Dragon Wyrmling
+## Ações
+Ataque Múltiplo. O dragão faz dois ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +5, alcance 1,5 m. Acerto: 8 (1d10 + 3) de dano Cortante mais 3 (1d6) de dano Elétrico.
+Sopro Relampejante (Recarga 5–6). Salvaguarda de Destreza: CD 12, cada criatura numa Linha de 9 m de comprimento e 1,5 m de largura. Falha: 21 (6d6) de dano Elétrico. Sucesso: Metade do dano.
+
+@@ Young Blue Dragon
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +9, alcance 3 m. Acerto: 12 (2d6 + 5) de dano Cortante mais 5 (1d10) de dano Elétrico.
+Sopro Relampejante (Recarga 5–6). Salvaguarda de Destreza: CD 16, cada criatura numa Linha de 18 m de comprimento e 1,5 m de largura. Falha: 55 (10d10) de dano Elétrico. Sucesso: Metade do dano.
+
+@@ Adult Blue Dragon
+## Traços
+Resistência Lendária (3/Dia, ou 4/Dia no Covil). Se o dragão falhar numa salvaguarda, ele pode escolher ser bem-sucedido.
+## Ações
+Ataque Múltiplo. O dragão faz três ataques de Dilacerar. Ele pode substituir um ataque por um uso de Conjuração para conjurar Shatter.
+Dilacerar. Jogada de Ataque Corpo a Corpo: +12, alcance 3 m. Acerto: 16 (2d8 + 7) de dano Cortante mais 5 (1d10) de dano Elétrico.
+Sopro Relampejante (Recarga 5–6). Salvaguarda de Destreza: CD 19, cada criatura numa Linha de 27 m de comprimento e 1,5 m de largura. Falha: 60 (11d10) de dano Elétrico. Sucesso: Metade do dano.
+Conjuração. O dragão conjura uma das magias a seguir, sem precisar de componentes Materiais e usando Carisma como atributo de conjuração (CD de salvaguarda de magia 18): À Vontade: Detect Magic, Invisibility, Mage Hand, Shatter. 1/Dia Cada: Scrying, Sending.
+## Ações Lendárias
+Usos de Ação Lendária: 3 (4 no Covil). Imediatamente após o turno de outra criatura, o dragão pode gastar um uso para realizar uma das ações a seguir. O dragão recupera todos os usos gastos no início de cada um de seus turnos.
+Voo Encoberto. O dragão usa Conjuração para conjurar Invisibility em si mesmo e pode voar até metade do seu Deslocamento de Voo. O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Estrondo Sônico. O dragão usa Conjuração para conjurar Shatter. O dragão não pode realizar esta ação de novo até o início do seu próximo turno.
+Golpe de Cauda. O dragão faz um ataque de Dilacerar.
