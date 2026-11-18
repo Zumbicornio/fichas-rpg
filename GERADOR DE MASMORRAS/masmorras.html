@@ -366,8 +366,10 @@ const linkMon = txt => h(txt).replace(MON_RE, n => MON_BY_PT[n] ? `<button class
 const TEMAS = {
  cripta:{nome:'Cripta', tag:'c',
   titulos:['A Cripta de {n}','As Catacumbas de {n}','O Mausoléu de {n}'],
-  nomes:['Valdren, o Esquecido','Lady Isembra Corvalto','Orsik Mão-de-Ferro','o Abade Morcant','a Rainha Cinzenta','Theodric Velanor'],
-  ganchos:['Os mortos do vilarejo vizinho começaram a sair das covas, e as trilhas levam até a tumba de {n}.','Um nobre paga 500 PO para recuperar o anel de sinete enterrado com {n}.','Saqueadores entraram há três dias e só um voltou, repetindo sem parar o nome de {n}.','Um sacerdote precisa reconsagrar o lugar antes da próxima lua nova, quando {n} deve despertar.'],
+  titulo:'pessoa', viloes:['Valdren, o Esquecido','Lady Isembra Corvalto','Orsik Mão-de-Ferro','o Abade Morcant','a Rainha Cinzenta','Theodric Velanor'],
+  lugares:['o Vale dos Corvos','o Morro das Lápides','a Colina Cinzenta','Pedravelha','o Bosque dos Salgueiros'], apelidos:['a Coisa Pálida','o Devorador de Ossos','a Fome da Tumba','o Guardião Sem Rosto'],
+  ganchos:{pessoa:['Os mortos do vilarejo vizinho começaram a sair das covas. Quem sobreviveu fala de {V}, {b}, que despertou na cripta.','Um nobre paga 500 PO para recuperar o anel de sinete enterrado com {V}, mas os coveiros juram que {V} voltou: agora é {b}.','Um sacerdote precisa reconsagrar o lugar antes da próxima lua nova, quando {V}, {b}, deve recuperar todo o seu poder.'],
+   fera:['Saqueadores entraram na cripta de {L} há três dias e só um voltou, falando de {b} que ele chama de {Vs}.','Os coveiros de {L} abandonaram o cemitério: algo que eles chamam de {Vs} saiu das catacumbas. Pelas marcas, é {b}.','Um nobre paga 500 PO pelo anel de sinete da família, perdido na cripta de {L}, onde hoje vive {b} que os moradores chamam de {Vs}.']},
   salas:['Ossuário','Câmara de sarcófagos','Capela profanada','Galeria de nichos funerários','Sala de embalsamamento','Cripta familiar','Salão das efígies','Câmara das urnas','Sala do guardião de pedra','Galeria dos lamentos'],
   chefe:['Câmara funerária de {n}','Sepulcro de {n}','Trono de ossos de {n}'],
   entrada:['Uma escadaria de pedra desce sob um portão de ferro enferrujado. Inscrições funerárias cobrem o arco.','Uma laje tombada revela degraus cobertos de musgo que descem para o frio.','A porta de bronze do mausoléu está entreaberta; marcas de unhas riscam o lado de dentro.'],
@@ -375,8 +377,10 @@ const TEMAS = {
   sentidos:['Cheiro de terra úmida e incenso velho.','Um gotejar constante ecoa em algum lugar.','O ar é tão frio que a respiração vira névoa.','Silêncio absoluto; os passos parecem altos demais.','Um sussurro baixo some quando alguém presta atenção.','Cheiro adocicado de carne em decomposição.']},
  caverna:{nome:'Cavernas', tag:'v',
   titulos:['As Cavernas de {n}','O Abismo de {n}','As Grutas de {n}'],
-  nomes:['Garganta Funda','Kragmor','Pedra-que-Chora','Vel’Thuun','Mãe das Aranhas','Olho Cego'],
-  ganchos:['Mineiros romperam uma parede e acharam cavernas antigas; desde então, três deles sumiram em {n}.','Um cristal raro, essencial para um alquimista, só cresce perto do coração de {n}.','Gado está desaparecendo e as trilhas de sangue levam até {n}.','Um mapa antigo marca um tesouro anão perdido em {n}.'],
+  titulo:'lugar', viloes:['Kragmor','Vel’Thuun','a Mãe das Aranhas','Olho Cego','Sskarith, o Paciente','a Bruxa das Profundezas'],
+  lugares:['a Garganta Funda','a Pedra-que-Chora','o Poço Negro','as Fendas de Durn','o Monte Rachado'], apelidos:['a Fome do Escuro','o Velho Garra','a Coisa que Rasteja','o Terror das Galerias'],
+  ganchos:{pessoa:['Mineiros romperam uma parede em {L} e acharam cavernas antigas. Três deles sumiram, e o único que voltou fala de {V}, {b}.','Um cristal raro, essencial para um alquimista, só cresce no coração de {L}, onde {V}, {b}, fez seu covil.','Um mapa antigo marca um tesouro anão perdido em {L}. Um velho guia avisa que {V}, {b}, chegou lá primeiro.'],
+   fera:['Gado está desaparecendo e as trilhas de sangue levam até {L}. Os pastores chamam a criatura de {Vs}; pelas pegadas, é {b}.','Mineiros romperam uma parede em {L} e libertaram {b}, que eles agora chamam de {Vs}.','Um cristal raro, essencial para um alquimista, só cresce no coração de {L}, bem no covil de {b} conhecido como {V}.']},
   salas:['Gruta de estalactites','Lago subterrâneo','Galeria de cristais','Câmara de fungos luminosos','Ninho abandonado','Fenda estreita','Salão de colunas naturais','Poço de guano','Gruta da cascata','Antigo veio de mineração'],
   chefe:['Covil de {n}','O coração de {n}','Caverna profunda de {n}'],
   entrada:['Uma boca de caverna se abre na encosta, escondida atrás de uma cortina de raízes.','Uma fenda no fundo de um barranco desce em espiral para a escuridão.','A galeria de uma mina abandonada termina numa parede quebrada que dá para cavernas naturais.'],
@@ -384,8 +388,10 @@ const TEMAS = {
   sentidos:['Cheiro de mofo e minerais.','O eco devolve cada som com atraso.','Um vento frio sopra de uma fenda.','Ruído distante de água corrente.','Estalos de pedras se acomodando.','Cheiro forte de amônia.']},
  fortaleza:{nome:'Fortaleza em ruínas', tag:'f',
   titulos:['A Fortaleza de {n}','O Forte Caído de {n}','A Cidadela de {n}'],
-  nomes:['Barão Aldemar','Torre Cinzenta','Guarda do Vale','Comandante Rhessa','Lorde Vorgan','Sentinela do Norte'],
-  ganchos:['Bandidos tomaram as ruínas de {n} e cobram pedágio na estrada do rei.','Um herdeiro quer de volta a escritura guardada no cofre de {n}.','Sinais de fogo voltaram a ser acesos nas torres de {n}, abandonada há um século.','Um desertor diz que o novo líder de {n} prepara um ataque à cidade.'],
+  titulo:'lugar', viloes:['o Barão Aldemar','a Comandante Rhessa','Lorde Vorgan','a Capitã Maren Ferro-Frio','Sir Odric, o Traidor','Grimwald, o Usurpador'],
+  lugares:['a Torre Cinzenta','a Guarda do Vale','a Sentinela do Norte','o Forte Corvo','Rochafria'], apelidos:['a Fera do Pátio','o Horror da Torre','o Cão do Barão','a Coisa no Fosso'],
+  ganchos:{pessoa:['{Vc}, {b}, tomou as ruínas de {L} e cobra pedágio na estrada do rei.','Um desertor conta que {V}, {b}, comanda {L} e prepara um ataque à cidade.','Sinais de fogo voltaram a ser acesos nas torres de {L}, abandonada há um século. Quem os acende é {V}, {b}.'],
+   fera:['{Lc} está abandonada há um século, mas viajantes somem perto dela. Os sobreviventes falam de {b} que chamam de {Vs}.','Um herdeiro quer de volta a escritura guardada no cofre de {L}, onde hoje vive {b} que os camponeses chamam de {Vs}.','Os bandidos que ocupavam {L} fugiram apavorados de algo que chamam de {Vs}: {b}.']},
   salas:['Quartel','Arsenal','Refeitório','Sala da guarda','Cozinha','Capela militar','Corredor das celas','Salão nobre','Estábulo arruinado','Sala de mapas'],
   chefe:['Salão de {n}','Aposentos de {n}','Torre de comando de {n}'],
   entrada:['O portão principal está caído; a ponte levadiça apodrecida ainda aguenta peso com cuidado.','Uma poterna escondida pela hera dá acesso aos porões.','A muralha desabou num trecho, abrindo uma passagem entre escombros.'],
@@ -393,8 +399,10 @@ const TEMAS = {
   sentidos:['Cheiro de fumaça e suor.','Vozes abafadas vindas de outro cômodo.','Vento assobiando pelas seteiras.','Cheiro de cerveja azeda.','Ruído de metal batendo em metal.','Ratos correndo nas vigas.']},
  templo:{nome:'Templo profano', tag:'t',
   titulos:['O Templo de {n}','O Santuário Profano de {n}','O Altar Afundado de {n}'],
-  nomes:['Zhar’uul','a Serpente de Olhos Fechados','Morvath','o Deus Sem Nome','Ysgrath','a Chama Negra'],
-  ganchos:['Um culto sequestrou peregrinos para um ritual em honra de {n}.','Um terremoto revelou a entrada de um templo de {n}, enterrado há mil anos.','Um paladino moribundo pede que alguém destrua o ídolo de {n}.','Sonhos com {n} se espalham pela cidade, e os sonhadores andam até o templo dormindo.'],
+  titulo:'lugar', viloes:['o Sumo Sacerdote Velkor','a Profetisa Ilvaine','o Irmão Cassius','a Mãe Serafa','o Arauto Sem Rosto','Draven, o Ungido'],
+  lugares:['Zhar’uul','a Serpente de Olhos Fechados','Morvath','o Deus Sem Nome','Ysgrath','a Chama Negra'], apelidos:['a Prole do Altar','o Escolhido','a Coisa Invocada','o Faminto'],
+  ganchos:{pessoa:['Um culto liderado por {V}, {b}, sequestrou peregrinos para um ritual em honra de {L}.','Sonhos com {L} se espalham pela cidade. Os sonhadores andam até o templo dormindo, chamados por {V}, {b}.','Um paladino moribundo pede que alguém destrua o ídolo de {L}, guardado por {V}, {b}.'],
+   fera:['Um terremoto revelou um templo de {L}, enterrado há mil anos. O que os cultistas despertaram lá dentro, {b} que chamam de {Vs}, ainda está à solta.','Um culto de {L} alimenta {b} que chamam de {Vs} com peregrinos sequestrados.','Um paladino moribundo pede que alguém mate {V}, {b} que guarda o altar de {L}.']},
   salas:['Nave dos fiéis','Câmara de purificação','Biblioteca de pergaminhos proibidos','Cela de penitência','Sala das oferendas','Galeria de ídolos','Dormitório dos acólitos','Câmara de rituais','Salão das colunas serpentinas','Cripta dos sumos sacerdotes'],
   chefe:['Santuário interno de {n}','Altar de {n}','Câmara da invocação de {n}'],
   entrada:['Degraus largos descem até portas gravadas com um olho fechado.','Um poço ritual no centro de ruínas leva, por uma escada estreita, ao templo subterrâneo.','Atrás de uma cachoeira, um portal de pedra negra se abre para dentro da montanha.'],
@@ -402,17 +410,21 @@ const TEMAS = {
   sentidos:['Cânticos distantes numa língua desconhecida.','Cheiro de enxofre.','O ar é quente e pesado.','Um tambor bate devagar, sem origem visível.','Cheiro de incenso e sangue.','Sussurros que parecem dizer o nome de um dos personagens.']},
  esgoto:{nome:'Esgotos', tag:'e',
   titulos:['Os Esgotos de {n}','As Galerias sob {n}','O Labirinto Úmido de {n}'],
-  nomes:['Porto Cinzento','Vila Alta','Valmarco','Pedra Rasa','Ponte Velha','Mercado Baixo'],
-  ganchos:['Algo nos esgotos de {n} está puxando gente para dentro dos bueiros à noite.','A guilda de ladrões de {n} perdeu um carregamento roubado nas galerias e paga bem por ele.','Uma praga começou nos bairros baixos de {n}; a fonte parece estar nos esgotos.','Um cano antigo dá acesso ao cofre do banco de {n}, e alguém chegou antes.'],
+  titulo:'lugar', viloes:['Grizzek','Madame Fenda','o Colecionador','o Velho Sarna','a Irmã Lodosa','Mestre Remendo'],
+  lugares:['Porto Cinzento','Vila Alta','Valmarco','Pedra Rasa','Ponte Velha','Mercado Baixo'], apelidos:['o Rei dos Ratos','a Coisa do Bueiro','o Engolidor','a Boca do Cano'],
+  ganchos:{pessoa:['Algo nos esgotos de {L} puxa gente para os bueiros à noite. Um mendigo jura que é {V}, {b}.','A guilda de ladrões de {L} perdeu um carregamento nas galerias e culpa {V}, {b}, que tomou o lugar.','Uma praga começou nos bairros baixos de {L}; a fonte é {V}, {b}, escondido nos esgotos.'],
+   fera:['Algo nos esgotos de {L} puxa gente para os bueiros à noite. Os moradores chamam de {Vs}; pelas marcas, é {b}.','A guilda de ladrões de {L} perdeu dois homens e um carregamento para {b} que vive nas galerias e que eles chamam de {Vs}.','Os ratos fugiram dos esgotos de {L}. Os limpadores dizem que {V}, {b}, se instalou na grande cisterna.']},
   salas:['Cisterna','Câmara de comportas','Junção de canais','Depósito de contrabando','Antiga sala de manutenção','Galeria desabada','Ninho de lixo','Câmara do vertedouro','Passagem para um porão','Reservatório de lodo'],
-  chefe:['Covil sob {n}','Grande cisterna de {n}','Câmara do Rei dos Ratos de {n}'],
+  chefe:['Covil de {n}','Grande cisterna de {n}','Câmara de {n}'],
   entrada:['Uma grade de bueiro solta num beco escuro dá para uma escada de ferro.','O cano de saída no rio é largo o bastante para entrar curvado.','Um alçapão no porão de uma taverna desce direto para as galerias.'],
   detalhes:['Um canal de água imunda corre pelo meio (a água chega à cintura).','Passarelas estreitas de pedra correm junto às paredes.','Caixas de contrabando cobertas por lona.','Uma comporta enferrujada bloqueia metade da sala.','Montes de lixo que se mexem sozinhos.','Símbolos de ladrões riscados a giz na parede.','Um barco pequeno amarrado a uma argola.','Canos de cerâmica antigos vazam por toda parte.','Restos de uma fogueira e cobertores: alguém mora aqui.','Uma grade no teto deixa ver os pés de quem passa na rua.'],
   sentidos:['Fedor insuportável.','Gotas caem do teto sem parar.','Guinchos de ratos por todos os lados.','O som da cidade lá em cima, abafado.','Água corrente ruge atrás de uma parede.','Cheiro químico e ácido.']},
  covil:{nome:'Covil goblinoide', tag:'g',
   titulos:['O Covil de {n}','O Ninho de {n}','A Toca de {n}'],
-  nomes:['Dente-Podre','Krug, o Caolho','Clã do Punho Sangrento','Grashnak','Rainha Vespa','Clã da Lua Torta'],
-  ganchos:['Os goblins de {n} atacaram uma caravana e levaram a filha do mercador.','{n} uniu três tribos e está pronto para atacar o vilarejo.','Um xamã a serviço de {n} roubou uma relíquia do templo local.','Batedores viram lobos enormes entrando e saindo do covil de {n}.'],
+  titulo:'pessoa', viloes:['Dente-Podre','Krug, o Caolho','Grashnak','a Rainha Vespa','Ulgrim Quebra-Ossos','Nurza, a Xamã'],
+  lugares:['o Clã do Punho Sangrento','o Clã da Lua Torta','a Colina dos Ossos','o Bosque Negro','a Ravina Funda'], apelidos:['o Mascote do Clã','a Fera Sagrada','o Comedor de Goblins','o Velho Presa'],
+  ganchos:{pessoa:['O bando de {V}, {b}, atacou uma caravana e levou a filha do mercador.','{Vc}, {b}, uniu três tribos e está pronto para atacar o vilarejo.','Um xamã a serviço de {V}, {b}, roubou uma relíquia do templo local.'],
+   fera:['Os goblins de {L} adoram {b} que chamam de {Vs} e alimentam a criatura com prisioneiros.','Batedores viram {b} entrando e saindo do covil de {L}; os goblins a chamam de {Vs}.','O chefe do bando de {L} morreu, e agora {V}, {b}, domina o covil e caça nos arredores.']},
   salas:['Canil de lobos','Despensa saqueada','Sala do xamã','Dormitório imundo','Arena de lutas','Depósito de saque','Cozinha fumacenta','Posto de vigia','Cela de prisioneiros','Forja improvisada'],
   chefe:['Salão de {n}','Trono de {n}','Câmara de {n}'],
   entrada:['Uma boca de caverna guardada por estacas com crânios.','Uma paliçada mal construída esconde a entrada de uma toca na colina.','Um tronco oco gigante leva para túneis cavados à mão.'],
@@ -420,8 +432,10 @@ const TEMAS = {
   sentidos:['Cheiro de fumaça e carne queimada.','Risadas agudas e brigas ao longe.','Latidos e uivos.','Tambores de guerra irregulares.','Cheiro de animal molhado.','O silêncio de alguém prendendo a respiração.']},
  arcana:{nome:'Ruínas arcanas', tag:'a',
   titulos:['As Ruínas Arcanas de {n}','O Laboratório de {n}','A Torre Submersa de {n}'],
-  nomes:['Mestre Elandor','a Arquimaga Sevrine','Quorrin, o Insone','Magnus Vael','o Colégio Esquecido','Ilyra das Mil Chaves'],
-  ganchos:['A aprendiz de {n} pede ajuda: o mestre não sai do laboratório há um mês.','Explosões de luz colorida saem das ruínas de {n} toda noite.','Um grimório de {n} apareceu num leilão; o resto da coleção ainda está lá dentro.','Os construtos de {n} começaram a patrulhar a estrada.'],
+  titulo:'pessoa', viloes:['Mestre Elandor','a Arquimaga Sevrine','Quorrin, o Insone','Magnus Vael','Ilyra das Mil Chaves','o Alquimista Dornn'],
+  lugares:['o Colégio Esquecido','a Torre de Vidro','o Observatório de Ardel','a Academia Partida'], apelidos:['o Experimento Treze','a Criatura do Frasco','o Guardião Esquecido','o Erro do Mestre'],
+  ganchos:{pessoa:['Explosões de luz colorida saem das ruínas de {L} toda noite. Quem está por trás é {V}, {b}.','Um grimório de {L} apareceu num leilão; o vendedor fugiu de {V}, {b}, que guarda o resto da coleção.','Os construtos de {L} começaram a patrulhar a estrada, sob as ordens de {V}, {b}.'],
+   fera:['Os experimentos de {L} escaparam. O pior deles, {b} que os aprendizes chamam de {Vs}, tomou o laboratório principal.','Um grimório de {L} apareceu num leilão; o resto da coleção está no covil de {V}, {b}.','Explosões de luz saem das ruínas de {L} toda noite: {V}, {b}, está destruindo tudo lá dentro.']},
   salas:['Biblioteca','Laboratório alquímico','Observatório','Sala de invocação','Galeria de construtos','Estufa de plantas mágicas','Sala dos espelhos','Depósito de componentes','Escritório','Câmara de testes'],
   chefe:['Sanctum de {n}','Câmara do grande círculo de {n}','Oficina de {n}'],
   entrada:['Uma porta de bronze sem maçaneta se abre a quem diz "amigo" em élfico.','Uma escadaria em espiral desce de um jardim tomado por plantas que brilham.','Um arco de pedra com runas apagadas zumbe baixo quando alguém passa.'],
@@ -669,14 +683,14 @@ function genMap(rng, tamanho, tema){
 /* ================= gerador de conteúdo ================= */
 const MON_DG = MON.filter(m=>m.tags!=='x'); /* reserva quando o tema não tem opções: só criaturas de masmorra */
 function poolFor(tema){ const t=TEMAS[tema].tag; return MON.filter(m=>m.tags.includes(t)); }
-function buildEncounter(rng, p, dif, chefe){
+function buildEncounter(rng, p, dif, chefe, forcar){
   const per = BUD[p.nivel][dif]; let alvo = per*p.jogadores; if (chefe && p.ritmo==='pesado') alvo=Math.round(alvo*1.25);
   const pool = poolFor(p.tema);
   const fits = (list,lo,hi) => list.filter(m=>m.xp<=hi && m.xp>=lo);
   let cand = fits(pool, alvo/(chefe?4:10), alvo*(chefe?.85:1)); if (cand.length<2) cand = fits(MON_DG, alvo/(chefe?4:10), alvo*(chefe?.85:1));
   if (!cand.length) cand = [MON_DG.filter(m=>m.xp<=alvo).sort((a,b)=>b.xp-a.xp)[0] || MON[0]];
   let prim, n;
-  if (chefe){ const sorted=[...cand].sort((a,b)=>b.xp-a.xp); prim = rng.pick(sorted.slice(0,Math.max(1,Math.ceil(sorted.length/3)))); n=1; }
+  if (chefe){ const sorted=[...cand].sort((a,b)=>b.xp-a.xp); prim = forcar || rng.pick(sorted.slice(0,Math.max(1,Math.ceil(sorted.length/3)))); n=1; }
   else { prim = rng.pick(cand); const maxN=Math.max(1,Math.min(8,Math.floor(alvo/prim.xp))); n=Math.max(1,Math.round(maxN*(.6+.4*rng.f()))); }
   const grupos=[{pt:prim.pt,en:prim.en,cr:prim.cr,xp:prim.xp,qtd:n}];
   let resto = alvo - n*prim.xp;
@@ -687,7 +701,80 @@ function buildEncounter(rng, p, dif, chefe){
   const xp = grupos.reduce((t,gp)=>t+gp.xp*gp.qtd,0);
   return {dif, orcamento:alvo, xp, grupos, comport:''};
 }
-const fill = (txt, ctx) => txt.replace(/\{(\w+)\}/g,(m,k)=>ctx[k]!==undefined?ctx[k]:m).replace(/\bde o /g,'do ').replace(/\bde a /g,'da ').replace(/^(o|a) /,c=>c.toUpperCase());
+const fill = (txt, ctx) => txt.replace(/\{(\w+)\}/g,(m,k)=>ctx[k]!==undefined?ctx[k]:m)
+  .replace(/\bde o /g,'do ').replace(/\bde a /g,'da ').replace(/\bde os /g,'dos ').replace(/\bde as /g,'das ')
+  .replace(/\bem o /g,'no ').replace(/\bem a /g,'na ').replace(/\bem as /g,'nas ').replace(/\bpor o /g,'pelo ').replace(/\bpor a /g,'pela ')
+  .replace(/^(o|a|as|os) /,c=>c.charAt(0).toUpperCase()+c.slice(1));
+const cap = s => s ? s.charAt(0).toUpperCase()+s.slice(1) : s;
+
+/* ===== chefe da masmorra: tipo de criatura, nome e textos coerentes ===== */
+const CAT_EXTRA = { /* monstros fora do SRD: categoria */
+  morto:['Banshee','Flameskull','Bone Naga','Beholder Zombie','Revenant','Death Tyrant','Death Knight','Demilich'],
+  aberracao:['Flumph','Slaad Tadpole','Intellect Devourer','Nothic','Spectator','Red Slaad','Blue Slaad','Green Slaad','Gray Slaad','Death Slaad','Mind Flayer','Beholder','Cranium Rat','Swarm of Cranium Rats'],
+  constructo:['Monodrone','Duodrone','Tridrone','Quadrone','Pentadrone','Helmed Horror'],
+  elemental:['Mud Mephit','Smoke Mephit','Salamander Fire Snake','Water Weird','Galeb Duhr','Dao','Marid','Azer Pyromancer'],
+  planta:['Myconid Sprout','Myconid Adult','Myconid Sovereign','Twig Blight','Needle Blight','Vine Blight','Gas Spore Fungus'],
+  fada:['Pixie'], celestial:['Empyrean'], gigante:['Cyclops Sentry','Fomorian'],
+  infero:['Manes','Spined Devil','Shadow Demon','Cambion','Barlgura','Mezzoloth','Chasme','Nycaloth','Arcanaloth','Ultroloth','Goristro'],
+  monstro:['Umber Hulk','Piercer','Peryton','Carrion Crawler','Quaggoth','Displacer Beast','Hook Horror','Young Remorhaz','Yeti','Abominable Yeti','Jackalwere','Yuan-ti Malison','Yuan-ti Abomination']
+};
+const CAT_DE = {}; Object.entries(CAT_EXTRA).forEach(([c,l])=>l.forEach(en=>CAT_DE[en]=c));
+const FERAS_EXTRA = new Set(['Umber Hulk','Piercer','Peryton','Carrion Crawler','Quaggoth','Displacer Beast','Hook Horror','Young Remorhaz','Yeti','Abominable Yeti','Gas Spore Fungus','Twig Blight','Needle Blight','Vine Blight','Myconid Sprout','Cranium Rat','Mud Mephit','Smoke Mephit','Salamander Fire Snake','Water Weird','Manes','Barlgura','Chasme','Goristro','Monodrone','Duodrone','Helmed Horror','Beholder Zombie','Swarm of Cranium Rats','Slaad Tadpole']);
+const CAT_PALAVRA = [['Morto-Vivo','morto'],['Mortos-Vivos','morto'],['Dragão','dragao'],['Ínfero','infero'],['Gigante','gigante'],['Aberração','aberracao'],['Constructo','constructo'],['Elemental','elemental'],['Feras','fera'],['Fera','fera'],['Monstruosidade','monstro'],['Gosma','gosma'],['Planta','planta'],['Humanoide','humanoide'],['Celestial','celestial'],['Fada','fada']];
+const FEM = new Set(['Aranha','Múmia','Serpe','Hidra','Quimera','Medusa','Banshee','Harpia','Gárgula','Bruxa','Mantícora','Naga','Esfinge','Lâmia','Dríade','Erínia','Marilith','Tartaruga-Dragão','Gosma','Armadura','Espada','Cobra','Coruja','Águia','Aparição','Sombra','Górgona','Abominação','Cria','Roca','Vespa','Hiena','Pantera','Orca','Centopeia','Estirge','Caveira','Salamandra','Piranha','Cocatriz','Doninha','Mula','Arquimaga']);
+const PROPRIOS = ['Baphomet','Yeenoghu'];
+const NOMES_MONSTRO = ['Vhaerun','Ssalith','Krovax','Zhenna','Orrimax','Thal’Zur','Ixarra','Mordrekh'];
+function chefeInfo(en){
+  const m = MON_BY_EN[en]; if (!m) return null;
+  const o = SRD[en], st = STATS[en];
+  let cat = CAT_DE[en] || 'monstro';
+  if (o){ const p = CAT_PALAVRA.find(([w])=>o.tipo.includes(w)); if (p) cat = p[1]; }
+  const intel = o ? o.atr[3] : st ? st.atr[3] : null;
+  let tipo;
+  if (['fera','gosma','planta'].includes(cat) || FERAS_EXTRA.has(en) || (intel!=null && intel<=5)) tipo = 'fera';
+  else if (cat==='humanoide' || (cat==='morto' && (intel==null || intel>=8))) tipo = 'pessoa';
+  else tipo = 'inteligente';
+  const fem = FEM.has(m.pt.split(' ')[0]);
+  let nome = m.pt.toLowerCase(); PROPRIOS.forEach(p=>{ nome = nome.replace(p.toLowerCase(), p); });
+  const papel = tipo==='fera' && (cat==='constructo' || cat==='elemental') ? 'guardiao' : tipo;
+  return {en, pt:m.pt, cat, tipo, papel, fem, b:(fem?'uma ':'um ')+nome};
+}
+const COVIL_CAT = {
+  morto:['O ar gela a cada passo, e a luz das tochas fica fraca e azulada.','Restos das vítimas foram arrumados como uma corte silenciosa ao redor de um trono.','Símbolos necromânticos brilham fracamente no chão, ainda úmidos.'],
+  dragao:['Moedas e ossos se misturam num monte que serve de cama.','As paredes estão derretidas, corroídas ou congeladas pelo sopro da criatura.','Escamas soltas, do tamanho de escudos, brilham entre os escombros.'],
+  infero:['Um círculo de invocação rachado ainda solta fumaça com cheiro de enxofre.','As sombras se movem um instante depois de quem as projeta.','Inscrições infernais prometem poder em troca de um nome verdadeiro.'],
+  gigante:['Móveis do tamanho de casas: uma mesa de troncos e um trono de pedra bruta.','Ossos de gado empilhados ao lado de um caldeirão enorme.','O teto foi escavado para caber alguém muito maior que um humano.'],
+  aberracao:['As paredes têm marcas que doem nos olhos de quem tenta lê-las.','Um zumbido sem origem dá dor de cabeça a quem fica muito tempo aqui.','Restos de criaturas jazem com o crânio aberto e vazio.'],
+  constructo:['Engrenagens, runas e peças de reposição cobrem bancadas de pedra.','Um pedestal com runas acesas parece ser o ponto de comando de algo grande.','Marcas regulares no chão mostram uma patrulha repetida mil vezes.'],
+  elemental:['O elemento domina a sala: brasas, rochas soltas, poças agitadas ou rajadas de vento.','Um portal instável pulsa num canto, ligado a um plano elemental.','Nada aqui foi feito por mãos; tudo foi moldado pela força bruta da natureza.'],
+  fera:['O chão está coberto de ossos roídos e restos de presas recentes.','Um ninho enorme de galhos, panos e pelos ocupa o fundo da sala.','Marcas de garras e sangue seco mostram onde a criatura costuma se deitar.'],
+  monstro:['Restos de aventureiros e seus equipamentos se espalham perto da toca.','O cheiro de almíscar e carniça é forte e impregna tudo.','Riscos fundos nas paredes marcam o território da criatura.'],
+  gosma:['Uma película viscosa cobre o chão e as paredes, dissolvendo devagar o que toca.','Objetos de metal e ossos limpos estão presos na gosma.','O chão é liso e corroído, como se tivesse sido lambido por ácido.'],
+  planta:['Raízes e trepadeiras cobrem tudo, apertando ossos e armaduras velhas.','Esporos flutuam no ar, iluminados por fungos pálidos.','O chão é fofo, feito de folhas podres e terra fértil.'],
+  humanoide:['Uma mesa com mapas, cartas e um diário de planos ocupa o centro.','Um trono improvisado domina a sala, cercado pelos estandartes do bando.','Um baú trancado fica sempre à vista de quem se senta no trono.'],
+  celestial:['Uma luz suave sem origem enche a sala, mesmo no escuro.','Inscrições sagradas, algumas riscadas com raiva, cobrem as paredes.','Penas brancas maiores que um braço se espalham pelo chão.'],
+  fada:['Flores fora de estação crescem entre as pedras e perfumam o ar.','Risos baixos parecem vir de todos os lados.','Nada fica no mesmo lugar quando se olha de novo.']
+};
+const PRESENCA = {
+  pessoa:['{Vc}, {b}, espera aqui com seus seguidores.','É aqui que {V}, {b}, planeja o próximo passo.','{Vc}, {b}, governa a masmorra desta sala.'],
+  inteligente:['{Vc}, {b}, espera aqui e observa cada intruso.','É aqui que {V}, {b}, guarda o que mais preza.','{Vc}, {b}, governa a masmorra desta sala.'],
+  fera:['Esta é a toca de {b} que chamam de {Vs}.','{Vc}, {b}, dorme aqui entre os restos das presas.','O cheiro e os ossos não deixam dúvida: aqui vive {V}, {b}.']
+};
+PRESENCA.guardiao = ['{Vc}, {b}, guarda esta sala sem descanso.','Aqui fica {V}, {b}, imóvel como uma estátua até alguém entrar.','{Vc}, {b}, cumpre aqui a última ordem que recebeu: ninguém passa.'];
+const COMPORT_CHEFE = {
+  pessoa:'O chefe, {V}, lidera os defensores e luta até o fim, a menos que os personagens ofereçam algo que deseje mais do que a vitória.',
+  inteligente:'{Vc} luta com astúcia, usa o terreno e os aliados e pode negociar se perceber que vai perder.',
+  fera:'{Vc} ataca qualquer um que entre no covil e luta até a morte para defender seu território.',
+  guardiao:'{Vc} ataca qualquer intruso e não recua, não negocia e não se rende.'
+};
+/* nomes e contexto do chefe, gravados em d.chefe na geração */
+function montarChefe(rng, T, en){
+  const ci = chefeInfo(en); if (!ci) return null;
+  const V = ci.tipo==='fera' ? rng.pick(T.apelidos) : ci.tipo==='pessoa' ? rng.pick(T.viloes) : rng.pick(NOMES_MONSTRO);
+  return {...ci, nome:V, lugar:rng.pick(T.lugares)};
+}
+const chefeForcado = d => d && d.chefe && MON_BY_EN[d.chefe.en] || null;
+const ctxChefe = c => ({V:c.nome, Vc:cap(c.nome), Vs:c.nome.replace(/^(o|a|os|as) /,''), b:c.b, L:c.lugar, Lc:cap(c.lugar)});
 /* sorteia um item mágico que ainda não está na masmorra (usados = Set de nomes sem raridade).
    Se a raridade esgotou, tenta as outras do mesmo tier e depois as menores; sem opção, devolve null. */
 const RAR_ORDEM = ['comum','incomum','rara','muitorara','lendaria'];
@@ -744,10 +831,13 @@ function genSala(rng, d, i, tipo, nomeUsado){
   const s = {tipo, nome:'', desc:'', sentido:rng.pick(T.sentidos), encontro:null, armadilha:null, tesouro:null, misterio:'', descanso:'', pista:'', notas:''};
   const det = rng.shuffle(T.detalhes);
   if (tipo==='entrada'){ s.nome='Entrada'; s.desc = rng.pick(T.entrada)+' '+det[0]; }
-  else if (tipo==='chefe'){ s.nome = fill(rng.pick(T.chefe), ctx); s.desc = det[0]+' '+det[1]; }
+  else if (tipo==='chefe'){ s.nome = fill(rng.pick(T.chefe), ctx);
+    if (d.chefe){ const c=d.chefe, cx=ctxChefe(c); s.desc = fill(rng.pick(PRESENCA[c.papel||c.tipo]), cx)+' '+rng.pick(COVIL_CAT[c.cat]||COVIL_CAT.monstro)+' '+det[0]; }
+    else s.desc = det[0]+' '+det[1]; }
   else { s.nome = nomeUsado || rng.pick(T.salas); s.desc = det[0] + (rng.chance(.5)?' '+det[1]:''); }
   const ritmo = {leve:{0:6,1:3,2:1}, padrao:{0:4,1:4,2:2}, pesado:{0:2,1:4,2:4}}[p.ritmo] || {0:4,1:4,2:2};
-  const enc = chefe => { const e = buildEncounter(rng, p, chefe?2:+rng.weighted(ritmo), chefe); e.comport = fill(chefe?'O chefe, {n}, lidera os defensores e luta até o fim, a menos que os personagens ofereçam algo que deseje mais do que a vitória.':rng.pick(COMPORT), ctx); return e; };
+  const enc = chefe => { const e = buildEncounter(rng, p, chefe?2:+rng.weighted(ritmo), chefe, chefe ? chefeForcado(d) : null);
+    e.comport = chefe ? (d.chefe ? fill(COMPORT_CHEFE[d.chefe.papel||d.chefe.tipo], ctxChefe(d.chefe)) : fill('O chefe, {n}, lidera os defensores e luta até o fim, a menos que os personagens ofereçam algo que deseje mais do que a vitória.', ctx)) : fill(rng.pick(COMPORT), ctx); return e; };
   if (tipo==='combate'){ s.encontro = enc(false); if (rng.chance(.5)) s.tesouro = genTesouro(rng,t,'individual',p.itens,US); }
   if (tipo==='chefe'){ s.encontro = enc(true); s.tesouro = genTesouro(rng,t,'chefe',p.itens,US); }
   if (tipo==='entrada' && rng.chance(.35)){ s.encontro = buildEncounter(rng,p,0,false); s.encontro.comport = 'Vigiam a entrada; um deles corre para dar o alarme na sala '+Math.min(2,ns)+'.'; }
@@ -767,10 +857,12 @@ function genDungeon(params){
   const semente = (p.semente||'').trim() || randSeed();
   const rng = makeRng(semente+'|'+p.tema+'|'+p.tamanho+'|'+p.nivel+'|'+p.jogadores+'|'+p.ritmo);
   const T = TEMAS[p.tema];
-  const vilao = rng.pick(T.nomes);
+  const chefe = montarChefe(rng, T, buildEncounter(rng, p, 2, true).grupos[0].en);
+  const cx = ctxChefe(chefe), vilao = chefe.nome;
+  const nomeTit = T.titulo==='pessoa' && chefe.tipo==='pessoa' ? vilao : chefe.lugar;
   const mapa = genMap(rng, p.tamanho, p.tema);
   const ns = mapa.rooms.length;
-  const d = {id:null, nome:(p.nome||'').trim() || fill(rng.pick(T.titulos),{n:vilao}), vilao, gancho:fill(rng.pick(T.ganchos),{n:vilao}), semente,
+  const d = {id:null, nome:(p.nome||'').trim() || fill(rng.pick(T.titulos),{n:nomeTit}), vilao, chefe, gancho:fill(rng.pick(T.ganchos[chefe.tipo==='fera'?'fera':'pessoa']), cx), semente,
     params:{tema:p.tema, tamanho:p.tamanho, nivel:p.nivel, jogadores:p.jogadores, ritmo:p.ritmo, itens:ITEM_QTD[p.itens]?p.itens:'normal'}, mapa, salas:[], errantes:[], publicada:false, criada:Date.now(), atualizada:Date.now()};
   const tipos = ['entrada'];
   for(let i=1;i<ns-1;i++) tipos.push(rng.weighted({combate:40, armadilha:13, tesouro:9, vazia:18, misterio:12, descanso:5}));
@@ -951,7 +1043,7 @@ function overview(d, edit){
   return `<div class="panel" style="display:flex;flex-direction:column;gap:10px">
       <div class="row"><span class="badge gold">${h(TEMAS[p.tema].nome)}</span><span class="badge">Nível ${p.nivel}</span><span class="badge">${p.jogadores} personagens</span><span class="badge">${d.salas.length} salas</span></div>
       <h3 style="margin:0">Gancho</h3><p class="prose" style="margin:0">${h(d.gancho)}</p>
-      <dl class="kv"><dt>Mente por trás</dt><dd>${h(d.vilao.charAt(0).toUpperCase()+d.vilao.slice(1))}</dd><dt>XP dos encontros</dt><dd>${fmt(xpTot)} XP no total</dd>
+      <dl class="kv"><dt>${d.chefe?'Chefe':'Mente por trás'}</dt><dd>${h(cap(d.vilao))}${d.chefe&&MON_BY_EN[d.chefe.en]?`, <button class="rl" data-act="mon" data-en="${h(d.chefe.en)}">${h(d.chefe.b)}</button>`:''}</dd><dt>XP dos encontros</dt><dd>${fmt(xpTot)} XP no total</dd>
         <dt>Portas</dt><dd>${portas.normal||0} comuns · ${portas.trancada||0} trancadas (Destreza (Prestidigitação) CD ${TDC.det[tierOf(p.nivel)-1]}) · ${portas.emperrada||0} emperradas (Força (Atletismo) CD ${TDC.det[tierOf(p.nivel)-1]-2})${edit?` · ${portas.secreta||0} secretas`:''}</dd></dl>
     </div>
     <div class="panel"><h3>Salas</h3><div class="rooms">${d.salas.map((s,i)=>`<button class="roomlink" data-act="sel" data-i="${i}"><span class="n">${i+1}</span><span>${h(s.nome)}</span><span class="chip t-${h(s.tipo)}">${h(TIPOS[s.tipo]||s.tipo)}</span></button>`).join('')}</div></div>
@@ -1163,7 +1255,7 @@ document.addEventListener('click', e=>{
     const i = +t.dataset.i, d = S.cur, rng = makeRng(d.semente+':'+i+':'+Date.now()+Math.random());
     const old = d.salas[i];
     if (a==='reroll-sala'){ const ns = genSala(rng, d, i, old.tipo, rng.pick(TEMAS[d.params.tema].salas)); ns.notas = old.notas||''; if (old.tipo!=='entrada' && old.tipo!=='chefe') ns.nome = rng.pick(TEMAS[d.params.tema].salas); d.salas[i] = ns; }
-    else { const enc = buildEncounter(rng, d.params, old.tipo==='chefe'?2:old.encontro.dif, old.tipo==='chefe'); enc.comport = old.encontro.comport; old.encontro = enc; }
+    else { const enc = buildEncounter(rng, d.params, old.tipo==='chefe'?2:old.encontro.dif, old.tipo==='chefe', old.tipo==='chefe' ? chefeForcado(d) : null); enc.comport = old.encontro.comport; old.encontro = enc; }
     S.dirty = true; render();
   }
   else if (a==='abrir'){ if (e.target.closest('[data-act="excluir"]')) return; const d = S.lista[t.dataset.id]; if (!d) return; if (S.dirty && S.cur && !confirmLeave()) return; S.cur = clone(d); S.sel = null; S.dirty = false; S.tab = 'gerar'; render(); window.scrollTo(0,0); }
