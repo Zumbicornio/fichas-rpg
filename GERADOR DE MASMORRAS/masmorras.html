@@ -691,7 +691,16 @@ function genMap(rng, tamanho, tema, rngSec){
   };
   const alcancaTudo = bloq => !foraDoAlcance(bloq).length;
   const bloq = new Set();
-  for (const dr of dl) if (dr.t==='secreta'){ const n=dr.y*W+dr.x; bloq.add(n); if (!alcancaTudo(bloq)){ bloq.delete(n); dr.t='normal'; } }
+  /* ...e atalho de verdade: sem a porta, o outro caminho entre os dois lados dela tem que ser bem mais longo */
+  const desvio = (dr, bl) => {
+    const [ax,ay,bx,by] = dr.o==='h' ? [dr.x-1,dr.y,dr.x+1,dr.y] : [dr.x,dr.y-1,dr.x,dr.y+1];
+    const dist = new Int32Array(W*H).fill(-1), fila=[ay*W+ax]; dist[ay*W+ax]=0;
+    for (let q=0;q<fila.length;q++){ const c=fila[q], x=c%W, y=(c-x)/W; if (c===by*W+bx) return dist[c];
+      for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){ const i=x+dx, j=y+dy, n=j*W+i;
+        if (at(i,j) && dist[n]<0 && !bl.has(n)){ dist[n]=dist[c]+1; fila.push(n); } } }
+    return Infinity;
+  };
+  for (const dr of dl) if (dr.t==='secreta'){ const n=dr.y*W+dr.x; bloq.add(n); if (!alcancaTudo(bloq) || desvio(dr,bloq) < 24){ bloq.delete(n); dr.t='normal'; } }
   /* salas secretas: uma sala que só se alcança por uma porta secreta, fora do caminho até o chefe.
      A porta fica, de preferência, na parede da sala vizinha, escondendo também o corredor. */
   let secretas = [];
