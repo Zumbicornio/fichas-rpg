@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mesa de RPG</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Mesa de RPG: app único (Fichas + Masmorras). Etapa 1 = casca: papéis, abas, mestres.
+   Computador: abas no topo. Celular (até 720px): barra de abas fixa no rodapé.
+   Visual escuro único, de propósito, igual aos apps de fichas e masmorras. */
+:root{
+  color-scheme:dark;
+  --bg:#12100e; --panel:#1c1814; --panel2:#251f19; --line:#382e25; --line2:#4b3e32;
+  --text:#eee5d3; --muted:#a8998a; --gold:#d1a84e; --gold2:#f0cd7a; --red:#cf5b43; --green:#74a96d; --orange:#d9853b;
+  --display:Cinzel,Georgia,"Times New Roman",serif; --body:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 var(--body)}
+button,input{font:inherit;color:inherit}
+h1,h2,h3{font-family:var(--display);letter-spacing:.02em;margin:0;text-wrap:balance}
+.gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding-block:14px;border-bottom:1px solid var(--line);background:linear-gradient(#1b1611,var(--bg))}
+header h1{font-size:20px;color:var(--gold2)}
+header .sub{color:var(--muted);font-size:12px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.badge{padding:3px 10px;border-radius:99px;border:1px solid var(--line2);font-size:12px;color:var(--muted);white-space:nowrap}
+nav.tabs{display:flex;gap:4px;padding-top:6px;border-bottom:1px solid var(--line);overflow-x:auto}
+nav.tabs button{display:flex;align-items:center;gap:8px;background:none;border:0;border-bottom:2px solid transparent;padding:10px 14px;color:var(--muted);cursor:pointer;white-space:nowrap}
+nav.tabs button.on{color:var(--gold2);border-color:var(--gold)}
+nav.tabs svg{width:18px;height:18px;flex-shrink:0}
+nav.tabs .count{background:var(--line2);color:var(--text);border-radius:99px;padding:0 7px;font-size:11px}
+main{padding-block:18px 40px;max-width:1500px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.notice{background:#2a2117;border:1px solid var(--line2);border-radius:var(--r);padding:10px 14px;color:var(--muted)}
+.notice b{color:var(--text)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.panel h2{font-size:18px;color:var(--gold2);margin-bottom:8px}
+.muted{color:var(--muted)} .small{font-size:12px}
+.btn{display:inline-block;text-decoration:none;background:var(--panel2);border:1px solid var(--line2);border-radius:8px;padding:7px 12px;cursor:pointer;white-space:nowrap;color:var(--text)}
+.btn:hover{border-color:var(--gold)}
+.btn.pri{background:var(--gold);border-color:var(--gold);color:#1a140c;font-weight:600}
+.btn.pri:hover{background:var(--gold2)}
+.btn.danger{color:var(--red);border-color:#6a3328}
+.btn.sm{padding:4px 9px;font-size:12px}
+.btn:disabled{opacity:.5;cursor:default}
+.btn:focus-visible,nav.tabs button:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
+label.f{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+input{background:var(--bg);border:1px solid var(--line2);border-radius:7px;padding:7px 9px;min-width:0}
+input:focus{outline:none;border-color:var(--gold)}
+.mlist{display:flex;flex-direction:column;margin:0 0 14px}
+.mlist .li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.mlist .li:last-child{border-bottom:0}
+.empty{padding:32px 20px;text-align:center;color:var(--muted);display:flex;flex-direction:column;gap:10px;align-items:center}
+.empty h2{color:var(--text);font-size:18px;margin:0}
+.empty p{margin:0;max-width:52ch}
+.etapas{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;text-align:left}
+.etapas li{display:flex;gap:10px;align-items:baseline}
+.etapas .st{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 8px;border-radius:99px;border:1px solid currentColor;white-space:nowrap}
+.st.feito{color:var(--green)} .st.prox{color:var(--muted)}
+/* celular: abas viram barra fixa no rodapé, ícone em cima e nome embaixo */
+@media (max-width:720px){
+  header{padding-block:12px}
+  header h1{font-size:18px}
+  nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;gap:0;padding:0 env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);border-bottom:0;border-top:1px solid var(--line);background:var(--panel);overflow:visible}
+  nav.tabs button{flex:1 1 0;flex-direction:column;gap:3px;padding:10px 4px 12px;border-bottom:0;border-top:2px solid transparent;font-size:12px;min-height:56px;justify-content:center;position:relative}
+  nav.tabs button.on{border-color:var(--gold);font-weight:600}
+  nav.tabs svg{width:22px;height:22px}
+  nav.tabs .count{position:absolute;top:6px;left:calc(50% + 6px)}
+  main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+  .hide-cel{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ================= utilidades ================= */
+const h = s => String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clone = o => JSON.parse(JSON.stringify(o));
+const lsGet = k => { try { return localStorage.getItem(k); } catch { return null; } };
+const lsSet = (k,v) => { try { localStorage.setItem(k,v); } catch {} };
+
+/* apps atuais (até as etapas 2 e 3 trazerem tudo para cá) */
+const LINK_FICHAS = 'https://claude.ai/artifact/QSaW2Y5K1Yi9msLD3tJuMd';
+const LINK_MASMORRAS = 'https://claude.ai/artifact/99u5d62nib4RrRVUxvDc6R';
+
+const ICON = {
+  ficha:'<path d="M6 3h9l3 3v15H6z"/><path d="M9 9h6M9 13h6M9 17h4"/>',
+  masmorra:'<rect x="3" y="3" width="7" height="6"/><rect x="14" y="13" width="7" height="8"/><path d="M10 6h4v7"/>',
+  grupo:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><circle cx="17" cy="9" r="2.5"/><path d="M16 15c3 0 5 2 5 5"/>',
+  coroa:'<path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/>'
+};
+const icon = k => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">${ICON[k]}</svg>`;
+
+/* ================= estado ================= */
+const S = {
+  mode:'carregando', isOwner:false, myId:null, userApi:null,
+  mestres:[], dono:null, cfgLida:false, pessoas:[], nomes:{}, busca:'', achados:[],
+  viewAs:'mestre', tab:lsGet('mesa-aba') || '', notice:''
+};
+let store = null;
+
+function podeMestrar(){ return S.isOwner || (!!S.myId && S.mestres.includes(S.myId)); }
+function isMestre(){ return podeMestrar() && S.viewAs==='mestre'; }
+
+/* ================= banco ================= */
+function makeDbStore(db){
+  const chain = {};
+  const q = (k,fn) => (chain[k] = (chain[k]||Promise.resolve()).catch(()=>{}).then(fn));
+  const toMap = s => { const m={}; s.docs.forEach(x=>{ if (x.exists) m[x.id] = {...clone(x.data()), id:x.id}; }); return m; };
+  return {
+    /* config/mestres = {ids:[co-mestres], dono:id do dono} — mesmo formato do app de fichas */
+    onConfig(cb, err){ return db.collection('config').onSnapshot(s=>{ const m = toMap(s).mestres || {}; cb({ids: Array.isArray(m.ids) ? m.ids.filter(x=>typeof x==='string') : [], dono: typeof m.dono==='string' ? m.dono : null}); }, err); },
+    saveConfig(ids, dono){ return q('config', ()=>db.doc('config/mestres').set({ids:[...ids], dono})); },
+    /* cada pessoa que abre o app deixa um registro (só o id), para o dono poder escolhê-la como mestre */
+    registrar(id){ return db.doc('pessoas/'+id).set({visto:Date.now()}); },
+    onPessoas(cb, err){ return db.collection('pessoas').onSnapshot(s=>cb(Object.keys(toMap(s))), err); }
+  };
+}
+function makeLocalStore(){
+  return {
+    onConfig(cb){ setTimeout(()=>cb({ids:[], dono:null})); return ()=>{}; },
+    async saveConfig(){}, registrar(){ return Promise.resolve(); }, onPessoas(){ return ()=>{}; }
+  };
+}
+
+/* ================= nomes ================= */
+function nomeDe(id){ return id===S.myId ? 'Você' : (S.nomes[id] || 'Pessoa sem nome'); }
+async function carregarNomes(){
+  if (!S.userApi) return;
+  const ids = [...new Set([...S.mestres, ...S.pessoas].filter(x=>typeof x==='string' && !(x in S.nomes)))];
+  if (!ids.length) return;
+  ids.forEach(i=>S.nomes[i]='');
+  try { const ps = await S.userApi.profiles(ids); ids.forEach(i=>{ S.nomes[i] = (ps && ps[i] && ps[i].name) || ''; }); } catch {}
+  render();
+}
+
+/* ================= telas ================= */
+function abas(){
+  if (isMestre()){
+    const t = [['fichas','Fichas','ficha'],['masmorras','Masmorras','masmorra']];
+    if (S.isOwner && S.mode==='db') t.push(['mestres','Mestres','coroa',S.mestres.length]);
+    return t;
+  }
+  return [['minha','Minha ficha','ficha'],['grupo','Grupo','grupo'],['masmorra','Masmorra','masmorra']];
+}
+
+function etapas(){
+  const e = [
+    ['feito','Casca: abas, mestres e jogadores, versão de celular'],
+    ['prox','Fichas dentro deste app'],
+    ['prox','Gerador de masmorras dentro deste app'],
+    ['prox','Ligações: nível do grupo e vida dos personagens nas masmorras'],
+    ['prox','Cópia dos dados dos apps atuais para cá']
+  ];
+  return `<ol class="etapas">${e.map(([s,t],i)=>`<li><span class="st ${s}">${s==='feito'?'Pronta':'Etapa '+(i+1)}</span><span>${t}</span></li>`).join('')}</ol>`;
+}
+
+function emBreve(titulo, texto, link, rotulo){
+  return `<div class="panel empty"><h2>${titulo}</h2><p>${texto}</p>
+    ${link ? `<a class="btn pri" href="${link}" target="_blank" rel="noopener">${rotulo}</a>` : ''}</div>`;
+}
+
+function viewTab(){
+  switch (S.tab){
+    case 'fichas': return emBreve('Fichas dos personagens', 'Na próxima etapa as fichas, os pedidos de aprovação e as regras passam a ficar aqui. Por enquanto, continue usando o app de fichas.', LINK_FICHAS, 'Abrir o app de Fichas')
+      + `<div class="panel"><h2>Andamento da união</h2>${etapas()}</div>`;
+    case 'masmorras': return emBreve('Masmorras', 'Na etapa 3 o gerador, as masmorras salvas e as fichas dos monstros passam a ficar aqui. Por enquanto, continue usando o gerador.', LINK_MASMORRAS, 'Abrir o Gerador de Masmorras');
+    case 'mestres': return viewMestres();
+    case 'minha': return emBreve('Minha ficha', 'Logo a sua ficha vai aparecer aqui. Por enquanto, abra o app de fichas.', LINK_FICHAS, 'Abrir minha ficha');
+    case 'grupo': return emBreve('Grupo', 'Aqui você vai ver as fichas dos outros personagens da mesa, só para leitura.', LINK_FICHAS, 'Ver no app de Fichas');
+    case 'masmorra': return emBreve('Masmorra', 'Quando o mestre mostrar uma masmorra, o mapa vai aparecer aqui.', LINK_MASMORRAS, 'Abrir o app de Masmorras');
+  }
+  return '';
+}
+
+function viewMestres(){
+  const cand = [...new Set([...S.achados.map(p=>p.id), ...S.pessoas])].filter(id=>id && id!==S.myId && !S.mestres.includes(id));
+  return `<div class="panel" style="max-width:680px"><h2>Mestres da mesa</h2>
+    <p class="muted small" style="margin-top:0">Você é o mestre principal, por ser o dono do app. Quem estiver nesta lista também vira mestre, nas fichas e nas masmorras. Só você pode mudar esta lista.</p>
+    <div class="mlist">
+      <div class="li"><span>${h(nomeDe(S.myId))} <span class="muted small">· dono do app</span></span></div>
+      ${S.mestres.map(id=>`<div class="li"><span>${h(nomeDe(id))}</span><button class="btn sm danger" data-act="mestre-rem" data-id="${h(id)}">Remover</button></div>`).join('')}
+    </div>
+    <label class="f" for="busca-mestre">Adicionar mestre</label>
+    <input style="width:100%" type="search" id="busca-mestre" data-busca-mestre value="${h(S.busca)}" placeholder="Buscar pelo nome ou e-mail…" autocomplete="off">
+    <div class="mlist" style="margin-top:8px">${cand.length ? cand.map(id=>{ const a = S.achados.find(p=>p.id===id); return `<div class="li"><span>${h(a ? a.name : nomeDe(id))}${a && a.email ? ` <span class="muted small">· ${h(a.email)}</span>` : ''}</span><button class="btn sm pri" data-act="mestre-add" data-id="${h(id)}">Tornar mestre</button></div>`; }).join('') : '<div class="muted small">Ninguém para mostrar ainda.</div>'}</div>
+    <p class="muted small" style="margin-bottom:0">A pessoa precisa ter acesso de <b>Editor</b> a este app (menu Compartilhar) e aparece nesta lista depois de abrir o app uma vez.</p></div>`;
+}
+
+function render(){
+  const mestre = isMestre();
+  const tabs = abas();
+  if (!tabs.some(t=>t[0]===S.tab)) S.tab = tabs[0][0];
+  const ae = document.activeElement, focusId = ae && ae.id, selStart = ae && 'selectionStart' in ae ? ae.selectionStart : null;
+  const verComo = podeMestrar()
+    ? `<span class="muted small hide-cel">Ver como:</span><button class="btn sm ${S.viewAs==='mestre'?'pri':''}" data-act="ver-como" data-v="mestre" aria-pressed="${S.viewAs==='mestre'}">Mestre</button><button class="btn sm ${S.viewAs==='jogador'?'pri':''}" data-act="ver-como" data-v="jogador" aria-pressed="${S.viewAs==='jogador'}">Jogador</button>`
+    : (S.mode==='carregando' ? '' : '<span class="badge">Jogador</span>');
+  document.getElementById('app').innerHTML = `
+  <header class="gut"><div><h1>Mesa de RPG</h1><div class="sub">D&amp;D 5.5 · ${S.mode==='carregando' ? 'carregando…' : mestre ? 'visão do mestre' : 'visão do jogador'}</div></div>
+    <div class="row">${verComo}</div></header>
+  <nav class="tabs gut" aria-label="Seções">${tabs.map(([k,l,ic,c])=>`<button class="${S.tab===k?'on':''}" data-act="tab" data-tab="${k}" ${S.tab===k?'aria-current="page"':''}>${icon(ic)}<span>${l}</span>${c?`<span class="count">${c}</span>`:''}</button>`).join('')}</nav>
+  <main class="gut">${S.notice?`<div class="notice">${S.notice}</div>`:''}${viewTab()}</main>`;
+  if (focusId){ const el=document.getElementById(focusId); if (el){ el.focus(); if (selStart!=null && el.setSelectionRange) try{ el.setSelectionRange(selStart,selStart); }catch{} } }
+}
+
+/* ================= ações ================= */
+document.addEventListener('click', e=>{
+  const t = e.target.closest('[data-act]'); if (!t) return;
+  const a = t.dataset.act;
+  if (a==='tab'){ S.tab = t.dataset.tab; lsSet('mesa-aba', S.tab); render(); window.scrollTo(0,0); return; }
+  if (a==='ver-como'){ S.viewAs = t.dataset.v; render(); return; }
+  if (a==='mestre-add' || a==='mestre-rem'){
+    const id = t.dataset.id; if (!S.isOwner || !id || id===S.myId) return;
+    const ids = a==='mestre-add' ? [...new Set([...S.mestres, id])] : S.mestres.filter(x=>x!==id);
+    t.disabled = true;
+    store.saveConfig(ids, S.myId).then(()=>{ S.notice = ''; }).catch(err=>{ S.notice = 'Não foi possível salvar a lista de mestres ('+h(err && (err.code||err.message) || 'erro')+').'; render(); });
+    return;
+  }
+});
+let buscaT;
+function buscar(q){
+  if (!S.userApi || !S.userApi.search) return;
+  S.userApi.search(q).then(hits=>{ if (S.busca.trim()!==q) return; S.achados = (hits||[]).filter(p=>p.id && p.name); S.achados.forEach(p=>{ S.nomes[p.id] = p.name; }); render(); }).catch(()=>{});
+}
+document.addEventListener('input', e=>{
+  const t = e.target;
+  if (t.dataset.buscaMestre!==undefined){
+    S.busca = t.value; clearTimeout(buscaT);
+    buscaT = setTimeout(()=>buscar(S.busca.trim()), 200);
+  }
+});
+document.addEventListener('focusin', e=>{ if (e.target.dataset && e.target.dataset.buscaMestre!==undefined && !S.busca.trim() && !S.achados.length) buscar(''); });
+
+/* ================= início ================= */
+let eraMestre = null;
+function aplicarPapel(){
+  const pode = podeMestrar();
+  if (pode !== eraMestre){ S.viewAs = pode ? 'mestre' : 'jogador'; eraMestre = pode; }
+  render();
+}
+function subscribe(){
+  store.onConfig(c=>{
+    S.mestres = c.ids; S.dono = c.dono; S.cfgLida = true;
+    /* o dono deixa o próprio id gravado, para o app saber de quem são as fichas de mestre */
+    if (S.mode==='db' && S.isOwner && S.myId && c.dono!==S.myId) store.saveConfig(c.ids, S.myId).catch(()=>{});
+    aplicarPapel(); carregarNomes();
+  }, e=>{ S.notice = 'Não foi possível carregar a lista de mestres ('+h(e && (e.code||e.message))+').'; render(); });
+  if (S.mode==='db' && S.isOwner) store.onPessoas(ids=>{ S.pessoas = ids; carregarNomes(); render(); }, ()=>{});
+  if (S.mode==='db' && S.myId && !S.isOwner) store.registrar(S.myId).catch(()=>{});
+  aplicarPapel();
+}
+async function init(){
+  render();
+  let db=null, user=null;
+  if (window.claude && typeof window.claude.use==='function'){
+    try {
+      const timeout = new Promise(r=>setTimeout(()=>r([null,null]),10000));
+      [db,user] = await Promise.race([Promise.all([window.claude.use('db'), window.claude.use('user')]), timeout]);
+    } catch { db=null; user=null; }
+  }
+  if (db && user){
+    S.mode = 'db'; store = makeDbStore(db);
+    try { S.isOwner = !!(await user.isOwner()); } catch { S.isOwner = false; }
+    try { S.myId = await user.id(); } catch {}
+    S.userApi = user;
+  } else {
+    S.mode = 'local'; store = makeLocalStore(); S.isOwner = true;
+    S.notice = '<b>Modo demonstração.</b> O banco compartilhado não está disponível aqui. Use "Ver como" para ver as abas do jogador.';
+  }
+  subscribe();
+}
+init();
+</script>
+</body>
+</html>
