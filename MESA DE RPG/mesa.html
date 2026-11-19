@@ -1790,7 +1790,7 @@ function etapas(){
     ['feito','Fichas dentro deste app'],
     ['feito','Gerador de masmorras dentro deste app'],
     ['feito','Ligações: nível do grupo e vida dos personagens nas masmorras'],
-    ['prox','Cópia dos dados dos apps atuais para cá']
+    ['feito','Cópia dos dados dos apps antigos para cá']
   ];
   return `<ol class="etapas">${e.map(([s,t],i)=>`<li><span class="st ${s}">${s==='feito'?'Pronta':'Etapa '+(i+1)}</span><span>${t}</span></li>`).join('')}</ol>`;
 }
