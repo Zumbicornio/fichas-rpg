@@ -3653,7 +3653,7 @@ function destinoPorta(m, dr, i){
   return -1;
 }
 function genSala(rng, d, i, tipo, nomeUsado){
-  const p=d.params, T=TEMAS[p.tema], AB=!!T.aberto, ARM=AB?ARMADILHAS_AB:ARMADILHAS, t=tierOf(p.nivel), r=d.mapa.rooms[i], ns=d.mapa.rooms.length;
+  const p=paramsAndar(d), T=TEMAS[p.tema], AB=!!T.aberto, ARM=AB?ARMADILHAS_AB:ARMADILHAS, t=tierOf(p.nivel), r=d.mapa.rooms[i], ns=d.mapa.rooms.length;
   const US = usadosNa(d, i);
   const nsv = ns - (d.mapa.secretas||[]).length; /* {k} só aponta salas comuns */
   let k = rng.int(1,nsv); if (k===i+1) k = (k % nsv)+1;
@@ -3701,7 +3701,7 @@ function genSala(rng, d, i, tipo, nomeUsado){
    Corredor = trecho ligado de quadrados de corredor do mapa. No máximo 1 armadilha a cada 5 corredores;
    a chance cai com menos tesouro (ARM_CORR). Fica fora do quadrado encostado em sala ou porta. */
 function genArmCorr(d, rng){
-  const m=d.mapa, W=m.w, H=m.h, G=m.grid, T=TEMAS[d.params.tema], t=tierOf(d.params.nivel);
+  const m=d.mapa, W=m.w, H=m.h, G=m.grid, T=TEMAS[d.params.tema], t=tierOf(paramsAndar(d).nivel);
   const seen=new Uint8Array(W*H), comps=[], V4=[[1,0],[-1,0],[0,1],[0,-1]];
   for (let n=0;n<W*H;n++){
     if (G[n]!=='2' || seen[n]) continue;
@@ -3760,20 +3760,25 @@ function irAndar(d, k){
 function prepar(d){ if (d && d.andares) irAndar(d, d.id && S.andarDe[d.id]!=null ? S.andarDe[d.id] : (d.andar||0)); return d; }
 function paraSalvar(d){ const c = clone(d); if (c.andares){ delete c.mapa; delete c.salas; delete c.armCorr; delete c.andar; } return c; }
 const nAndares = d => d.andares ? d.andares.length : 1;
+/* andares mais fundos são mais difíceis: cada andar abaixo do primeiro conta como 1 nível a mais
+   para encontros, CDs de armadilhas e portas e tesouro. O nível do grupo (d.params.nivel) não muda. */
+const nivelAndar = (nivel, k) => Math.min(20, nivel + (k||0));
+function paramsAndar(d){ const k = d && d.andares ? (d.andar||0) : 0; return k ? {...d.params, nivel:nivelAndar(d.params.nivel, k)} : d.params; }
 function genDungeon(params){
   const p = {...params, nivel:Math.max(1,Math.min(20,+params.nivel||1)), jogadores:Math.max(1,Math.min(8,+params.jogadores||4))};
   const semente = (p.semente||'').trim() || randSeed();
   const rng = makeRng(semente+'|'+p.tema+'|'+p.tamanho+'|'+p.nivel+'|'+p.jogadores+'|'+p.ritmo);
   const T = TEMAS[p.tema];
-  const chefe = montarChefe(rng, T, buildEncounter(rng, p, 2, true).grupos[0].en);
+  /* andares: o mestre escolhe antes de gerar (campo Andares). Campo aberto tem sempre 1. */
+  const nA = T.aberto ? 1 : Math.max(1, Math.min(MAX_ANDARES, Math.floor(+p.andares||1)));
+  /* o chefe mora no último andar: escolhido para o desafio daquele andar */
+  const chefe = montarChefe(rng, T, buildEncounter(rng, nA>1 ? {...p, nivel:nivelAndar(p.nivel, nA-1)} : p, 2, true).grupos[0].en);
   const cx = ctxChefe(chefe), vilao = chefe.nome;
   const nomeTit = T.titulo==='pessoa' && chefe.tipo==='pessoa' ? vilao : chefe.lugar;
   const mapa = genMap(rng, p.tamanho, p.tema, T.aberto ? null : makeRng(semente+'|secretas|'+p.tamanho+'|'+p.tema));
   const ns = mapa.rooms.length;
   const d = {id:null, nome:(p.nome||'').trim() || fill(rng.pick(T.titulos),{n:nomeTit}), vilao, chefe, gancho:fill(rng.pick(T.ganchos[chefe.tipo==='fera'?'fera':'pessoa']), cx), semente,
     params:{tema:p.tema, tamanho:p.tamanho, nivel:p.nivel, jogadores:p.jogadores, ritmo:p.ritmo, itens:ITEM_QTD[p.itens]?p.itens:'normal', campanha:String(p.campanha||'')}, mapa, salas:[], errantes:[], publicada:false, criada:Date.now(), atualizada:Date.now()};
-  /* andares: o mestre escolhe antes de gerar (campo Andares). Campo aberto tem sempre 1. */
-  const nA = T.aberto ? 1 : Math.max(1, Math.min(MAX_ANDARES, Math.floor(+p.andares||1)));
   if (nA>1){ d.params.andares = nA; d.andar = 0; d.andares = [{mapa:d.mapa, salas:d.salas}]; }
   const gerarSalas = (r, m, primeiro, ultimo) => {
     const tipos = tiposAndar(r, m, primeiro, ultimo), nomes = r.shuffle(T.salas); let ni=0;
@@ -3951,7 +3956,7 @@ function viewForm(){
     <label class="f wide">Nome (opcional)<input id="p-nome" data-p="nome" value="${h(p.nome)}" placeholder="gerado com o tema" autocomplete="off"></label>
     ${grupoForm()}
     <button class="btn pri" data-act="gerar">${S.genArm?'Gerar e descartar alterações':'Gerar masmorra'}</button>
-  </div>${(+p.andares||1)>1 && !(TEMAS[p.tema]&&TEMAS[p.tema].aberto) ? `<p class="muted small" style="margin:10px 0 0">${+p.andares} andares: cada um tem o tamanho escolhido, ligados por escadas. O chefe fica no último andar.</p>` : ''}${grupoInfo()}${S.genArm?'<p class="dirty" style="margin:10px 0 0">A masmorra aberta tem alterações não salvas. Clique de novo para gerar outra mesmo assim.</p>':''}</section>`;
+  </div>${(+p.andares||1)>1 && !(TEMAS[p.tema]&&TEMAS[p.tema].aberto) ? `<p class="muted small" style="margin:10px 0 0">${+p.andares} andares: cada um tem o tamanho escolhido, ligados por escadas. Quanto mais fundo, mais difícil: cada andar abaixo do primeiro conta como 1 nível a mais para encontros, armadilhas e tesouro (${Array.from({length:+p.andares},(_,k)=>'andar '+(k+1)+': nível '+Math.min(20,(+p.nivel||1)+k)).join(', ')}). O chefe fica no último andar.</p>` : ''}${grupoInfo()}${S.genArm?'<p class="dirty" style="margin:10px 0 0">A masmorra aberta tem alterações não salvas. Clique de novo para gerar outra mesmo assim.</p>':''}</section>`;
 }
 /* ---- grupo das fichas (Mesa) ---- */
 const numBR = n => String(Math.round(n*10)/10).replace('.', ',');
@@ -4043,7 +4048,7 @@ function roomView(d, i, edit){
   const vis = d.salas.map((_,j)=>j).filter(j=>salaVisivel(d,j)), pos = vis.indexOf(i), ant = vis[(pos-1+vis.length)%vis.length], prox = vis[(pos+1)%vis.length];
   const secreta = (d.mapa.secretas||[]).some(x=>x.sala===i);
   const tiposOpc = Object.entries(TIPOS).filter(([k])=>(k!=='secreta' || secreta || s.tipo==='secreta') && ((k!=='subida' && k!=='descida') || s.tipo===k));
-  const det = TDC.det[tierOf(d.params.nivel)-1];
+  const det = TDC.det[tierOf(paramsAndar(d).nivel)-1];
   const portasSec = !edit ? [] : d.mapa.doors.filter(o=>o.t==='secreta').map(dr=>{
     const dir = ['norte','sul','oeste','leste'].find(dd=>portaNaParede(dr, r, dd)); if (!dir) return null;
     const dst = destinoPorta(d.mapa, dr, i);
@@ -4074,14 +4079,14 @@ function roomView(d, i, edit){
     ${edit?`<div class="panel"><h3>Anotações do mestre</h3><textarea id="notas-${i}" data-notas="${i}" placeholder="Só você vê estas anotações.">${h(s.notas||'')}</textarea></div>`:''}`;
 }
 function overview(d, edit){
-  const W_ = palavras(d), p = d.params, vis = d.salas.map((_,j)=>j).filter(j=>salaVisivel(d,j)), xpTot = vis.reduce((t,j)=>t+(d.salas[j].encontro?d.salas[j].encontro.xp:0),0);
+  const W_ = palavras(d), p = d.params, pa = paramsAndar(d), vis = d.salas.map((_,j)=>j).filter(j=>salaVisivel(d,j)), xpTot = vis.reduce((t,j)=>t+(d.salas[j].encontro?d.salas[j].encontro.xp:0),0);
   const oc = celulasOcultas(d), nSec = (d.mapa.secretas||[]).length;
   const portas = d.mapa.doors.filter(x=>!oc||!oc.has(x.y*d.mapa.w+x.x)).reduce((o,x)=>(o[x.t]=(o[x.t]||0)+1,o),{});
   return `<div class="panel" style="display:flex;flex-direction:column;gap:10px">
-      <div class="row"><span class="badge gold">${h(TEMAS[p.tema].nome)}</span><span class="badge">Nível ${p.nivel}</span><span class="badge">${p.jogadores} personagens</span>${d.andares?`<span class="badge gold">Andar ${d.andar+1} de ${d.andares.length}</span>`:''}<span class="badge">${vis.length} ${W_.p}${d.andares?' neste andar':''}${edit&&nSec?` (${nSec} secreta${nSec>1?'s':''})`:''}</span></div>
+      <div class="row"><span class="badge gold">${h(TEMAS[p.tema].nome)}</span><span class="badge">Nível ${p.nivel}</span><span class="badge">${p.jogadores} personagens</span>${d.andares?`<span class="badge gold">Andar ${d.andar+1} de ${d.andares.length}</span>${d.andar?`<span class="badge" style="color:var(--orange);border-color:var(--orange)">Desafio de nível ${pa.nivel}</span>`:''}`:''}<span class="badge">${vis.length} ${W_.p}${d.andares?' neste andar':''}${edit&&nSec?` (${nSec} secreta${nSec>1?'s':''})`:''}</span></div>
       <h3 style="margin:0">Gancho</h3><p class="prose" style="margin:0">${h(d.gancho)}</p>
-      <dl class="kv"><dt>${d.chefe?'Chefe':'Mente por trás'}</dt><dd>${h(cap(d.vilao))}${d.chefe&&MON_BY_EN[d.chefe.en]?`, <button class="rl" data-act="mon" data-en="${h(d.chefe.en)}">${h(d.chefe.b)}</button>`:''}</dd><dt>XP dos encontros</dt><dd>${fmt(xpTot)} XP ${d.andares?'neste andar':'no total'}</dd>${d.andares?`<dt>Andares</dt><dd>${d.andares.length} · o chefe está no andar ${d.andares.length}</dd>`:''}
-        ${TEMAS[p.tema].aberto?'':`<dt>Portas</dt><dd>${portas.normal||0} comuns · ${portas.trancada||0} trancadas (Destreza (Prestidigitação) CD ${TDC.det[tierOf(p.nivel)-1]}) · ${portas.emperrada||0} emperradas (Força (Atletismo) CD ${TDC.det[tierOf(p.nivel)-1]-2})${edit?` · ${portas.secreta||0} secretas`:''}</dd>`}</dl>
+      <dl class="kv"><dt>${d.chefe?'Chefe':'Mente por trás'}</dt><dd>${h(cap(d.vilao))}${d.chefe&&MON_BY_EN[d.chefe.en]?`, <button class="rl" data-act="mon" data-en="${h(d.chefe.en)}">${h(d.chefe.b)}</button>`:''}</dd><dt>XP dos encontros</dt><dd>${fmt(xpTot)} XP ${d.andares?'neste andar':'no total'}</dd>${d.andares?`<dt>Andares</dt><dd>${d.andares.length} · o chefe está no andar ${d.andares.length}. Cada andar abaixo do primeiro tem desafio de 1 nível a mais (${d.andares.map((_,k)=>'andar '+(k+1)+': nível '+nivelAndar(p.nivel,k)).join(', ')}).</dd>`:''}
+        ${TEMAS[p.tema].aberto?'':`<dt>Portas</dt><dd>${portas.normal||0} comuns · ${portas.trancada||0} trancadas (Destreza (Prestidigitação) CD ${TDC.det[tierOf(pa.nivel)-1]}) · ${portas.emperrada||0} emperradas (Força (Atletismo) CD ${TDC.det[tierOf(pa.nivel)-1]-2})${edit?` · ${portas.secreta||0} secretas`:''}</dd>`}</dl>
     </div>
     ${grupoHtml(d, edit)}
     <div class="panel"><h3>${W_.P}${d.andares?' · andar '+(d.andar+1):''}</h3><div class="rooms">${d.salas.map((s,i)=>!salaVisivel(d,i)?'':`<button class="roomlink" data-act="sel" data-i="${i}"><span class="n">${i+1}</span><span>${h(s.nome)}</span><span class="chip t-${h(s.tipo)}">${h(TIPOS[s.tipo]||s.tipo)}</span></button>`).join('')}</div></div>
@@ -4189,7 +4194,7 @@ function popView(){
 }
 function andaresHtml(d){
   if (!d.andares) return '';
-  return `<div class="andares" role="group" aria-label="Andares"><span class="muted small">Andar</span>${d.andares.map((A,k)=>`<button class="btn sm ${k===d.andar?'on':''}" data-act="andar" data-k="${k}" ${k===d.andar?'aria-current="true"':''}>${k+1}${k===d.andares.length-1?' · chefe':''}</button>`).join('')}</div>`;
+  return `<div class="andares" role="group" aria-label="Andares"><span class="muted small">Andar</span>${d.andares.map((A,k)=>`<button class="btn sm ${k===d.andar?'on':''}" data-act="andar" data-k="${k}" title="Desafio de nível ${nivelAndar(d.params.nivel,k)}" ${k===d.andar?'aria-current="true"':''}>${k+1}${k===d.andares.length-1?' · chefe':''}</button>`).join('')}</div>`;
 }
 function viewMesa(d, edit){
   const toolbar = edit ? `<div class="toolbar">
@@ -4304,7 +4309,7 @@ document.addEventListener('click', e=>{
     const i = +t.dataset.i, d = S.cur, rng = makeRng(d.semente+':'+i+':'+Date.now()+Math.random());
     const old = d.salas[i];
     if (a==='reroll-sala'){ const ns = genSala(rng, d, i, old.tipo, rng.pick(TEMAS[d.params.tema].salas)); ns.notas = old.notas||''; if (!['entrada','chefe','secreta','subida','descida'].includes(old.tipo)) ns.nome = rng.pick(TEMAS[d.params.tema].salas); ns.revelada = old.revelada; d.salas[i] = ns; }
-    else { const enc = buildEncounter(rng, d.params, old.tipo==='chefe'?2:old.encontro.dif, old.tipo==='chefe', old.tipo==='chefe' ? chefeForcado(d) : null); enc.comport = old.encontro.comport; old.encontro = enc; }
+    else { const enc = buildEncounter(rng, paramsAndar(d), old.tipo==='chefe'?2:old.encontro.dif, old.tipo==='chefe', old.tipo==='chefe' ? chefeForcado(d) : null); enc.comport = old.encontro.comport; old.encontro = enc; }
     S.dirty = true; render();
   }
   else if (a==='abrir'){ if (e.target.closest('[data-act="excluir"]')) return; const d = S.lista[t.dataset.id]; if (!d) return; if (S.dirty && S.cur && !confirmLeave()) return; S.cur = prepar(clone(d)); S.sel = null; S.dirty = false; S.tab = 'gerar'; render(); window.scrollTo(0,0); }
