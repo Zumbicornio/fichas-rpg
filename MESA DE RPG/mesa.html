@@ -2663,13 +2663,27 @@ document.addEventListener('submit', async e=>{
 /* ============ GERADOR DE MASMORRAS (bloco isolado: tem o próprio S, store, h, render…) ============
    Veio de GERADOR DE MASMORRAS/masmorras.html. A Mesa fala com ele por MESA_API e MAS.* */
 /* ============ LIGAÇÕES FICHAS ↔ MASMORRAS ============
-   Grupo = fichas de jogador (não de mestre) com status Ativo, opcionalmente de uma campanha. */
-function elegiveis(){ return S.chars.filter(c=>!isMasterId(c.ownerId) && statusOf(c).tipo==='ativo' && canSee(c)); }
-function grupoFichas(camp){
-  return elegiveis().filter(c=>!camp || statusOf(c).campanha===camp).sort((a,b)=>a.nome.localeCompare(b.nome)).map(c=>{
-    const d=derive(c), e=est(c), pv=pvAtual(c,d);
-    return {id:c.id, nome:c.nome, nivel:c.nivel, classe:d.cls.nome, ca:d.ac, pv, max:d.max, temp:e.temp||0, cor:hpColor(d.max?pv/d.max:0)};
-  });
+   Grupo automático = fichas com status Ativo (opcionalmente de uma campanha): de jogador, ou de mestre marcadas
+   como visíveis para os jogadores. O mestre pode incluir outras fichas na masmorra (params.extras).
+   Ficha de mestre oculta incluída no grupo: os jogadores veem só o nome, sem atributos nem valores. */
+const fichaOculta = c => isMasterId(c.ownerId) && c.visivel!==true;
+function elegiveis(){ return S.chars.filter(c=>statusOf(c).tipo==='ativo' && !fichaOculta(c) && canSee(c)); }
+function infoGrupo(c, extra){
+  const oculta = fichaOculta(c);
+  if (oculta && !S.isMaster && c.ownerId!==S.myId) return {id:c.id, nome:c.nome, extra, oculta:true, segredo:true};
+  const d=derive(c), e=est(c), pv=pvAtual(c,d);
+  return {id:c.id, nome:c.nome, nivel:c.nivel, classe:d.cls.nome, ca:d.ac, pv, max:d.max, temp:e.temp||0, cor:hpColor(d.max?pv/d.max:0), extra, oculta};
+}
+function grupoFichas(camp, extras){
+  const auto = elegiveis().filter(c=>!camp || statusOf(c).campanha===camp), ja = new Set(auto.map(c=>c.id));
+  const ext = [...new Set(extras||[])].map(id=>S.chars.find(c=>c.id===id)).filter(c=>c && !ja.has(c.id));
+  return [...auto.map(c=>infoGrupo(c,false)), ...ext.map(c=>infoGrupo(c,true))].sort((a,b)=>a.nome.localeCompare(b.nome));
+}
+/* fichas que o mestre pode incluir no grupo de uma masmorra (as que ainda não estão nele) */
+function candidatosGrupo(camp, extras){
+  const no = new Set(grupoFichas(camp, extras).map(x=>x.id));
+  return S.chars.filter(c=>!no.has(c.id)).sort((a,b)=>a.nome.localeCompare(b.nome)).map(c=>{ const st=statusOf(c);
+    return {id:c.id, rotulo:c.nome+' · '+STATUS[st.tipo].nome+(st.campanha?' · '+st.campanha:'')+(fichaOculta(c)?' · ficha do mestre, oculta':isMasterId(c.ownerId)?' · ficha do mestre':'')}; });
 }
 function abrirFicha(id){
   const c=S.chars.find(x=>x.id===id); if(!c) return;
@@ -2680,7 +2694,8 @@ const MESA_API = {
   podeMestrar: () => podeMestrar(), isMestre: () => S.isMaster, myId: () => S.myId, mestres: () => S.mestres,
   nomeDe: id => nameOf(id), loadNames: () => loadNames(), render: () => render(true),
   ativo: () => S.aba==='masmorras' || S.aba==='masmorra',
-  grupo: camp => grupoFichas(camp||''), campanhas: () => campaigns(elegiveis()),
+  grupo: (camp, extras) => grupoFichas(camp||'', extras||[]), campanhas: () => campaigns(elegiveis()),
+  candidatos: (camp, extras) => candidatosGrupo(camp||'', extras||[]),
   mudarPv: (id, modo, n) => { const c=S.chars.find(x=>x.id===id); if (c) aplicarPv(c, modo, n); },
   abrirFicha: id => abrirFicha(id), toast: m => toast(m)
 };
@@ -3975,17 +3990,22 @@ function grupoInfo(){
 }
 function grupoHtml(d, edit){
   const camp = (d.params && d.params.campanha) || '';
-  const g = M.grupo(camp), camps = M.campanhas();
+  const extras = (d.params && d.params.extras) || [], g = M.grupo(camp, extras), camps = M.campanhas();
   const sel = edit && (camps.length || camp) ? `<select class="btn sm" data-act-change="grupo" aria-label="Grupo desta masmorra">${opt('',camp,'Todos os ativos')}${[...new Set([...camps, ...(camp?[camp]:[])])].map(c=>opt(c,camp,c)).join('')}</select>` : '';
-  const lista = g.length ? g.map(c=>{ const r = c.max ? Math.max(0,Math.min(1,c.pv/c.max)) : 0;
+  const tirar = c => edit && c.extra ? `<button class="btn sm" data-act="grupo-tirar" data-id="${h(c.id)}" aria-label="Tirar ${h(c.nome)} do grupo">Tirar do grupo</button>` : '';
+  const lista = g.length ? g.map(c=>{
+    if (c.segredo) return `<div class="pvc"><div class="row" style="justify-content:space-between"><span>${h(c.nome)}</span><span class="chip t-vazia">Ficha do mestre</span></div></div>`;
+    const r = c.max ? Math.max(0,Math.min(1,c.pv/c.max)) : 0;
     return `<div class="pvc"><div class="row" style="justify-content:space-between">
-        <span>${edit?`<button class="rl" data-act="abrir-ficha" data-id="${h(c.id)}">${h(c.nome)}</button>`:h(c.nome)} <span class="muted small">${h(c.classe)} ${c.nivel} · CA ${c.ca}</span></span>
+        <span>${edit?`<button class="rl" data-act="abrir-ficha" data-id="${h(c.id)}">${h(c.nome)}</button>`:h(c.nome)} <span class="muted small">${h(c.classe)} ${c.nivel} · CA ${c.ca}</span>${edit&&c.oculta?' <span class="chip t-vazia" title="Os jogadores veem só o nome desta ficha">Jogadores veem só o nome</span>':''}${edit&&c.extra&&!c.oculta?' <span class="chip t-vazia">Incluída</span>':''}</span>
         <span class="num">${c.pv}/${c.max}${c.temp?` <span class="small" style="color:var(--blue)">+${c.temp}</span>`:''}${c.pv===0?' <span class="chip t-chefe">Caído</span>':''}</span></div>
       <div class="pvbar"><i style="width:${r*100}%;background:${c.cor}"></i></div>
       ${edit?`<div class="row"><input id="pvn-${h(c.id)}" type="number" min="1" inputmode="numeric" placeholder="Qtd." aria-label="Pontos para ${h(c.nome)}" style="width:80px">
-        <button class="btn sm danger" data-act="pv" data-mode="dano" data-id="${h(c.id)}">Dano</button><button class="btn sm" data-act="pv" data-mode="cura" data-id="${h(c.id)}">Cura</button><button class="btn sm" data-act="pv" data-mode="temp" data-id="${h(c.id)}">Temporários</button></div>`:''}</div>`; }).join('')
+        <button class="btn sm danger" data-act="pv" data-mode="dano" data-id="${h(c.id)}">Dano</button><button class="btn sm" data-act="pv" data-mode="cura" data-id="${h(c.id)}">Cura</button><button class="btn sm" data-act="pv" data-mode="temp" data-id="${h(c.id)}">Temporários</button>${tirar(c)}</div>`:''}</div>`; }).join('')
     : `<p class="muted small" style="margin:0">${camp?'Nenhuma ficha ativa nesta campanha.':'Nenhuma ficha ativa de jogador ainda.'}</p>`;
-  return `<div class="panel"><div class="row" style="justify-content:space-between"><h3 style="margin:0">Grupo · pontos de vida</h3>${sel}</div><div class="pvlist">${lista}</div></div>`;
+  const cand = edit ? M.candidatos(camp, extras) : [];
+  const incluir = edit && cand.length ? `<div class="row" style="margin-top:12px"><select class="btn sm" data-act-change="grupo-incluir" aria-label="Incluir personagem no grupo"><option value="">Incluir personagem no grupo…</option>${cand.map(c=>`<option value="${h(c.id)}">${h(c.rotulo)}</option>`).join('')}</select></div>` : '';
+  return `<div class="panel"><div class="row" style="justify-content:space-between"><h3 style="margin:0">Grupo · pontos de vida</h3>${sel}</div><div class="pvlist">${lista}</div>${incluir}</div>`;
 }
 /* palavras do mapa: masmorra (sala, corredor) ou campo aberto (área, trilha) */
 const palavras = d => TEMAS[d.params.tema] && TEMAS[d.params.tema].aberto ? {s:'área', S:'Área', p:'áreas', P:'Áreas', c:'trilha', cs:'trilhas'} : {s:'sala', S:'Sala', p:'salas', P:'Salas', c:'corredor', cs:'corredores'};
@@ -4294,6 +4314,7 @@ document.addEventListener('click', e=>{
   else if (a==='pv'){ const inp = document.getElementById('pvn-'+t.dataset.id); const n = Math.floor(+(inp && inp.value) || 0);
     if (n<1){ M.toast('Digite a quantidade.'); if (inp) inp.focus(); return; } M.mudarPv(t.dataset.id, t.dataset.mode, n); }
   else if (a==='abrir-ficha'){ M.abrirFicha(t.dataset.id); }
+  else if (a==='grupo-tirar'){ const d = S.cur; if (!d) return; d.params.extras = (d.params.extras||[]).filter(x=>x!==t.dataset.id); if (!d.params.extras.length) delete d.params.extras; S.dirty = true; render(); }
   else if (a==='gerar'){
     if (S.dirty && !S.genArm){ S.genArm = true; render(); return; }
     S.genArm = false; S.cur = genDungeon(S.params); S.sel = null; S.dirty = true; render();
@@ -4333,6 +4354,8 @@ document.addEventListener('input', e=>{
 });
 document.addEventListener('change', e=>{
   const t = e.target; if (!M.ativo()) return;
+  if (t.dataset.actChange==='grupo-incluir' && S.cur){ if (!t.value) return; const ex = S.cur.params.extras = S.cur.params.extras||[]; if (!ex.includes(t.value)) ex.push(t.value);
+    S.dirty = true; render(); M.toast(S.cur.publicada ? 'Incluído. Salve para os jogadores verem.' : 'Incluído no grupo desta masmorra.'); return; }
   if (t.dataset.actChange==='grupo' && S.cur){ S.cur.params.campanha = t.value; S.dirty = true; render(); return; }
   if (t.dataset.p==='campanha'){ S.params.campanha = t.value; render(); return; }
   if (t.dataset.p==='tema' || t.dataset.p==='andares'){ S.params[t.dataset.p] = t.dataset.p==='andares' ? +t.value : t.value; render(); return; } /* Andares: some no campo aberto; aviso abaixo do formulário */
