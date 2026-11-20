@@ -3002,12 +3002,66 @@ const TEMAS = {
   chefe:['Sanctum de {n}','Câmara do grande círculo de {n}','Oficina de {n}'],
   entrada:['Uma porta de bronze sem maçaneta se abre a quem diz "amigo" em élfico.','Uma escadaria em espiral desce de um jardim tomado por plantas que brilham.','Um arco de pedra com runas apagadas zumbe baixo quando alguém passa.'],
   detalhes:['Estantes até o teto, com livros cujos títulos mudam sozinhos.','Frascos borbulham sobre chamas azuis.','Um telescópio de latão aponta para uma claraboia rachada.','Círculos de invocação gravados em prata no chão.','Peças de construtos desmontados sobre mesas.','Plantas carnívoras em vasos de cristal.','Espelhos que mostram a sala com alguns segundos de atraso.','Gavetas com rótulos como "olhos de salamandra" e "pó de estrela".','Um globo flutuante gira devagar sobre um pedestal.','Anotações espalhadas, algumas com a tinta ainda fresca.'],
-  sentidos:['Cheiro de ozônio, como depois de um raio.','Um zumbido grave faz os dentes vibrarem.','A luz muda de cor sem motivo.','Páginas viram sozinhas em algum lugar.','Cheiro de ervas e enxofre.','A gravidade parece um pouco mais leve.']}
+  sentidos:['Cheiro de ozônio, como depois de um raio.','Um zumbido grave faz os dentes vibrarem.','A luz muda de cor sem motivo.','Páginas viram sozinhas em algum lugar.','Cheiro de ervas e enxofre.','A gravidade parece um pouco mais leve.']},
+ /* ---- campo aberto: clareiras ligadas por trilhas, sem portas; pool = criaturas (nomes em inglês) do cenário ---- */
+ floresta:{nome:'Floresta selvagem', tag:'x', aberto:true,
+  cores:{fundo:'#1d2a19', blob:['#2c4024','#3a5230','#253820'], chao:'#c3c48e', trilha:'#b09468', borda:'#4a5a33'},
+  pool:['Cat','Owl','Raven','Deer','Spider','Awakened Shrub','Twig Blight','Giant Weasel','Wolf','Boar','Elk','Panther','Giant Owl','Needle Blight','Pixie','Sprite','Blink Dog','Goblin Warrior','Giant Venomous Snake','Ape','Black Bear','Giant Wasp','Vine Blight','Satyr','Swarm of Insects','Scout','Dire Wolf','Brown Bear','Giant Spider','Dryad','Bugbear Warrior','Goblin Boss','Tiger','Ettercap','Awakened Tree','Giant Boar','Giant Elk','Centaur Trooper','Druid','Bandit Captain','Gnoll Pack Lord','Green Dragon Wyrmling','Giant Constrictor Snake','Werewolf','Green Hag','Owlbear','Displacer Beast','Bugbear Stalker','Wereboar','Werebear','Unicorn','Shambling Mound','Giant Ape','Oni','Young Green Dragon','Treant','Adult Green Dragon','Ancient Green Dragon'],
+  titulos:['A Floresta de {n}','O Bosque de {n}','A Mata de {n}'],
+  titulo:'lugar', viloes:['Morwen do Musgo','o Caçador Cinzento','Thalric Pele-de-Lobo','Ysolde, a Esquecida','Gorran Dente-Quebrado','o Rei dos Espinhos'],
+  lugares:['o Vale dos Espinhos','a Mata Sombria','Folhagris','o Riacho dos Lobos','a Clareira da Lua'], apelidos:['o Uivo da Mata','a Sombra entre as Árvores','o Devorador de Gado','o Velho Garra-Torta'],
+  ganchos:{pessoa:['Lenhadores de {L} desapareceram um a um. Os que restam falam de {V}, {b}, que reclama a floresta para si.','Uma caravana foi atacada na estrada que corta {L}. O único sobrevivente diz que {V}, {b}, comanda os atacantes.','A druida da aldeia pede ajuda: {V}, {b}, está envenenando o coração de {L}.'],
+   fera:['Algo que os caçadores chamam de {Vs} está matando o gado perto de {L}. Pelos rastros, é {b}.','A trilha de {L} ficou perigosa: viajantes contam de {b} que chamam de {Vs}.','O conde paga 300 PO pela cabeça de {b} conhecido como {V}, que vive no fundo de {L}.']},
+  salas:['Clareira dos cogumelos','Riacho raso','Árvore oca gigante','Ruínas cobertas de hera','Ponte de troncos','Bosque de bétulas','Acampamento abandonado','Toca sob as raízes','Lagoa escura','Círculo de pedras'],
+  chefe:['Coração da mata de {n}','Covil de {n}','Clareira de {n}'],
+  entrada:['Uma trilha de caçadores some entre árvores antigas; galhos quebrados mostram que alguém passou há pouco.','Um marco de pedra coberto de musgo indica o limite da floresta. Além dele, a luz cai pela metade.','A estrada termina numa ponte de madeira podre sobre um riacho; do outro lado começa a mata fechada.'],
+  detalhes:['Raízes grossas formam degraus naturais no chão.','Teias de aranha brilham entre os galhos baixos.','Um tronco caído e coberto de musgo atravessa a área.','Cogumelos pálidos crescem em círculo.','Marcas de garras riscam a casca de uma árvore.','Ossos de cervo estão espalhados entre as folhas.','Um raio de sol atravessa as copas e ilumina flores raras.','Uma fogueira apagada ainda está morna.'],
+  sentidos:['Cheiro de terra molhada e folhas podres.','Os pássaros se calam de repente.','O vento faz as copas rangerem como portas velhas.','Um zumbido de insetos enche o ar.','Galhos estalam em algum lugar fora de vista.','A névoa baixa cobre o chão até os joelhos.']},
+ pantano:{nome:'Pântano', tag:'x', aberto:true,
+  cores:{fundo:'#1a2622', blob:['#24382f','#2f4636','#1e302a'], chao:'#a9ad7c', trilha:'#8f7a52', borda:'#3c4f3d'},
+  pool:['Frog','Rat','Venomous Snake','Stirge','Giant Frog','Constrictor Snake','Giant Lizard','Giant Venomous Snake','Bullywug Warrior','Mud Mephit','Twig Blight','Crocodile','Lizardfolk','Swarm of Insects','Vine Blight','Gray Ooze','Zombie','Giant Toad','Ghoul','Giant Spider','Giant Constrictor Snake','Swarm of Venomous Snakes','Wererat','Black Dragon Wyrmling','Ochre Jelly','Sea Hag','Green Hag','Yuan-ti Malison','Hippopotamus','Chuul','Bone Naga','Troll','Otyugh','Giant Crocodile','Shambling Mound','Night Hag','Young Black Dragon','Yuan-ti Abomination','Hydra','Spirit Naga','Adult Black Dragon','Ancient Black Dragon'],
+  titulos:['O Pântano de {n}','O Charco de {n}','Os Alagados de {n}'],
+  titulo:'lugar', viloes:['Mãe Lodo','Sseth’ka, o Paciente','o Barqueiro Afogado','Grenna, a Senhora do Brejo','Vork Pele-Úmida','o Profeta da Lama'],
+  lugares:['o Brejo Cinzento','os Alagados do Sapo','a Lagoa Negra','Junco-Velho','o Charco dos Enforcados'], apelidos:['a Boca do Lodo','o Rei dos Juncos','a Fome do Charco','o Olho Sob a Água'],
+  ganchos:{pessoa:['Barqueiros que cruzam {L} estão sumindo. Os pescadores culpam {V}, {b}, que dizem morar nas águas paradas.','Uma erva que cura a febre do vilarejo só cresce em {L}, território de {V}, {b}.','Um mensageiro com cartas importantes se perdeu em {L}; o último sinal dele aponta para o covil de {V}, {b}.'],
+   fera:['Algo que os pescadores chamam de {Vs} vira os barcos em {L}. Pelos relatos, é {b}.','Gado afogado aparece nas margens de {L}; os caçadores falam de {b} que chamam de {Vs}.','Um alquimista paga bem por uma glândula de {b}, a criatura de {L} conhecida como {V}.']},
+  salas:['Ilhota de juncos','Passarela de tábuas podres','Cabana sobre palafitas','Lagoa coberta de lírios','Árvore afogada','Ninho de sapos','Barcaça encalhada','Ruína meio submersa','Banco de lama','Bosque de ciprestes'],
+  chefe:['Trono de lodo de {n}','Toca alagada de {n}','Ilha de {n}'],
+  entrada:['Uma passarela de tábuas sai da estrada e some na névoa sobre a água parada.','Um barqueiro deixa o grupo numa margem lamacenta e se recusa a seguir adiante.','Postes com amuletos de osso marcam a entrada do brejo; alguns foram arrancados.'],
+  detalhes:['A água chega aos joelhos e esconde raízes escorregadias.','Bolhas sobem da lama com cheiro de ovo podre.','Um barco virado apodrece entre os juncos.','Fios de musgo pendem dos galhos até a água.','Ossos pequenos estão presos na lama.','Luzes pálidas dançam ao longe e somem.','Um totem de madeira com rosto de sapo vigia a área.','Nuvens de mosquitos sobem a cada passo.'],
+  sentidos:['Cheiro de podridão e água parada.','O coaxar dos sapos para de uma vez.','A névoa é tão densa que as tochas viram borrões.','Algo grande se move debaixo da água.','O calor úmido gruda a roupa na pele.','Um chapinhar ecoa logo atrás do grupo.']},
+ montanha:{nome:'Montanhas e penhascos', tag:'x', aberto:true,
+  cores:{fundo:'#25221f', blob:['#3a3632','#4a4540','#302c28'], chao:'#c9bfa6', trilha:'#a8956f', borda:'#55504a'},
+  pool:['Goat','Eagle','Hawk','Vulture','Blood Hawk','Mule','Kobold Warrior','Goblin Warrior','Axe Beak','Pteranodon','Swarm of Ravens','Aarakocra Skirmisher','Giant Goat','Hobgoblin Warrior','Worg','Kobold Dragonshield','Giant Eagle','Giant Vulture','Harpy','Hippogriff','Copper Dragon Wyrmling','Ogre','Berserker','Griffon','Peryton','Polar Bear','Silver Dragon Wyrmling','White Dragon Wyrmling','Basilisk','Manticore','Winter Wolf','Yeti','Hobgoblin Captain','Ettin','Aarakocra Aeromancer','Red Dragon Wyrmling','Hill Giant','Troll','Earth Elemental','Air Elemental','Bulette','Gorgon','Galeb Duhr','Cyclops Sentry','Chimera','Wyvern','Mammoth','Young Copper Dragon','Stone Giant','Frost Giant','Fire Giant','Abominable Yeti','Cloud Giant','Young Silver Dragon','Young Red Dragon','Roc','Storm Giant','Adult Copper Dragon','Adult Silver Dragon','Adult Red Dragon','Ancient Copper Dragon','Ancient Silver Dragon','Ancient Red Dragon'],
+  titulos:['O Pico de {n}','A Garganta de {n}','Os Penhascos de {n}'],
+  titulo:'lugar', viloes:['Grumvar, o Chefe do Clã','a Rainha do Pico','Skarn Olho-de-Pedra','o Ermitão do Pico','Vael, a Senhora dos Ventos','Thorgar Mão-de-Gelo'],
+  lugares:['o Pico Partido','a Garganta do Vento','os Dentes de Pedra','Altaneira','o Passo do Corvo'], apelidos:['o Terror do Passo','a Sombra nas Alturas','o Rugido da Montanha','o Quebra-Ossos'],
+  ganchos:{pessoa:['Caravanas que cruzam {L} estão sendo saqueadas. Os sobreviventes falam de {V}, {b}, que cobra pedágio com sangue.','Um mosteiro no alto de {L} parou de mandar notícias. O último recado mencionava {V}, {b}.','Mineiros acharam um veio de prata em {L}, mas {V}, {b}, diz que a montanha é sua.'],
+   fera:['Algo que os pastores chamam de {Vs} leva cabras e pastores das encostas de {L}. Pelas marcas, é {b}.','O passo de {L} está fechado: ninguém volta de lá desde que {b} que chamam de {Vs} fez ninho nos penhascos.','Um nobre quer o ovo de {b} que vive no alto de {L}, conhecido como {V}.']},
+  salas:['Platô ventoso','Ponte de corda','Trilha à beira do abismo','Caverna rasa','Campo de pedras soltas','Ninho abandonado','Fonte termal','Santuário de pedra','Passagem estreita','Mirante sobre o vale'],
+  chefe:['Ninho de {n}','Fortaleza de pedra de {n}','Cume de {n}'],
+  entrada:['Uma trilha de cabras sobe em zigue-zague pela encosta, marcada por montes de pedras.','A estrada do passo termina num portão de troncos quebrado; além dele, só rocha e vento.','Uma escada escavada na rocha sobe ao lado de uma cachoeira congelada.'],
+  detalhes:['Rajadas de vento ameaçam derrubar quem fica na borda.','Pedras soltas rolam ladeira abaixo a cada passo.','Penas enormes estão presas entre as rochas.','Um monte de pedras marca o túmulo de um viajante.','Neve velha se acumula nas fendas.','Ossos roídos se espalham perto de uma fenda.','Uma estátua de anão gasta pelo tempo aponta para o alto.','O vale inteiro se vê daqui, muito lá embaixo.'],
+  sentidos:['O ar é fino e frio; respirar cansa.','O eco devolve cada palavra duas vezes.','Um grito de ave de rapina corta o silêncio.','O vento uiva entre as pedras.','Cheiro de neve e pedra molhada.','Pedrinhas caem do alto sem motivo aparente.']},
+ ermos:{nome:'Estradas e ermos', tag:'x', aberto:true,
+  cores:{fundo:'#2a2618', blob:['#3d3a22','#4a4628','#34311d'], chao:'#d0c08a', trilha:'#b49a64', borda:'#5a5432'},
+  pool:['Commoner','Jackal','Hyena','Vulture','Mastiff','Bandit','Guard','Warrior Infantry','Riding Horse','Wolf','Axe Beak','Cultist','Tough','Scout','Gnoll Warrior','Worg','Warhorse','Jackalwere','Lion','Giant Hyena','Death Dog','Spy','Pirate','Bandit Captain','Berserker','Gnoll Pack Lord','Cultist Fanatic','Priest','Ankheg','Centaur Trooper','Brass Dragon Wyrmling','Knight','Warrior Veteran','Werewolf','Doppelganger','Blue Dragon Wyrmling','Tough Boss','Gnoll Fang of Yeenoghu','Guard Captain','Wereboar','Ettin','Gladiator','Bulette','Hill Giant','Mage','Young Brass Dragon','Assassin','Blackguard','Champion','Young Blue Dragon','Archmage','Adult Brass Dragon','Adult Blue Dragon','Ancient Brass Dragon','Ancient Blue Dragon'],
+  titulos:['O Acampamento de {n}','A Emboscada de {n}','Os Ermos de {n}'],
+  titulo:'pessoa', viloes:['Varga, a Rainha da Estrada','Corvo Vermelho','o Capitão Desfigurado','Malko Três-Dedos','Irmã Sela, a Falsa Profeta','Durn, o Cobrador'],
+  lugares:['a Estrada Velha','os Campos Queimados','a Encruzilhada dos Enforcados','Poeira-Alta','as Colinas Secas'], apelidos:['o Terror da Estrada','a Fera dos Campos','o Caçador da Poeira','o Rasga-Carroças'],
+  ganchos:{pessoa:['Carroças de grãos somem na estrada de {L}. Um cocheiro que escapou diz que {V}, {b}, comanda o bando.','O magistrado paga 500 PO pela captura de {V}, {b}, escondido em algum lugar de {L}.','Peregrinos a caminho do templo foram sequestrados em {L}; o bilhete de resgate é assinado por {V}, {b}.'],
+   fera:['Rebanhos inteiros somem nos campos de {L}. Os pastores chamam a criatura de {Vs}; pelos rastros, é {b}.','A estrada de {L} está deserta: os mercadores têm medo de {b} que chamam de {Vs}.','Um cavaleiro desafia o grupo a caçar {b} conhecido como {V}, que assombra {L}.']},
+  salas:['Encruzilhada','Moinho em ruínas','Carroças viradas','Celeiro queimado','Ponte de pedra','Poço seco','Torre de vigia caída','Acampamento de tendas','Pasto cercado','Estalagem abandonada'],
+  chefe:['Tenda de comando de {n}','Covil de {n}','Forte improvisado de {n}'],
+  entrada:['Marcas de rodas e cascos saem da estrada principal e seguem por um campo de capim alto.','Um marco de estrada derrubado aponta para uma trilha secundária, cheia de pegadas.','Uma carroça abandonada bloqueia a estrada; atrás dela, uma trilha desce para o vale.'],
+  detalhes:['Capim alto esconde buracos e pedras.','Uma forca improvisada balança ao vento.','Restos de uma fogueira e ossos de galinha.','Flechas quebradas estão cravadas num poste.','Um cartaz de "procurado" rasgado ainda mostra um rosto.','Rastros de cavalos cruzam a área em todas as direções.','Um corvo bica algo brilhante no chão.','Uma cerca de madeira caída marca um antigo sítio.'],
+  sentidos:['Poeira seca no ar e cheiro de cavalo.','O vento leva o som de vozes distantes.','Moscas zumbem sobre algo morto no capim.','Cheiro de fumaça de lenha.','O sol forte faz o ar tremer no horizonte.','Um cão late longe e para de repente.']}
 };
 
 /* ================= tabelas genéricas ================= */
 const TIPOS = {entrada:'Entrada',combate:'Combate',chefe:'Chefe',armadilha:'Armadilha',tesouro:'Tesouro',misterio:'Mistério',descanso:'Descanso',vazia:'Vazia',secreta:'Secreta'};
 const COMPORT = ['Estão dormindo; Destreza (Furtividade) CD {det} para passar sem acordá-los.','Montam guarda e atacam ao primeiro sinal de intrusos.','Discutem sobre a divisão de um saque; podem ser negociados.','Estão distraídos com outra coisa; os personagens têm Vantagem na Iniciativa.','Preparam uma emboscada perto da porta: Sabedoria (Percepção) CD {det} para notar.','Patrulham entre esta sala e a sala {k}.','Estão feridos por um combate recente (metade dos Pontos de Vida).','Guardam um prisioneiro acorrentado.','Executam um ritual; interrompê-lo é prioridade deles.','Fogem para avisar o chefe se a luta ficar ruim.'];
+const COMPORT_AB = COMPORT.map(x=>x.replace('perto da porta','atrás da vegetação ou das pedras').replace('esta sala e a sala','esta área e a área').replace('acorrentado','amarrado'));
 const ARMADILHAS = [
  {nome:'Fosso com estacas', gat:'Placa de pressão no meio da sala', ef:'O chão se abre. Destreza CD {sv}: sucesso, a criatura se agarra à borda; falha, cai sobre estacas e sofre {dano} de dano Perfurante.'},
  {nome:'Dardos envenenados', gat:'Fio esticado perto da porta', ef:'Dardos saem das paredes. Destreza CD {sv}: falha, {leve} de dano Perfurante e Constituição CD {sv} ou fica Envenenado por 1 hora.'},
@@ -3022,6 +3076,37 @@ const ARMADILHAS = [
  {nome:'Jato de ácido', gat:'Mover a estátua ou a alavanca', ef:'Bicos nas paredes cospem ácido. Destreza CD {sv}: falha, {dano} de dano Ácido; sucesso, metade.'},
  {nome:'Rampa escorregadia', gat:'Placa de pressão na descida', ef:'Os degraus viram uma rampa. Destreza CD {sv}: falha, a criatura escorrega até o fundo, sofre {leve} de dano Contundente e fica Caída.'}
 ];
+/* armadilhas de corredor: mesmas armadilhas das salas, com gatilho de corredor */
+const GAT_CORR = {'Fosso com estacas':'Placa de pressão no meio do corredor','Dardos envenenados':'Fio esticado na altura do tornozelo','Lâmina pendular':'Ladrilho solto no corredor','Bloco que despenca':'Pedra solta no piso do corredor','Runa de fogo':'Pisar sobre a runa gravada no chão','Rede com sino':'Fio esticado no corredor','Jato de ácido':'Placa de pressão junto à parede','Rampa escorregadia':'Placa de pressão numa descida do corredor'};
+const ARMADILHAS_CORR = ARMADILHAS.filter(a=>GAT_CORR[a.nome]).map(a=>({...a, gat:GAT_CORR[a.nome]}));
+/* chance de armadilha por corredor, conforme a quantidade de tesouro (campo Itens mágicos); nunca mais de 1 a cada 5 corredores */
+const ARM_CORR = {poucos:.08, normal:.12, muitos:.16, fartura:.2};
+/* campo aberto: armadilhas, mistérios, descansos, pistas e comportamentos sem paredes nem portas */
+const ARMADILHAS_AB = [
+ {nome:'Fosso camuflado', gat:'Folhas e galhos cobrem um buraco no caminho', ef:'Destreza CD {sv}: falha, a criatura cai 3 m num fosso com estacas e sofre {dano} de dano Perfurante.'},
+ {nome:'Laço de caçador', gat:'Laço escondido sob as folhas', ef:'Uma corda prende o tornozelo e ergue a criatura de cabeça para baixo. Destreza CD {sv}: falha, ela fica Impedida e pendurada a 3 m do chão até cortar a corda (CA 10, 5 PV) ou passar em Força (Atletismo) CD {sv}.'},
+ {nome:'Armadilha de urso', gat:'Mandíbula de ferro escondida no capim', ef:'Destreza CD {sv}: falha, {leve} de dano Perfurante e a criatura fica Impedida; abrir a mandíbula exige Força (Atletismo) CD {sv}.'},
+ {nome:'Tronco balançante', gat:'Fio esticado entre duas árvores ou rochas', ef:'Um tronco preso por cordas varre o caminho. Destreza CD {sv}: falha, {dano} de dano Contundente e a criatura fica Caída.'},
+ {nome:'Flechas escondidas', gat:'Fio esticado na altura do tornozelo', ef:'Arcos escondidos disparam. Destreza CD {sv}: falha, {leve} de dano Perfurante; sucesso, metade.'},
+ {nome:'Rede de caçador', gat:'Corda escondida no caminho', ef:'Uma rede cai do alto sobre 3 m quadrados. Destreza CD {sv}: falha, a criatura fica Impedida (Força (Atletismo) CD {sv} para escapar). Quem armou a rede, na área {k}, ouve o barulho.'},
+ {nome:'Desmoronamento', gat:'Pedra de apoio solta na encosta', ef:'Pedras rolam do alto. Destreza CD {sv}: falha, {dano} de dano Contundente; sucesso, metade.'},
+ {nome:'Espinhos envenenados', gat:'Arbusto espinhoso cobrindo a passagem', ef:'Constituição CD {sv}: falha, {leve} de dano Venenoso e a criatura fica Envenenada por 1 hora.'},
+ {nome:'Lamaçal traiçoeiro', gat:'Chão firme só na aparência', ef:'A criatura afunda até a cintura e fica Impedida. A cada rodada, Força (Atletismo) CD {sv} para sair; depois de três falhas, ela afunda e começa a sufocar.'}
+];
+const MISTERIOS_AB = [
+ 'Um altar de pedra coberto de musgo recebe oferendas. Quem deixa algo de valor (10 PO ou mais) ganha uma bênção: Vantagem na próxima salvaguarda nesta aventura.',
+ 'Uma fonte cristalina brota de uma rocha. Quem bebe rola 1d4: 1, recupera 2d4 + 2 Pontos de Vida; 2, fica Envenenado por 1 hora; 3, ganha Visão no Escuro de 18 m por 1 hora; 4, nada acontece.',
+ 'Um corvo falante repete frases que ouviu de quem passou por aqui; Carisma (Persuasão) CD {det} para ele contar o que viu na área {k}.',
+ 'Um viajante ferido pede ajuda. Ele conhece um atalho até a área {k}, mas pode ser um espião (role 1d6: par, aliado; ímpar, traidor).',
+ 'Uma estátua tombada aponta para a área {k}. Inteligência (História) CD {det} reconhece o herói retratado e revela uma fraqueza de {n}.',
+ 'Cogumelos em círculo marcam um anel de fadas. Quem entra faz Sabedoria CD {sv} ou fica Enfeitiçado por 1 minuto e ouve uma barganha feérica em troca de uma lembrança querida.',
+ 'Três pedras com runas guardam {pouco} enterrado. Inteligência (Arcanismo) CD {det} lê o aviso: quem cavar sem pedir licença sofre {leve} de dano Necrótico.',
+ 'Uma árvore oca, ou uma fenda na rocha, guarda um esconderijo de caçadores: Sabedoria (Percepção) CD {det} encontra {pouco}.',
+ 'Um círculo de pedras antigas zumbe ao anoitecer. Quem passa a noite dentro dele sonha com o covil de {n}: Vantagem em testes para rastrear o chefe.',
+ 'Pegadas enormes cruzam a área. Sabedoria (Sobrevivência) CD {det} mostra que vêm da área {k} e que a criatura passa por aqui todo dia ao amanhecer.'
+];
+const DESCANSOS_AB = ['Uma clareira escondida por arbustos densos. O grupo pode fazer um Descanso Curto sem ser incomodado.','Uma gruta rasa e seca, fácil de vigiar.','Um riacho de água limpa e frutas silvestres; ninguém passa fome aqui.','Restos de um acampamento de aventureiros, com 1d4 rações e um kit de curandeiro com 3 usos.'];
+const PISTAS_AB = ['Pegadas recentes levam para a área {k}.','Um diário rasgado, preso num galho, menciona um ponto fraco de {n}.','Os restos de um viajante ainda carregam {pouco}.','Só o vento e o canto dos pássaros.','Um aviso entalhado numa árvore: "não sigam para a área {k}".'];
 const MISTERIOS = [
  'Uma estátua de mãos estendidas segura uma tigela vazia. Quem deixa nela uma oferenda de valor (10 PO ou mais) recebe uma bênção: Vantagem na próxima salvaguarda dentro desta masmorra.',
  'Quatro alavancas na parede, cada uma com um símbolo (sol, lua, estrela, olho). A ordem certa está num mural da sala {k} (Inteligência (Investigação) CD {det}). A ordem errada dispara um alarme.',
@@ -3177,6 +3262,7 @@ const RAR_TIER = {1:{comum:6,incomum:4},2:{incomum:6,rara:4},3:{rara:6,muitorara
 const SIZES = {pequena:{w:40,h:30,n:[6,8],nome:'Pequena (6–8 salas)'}, media:{w:54,h:38,n:[10,13],nome:'Média (10–13 salas)'}, grande:{w:68,h:48,n:[15,19],nome:'Grande (15–19 salas)'}};
 function genMap(rng, tamanho, tema, rngSec){
   const Z = SIZES[tamanho]||SIZES.media, W=Z.w, H=Z.h, alvo=rng.int(Z.n[0],Z.n[1]);
+  const aberto = !!(TEMAS[tema] && TEMAS[tema].aberto); /* campo aberto: sem portas, clareiras arredondadas */
   const g = new Uint8Array(W*H); let rooms=[];
   for(let a=0; a<900 && rooms.length<alvo; a++){
     const w=rng.int(4,9), hh=rng.int(4,8), x=rng.int(1,W-w-1), y=rng.int(1,H-hh-1);
@@ -3270,12 +3356,28 @@ function genMap(rng, tamanho, tema, rngSec){
   const at = (i,j) => (i<0||j<0||i>=W||j>=H) ? 0 : g[j*W+i];
   /* porta só onde a passagem tem exatamente dois lados abertos e opostos */
   const dl = [];
-  for (const d of doors.values()){
+  if (!aberto) for (const d of doors.values()){
     const L=!!at(d.x-1,d.y), R=!!at(d.x+1,d.y), U=!!at(d.x,d.y-1), D=!!at(d.x,d.y+1);
     if ((L&&R&&!U&&!D) || (U&&D&&!L&&!R)) dl.push({x:d.x, y:d.y, o:(L&&R)?'h':'v', t:rng.weighted({normal:70,trancada:14,secreta:8,emperrada:8})});
   }
-  const g0 = tema==='caverna' ? g.slice() : null;
-  if (tema==='caverna'){
+  const g0 = (tema==='caverna' || aberto) ? g.slice() : null;
+  if (aberto){
+    /* clareiras: só a elipse dentro do retângulo (com borda irregular), menos onde passa trilha */
+    rooms.forEach(r=>{
+      const cx=r.x+r.w/2, cy=r.y+r.h/2, rx=r.w/2, ry=r.h/2;
+      for(let j=r.y;j<r.y+r.h;j++) for(let i=r.x;i<r.x+r.w;i++){
+        if (viaCorr.has(j*W+i)) continue;
+        const dx=(i+.5-cx)/rx, dy=(j+.5-cy)/ry;
+        if (dx*dx+dy*dy > .85 + rng.f()*.35) g[j*W+i]=0;
+      }
+      for(let j=r.y-1;j<=r.y+r.h;j++) for(let i=r.x-1;i<=r.x+r.w;i++){
+        if (i<1||j<1||i>=W-1||j>=H-1) continue;
+        const out = i<r.x||j<r.y||i>=r.x+r.w||j>=r.y+r.h, corner=(i<r.x||i>=r.x+r.w)&&(j<r.y||j>=r.y+r.h);
+        if (out && !corner && g[j*W+i]===0 && rng.chance(.12)) g[j*W+i]=1;
+      }
+    });
+  }
+  else if (tema==='caverna'){
     /* bordas irregulares nas grutas */
     const keep = new Set(); dl.forEach(d=>{ for(let dy=-1;dy<=1;dy++) for(let dx=-1;dx<=1;dx++) keep.add((d.x+dx)+','+(d.y+dy)); });
     rooms.forEach(r=>{
@@ -3302,6 +3404,18 @@ function genMap(rng, tamanho, tema, rngSec){
   };
   const alcancaTudo = bloq => !foraDoAlcance(bloq).length;
   /* se as bordas irregulares da caverna cortaram alguma passagem, desfaz a erosão neste mapa */
+  /* campo aberto: se arredondar uma clareira cortou a passagem, religa só o caminho mais curto (pelo mapa antes de arredondar) */
+  if (aberto) for (let tent=0; tent<60; tent++){
+    const fora = foraDoAlcance(new Set()); if (!fora.length) break;
+    const alcan = new Uint8Array(W*H), [sx,sy] = cen(rooms[0]), f0=[sy*W+sx]; alcan[f0[0]]=1;
+    while(f0.length){ const c=f0.pop(), x=c%W, y=(c-x)/W; for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){ const i=x+dx, j=y+dy, n=j*W+i; if (at(i,j) && !alcan[n]){ alcan[n]=1; f0.push(n); } } }
+    const [tx,ty] = cen(rooms[fora[0]]), alvo = ty*W+tx, pai = new Int32Array(W*H).fill(-2), fila=[];
+    for (let n=0;n<W*H;n++) if (alcan[n]){ pai[n]=-1; fila.push(n); }
+    for (let q=0; q<fila.length && pai[alvo]===-2; q++){ const c=fila[q], x=c%W, y=(c-x)/W;
+      for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){ const i=x+dx, j=y+dy, n=j*W+i; if (i<0||j<0||i>=W||j>=H||pai[n]!==-2||!g0[n]) continue; pai[n]=c; fila.push(n); } }
+    if (pai[alvo]===-2) break;
+    for (let n=alvo; n>=0 && !alcan[n]; n=pai[n]) g[n]=g0[n];
+  }
   if (g0 && !alcancaTudo(new Set())) g.set(g0);
   const bloq = new Set();
   /* ...e atalho de verdade: sem a porta, o outro caminho entre os dois lados dela tem que ser bem mais longo */
@@ -3344,20 +3458,22 @@ function genMap(rng, tamanho, tema, rngSec){
 
 /* ================= gerador de conteúdo ================= */
 const MON_DG = MON.filter(m=>m.tags!=='x'); /* reserva quando o tema não tem opções: só criaturas de masmorra */
-function poolFor(tema){ const t=TEMAS[tema].tag; return MON.filter(m=>m.tags.includes(t)); }
+/* reserva do campo aberto: criaturas de ar livre e as dos cenários abertos */
+const MON_AB = MON.filter(m=>m.tags.includes('x') || Object.values(TEMAS).some(t=>t.aberto && t.pool.includes(m.en)));
+function poolFor(tema){ const T=TEMAS[tema]; if (T.pool) return MON.filter(m=>T.pool.includes(m.en)); const t=T.tag; return MON.filter(m=>m.tags.includes(t)); }
 function buildEncounter(rng, p, dif, chefe, forcar){
   const per = BUD[p.nivel][dif]; let alvo = per*p.jogadores; if (chefe && p.ritmo==='pesado') alvo=Math.round(alvo*1.25);
-  const pool = poolFor(p.tema);
+  const pool = poolFor(p.tema), RES = TEMAS[p.tema].aberto ? MON_AB : MON_DG;
   const fits = (list,lo,hi) => list.filter(m=>m.xp<=hi && m.xp>=lo);
-  let cand = fits(pool, alvo/(chefe?4:10), alvo*(chefe?.85:1)); if (cand.length<2) cand = fits(MON_DG, alvo/(chefe?4:10), alvo*(chefe?.85:1));
-  if (!cand.length) cand = [MON_DG.filter(m=>m.xp<=alvo).sort((a,b)=>b.xp-a.xp)[0] || MON[0]];
+  let cand = fits(pool, alvo/(chefe?4:10), alvo*(chefe?.85:1)); if (cand.length<2) cand = fits(RES, alvo/(chefe?4:10), alvo*(chefe?.85:1));
+  if (!cand.length) cand = [RES.filter(m=>m.xp<=alvo).sort((a,b)=>b.xp-a.xp)[0] || MON[0]];
   let prim, n;
   if (chefe){ const sorted=[...cand].sort((a,b)=>b.xp-a.xp); prim = forcar || rng.pick(sorted.slice(0,Math.max(1,Math.ceil(sorted.length/3)))); n=1; }
   else { prim = rng.pick(cand); const maxN=Math.max(1,Math.min(8,Math.floor(alvo/prim.xp))); n=Math.max(1,Math.round(maxN*(.6+.4*rng.f()))); }
   const grupos=[{pt:prim.pt,en:prim.en,cr:prim.cr,xp:prim.xp,qtd:n}];
   let resto = alvo - n*prim.xp;
   if (resto >= alvo*.2){
-    let c2 = pool.filter(m=>m.xp<=resto && m.pt!==prim.pt && m.xp>=resto/6); if(!c2.length) c2 = MON_DG.filter(m=>m.xp<=resto && m.pt!==prim.pt && m.xp>=resto/6);
+    let c2 = pool.filter(m=>m.xp<=resto && m.pt!==prim.pt && m.xp>=resto/6); if(!c2.length) c2 = RES.filter(m=>m.xp<=resto && m.pt!==prim.pt && m.xp>=resto/6);
     if (c2.length){ const s=rng.pick(c2); const k=Math.max(1,Math.min(6,Math.floor(resto/s.xp))); grupos.push({pt:s.pt,en:s.en,cr:s.cr,xp:s.xp,qtd:k}); }
   }
   const xp = grupos.reduce((t,gp)=>t+gp.xp*gp.qtd,0);
@@ -3529,7 +3645,7 @@ function destinoPorta(m, dr, i){
   return -1;
 }
 function genSala(rng, d, i, tipo, nomeUsado){
-  const p=d.params, T=TEMAS[p.tema], t=tierOf(p.nivel), r=d.mapa.rooms[i], ns=d.mapa.rooms.length;
+  const p=d.params, T=TEMAS[p.tema], AB=!!T.aberto, ARM=AB?ARMADILHAS_AB:ARMADILHAS, t=tierOf(p.nivel), r=d.mapa.rooms[i], ns=d.mapa.rooms.length;
   const US = usadosNa(d, i);
   const nsv = ns - (d.mapa.secretas||[]).length; /* {k} só aponta salas comuns */
   let k = rng.int(1,nsv); if (k===i+1) k = (k % nsv)+1;
@@ -3544,30 +3660,65 @@ function genSala(rng, d, i, tipo, nomeUsado){
   else { s.nome = nomeUsado || rng.pick(T.salas); s.desc = det[0] + (rng.chance(.5)?' '+det[1]:''); }
   const ritmo = {leve:{0:6,1:3,2:1}, padrao:{0:4,1:4,2:2}, pesado:{0:2,1:4,2:4}}[p.ritmo] || {0:4,1:4,2:2};
   const enc = chefe => { const e = buildEncounter(rng, p, chefe?2:+rng.weighted(ritmo), chefe, chefe ? chefeForcado(d) : null);
-    e.comport = chefe ? (d.chefe ? fill(COMPORT_CHEFE[d.chefe.papel||d.chefe.tipo], ctxChefe(d.chefe)) : fill('O chefe, {n}, lidera os defensores e luta até o fim, a menos que os personagens ofereçam algo que deseje mais do que a vitória.', ctx)) : fill(rng.pick(COMPORT), ctx); return e; };
+    e.comport = chefe ? (d.chefe ? fill(COMPORT_CHEFE[d.chefe.papel||d.chefe.tipo], ctxChefe(d.chefe)) : fill('O chefe, {n}, lidera os defensores e luta até o fim, a menos que os personagens ofereçam algo que deseje mais do que a vitória.', ctx)) : fill(rng.pick(AB?COMPORT_AB:COMPORT), ctx); return e; };
   if (tipo==='combate'){ s.encontro = enc(false); if (rng.chance(.5)) s.tesouro = genTesouro(rng,t,'individual',p.itens,US); }
   if (tipo==='chefe'){ s.encontro = enc(true); s.tesouro = genTesouro(rng,t,'chefe',p.itens,US); }
-  if (tipo==='entrada' && rng.chance(.35)){ s.encontro = buildEncounter(rng,p,0,false); s.encontro.comport = 'Vigiam a entrada; um deles corre para dar o alarme na sala '+Math.min(2,ns)+'.'; }
-  if (tipo==='armadilha'){ const a=rng.pick(ARMADILHAS); s.armadilha = {nome:a.nome, gatilho:a.gat, efeito:fill(a.ef,ctx), det:ctx.det}; if (rng.chance(.35)) s.tesouro = genTesouro(rng,t,'individual',p.itens,US); }
-  if (tipo==='tesouro'){ s.tesouro = genTesouro(rng,t,'tesouro',p.itens,US); if (rng.chance(.4)){ const a=rng.pick(ARMADILHAS); s.armadilha={nome:a.nome, gatilho:'Mexer no tesouro', efeito:fill(a.ef,ctx), det:ctx.det}; } }
+  if (tipo==='entrada' && rng.chance(.35)){ s.encontro = buildEncounter(rng,p,0,false); s.encontro.comport = 'Vigiam a entrada; um deles corre para dar o alarme na '+(AB?'área ':'sala ')+Math.min(2,ns)+'.'; }
+  if (tipo==='armadilha'){ const a=rng.pick(ARM); s.armadilha = {nome:a.nome, gatilho:a.gat, efeito:fill(a.ef,ctx), det:ctx.det}; if (rng.chance(.35)) s.tesouro = genTesouro(rng,t,'individual',p.itens,US); }
+  if (tipo==='tesouro'){ s.tesouro = genTesouro(rng,t,'tesouro',p.itens,US); if (rng.chance(.4)){ const a=rng.pick(ARM); s.armadilha={nome:a.nome, gatilho:'Mexer no tesouro', efeito:fill(a.ef,ctx), det:ctx.det}; } }
   if (tipo==='secreta'){
     s.tesouro = genTesouro(rng,t,'tesouro',p.itens,US);
     if (rng.chance(.6)){ s.encontro = buildEncounter(rng,p,1,false); s.encontro.comport = fill(rng.pick(SECRETA_GUARDA), ctx); }
-    else if (rng.chance(.5)){ const a=rng.pick(ARMADILHAS); s.armadilha={nome:a.nome, gatilho:'Mexer no tesouro', efeito:fill(a.ef,ctx), det:ctx.det}; }
+    else if (rng.chance(.5)){ const a=rng.pick(ARM); s.armadilha={nome:a.nome, gatilho:'Mexer no tesouro', efeito:fill(a.ef,ctx), det:ctx.det}; }
   }
   const sec = portasSecretas(d.mapa);
   if (tipo==='misterio'){
     const outras = sec.filter(x=>x.sala!==i), alvo = outras.length ? rng.pick(outras) : (sec.length ? rng.pick(sec) : null);
     if (alvo){ ctx.ks = alvo.sala+1; ctx.sdir = alvo.dir; }
-    s.misterio = fill(rng.pick(alvo ? MISTERIOS : MISTERIOS.filter(x=>!x.includes('{ks}'))), ctx);
+    s.misterio = fill(rng.pick(AB ? MISTERIOS_AB : alvo ? MISTERIOS : MISTERIOS.filter(x=>!x.includes('{ks}'))), ctx);
   }
-  if (tipo==='descanso') s.descanso = rng.pick(DESCANSOS);
+  if (tipo==='descanso') s.descanso = rng.pick(AB?DESCANSOS_AB:DESCANSOS);
   if (tipo==='vazia'){
     const aqui = sec.filter(x=>x.sala===i);
     if (aqui.length){ ctx.sdir = rng.pick(aqui).dir; s.pista = fill(PISTA_SECRETA, ctx); }
-    else s.pista = fill(rng.pick(PISTAS), ctx);
+    else s.pista = fill(rng.pick(AB?PISTAS_AB:PISTAS), ctx);
   }
   return s;
+}
+/* ===== armadilhas nos corredores (trilhas, no campo aberto) =====
+   Corredor = trecho ligado de quadrados de corredor do mapa. No máximo 1 armadilha a cada 5 corredores;
+   a chance cai com menos tesouro (ARM_CORR). Fica fora do quadrado encostado em sala ou porta. */
+function genArmCorr(d, rng){
+  const m=d.mapa, W=m.w, H=m.h, G=m.grid, T=TEMAS[d.params.tema], t=tierOf(d.params.nivel);
+  const seen=new Uint8Array(W*H), comps=[], V4=[[1,0],[-1,0],[0,1],[0,-1]];
+  for (let n=0;n<W*H;n++){
+    if (G[n]!=='2' || seen[n]) continue;
+    const cells=[], fila=[n]; seen[n]=1;
+    while(fila.length){ const c=fila.pop(); cells.push(c); const x=c%W, y=(c-x)/W;
+      for (const [dx,dy] of V4){ const i=x+dx, j=y+dy, k=j*W+i; if (i<0||j<0||i>=W||j>=H||seen[k]||G[k]!=='2') continue; seen[k]=1; fila.push(k); } }
+    comps.push(cells.sort((a,b)=>a-b));
+  }
+  const salaDe = (x,y) => m.rooms.findIndex(r=>x>=r.x && x<r.x+r.w && y>=r.y && y<r.y+r.h);
+  const portas = new Set(m.doors.map(p=>p.y*W+p.x));
+  const info = comps.map(cells=>{
+    const salas=new Set(), livres=[];
+    cells.forEach(c=>{ const x=c%W, y=(c-x)/W; let encosta=false;
+      for (const [dx,dy] of V4){ const i=x+dx, j=y+dy; if (i<0||j<0||i>=W||j>=H) continue;
+        if (G[j*W+i]==='1'){ encosta=true; const r=salaDe(i,j); if (r>=0) salas.add(r); } }
+      if (!encosta && !portas.has(c)) livres.push(c); });
+    return {salas:[...salas].sort((a,b)=>a-b), livres};
+  }).filter(o=>o.salas.length);
+  const N = info.length, max = Math.floor(N/5);
+  const n = Math.min(max, Math.floor(N*(ARM_CORR[d.params.itens] ?? ARM_CORR.normal) + rng.f()));
+  if (n<=0) return [];
+  const cand = rng.shuffle(info.filter(o=>o.livres.length)).sort((a,b)=>(b.livres.length>=3)-(a.livres.length>=3));
+  const lista = T.aberto ? ARMADILHAS_AB : ARMADILHAS_CORR, usadas = new Set();
+  return cand.slice(0,n).map(o=>{
+    const c = o.livres[Math.floor(o.livres.length/2)], x=c%W, y=(c-x)/W;
+    const livres = lista.filter(z=>!usadas.has(z.nome)), a = rng.pick(livres.length ? livres : lista); usadas.add(a.nome);
+    const ctx = {det:TDC.det[t-1], sv:TDC.sv[t-1], dano:TDC.dano[t-1], leve:TDC.leve[t-1], k:o.salas[o.salas.length-1]+1, n:d.vilao, pouco:''};
+    return {x, y, salas:o.salas.map(s=>s+1), nome:a.nome, gatilho:a.gat, efeito:fill(a.ef, ctx), det:ctx.det};
+  });
 }
 function genErrantes(rng, d){
   const out=[]; for(let i=0;i<6;i++){ const e=buildEncounter(rng, d.params, 0, false); out.push(e.grupos.map(gp=>gp.qtd+'× '+gp.pt).join(' e ')+' ('+fmt(e.xp)+' XP)'); }
@@ -3581,10 +3732,10 @@ function genDungeon(params){
   const chefe = montarChefe(rng, T, buildEncounter(rng, p, 2, true).grupos[0].en);
   const cx = ctxChefe(chefe), vilao = chefe.nome;
   const nomeTit = T.titulo==='pessoa' && chefe.tipo==='pessoa' ? vilao : chefe.lugar;
-  const mapa = genMap(rng, p.tamanho, p.tema, makeRng(semente+'|secretas|'+p.tamanho+'|'+p.tema));
+  const mapa = genMap(rng, p.tamanho, p.tema, T.aberto ? null : makeRng(semente+'|secretas|'+p.tamanho+'|'+p.tema));
   const ns = mapa.rooms.length;
   const d = {id:null, nome:(p.nome||'').trim() || fill(rng.pick(T.titulos),{n:nomeTit}), vilao, chefe, gancho:fill(rng.pick(T.ganchos[chefe.tipo==='fera'?'fera':'pessoa']), cx), semente,
-    params:{tema:p.tema, tamanho:p.tamanho, nivel:p.nivel, jogadores:p.jogadores, ritmo:p.ritmo, itens:ITEM_QTD[p.itens]?p.itens:'normal'}, mapa, salas:[], errantes:[], publicada:false, criada:Date.now(), atualizada:Date.now()};
+    params:{tema:p.tema, tamanho:p.tamanho, nivel:p.nivel, jogadores:p.jogadores, ritmo:p.ritmo, itens:ITEM_QTD[p.itens]?p.itens:'normal', campanha:String(p.campanha||'')}, mapa, salas:[], errantes:[], publicada:false, criada:Date.now(), atualizada:Date.now()};
   const nb = ns - mapa.secretas.length; /* salas comuns; a última delas é a do chefe, depois vêm as secretas */
   const tipos = ['entrada'];
   for(let i=1;i<nb-1;i++) tipos.push(rng.weighted({combate:40, armadilha:13, tesouro:9, vazia:18, misterio:12, descanso:5}));
@@ -3597,6 +3748,7 @@ function genDungeon(params){
   const nomes = rng.shuffle(T.salas); let ni=0;
   tipos.forEach((tp,i)=>{ d.salas.push(genSala(rng, d, i, tp, nomes[(ni++)%nomes.length])); });
   d.errantes = genErrantes(rng, d);
+  d.armCorr = genArmCorr(d, makeRng(semente+'|corredores|'+p.tamanho+'|'+p.tema)); /* rng próprio: não muda o resto da masmorra */
   return d;
 }
 
@@ -3616,7 +3768,7 @@ const isMestre = () => M.isMestre();
 let store = null;
 
 /* cópia para os jogadores: por enquanto tudo, menos as anotações do mestre */
-function playerCopy(d){ const c = clone(d); c.salas.forEach(s=>{ delete s.notas; }); return c; }
+function playerCopy(d){ const c = clone(d); c.salas.forEach(s=>{ delete s.notas; }); delete c.armCorr; return c; }
 
 function makeLocalStore(){
   let mem = {masmorras:{}, publicas:{}};
@@ -3669,6 +3821,9 @@ function drawMap(d){
   const x = cv.getContext('2d'); x.setTransform(dpr,0,0,dpr,0,0);
   const css = getComputedStyle(document.documentElement), col = n => css.getPropertyValue(n).trim();
   const G = m.grid, oculto = celulasOcultas(d), at = (i,j) => (i<0||j<0||i>=m.w||j>=m.h||(oculto&&oculto.has(j*m.w+i))) ? 0 : +G[j*m.w+i];
+  const TA = TEMAS[d.params.tema];
+  if (TA && TA.aberto) desenhaAberto(x, c, cssW, cssH, m, at, TA.cores);
+  else {
   x.fillStyle = col('--rock'); x.fillRect(0,0,cssW,cssH);
   /* hachura da rocha junto às paredes */
   x.strokeStyle = col('--hatch'); x.lineWidth = 1; x.beginPath();
@@ -3713,6 +3868,13 @@ function drawMap(d){
   });
   /* escada na entrada */
   const e = m.rooms[0]; if (e){ const sx=(e.x+1)*c, sy=(e.y+1)*c; x.strokeStyle=col('--ink'); x.lineWidth=Math.max(1,c*.08); x.beginPath(); for(let k=0;k<5;k++){ const yy=sy+k*c/5+c*.1; x.moveTo(sx+c*.1,yy); x.lineTo(sx+c*.9,yy); } x.stroke(); }
+  }
+  /* armadilhas nos corredores/trilhas: só o mestre vê */
+  if (isMestre()) (d.armCorr||[]).forEach(a=>{
+    const cx=(a.x+.5)*c, cy=(a.y+.5)*c, r=Math.max(5, c*.55);
+    x.fillStyle = col('--sel'); x.beginPath(); x.moveTo(cx, cy-r); x.lineTo(cx+r*.9, cy+r*.7); x.lineTo(cx-r*.9, cy+r*.7); x.closePath(); x.fill();
+    x.strokeStyle = '#fff4dc'; x.lineWidth = Math.max(1, c*.08); x.stroke();
+  });
   /* números das salas */
   x.textAlign='center'; x.textBaseline='middle';
   m.rooms.forEach((r,i)=>{
@@ -3735,7 +3897,7 @@ const opt = (v, cur, label) => `<option value="${h(v)}" ${String(v)===String(cur
 function viewForm(){
   const p = S.params;
   return `<section class="panel"><div class="form">
-    <label class="f">Tema<select id="p-tema" data-p="tema">${Object.entries(TEMAS).map(([k,t])=>opt(k,p.tema,t.nome)).join('')}</select></label>
+    <label class="f">Tema<select id="p-tema" data-p="tema">${temaOpts(p.tema)}</select></label>
     <label class="f">Tamanho<select id="p-tamanho" data-p="tamanho">${Object.entries(SIZES).map(([k,z])=>opt(k,p.tamanho,z.nome)).join('')}</select></label>
     <label class="f">Nível do grupo<select id="p-nivel" data-p="nivel">${Array.from({length:20},(_,i)=>opt(i+1,p.nivel,'Nível '+(i+1))).join('')}</select></label>
     <label class="f">Personagens<select id="p-jog" data-p="jogadores">${Array.from({length:8},(_,i)=>opt(i+1,p.jogadores,(i+1)+(i?' personagens':' personagem'))).join('')}</select></label>
@@ -3776,6 +3938,55 @@ function grupoHtml(d, edit){
     : `<p class="muted small" style="margin:0">${camp?'Nenhuma ficha ativa nesta campanha.':'Nenhuma ficha ativa de jogador ainda.'}</p>`;
   return `<div class="panel"><div class="row" style="justify-content:space-between"><h3 style="margin:0">Grupo · pontos de vida</h3>${sel}</div><div class="pvlist">${lista}</div></div>`;
 }
+/* palavras do mapa: masmorra (sala, corredor) ou campo aberto (área, trilha) */
+const palavras = d => TEMAS[d.params.tema] && TEMAS[d.params.tema].aberto ? {s:'área', S:'Área', p:'áreas', P:'Áreas', c:'trilha', cs:'trilhas'} : {s:'sala', S:'Sala', p:'salas', P:'Salas', c:'corredor', cs:'corredores'};
+function temaOpts(cur){
+  const g = ab => Object.entries(TEMAS).filter(([,t])=>!!t.aberto===ab).map(([k,t])=>opt(k,cur,t.nome)).join('');
+  return `<optgroup label="Masmorras">${g(false)}</optgroup><optgroup label="Campo aberto">${g(true)}</optgroup>`;
+}
+function legenda(d, edit){
+  const W_ = palavras(d), arm = edit && (d.armCorr||[]).length ? ' · ▲ = armadilha (só você vê)' : '';
+  return TEMAS[d.params.tema] && TEMAS[d.params.tema].aberto
+    ? `1 quadrado = 1,5 m · toque numa ${W_.s} para ver os detalhes${arm}`
+    : `1 quadrado = 1,5 m · toque numa sala para ver os detalhes${edit?' · S = porta secreta':''} · porta escura = trancada${arm}`;
+}
+/* armadilhas nos corredores/trilhas: todas (visão geral) ou só as que encostam na sala i */
+function armCorrHtml(d, i){
+  const W_ = palavras(d), ab = TEMAS[d.params.tema] && TEMAS[d.params.tema].aberto;
+  const lista = (d.armCorr||[]).filter(a=>i==null || a.salas.includes(i+1)); if (!lista.length) return '';
+  const lig = s => s.length===1 ? `saindo da ${W_.s} ${s[0]}` : `entre as ${W_.p} ${s.slice(0,-1).join(', ')} e ${s[s.length-1]}`;
+  const tit = lista.length>1 ? (ab ? 'Armadilhas nas trilhas' : 'Armadilhas nos corredores') : (ab ? 'Armadilha na trilha' : 'Armadilha no corredor');
+  return `<div class="panel"><h3>${tit}</h3>
+    ${lista.map(a=>`<div style="margin-top:8px"><b>${h(a.nome)}</b> <span class="muted small">· ${W_.c} ${lig(a.salas)}</span>
+      <dl class="kv" style="margin-top:6px"><dt>Gatilho</dt><dd>${h(a.gatilho)}</dd><dt>Perceber</dt><dd>Sabedoria (Percepção) CD ${a.det}</dd><dt>Desarmar</dt><dd>${ab?'Sabedoria (Sobrevivência) ou Destreza (Prestidigitação)':'Destreza (Prestidigitação) com Ferramentas de Ladrão'} CD ${a.det}</dd></dl>
+      <p style="margin:6px 0 0">${h(a.efeito)}</p></div>`).join('')}
+    <p class="muted small" style="margin:8px 0 0">Os jogadores não veem este quadro nem o ▲ no mapa.</p></div>`;
+}
+/* campo aberto: vegetação ou rochas em volta, clareiras e trilhas, sem paredes nem portas */
+function desenhaAberto(x, c, cssW, cssH, m, at, cor){
+  x.fillStyle = cor.fundo; x.fillRect(0,0,cssW,cssH);
+  const hs = (i,j) => ((i*73856093) ^ (j*19349663)) >>> 0;
+  const perto = (i,j) => { for(let dy=-2;dy<=2;dy++) for(let dx=-2;dx<=2;dx++) if (at(i+dx,j+dy)) return true; return false; };
+  for(let j=0;j<m.h;j++) for(let i=0;i<m.w;i++){
+    if (at(i,j)) continue; const k = hs(i,j);
+    if (!perto(i,j) && k%3) continue;
+    x.fillStyle = cor.blob[k%3]; x.beginPath();
+    x.arc((i+.5+((k>>3)%5-2)*.08)*c, (j+.5+((k>>6)%5-2)*.08)*c, c*(.55+((k>>9)%3)*.15), 0, Math.PI*2); x.fill();
+  }
+  for(let j=0;j<m.h;j++) for(let i=0;i<m.w;i++){ const v = at(i,j); if (!v) continue; x.fillStyle = v===2 ? cor.trilha : cor.chao; x.fillRect(i*c, j*c, c+.5, c+.5); }
+  x.strokeStyle = 'rgba(40,32,20,.14)'; x.lineWidth = 1; x.beginPath();
+  for(let j=0;j<m.h;j++) for(let i=0;i<m.w;i++) if (at(i,j)) x.rect(i*c+.5, j*c+.5, c-1, c-1);
+  x.stroke();
+  x.strokeStyle = cor.borda; x.lineWidth = Math.max(1, c*.12); x.lineCap='round'; x.beginPath();
+  for(let j=0;j<m.h;j++) for(let i=0;i<m.w;i++){
+    if (!at(i,j)) continue; const px=i*c, py=j*c;
+    if (!at(i,j-1)){ x.moveTo(px,py); x.lineTo(px+c,py); }
+    if (!at(i,j+1)){ x.moveTo(px,py+c); x.lineTo(px+c,py+c); }
+    if (!at(i-1,j)){ x.moveTo(px,py); x.lineTo(px,py+c); }
+    if (!at(i+1,j)){ x.moveTo(px+c,py); x.lineTo(px+c,py+c); }
+  }
+  x.stroke();
+}
 function encHtml(e){
   if (!e) return '';
   return `<div class="panel"><h3>Encontro · dificuldade ${h(DIFS[e.dif])}</h3>
@@ -3784,7 +3995,7 @@ function encHtml(e){
     ${e.comport?`<p style="margin:8px 0 0">${h(e.comport)}</p>`:''}</div>`;
 }
 function roomView(d, i, edit){
-  const s = d.salas[i], r = d.mapa.rooms[i];
+  const s = d.salas[i], r = d.mapa.rooms[i], W_ = palavras(d);
   const vis = d.salas.map((_,j)=>j).filter(j=>salaVisivel(d,j)), pos = vis.indexOf(i), ant = vis[(pos-1+vis.length)%vis.length], prox = vis[(pos+1)%vis.length];
   const secreta = (d.mapa.secretas||[]).some(x=>x.sala===i);
   const tiposOpc = Object.entries(TIPOS).filter(([k])=>k!=='secreta' || secreta || s.tipo==='secreta');
@@ -3796,15 +4007,16 @@ function roomView(d, i, edit){
   }).filter(Boolean);
   return `<div class="panel" style="display:flex;flex-direction:column;gap:10px">
       <div class="row" style="justify-content:space-between"><button class="btn sm" data-act="sel" data-i="">← Visão geral</button>
-        <span class="row"><button class="btn sm" data-act="sel" data-i="${ant}" aria-label="Sala anterior">‹</button><button class="btn sm" data-act="sel" data-i="${prox}" aria-label="Próxima sala">›</button></span></div>
+        <span class="row"><button class="btn sm" data-act="sel" data-i="${ant}" aria-label="${W_.S} anterior">‹</button><button class="btn sm" data-act="sel" data-i="${prox}" aria-label="Próxima ${W_.s}">›</button></span></div>
       <div class="row"><span class="chip t-${h(s.tipo)}">${h(TIPOS[s.tipo]||s.tipo)}</span><span class="muted small num">${fmt(r.w*1.5)} × ${fmt(r.h*1.5)} m</span></div>
       <h2>${i+1}. ${h(s.nome)}</h2>
       <p class="prose" style="margin:0">${h(s.desc)}</p>
       <p class="muted" style="margin:0"><i>${h(s.sentido)}</i></p>
-      ${edit?`<div class="row"><button class="btn sm" data-act="reroll-sala" data-i="${i}">Gerar sala de novo</button>${s.encontro?`<button class="btn sm" data-act="reroll-enc" data-i="${i}">Trocar encontro</button>`:''}
-        <select id="tipo-${i}" class="btn sm" data-act-change="tipo" data-i="${i}" aria-label="Mudar tipo da sala">${tiposOpc.map(([k,v])=>opt(k,s.tipo,'Tipo: '+v)).join('')}</select></div>`:''}
+      ${edit?`<div class="row"><button class="btn sm" data-act="reroll-sala" data-i="${i}">Gerar ${W_.s} de novo</button>${s.encontro?`<button class="btn sm" data-act="reroll-enc" data-i="${i}">Trocar encontro</button>`:''}
+        <select id="tipo-${i}" class="btn sm" data-act-change="tipo" data-i="${i}" aria-label="Mudar tipo da ${W_.s}">${tiposOpc.map(([k,v])=>opt(k,s.tipo,'Tipo: '+v)).join('')}</select></div>`:''}
       ${edit && secreta ? `<div class="row"><span class="muted small">${s.revelada?'Os jogadores já veem esta sala no mapa.':'Escondida dos jogadores até você revelar.'}</span><button class="btn sm" data-act="revelar" data-i="${i}">${s.revelada?'Esconder dos jogadores':'Revelar aos jogadores'}</button></div>` : ''}
     </div>
+    ${edit ? armCorrHtml(d, i) : ''}
     ${portasSec.length ? `<div class="panel"><h3>Porta secreta</h3><ul class="plain">${portasSec.map(t=>`<li>${h(t)}</li>`).join('')}</ul><p class="muted small" style="margin:6px 0 0">Sabedoria (Percepção) CD ${det} para encontrar. Os jogadores não veem este quadro.</p></div>` : ''}
     ${encHtml(s.encontro)}
     ${grupoHtml(d, edit)}
@@ -3816,17 +4028,18 @@ function roomView(d, i, edit){
     ${edit?`<div class="panel"><h3>Anotações do mestre</h3><textarea id="notas-${i}" data-notas="${i}" placeholder="Só você vê estas anotações.">${h(s.notas||'')}</textarea></div>`:''}`;
 }
 function overview(d, edit){
-  const p = d.params, vis = d.salas.map((_,j)=>j).filter(j=>salaVisivel(d,j)), xpTot = vis.reduce((t,j)=>t+(d.salas[j].encontro?d.salas[j].encontro.xp:0),0);
+  const W_ = palavras(d), p = d.params, vis = d.salas.map((_,j)=>j).filter(j=>salaVisivel(d,j)), xpTot = vis.reduce((t,j)=>t+(d.salas[j].encontro?d.salas[j].encontro.xp:0),0);
   const oc = celulasOcultas(d), nSec = (d.mapa.secretas||[]).length;
   const portas = d.mapa.doors.filter(x=>!oc||!oc.has(x.y*d.mapa.w+x.x)).reduce((o,x)=>(o[x.t]=(o[x.t]||0)+1,o),{});
   return `<div class="panel" style="display:flex;flex-direction:column;gap:10px">
-      <div class="row"><span class="badge gold">${h(TEMAS[p.tema].nome)}</span><span class="badge">Nível ${p.nivel}</span><span class="badge">${p.jogadores} personagens</span><span class="badge">${vis.length} salas${edit&&nSec?` (${nSec} secreta${nSec>1?'s':''})`:''}</span></div>
+      <div class="row"><span class="badge gold">${h(TEMAS[p.tema].nome)}</span><span class="badge">Nível ${p.nivel}</span><span class="badge">${p.jogadores} personagens</span><span class="badge">${vis.length} ${W_.p}${edit&&nSec?` (${nSec} secreta${nSec>1?'s':''})`:''}</span></div>
       <h3 style="margin:0">Gancho</h3><p class="prose" style="margin:0">${h(d.gancho)}</p>
       <dl class="kv"><dt>${d.chefe?'Chefe':'Mente por trás'}</dt><dd>${h(cap(d.vilao))}${d.chefe&&MON_BY_EN[d.chefe.en]?`, <button class="rl" data-act="mon" data-en="${h(d.chefe.en)}">${h(d.chefe.b)}</button>`:''}</dd><dt>XP dos encontros</dt><dd>${fmt(xpTot)} XP no total</dd>
-        <dt>Portas</dt><dd>${portas.normal||0} comuns · ${portas.trancada||0} trancadas (Destreza (Prestidigitação) CD ${TDC.det[tierOf(p.nivel)-1]}) · ${portas.emperrada||0} emperradas (Força (Atletismo) CD ${TDC.det[tierOf(p.nivel)-1]-2})${edit?` · ${portas.secreta||0} secretas`:''}</dd></dl>
+        ${TEMAS[p.tema].aberto?'':`<dt>Portas</dt><dd>${portas.normal||0} comuns · ${portas.trancada||0} trancadas (Destreza (Prestidigitação) CD ${TDC.det[tierOf(p.nivel)-1]}) · ${portas.emperrada||0} emperradas (Força (Atletismo) CD ${TDC.det[tierOf(p.nivel)-1]-2})${edit?` · ${portas.secreta||0} secretas`:''}</dd>`}</dl>
     </div>
     ${grupoHtml(d, edit)}
-    <div class="panel"><h3>Salas</h3><div class="rooms">${d.salas.map((s,i)=>!salaVisivel(d,i)?'':`<button class="roomlink" data-act="sel" data-i="${i}"><span class="n">${i+1}</span><span>${h(s.nome)}</span><span class="chip t-${h(s.tipo)}">${h(TIPOS[s.tipo]||s.tipo)}</span></button>`).join('')}</div></div>
+    <div class="panel"><h3>${W_.P}</h3><div class="rooms">${d.salas.map((s,i)=>!salaVisivel(d,i)?'':`<button class="roomlink" data-act="sel" data-i="${i}"><span class="n">${i+1}</span><span>${h(s.nome)}</span><span class="chip t-${h(s.tipo)}">${h(TIPOS[s.tipo]||s.tipo)}</span></button>`).join('')}</div></div>
+    ${edit ? armCorrHtml(d) : ''}
     <div class="panel"><h3>Monstros errantes (role 1d6 a cada 30 minutos; 6 = encontro)</h3><table class="d6"><tbody>${d.errantes.map((e,i)=>`<tr><td>${i+1}</td><td>${linkMon(e)}</td></tr>`).join('')}</tbody></table></div>`;
 }
 function statLinesHtml(lines){
@@ -3941,14 +4154,14 @@ function viewMesa(d, edit){
     : `<div class="toolbar"><h2 style="color:var(--gold2);font-size:20px">${h(d.nome)}</h2><button class="btn" data-act="voltar">← Todas as masmorras</button></div>`;
   return `${toolbar}<div class="mesa">
     <div class="mapbox"><div class="mapwrap ${S.zoom?'zoom':''}"><canvas id="mapa" role="img" aria-label="Mapa da masmorra ${h(d.nome)}"></canvas></div>
-      <div class="legend"><span>1 quadrado = 1,5 m · toque numa sala para ver os detalhes${edit?' · S = porta secreta':''} · porta escura = trancada</span><button class="btn sm" data-act="zoom">${S.zoom?'Ajustar à tela':'Ampliar mapa'}</button></div></div>
+      <div class="legend"><span>${legenda(d, edit)}</span><button class="btn sm" data-act="zoom">${S.zoom?'Ajustar à tela':'Ampliar mapa'}</button></div></div>
     <aside class="side">${S.sel==null || !salaVisivel(d,S.sel) ? overview(d,edit) : roomView(d,S.sel,edit)}</aside></div>`;
 }
 function cards(map, actOpen, master){
   const list = Object.values(map).sort((a,b)=>(b.atualizada||0)-(a.atualizada||0));
   return `<div class="grid-cards">${list.map(d=>`<div class="card" tabindex="0" role="button" data-act="${actOpen}" data-id="${h(d.id)}">
     <h2>${h(d.nome)}</h2>
-    <div class="row"><span class="badge gold">${h(TEMAS[d.params.tema]?.nome||'')}</span><span class="badge">Nível ${d.params.nivel}</span><span class="badge">${d.salas.length-(master?0:(d.mapa.secretas||[]).filter(x=>!(d.salas[x.sala]&&d.salas[x.sala].revelada)).length)} salas</span>${master?(d.publicada?'<span class="badge gold">Visível aos jogadores</span>':'<span class="badge">Só o mestre</span>'):''}</div>
+    <div class="row"><span class="badge gold">${h(TEMAS[d.params.tema]?.nome||'')}</span><span class="badge">Nível ${d.params.nivel}</span><span class="badge">${d.salas.length-(master?0:(d.mapa.secretas||[]).filter(x=>!(d.salas[x.sala]&&d.salas[x.sala].revelada)).length)} ${palavras(d).p}</span>${master?(d.publicada?'<span class="badge gold">Visível aos jogadores</span>':'<span class="badge">Só o mestre</span>'):''}</div>
     <p class="muted small" style="margin:0">${h(d.gancho)}</p>
     ${master && M.mestres().length && d.autor ? `<div class="muted small">Criada por ${h(nomeDe(d.autor))}</div>` : ''}
     ${master?`<div class="row"><button class="btn sm danger" data-act="excluir" data-id="${h(d.id)}">${S.delArm===d.id?'Confirmar exclusão':'Excluir'}</button></div>`:''}
