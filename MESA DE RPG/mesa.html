@@ -3653,6 +3653,7 @@ function reveladaJog(d, i){
   return true;
 }
 const salaVisivel = (d,i) => isMestre() || reveladaJog(d,i);
+const ehEscada = (s, k) => !!s && (s.tipo===k || s.escada===k);
 const grupoAqui = (d,i) => !!d.grupoEm && (d.grupoEm.andar||0)===(d.andar||0) && d.grupoEm.sala===i;
 function celulasOcultas(d){
   if (isMestre()) return null;
@@ -3856,8 +3857,7 @@ const isMestre = () => M.isMestre();
 let store = null;
 
 /* cópia para os jogadores: sem anotações do mestre e sem armadilhas (de sala ou de corredor). Sala do tipo Armadilha aparece como Vazia. */
-/* Salas não reveladas vão vazias; monstros e tesouro só se o mestre mostrou (verEnc/verTes); tipos Tesouro, Combate e Chefe
-   não aparecem; textos de Mistério e Pista ficam só com o mestre;
+/* Salas não reveladas vão vazias; monstros e tesouro só se o mestre mostrou (verEnc/verTes); o tipo da sala só aparece na Entrada; textos de Mistério e Pista ficam só com o mestre;
    sem monstros errantes nem ficha do chefe. */
 function playerCopy(d){
   const c = paraSalvar(d), fog = c.nevoa===true;
@@ -3866,7 +3866,8 @@ function playerCopy(d){
       const sec = (a.mapa.secretas||[]).some(x=>x.sala===i);
       if ((fog || sec) && s.revelada!==true) return {tipo:'', nome:'', desc:'', sentido:'', revelada:false};
       delete s.notas; delete s.armadilha; delete s.misterio; delete s.pista;
-      if (s.tipo==='armadilha') s.tipo='vazia'; if (s.tipo==='tesouro' || s.tipo==='combate' || s.tipo==='chefe') s.tipo='';
+      if (s.tipo==='descida' || s.tipo==='subida') s.escada = s.tipo; /* a escada continua desenhada e com os botões de andar */
+      if (s.tipo!=='entrada') s.tipo=''; /* o tipo da sala só aparece na Entrada */
       if (!s.verEnc) delete s.encontro; else if (s.encontro) delete s.encontro.comport;
       if (!s.verTes) delete s.tesouro;
       return s; });
@@ -3971,7 +3972,7 @@ function drawMap(d){
     if (dr.t==='emperrada'){ x.beginPath(); x.moveTo(cx-dw/2,cy-dh/2); x.lineTo(cx+dw/2,cy+dh/2); x.stroke(); }
   });
   /* escada na entrada */
-  const esc = [m.rooms[0], ...m.rooms.filter((r,i)=>d.salas[i] && d.salas[i].tipo==='descida')];
+  const esc = [m.rooms[0], ...m.rooms.filter((r,i)=>ehEscada(d.salas[i],'descida'))];
   esc.forEach(e=>{ if (!e) return; const sx=(e.x+1)*c, sy=(e.y+1)*c; x.strokeStyle=col('--ink'); x.lineWidth=Math.max(1,c*.08); x.beginPath(); for(let k=0;k<5;k++){ const yy=sy+k*c/5+c*.1; x.moveTo(sx+c*.1,yy); x.lineTo(sx+c*.9,yy); } x.stroke(); });
   }
   /* armadilhas: ▲ nos corredores/trilhas e no canto das salas/áreas com armadilha. Só o mestre vê */
@@ -4137,8 +4138,8 @@ function roomView(d, i, edit){
       <h2>${i+1}. ${h(s.nome)}</h2>
       <p class="prose" style="margin:0">${h(s.desc)}</p>
       <p class="muted" style="margin:0"><i>${h(s.sentido)}</i></p>
-      ${d.andares && s.tipo==='descida' && d.andar<d.andares.length-1 ? `<div class="row"><button class="btn sm pri" data-act="andar" data-k="${d.andar+1}" data-sel="0">Descer para o andar ${d.andar+2} →</button></div>` : ''}
-      ${d.andares && s.tipo==='subida' && d.andar>0 ? `<div class="row"><button class="btn sm" data-act="andar" data-k="${d.andar-1}" data-sel="desce">← Subir para o andar ${d.andar}</button></div>` : ''}
+      ${d.andares && ehEscada(s,'descida') && d.andar<d.andares.length-1 ? `<div class="row"><button class="btn sm pri" data-act="andar" data-k="${d.andar+1}" data-sel="0">Descer para o andar ${d.andar+2} →</button></div>` : ''}
+      ${d.andares && ehEscada(s,'subida') && d.andar>0 ? `<div class="row"><button class="btn sm" data-act="andar" data-k="${d.andar-1}" data-sel="desce">← Subir para o andar ${d.andar}</button></div>` : ''}
       ${edit?`<div class="row"><button class="btn sm" data-act="reroll-sala" data-i="${i}">Gerar ${W_.s} de novo</button>${s.encontro?`<button class="btn sm" data-act="reroll-enc" data-i="${i}">Trocar encontro</button>`:''}
         <select id="tipo-${i}" class="btn sm" data-act-change="tipo" data-i="${i}" aria-label="Mudar tipo da ${W_.s}">${tiposOpc.map(([k,v])=>opt(k,s.tipo,'Tipo: '+v)).join('')}</select></div>`:''}
       ${edit ? `<div class="row"><span class="muted small">${(d.nevoa===true || secreta) ? (s.revelada ? 'Os jogadores veem esta '+W_.s+' no mapa.' : 'Escondida dos jogadores até você revelar.') : 'Os jogadores veem esta '+W_.s+' (névoa de guerra desligada).'}</span>${(d.nevoa===true || secreta) ? `<button class="btn sm" data-act="revelar" data-i="${i}">${s.revelada?'Esconder dos jogadores':'Revelar aos jogadores'}</button>` : ''}${grupoAqui(d,i) ? '' : `<button class="btn sm" data-act="grupo-aqui" data-i="${i}">O grupo está aqui</button>`}</div>` : ''}
@@ -4395,7 +4396,7 @@ document.addEventListener('click', e=>{
     S.genArm = false; S.cur = genDungeon(S.params); S.sel = null; S.dirty = true; render();
   }
   else if (a==='andar'){ const d = mapaAtual(); if (!d || !d.andares) return; irAndar(d, +t.dataset.k);
-    const sv = t.dataset.sel; S.sel = sv==='0' ? 0 : sv==='desce' ? Math.max(0, d.salas.findIndex(x=>x.tipo==='descida')) : null; render(); }
+    const sv = t.dataset.sel; S.sel = sv==='0' ? 0 : sv==='desce' ? Math.max(0, d.salas.findIndex(x=>ehEscada(x,'descida'))) : null; render(); }
   else if (a==='sel'){ e.stopPropagation(); S.sel = t.dataset.i===''?null:+t.dataset.i; render(); }
   else if (a==='zoom'){ S.zoom = !S.zoom; render(); }
   else if (a==='revelar'){ const sl = S.cur && S.cur.salas[+t.dataset.i]; if (!sl) return; sl.revelada = !sl.revelada; mudouVisao(); }
