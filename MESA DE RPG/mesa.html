@@ -3804,6 +3804,49 @@ const nAndares = d => d.andares ? d.andares.length : 1;
    para encontros, CDs de armadilhas e portas e tesouro. O nível do grupo (d.params.nivel) não muda. */
 const nivelAndar = (nivel, k) => Math.min(20, nivel + (k||0));
 function paramsAndar(d){ const k = d && d.andares ? (d.andar||0) : 0; return k ? {...d.params, nivel:nivelAndar(d.params.nivel, k)} : d.params; }
+/* traços de criaturas (Livro do Mestre 2024, cap. 3): dão personalidade sem mudar PV nem dano, então o ND fica igual.
+   Na geração, 10% dos monstros (arredondado) ganham 1 traço sorteado; o chefe nunca. Só o mestre vê. */
+const TRACOS = {
+  'Agouro da Morte':'Ao morrer, uma criatura aleatória a até 3 m dela sofre os efeitos da magia Perdição (CD 13 para evitar), pela duração completa.',
+  'Ancestralidade Feérica':'Vantagem nas salvaguardas contra ficar ou continuar Enfeitiçada, e magia não a faz dormir.',
+  'Aversão ao Fogo':'Quando sofre dano de fogo, tem desvantagem em jogadas de ataque e testes de atributo até o fim do próximo turno dela.',
+  'Caos Dimensional':'Emanação de 9 m de energia caótica: ninguém mais consegue se teleportar para dentro ou para fora dela; a tentativa é perdida.',
+  'Cólera de Guerreiro':'Vantagem nas jogadas de ataque corpo a corpo contra criaturas Sangrando (com metade dos PV ou menos).',
+  'Conexão Ressonante':'Ligada por magia a uma criatura ou objeto: sabe o caminho mais direto até ele enquanto estiverem a até 1,5 km.',
+  'Desintegração':'Ao morrer, o corpo e os pertences não mágicos viram pó; os itens mágicos ficam no lugar.',
+  'Discípulo dos Nove Infernos':'Ao morrer, do corpo sai um diabrete hostil, no mesmo espaço.',
+  'Emissário de Juiblex':'Ao morrer, do corpo sai uma geleia ocre hostil, no mesmo espaço.',
+  'Empatia com Feras':'Conversa com feras como se tivessem um idioma em comum.',
+  'Hospedeiro de Slaad':'Ao morrer, do corpo sai um girino de slaad hostil, no mesmo espaço.',
+  'Inabalável':'Não pode ficar Amedrontada enquanto enxergar um aliado a até 9 m.',
+  'Luz':'Brilha com luz plena num raio de 3 m e meia-luz por mais 3 m. Ação bônus: apaga ou reacende. A luz some quando morre.',
+  'Manto de Melancolia':'Emanação de 6 m de energia do Sombral: as outras criaturas nela têm desvantagem em testes e salvaguardas de Carisma.',
+  'Manto Telepático':'Imune a efeitos que percebam suas emoções ou leiam seus pensamentos e a magias de Adivinhação. Ação bônus: desliga ou religa o traço.',
+  'Mimetismo':'Imita sons de feras e vozes de humanoides. Quem ouvir percebe a imitação com Sabedoria (Intuição) CD 14.',
+  'Monstro de Cerco':'Causa dano dobrado a objetos e estruturas.',
+  'Proibição':'Não consegue entrar numa residência sem ser convidada por alguém que mora nela.',
+  'Prontidão em Batalha':'Vantagem nas jogadas de iniciativa.',
+  'Talento Selvagem':'Conjura um truque à escolha do mestre, sem componentes, usando Inteligência, Sabedoria ou Carisma.',
+  'Tolerância a Veneno':'Vantagem nas salvaguardas contra ficar ou continuar Envenenada.',
+  'Ventriloquismo':'Ao falar, pode fazer a voz sair de um ponto a até 9 m dela.',
+  'Vínculo Telepático':'Ligada à mente de outra criatura: conversam por telepatia enquanto estiverem no mesmo plano.'
+};
+const TRACOS_N = Object.keys(TRACOS), TRACO_CHANCE = .1;
+/* grupos que podem ganhar traço: o primeiro grupo do encontro do chefe é o próprio chefe */
+const gruposComTraco = (e, chefe) => e ? e.grupos.filter((g,j)=>!(chefe && j===0)) : [];
+function sortearTraco(rng, usados){ const livres = TRACOS_N.filter(n=>!usados.has(n)); const n = rng.pick(livres.length ? livres : TRACOS_N); usados.add(n); return n; }
+/* masmorra nova: exatamente 10% dos monstros (arredondado), sorteados entre todos os andares */
+function aplicarTracos(d, rng){
+  const todas = d.andares ? d.andares.flatMap(A=>A.salas) : d.salas, vagas = [];
+  todas.forEach(x=>gruposComTraco(x.encontro, x.tipo==='chefe').forEach(g=>{ for (let q=0;q<g.qtd;q++) vagas.push(g); }));
+  const n = Math.round(vagas.length*TRACO_CHANCE), usados = new Set();
+  rng.shuffle(vagas).slice(0, n).forEach(g=>{ (g.tracos = g.tracos||[]).push(sortearTraco(rng, usados)); });
+}
+/* encontro gerado de novo: cada monstro (menos o chefe) tem 10% de chance */
+function tracosEncontro(rng, e, chefe){
+  const usados = new Set();
+  gruposComTraco(e, chefe).forEach(g=>{ for (let q=0;q<g.qtd;q++) if (rng.chance(TRACO_CHANCE)) (g.tracos = g.tracos||[]).push(sortearTraco(rng, usados)); });
+}
 function genDungeon(params){
   const p = {...params, nivel:Math.max(1,Math.min(20,+params.nivel||1)), jogadores:Math.max(1,Math.min(8,+params.jogadores||4))};
   const semente = (p.semente||'').trim() || randSeed();
@@ -3836,6 +3879,7 @@ function genDungeon(params){
   if (nA>1) d.andares.forEach((A,k)=>{ irAndar(d, k); A.armCorr = genArmCorr(d, makeRng(semente+'|corredores|'+(k?k+'|':'')+p.tamanho+'|'+p.tema)); });
   if (nA>1) irAndar(d, 0);
   else d.armCorr = genArmCorr(d, makeRng(semente+'|corredores|'+p.tamanho+'|'+p.tema)); /* rng próprio: não muda o resto da masmorra */
+  aplicarTracos(d, makeRng(semente+'|tracos')); /* rng próprio: não muda o resto da masmorra */
   /* névoa de guerra: os jogadores começam vendo só a entrada, onde o grupo está */
   d.nevoa = true; (d.andares ? d.andares[0].salas : d.salas)[0].revelada = true; d.grupoEm = {andar:0, sala:0};
   return d;
@@ -3868,7 +3912,7 @@ function playerCopy(d){
       delete s.notas; delete s.armadilha; delete s.misterio; delete s.pista;
       if (s.tipo==='descida' || s.tipo==='subida') s.escada = s.tipo; /* a escada continua desenhada e com os botões de andar */
       if (s.tipo!=='entrada') s.tipo=''; /* o tipo da sala só aparece na Entrada */
-      if (!s.verEnc) delete s.encontro; else if (s.encontro) delete s.encontro.comport;
+      if (!s.verEnc) delete s.encontro; else if (s.encontro){ delete s.encontro.comport; s.encontro.grupos.forEach(g=>delete g.tracos); }
       if (!s.verTes) delete s.tesouro;
       return s; });
     delete a.armCorr; });
@@ -4112,11 +4156,12 @@ function desenhaAberto(x, c, cssW, cssH, m, at, cor){
 }
 /* controle do mestre: mostrar/esconder dos jogadores (monstros, tesouro) */
 const verCtl = (k, i, on) => `<span class="row" style="gap:6px"><span class="muted small">${on?'Os jogadores veem':'Escondido dos jogadores'}</span><button class="btn sm" data-act="ver-${k}" data-i="${i}">${on?'Esconder':'Mostrar aos jogadores'}</button></span>`;
+const tracosHtml = g => (g.tracos||[]).map(n=>`<div class="small" style="flex-basis:100%;padding-left:12px;border-left:2px solid var(--gold)"><b>${g.qtd>1?'Um deles':'Traço'} · ${h(n)}.</b> ${h(TRACOS[n]||'')}</div>`).join('');
 function encHtml(e, extra, jog){
   if (!e) return '';
   if (jog) return `<div class="panel"><h3>Monstros</h3><div class="mon">${e.grupos.map(g=>`<div class="m"><span><span class="q num">${g.qtd}×</span> ${h(g.pt)}</span></div>`).join('')}</div></div>`;
   return `<div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:8px"><h3 style="margin:0">Encontro · dificuldade ${h(DIFS[e.dif])}</h3>${extra||''}</div>
-    <div class="mon">${e.grupos.map(g=>`<div class="m"><span><span class="q num">${g.qtd}×</span> <button class="rl" data-act="mon" data-en="${h(g.en)}">${h(g.pt)}</button> <span class="en">(${h(g.en)})</span></span><span class="muted small num">ND ${h(g.cr)} · ${fmt(g.xp)} XP cada</span></div>`).join('')}</div>
+    <div class="mon">${e.grupos.map(g=>`<div class="m"><span><span class="q num">${g.qtd}×</span> <button class="rl" data-act="mon" data-en="${h(g.en)}">${h(g.pt)}</button> <span class="en">(${h(g.en)})</span></span><span class="muted small num">ND ${h(g.cr)} · ${fmt(g.xp)} XP cada</span>${tracosHtml(g)}</div>`).join('')}</div>
     <p class="small muted num" style="margin:8px 0 0">Total ${fmt(e.xp)} XP · orçamento ${fmt(e.orcamento)} XP</p>
     ${e.comport?`<p style="margin:8px 0 0">${h(e.comport)}</p>`:''}</div>`;
 }
@@ -4413,8 +4458,8 @@ document.addEventListener('click', e=>{
   else if (a==='reroll-sala' || a==='reroll-enc'){
     const i = +t.dataset.i, d = S.cur, rng = makeRng(d.semente+':'+i+':'+Date.now()+Math.random());
     const old = d.salas[i];
-    if (a==='reroll-sala'){ const ns = genSala(rng, d, i, old.tipo, rng.pick(TEMAS[d.params.tema].salas)); ns.notas = old.notas||''; if (!['entrada','chefe','secreta','subida','descida'].includes(old.tipo)) ns.nome = rng.pick(TEMAS[d.params.tema].salas); ns.revelada = old.revelada; d.salas[i] = ns; }
-    else { const enc = buildEncounter(rng, paramsAndar(d), old.tipo==='chefe'?2:old.encontro.dif, old.tipo==='chefe', old.tipo==='chefe' ? chefeForcado(d) : null); enc.comport = old.encontro.comport; old.encontro = enc; }
+    if (a==='reroll-sala'){ const ns = genSala(rng, d, i, old.tipo, rng.pick(TEMAS[d.params.tema].salas)); ns.notas = old.notas||''; if (!['entrada','chefe','secreta','subida','descida'].includes(old.tipo)) ns.nome = rng.pick(TEMAS[d.params.tema].salas); ns.revelada = old.revelada; tracosEncontro(rng, ns.encontro, ns.tipo==='chefe'); d.salas[i] = ns; }
+    else { const enc = buildEncounter(rng, paramsAndar(d), old.tipo==='chefe'?2:old.encontro.dif, old.tipo==='chefe', old.tipo==='chefe' ? chefeForcado(d) : null); enc.comport = old.encontro.comport; tracosEncontro(rng, enc, old.tipo==='chefe'); old.encontro = enc; }
     S.dirty = true; render();
   }
   else if (a==='abrir'){ if (e.target.closest('[data-act="excluir"]')) return; const d = S.lista[t.dataset.id]; if (!d) return; if (S.dirty && S.cur && !confirmLeave()) return; S.cur = prepar(clone(d)); S.sel = null; S.dirty = false; S.tab = 'gerar'; render(); window.scrollTo(0,0); }
