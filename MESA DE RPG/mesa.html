@@ -3433,14 +3433,15 @@ const linkItem = txt => itemKey(txt) ? `<button class="rl" data-act="item" data-
 const RAR_TIER = {1:{comum:6,incomum:4},2:{incomum:6,rara:4},3:{rara:6,muitorara:4},4:{muitorara:6,lendaria:4}};
 
 /* ================= gerador de mapa ================= */
-const SIZES = {pequena:{w:40,h:30,n:[6,8],nome:'Pequena (6–8 salas)'}, media:{w:54,h:38,n:[10,13],nome:'Média (10–13 salas)'}, grande:{w:68,h:48,n:[15,19],nome:'Grande (15–19 salas)'}};
+/* v18: salas com o dobro de quadrados de cada lado (8–18 × 8–16); a grade dobrou junto. Cada quadrado = 1,5 m. */
+const SIZES = {pequena:{w:80,h:60,n:[6,8],nome:'Pequena (6–8 salas)'}, media:{w:108,h:76,n:[10,13],nome:'Média (10–13 salas)'}, grande:{w:136,h:96,n:[15,19],nome:'Grande (15–19 salas)'}};
 function genMap(rng, tamanho, tema, rngSec){
   const Z = SIZES[tamanho]||SIZES.media, W=Z.w, H=Z.h, alvo=rng.int(Z.n[0],Z.n[1]);
   const aberto = !!(TEMAS[tema] && TEMAS[tema].aberto); /* campo aberto: sem portas, clareiras arredondadas */
   const g = new Uint8Array(W*H); let rooms=[];
   for(let a=0; a<900 && rooms.length<alvo; a++){
-    const w=rng.int(4,9), hh=rng.int(4,8), x=rng.int(1,W-w-1), y=rng.int(1,H-hh-1);
-    if (rooms.some(r => x<r.x+r.w+2 && x+w+2>r.x && y<r.y+r.h+2 && y+hh+2>r.y)) continue;
+    const w=rng.int(8,18), hh=rng.int(8,16), x=rng.int(1,W-w-1), y=rng.int(1,H-hh-1);
+    if (rooms.some(r => x<r.x+r.w+3 && x+w+3>r.x && y<r.y+r.h+3 && y+hh+3>r.y)) continue;
     rooms.push({x,y,w,h:hh});
   }
   const cen = r => [r.x+(r.w>>1), r.y+(r.h>>1)];
@@ -3451,7 +3452,7 @@ function genMap(rng, tamanho, tema, rngSec){
   const has = (i,j) => edges.some(e => (e[0]===i&&e[1]===j)||(e[0]===j&&e[1]===i));
   for(let k=0;k<Math.max(1,Math.round(rooms.length*.18));k++){
     const i=rng.int(0,rooms.length-1); const c=rooms.map((r,j)=>[j,dist(rooms[i],r)]).filter(([j])=>j!==i&&!has(i,j)).sort((a,b)=>a[1]-b[1]);
-    if (c.length && c[0][1] < 22) edges.push([i,c[0][0]]);
+    if (c.length && c[0][1] < 44) edges.push([i,c[0][0]]);
   }
   /* entrada = sala mais perto da borda; numeração em ordem de exploração (busca em largura) */
   const adj = rooms.map(()=>[]); edges.forEach(([a,b])=>{ adj[a].push(b); adj[b].push(a); });
@@ -3493,7 +3494,7 @@ function genMap(rng, tamanho, tema, rngSec){
         if (i>=0 && j>=0 && i<W && j<H && g[n] && dist[n]<0){ dist[n]=dist[c]+1; fila.push(n); } } }
     return Infinity;
   };
-  const perto = (a,b) => { if (a===b) return true; const [ax,ay]=cen(rooms[a]), [bx,by]=cen(rooms[b]); return distJa(a,b) <= 1.5*(Math.abs(ax-bx)+Math.abs(ay-by)) + 4; };
+  const perto = (a,b) => { if (a===b) return true; const [ax,ay]=cen(rooms[a]), [bx,by]=cen(rooms[b]); return distJa(a,b) <= 1.5*(Math.abs(ax-bx)+Math.abs(ay-by)) + 8; };
   conex.forEach(({a,b}, idx)=>{
     /* salas que já estão ligadas por um caminho curto (por exemplo, um corredor que passou por dentro de uma delas) não ganham outro corredor */
     if (perto(a,b)){ rng.chance(.5); return; }
@@ -3601,7 +3602,7 @@ function genMap(rng, tamanho, tema, rngSec){
         if (at(i,j) && dist[n]<0 && !bl.has(n)){ dist[n]=dist[c]+1; fila.push(n); } } }
     return Infinity;
   };
-  for (const dr of dl) if (dr.t==='secreta'){ const n=dr.y*W+dr.x; bloq.add(n); if (!alcancaTudo(bloq) || desvio(dr,bloq) < 24){ bloq.delete(n); dr.t='normal'; } }
+  for (const dr of dl) if (dr.t==='secreta'){ const n=dr.y*W+dr.x; bloq.add(n); if (!alcancaTudo(bloq) || desvio(dr,bloq) < 48){ bloq.delete(n); dr.t='normal'; } }
   /* salas secretas: uma sala que só se alcança por uma porta secreta, fora do caminho até o chefe.
      A porta fica, de preferência, na parede da sala vizinha, escondendo também o corredor. */
   let secretas = [];
@@ -4122,7 +4123,7 @@ function makeDbStore(db){
 function drawMap(d){
   const cv = document.getElementById('mapa'); if (!cv || !d) return;
   const wrap = cv.parentElement, m = d.mapa;
-  const cssW = S.zoom ? m.w*18 : wrap.clientWidth; if (!cssW) return;
+  const cssW = S.zoom ? m.w*(m.w>70?12:18) : wrap.clientWidth; if (!cssW) return; /* mapas antigos (grade menor) continuam com 18 px por quadrado */
   const c = cssW/m.w, cssH = c*m.h, dpr = window.devicePixelRatio||1;
   cv.width = Math.round(cssW*dpr); cv.height = Math.round(cssH*dpr); cv.style.width = cssW+'px'; cv.style.height = cssH+'px';
   const x = cv.getContext('2d'); x.setTransform(dpr,0,0,dpr,0,0);
@@ -4144,7 +4145,7 @@ function drawMap(d){
   x.fillStyle = col('--floor');
   for(let j=0;j<m.h;j++) for(let i=0;i<m.w;i++) if (at(i,j)) x.fillRect(i*c, j*c, c+.5, c+.5);
   x.strokeStyle = col('--floorgrid'); x.lineWidth = 1; x.beginPath();
-  for(let j=0;j<m.h;j++) for(let i=0;i<m.w;i++) if (at(i,j)) x.rect(i*c+.5, j*c+.5, c-1, c-1);
+  if (c >= 5) for(let j=0;j<m.h;j++) for(let i=0;i<m.w;i++) if (at(i,j)) x.rect(i*c+.5, j*c+.5, c-1, c-1); /* quadrados muito pequenos (celular): sem linhas da grade */
   x.stroke();
   /* paredes */
   x.strokeStyle = col('--wall'); x.lineWidth = Math.max(2, c*.18); x.lineCap='square'; x.beginPath();
@@ -4191,7 +4192,7 @@ function drawMap(d){
   x.textAlign='center'; x.textBaseline='middle';
   m.rooms.forEach((r,i)=>{
     if (!salaVisivel(d,i)) return;
-    const fs = Math.max(9, Math.min(c*1.1, 22)); x.font = `700 ${fs}px ${col('--display')}`;
+    const fs = Math.max(10, Math.min(c*(m.w>70?2.2:1.1), 22)); x.font = `700 ${fs}px ${col('--display')}`;
     const cx=(r.x+r.w/2)*c, cy=(r.y+r.h/2)*c;
     x.fillStyle = col('--ink'); x.fillText(String(i+1), cx, cy);
     if (S.sel===i){ x.strokeStyle = col('--sel'); x.lineWidth = Math.max(2,c*.2); x.strokeRect(r.x*c+c*.2, r.y*c+c*.2, r.w*c-c*.4, r.h*c-c*.4); }
@@ -4300,7 +4301,7 @@ function desenhaAberto(x, c, cssW, cssH, m, at, cor){
   }
   for(let j=0;j<m.h;j++) for(let i=0;i<m.w;i++){ const v = at(i,j); if (!v) continue; x.fillStyle = v===2 ? cor.trilha : cor.chao; x.fillRect(i*c, j*c, c+.5, c+.5); }
   x.strokeStyle = 'rgba(40,32,20,.14)'; x.lineWidth = 1; x.beginPath();
-  for(let j=0;j<m.h;j++) for(let i=0;i<m.w;i++) if (at(i,j)) x.rect(i*c+.5, j*c+.5, c-1, c-1);
+  if (c >= 5) for(let j=0;j<m.h;j++) for(let i=0;i<m.w;i++) if (at(i,j)) x.rect(i*c+.5, j*c+.5, c-1, c-1);
   x.stroke();
   x.strokeStyle = cor.borda; x.lineWidth = Math.max(1, c*.12); x.lineCap='round'; x.beginPath();
   for(let j=0;j<m.h;j++) for(let i=0;i<m.w;i++){
