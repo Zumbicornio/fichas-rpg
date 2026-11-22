@@ -1,0 +1,793 @@
+<title>Gerador de Aventuras</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Gerador de Aventuras. Mesmo visual escuro da Mesa de RPG, de propósito: depois vira uma aba dela.
+   Layout: cabeçalho; lista de aventuras / formulário / leitura da aventura com sumário lateral (empilha no celular). */
+:root{
+  color-scheme:dark;
+  --bg:#12100e; --panel:#1c1814; --panel2:#251f19; --line:#382e25; --line2:#4b3e32;
+  --text:#eee5d3; --muted:#a8998a; --gold:#d1a84e; --gold2:#f0cd7a; --red:#cf5b43; --green:#74a96d; --blue:#6f9cc9; --orange:#d9853b; --violet:#a48bc9;
+  --ink-on-gold:#1a140c; --quote:#211b15;
+  --display:Cinzel,Georgia,"Times New Roman",serif; --body:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:10px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 var(--body)}
+h1,h2,h3,h4{font-family:var(--display);letter-spacing:.02em;margin:0;text-wrap:balance}
+button,input,select,textarea{font:inherit;color:inherit}
+.gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding-block:14px;border-bottom:1px solid var(--line);background:linear-gradient(#1b1611,var(--bg))}
+header h1{font-size:20px;color:var(--gold2)}
+header .sub{color:var(--muted);font-size:12px}
+main{padding-block:18px 48px;max-width:1240px;margin:0 auto}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.between{justify-content:space-between}
+.muted{color:var(--muted)} .small{font-size:12.5px}
+.num{font-variant-numeric:tabular-nums}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;min-width:0}
+.panel h3{font-size:14px;color:var(--gold);margin-bottom:10px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.notice{background:var(--panel2);border:1px solid var(--line2);border-radius:var(--r);padding:10px 14px;color:var(--muted)}
+.notice b{color:var(--text)}
+.notice.bad{border-color:var(--red)}
+.btn{display:inline-flex;align-items:center;gap:6px;background:var(--panel2);border:1px solid var(--line2);border-radius:8px;padding:8px 14px;cursor:pointer;color:var(--text);text-decoration:none}
+.btn:hover{border-color:var(--gold)}
+.btn.pri{background:var(--gold);border-color:var(--gold);color:var(--ink-on-gold);font-weight:600}
+.btn.pri:hover{background:var(--gold2)}
+.btn.sm{padding:4px 10px;font-size:12.5px}
+.btn.danger{border-color:var(--red);color:var(--red)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn:focus-visible,.toc button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
+.chip{display:inline-block;padding:1px 9px;border-radius:99px;border:1px solid var(--line2);font-size:11.5px;color:var(--muted);white-space:nowrap;vertical-align:1px}
+.chip.ok{color:var(--green);border-color:var(--green)}
+.chip.warn{color:var(--orange);border-color:var(--orange)}
+.chip.bad{color:var(--red);border-color:var(--red)}
+.chip.gold{color:var(--gold2);border-color:var(--gold)}
+.chip.inv{color:var(--violet);border-color:var(--violet);font-size:10.5px;padding:0 7px;margin:0 2px}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+/* formulário */
+.form{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.f{display:flex;flex-direction:column;gap:6px;min-width:0}
+.f.wide{grid-column:1/-1}
+.f.half{grid-column:span 2}
+.f label{font-size:12.5px;color:var(--muted)}
+.f input,.f select,.f textarea{background:var(--bg);border:1px solid var(--line2);border-radius:8px;padding:8px 10px;width:100%}
+.f textarea{resize:vertical;min-height:90px;line-height:1.5}
+.f .hint{font-size:12px;color:var(--muted)}
+@media (max-width:720px){.form{grid-template-columns:repeat(2,minmax(0,1fr))}.f.half{grid-column:1/-1}}
+/* lista */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.card{display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer}
+.card:hover{border-color:var(--gold)}
+.card h3{font-size:15px;color:var(--text);margin:0}
+.empty{display:flex;flex-direction:column;gap:10px;align-items:flex-start;padding:24px}
+.empty h2{font-size:18px}
+.empty p{margin:0;max-width:60ch;color:var(--muted)}
+/* leitura */
+.leitura{display:grid;grid-template-columns:220px minmax(0,1fr);gap:18px;align-items:start}
+.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);display:flex;flex-direction:column;gap:2px}
+.toc button{background:none;border:0;border-left:2px solid var(--line);text-align:left;padding:6px 10px;color:var(--muted);cursor:pointer}
+.toc button:hover{color:var(--text);border-color:var(--gold)}
+@media (max-width:900px){.leitura{grid-template-columns:minmax(0,1fr)}.toc{position:static;flex-direction:row;flex-wrap:wrap;gap:6px}.toc button{border:1px solid var(--line2);border-radius:99px;padding:4px 12px}}
+.titulo h2{font-size:24px;color:var(--gold2)}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 18px;margin:0}
+.meta div{min-width:0}
+.meta dt{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.meta dd{margin:2px 0 0}
+.prosa p{margin:0 0 10px;max-width:72ch}
+.prosa p:last-child{margin-bottom:0}
+.prosa b{color:var(--gold2);font-weight:600}
+.tabwrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tfoot td{border-bottom:0;font-weight:600}
+.cap{display:flex;flex-direction:column;gap:16px;scroll-margin-top:12px}
+.cap>h3{margin:4px 0 0;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.caphead h2{font-size:21px;color:var(--gold2);margin:4px 0 6px}
+blockquote.ler{margin:0;padding:12px 16px;background:var(--quote);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;font-style:italic;max-width:76ch}
+blockquote.ler .eyebrow{display:block;font-style:normal;margin-bottom:4px}
+.cena{border-top:1px dashed var(--line2);padding-top:12px;display:flex;flex-direction:column;gap:6px}
+.cena:first-of-type{border-top:0;padding-top:0}
+.cena h4{font-size:14px;color:var(--text)}
+.testes{display:flex;flex-direction:column;gap:4px;margin:0;padding:0;list-style:none}
+.combate{border:1px solid var(--line2);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+.combate h4{font-size:14px}
+.combate.fora{border-color:var(--orange)}
+.faixa{display:flex;gap:4px;flex-wrap:wrap}
+.faixa span{font-size:11.5px;padding:2px 8px;border-radius:6px;background:var(--panel2);color:var(--muted)}
+.faixa span.aqui{background:var(--gold);color:var(--ink-on-gold);font-weight:600}
+.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.checks li{display:flex;gap:10px;align-items:baseline}
+/* ficha */
+.ficha{border:1px solid var(--line2);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:8px;background:var(--bg)}
+.ficha h4{font-size:16px;color:var(--gold2)}
+.ficha .linha{margin:0}
+.ficha .attrs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;text-align:center}
+.ficha .attrs div{background:var(--panel2);border-radius:6px;padding:4px 2px}
+.ficha .attrs b{display:block;font-size:11px;letter-spacing:.06em;color:var(--muted)}
+@media (max-width:480px){.ficha .attrs{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.ficha h5{margin:6px 0 0;font-family:var(--display);font-size:13px;color:var(--gold);border-bottom:1px solid var(--line2);padding-bottom:2px}
+.ficha p{margin:0}
+/* progresso */
+.passos{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.passos li{display:flex;gap:10px;align-items:baseline}
+.st{font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 8px;border-radius:99px;border:1px solid currentColor;white-space:nowrap;min-width:84px;text-align:center}
+.st.pend{color:var(--muted)} .st.run{color:var(--gold2)} .st.ok{color:var(--green)} .st.erro{color:var(--red)}
+@media (prefers-reduced-motion:no-preference){.st.run{animation:pulsa 1.4s ease-in-out infinite}}
+@keyframes pulsa{50%{opacity:.45}}
+.confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 12px;border:1px solid var(--red);border-radius:8px}
+</style>
+
+<header class="gut">
+  <div><h1>Gerador de Aventuras</h1><div class="sub">Transforma uma história numa aventura de D&amp;D 5.5 pronta para a mesa · versão de teste</div></div>
+  <div class="row" id="topo"></div>
+</header>
+<main class="gut" id="app"></main>
+
+<script>
+/*@@MESA-INICIO: tabelas copiadas da Mesa de RPG (orçamento de XP, XP por ND e lista de monstros). Gerado por build-dados.js; não editar à mão. */
+const BUD = {1:[50,75,100],2:[100,150,200],3:[150,225,400],4:[250,375,500],5:[500,750,1100],6:[600,1000,1400],7:[750,1300,1700],8:[1000,1700,2100],9:[1300,2000,2600],10:[1600,2300,3100],11:[1900,2900,4100],12:[2200,3700,4700],13:[2600,4200,5400],14:[2900,4900,6200],15:[3300,5400,7800],16:[3800,6100,9800],17:[4500,7200,11700],18:[5000,8700,14200],19:[5500,10700,17200],20:[6400,13200,22000]};
+const CRXP = {'0':10,'1/8':25,'1/4':50,'1/2':100,'1':200,'2':450,'3':700,'4':1100,'5':1800,'6':2300,'7':2900,'8':3900,'9':5000,'10':5900,'11':7200,'12':8400,'13':10000,'14':11500,'15':13000,'16':15000,'17':18000,'18':20000,'19':22000,'20':25000,'21':33000,'22':41000,'23':50000,'24':62000,'25':75000,'26':90000,'27':105000,'28':120000,'29':135000,'30':155000};
+const MON = [
+['Rato Gigante','Giant Rat','1/8','ve'],['Kobold Guerreiro','Kobold Warrior','1/8','vg'],['Bandido','Bandit','1/8','fe'],['Cultista','Cultist','1/8','t'],['Guarda','Guard','1/8','f'],
+['Enxame de Ratos','Swarm of Rats','1/4','ec'],['Morcego Gigante','Giant Bat','1/4','vc'],['Esqueleto','Skeleton','1/4','cfa'],['Zumbi','Zombie','1/4','ce'],['Goblin Guerreiro','Goblin Warrior','1/4','gv'],
+['Lobo','Wolf','1/4','g'],['Grimlock','Grimlock','1/4','v'],['Fungo Violeta','Violet Fungus','1/4','ve'],['Espada Voadora','Flying Sword','1/4','a'],['Dretch','Dretch','1/4','t'],['Acólito','Priest Acolyte','1/4','t'],
+['Sombra','Shadow','1/2','ct'],['Hobgoblin Guerreiro','Hobgoblin Warrior','1/2','gf'],['Gnoll Guerreiro','Gnoll Warrior','1/2','gv'],['Worg','Worg','1/2','g'],['Lodo Cinzento','Gray Ooze','1/2','ve'],
+['Crocodilo','Crocodile','1/2','e'],['Brutamontes','Tough','1/2','fe'],['Batedor','Scout','1/2','f'],['Cocatriz','Cockatrice','1/2','v'],
+['Armadura Animada','Animated Armor','1','acf'],['Carniçal','Ghoul','1','ce'],['Aranha Gigante','Giant Spider','1','vc'],['Bugbear Guerreiro','Bugbear Warrior','1','g'],['Goblin Chefe','Goblin Boss','1','g'],
+['Diabrete','Imp','1','ta'],['Quasit','Quasit','1','t'],['Espectro','Specter','1','c'],['Espião','Spy','1','fe'],
+['Lívido','Ghast','2','ce'],['Cubo Gelatinoso','Gelatinous Cube','2','vea'],['Gosma Ocre','Ochre Jelly','2','ve'],['Mímico','Mimic','2','av'],['Ogro','Ogre','2','vgf'],['Zumbi Ogro','Ogre Zombie','2','c'],
+['Esqueleto de Minotauro','Minotaur Skeleton','2','c'],['Gárgula','Gargoyle','2','taf'],['Ettercap','Ettercap','2','v'],['Grick','Grick','2','v'],['Ankheg','Ankheg','2','v'],['Tapete Sufocante','Rug of Smothering','2','a'],
+['Capitão Bandido','Bandit Captain','2','fe'],['Cultista Fanático','Cultist Fanatic','2','t'],['Sacerdote','Priest','2','t'],['Homem-Rato','Wererat','2','e'],
+['Wight','Wight','3','cf'],['Múmia','Mummy','3','ct'],['Basilisco','Basilisk','3','v'],['Cão Infernal','Hell Hound','3','t'],['Diabo Barbado','Bearded Devil','3','t'],['Capitão Hobgoblin','Hobgoblin Captain','3','gf'],
+['Bugbear Espreitador','Bugbear Stalker','3','g'],['Cavaleiro','Knight','3','f'],['Guerreiro Veterano','Warrior Veteran','3','f'],['Mantícora','Manticore','3','gv'],['Urso-Coruja','Owlbear','3','gv'],
+['Fantasma','Ghost','4','ca'],['Banshee','Banshee','4','c'],['Pudim Negro','Black Pudding','4','ve'],
+['Otyugh','Otyugh','5','ev'],['Troll','Troll','5','vg'],['Aparição','Wraith','5','c'],['Cria Vampírica','Vampire Spawn','5','ce'],['Golem de Carne','Flesh Golem','5','a'],['Elemental da Terra','Earth Elemental','5','av'],
+['Crocodilo Gigante','Giant Crocodile','5','e'],['Gigante da Colina','Hill Giant','5','gf'],['Gladiador','Gladiator','5','f'],['Umber Hulk','Umber Hulk','5','v'],['Roper','Roper','5','v'],
+['Mago','Mage','6','at'],['Medusa','Medusa','6','t'],['Vrock','Vrock','6','t'],['Quimera','Chimera','6','g'],['Serpe','Wyvern','6','gv'],
+['Escudo Guardião','Shield Guardian','7','a'],['Dragão Negro Jovem','Young Black Dragon','7','ve'],['Gigante de Pedra','Stone Giant','7','gv'],
+['Assassino','Assassin','8','fe'],['Hezrou','Hezrou','8','t'],['Diabo das Correntes','Chain Devil','8','tc'],['Hidra','Hydra','8','ev'],['Gigante do Gelo','Frost Giant','8','g'],
+['Golem de Barro','Clay Golem','9','a'],['Diabo Ósseo','Bone Devil','9','tc'],['Gigante de Fogo','Fire Giant','9','fg'],['Glabrezu','Glabrezu','9','t'],
+['Golem de Pedra','Stone Golem','10','ac'],['Dragão Vermelho Jovem','Young Red Dragon','10','vf'],['Aboleth','Aboleth','10','e'],
+['Behir','Behir','11','v'],['Diabo Chifrudo','Horned Devil','11','t'],['Arquimago','Archmage','12','a'],
+['Vampiro','Vampire','13','c'],['Nalfeshnee','Nalfeshnee','13','t'],['Dragão Negro Adulto','Adult Black Dragon','14','ve'],
+['Múmia Senhora','Mummy Lord','15','c'],['Verme Púrpura','Purple Worm','15','v'],['Golem de Ferro','Iron Golem','16','a'],['Marilith','Marilith','16','t'],
+['Dragão Vermelho Adulto','Adult Red Dragon','17','vfg'],['Balor','Balor','19','t'],['Pit Fiend','Pit Fiend','20','t'],['Lich','Lich','21','ca'],['Dragão Negro Ancião','Ancient Black Dragon','21','ve'],
+/* Livro dos Monstros 2024 (demais criaturas). Etiqueta 'x' = só ao ar livre: não entra nos sorteios de masmorra. */
+['Rato','Rat','0','e'],['Morcego','Bat','0','v'],['Gato','Cat','0','x'],['Sapo','Frog','0','e'],['Lagarto','Lizard','0','v'],['Aranha','Spider','0','v'],['Escorpião','Scorpion','0','v'],['Corvo','Raven','0','x'],['Coruja','Owl','0','x'],
+['Falcão','Hawk','0','x'],['Águia','Eagle','0','x'],['Hiena','Hyena','0','x'],['Chacal','Jackal','0','x'],['Babuíno','Baboon','0','x'],['Texugo','Badger','0','x'],['Bode','Goat','0','x'],['Abutre','Vulture','0','x'],['Doninha','Weasel','0','x'],
+['Caranguejo','Crab','0','e'],['Polvo','Octopus','0','e'],['Piranha','Piranha','0','e'],['Arbusto Desperto','Awakened Shrub','0','x'],['Lêmure','Lemure','0','t'],['Homúnculo','Homunculus','0','a'],
+['Fungo Guinchador','Shrieker Fungus','0','v'],['Broto Miconídeo','Myconid Sprout','0','v'],['Besouro de Fogo Gigante','Giant Fire Beetle','0','v'],['Rato Craniano','Cranium Rat','1/8','e'],['Plebeu','Commoner','0','f'],
+['Falcão Sangrento','Blood Hawk','1/8','x'],['Camelo','Camel','1/8','x'],['Mula','Mule','1/8','x'],['Pônei','Pony','1/8','x'],['Mastim','Mastiff','1/8','x'],['Cobra Venenosa','Venomous Snake','1/8','ve'],['Caranguejo Gigante','Giant Crab','1/8','e'],
+['Doninha Gigante','Giant Weasel','1/8','x'],['Estirge','Stirge','1/8','vc'],['Flumph','Flumph','1/8','v'],['Manes','Manes','1/8','t'],['Goblin Lacaio','Goblin Minion','1/8','g'],['Guerreiro de Infantaria','Warrior Infantry','1/8','f'],['Nobre','Noble','1/8','f'],
+['Tritão Escaramuçador','Merfolk Skirmisher','1/8','e'],['Girino de Slaad','Slaad Tadpole','1/8','a'],['Monodrone','Monodrone','1/8','a'],['Arbusto de Galhos','Twig Blight','1/8','x'],
+['Cavalo de Montaria','Riding Horse','1/4','x'],['Cavalo de Tração','Draft Horse','1/4','x'],['Javali','Boar','1/4','x'],['Alce','Elk','1/4','x'],['Pantera','Panther','1/4','x'],['Bico-de-Machado','Axe Beak','1/4','x'],['Cão Intermitente','Blink Dog','1/4','x'],
+['Cobra Constritora','Constrictor Snake','1/4','e'],['Texugo Gigante','Giant Badger','1/4','g'],['Centopeia Gigante','Giant Centipede','1/4','v'],['Sapo Gigante','Giant Frog','1/4','e'],['Lagarto Gigante','Giant Lizard','1/4','v'],['Coruja Gigante','Giant Owl','1/4','x'],
+['Cobra Venenosa Gigante','Giant Venomous Snake','1/4','ve'],['Aranha-Lobo Gigante','Giant Wolf Spider','1/4','v'],['Pteranodonte','Pteranodon','1/4','x'],['Enxame de Morcegos','Swarm of Bats','1/4','vc'],['Enxame de Corvos','Swarm of Ravens','1/4','x'],
+['Arbusto de Agulhas','Needle Blight','1/4','x'],['Pixie','Pixie','1/4','x'],['Sprite','Sprite','1/4','x'],['Pseudodragão','Pseudodragon','1/4','a'],['Kobold Inventor','Kobold Inventor','1/4','v'],['Kuo-toa','Kuo-toa','1/4','e'],['Troglodita','Troglodyte','1/4','v'],
+['Guerreiro Bullywug','Bullywug Warrior','1/4','e'],['Escaramuçador Aarakocra','Aarakocra Skirmisher','1/4','x'],['Duodrone','Duodrone','1/4','a'],['Mefite da Lama','Mud Mephit','1/4','e'],['Mefite da Fumaça','Smoke Mephit','1/4','a'],['Mefite do Vapor','Steam Mephit','1/4','a'],
+['Macaco','Ape','1/2','x'],['Urso Negro','Black Bear','1/2','x'],['Cavalo de Guerra','Warhorse','1/2','x'],['Bode Gigante','Giant Goat','1/2','x'],['Vespa Gigante','Giant Wasp','1/2','x'],['Cavalo-Marinho Gigante','Giant Seahorse','1/2','e'],['Tubarão de Recife','Reef Shark','1/2','e'],
+['Enxame de Insetos','Swarm of Insects','1/2','ec'],['Arbusto de Vinhas','Vine Blight','1/2','x'],['Sátiro','Satyr','1/2','x'],['Homem-Chacal','Jackalwere','1/2','x'],['Manto Escuro','Darkmantle','1/2','v'],['Perfurador','Piercer','1/2','v'],
+['Monstro da Ferrugem','Rust Monster','1/2','v'],['Esporo Gasoso','Gas Spore Fungus','1/2','v'],['Miconídeo Adulto','Myconid Adult','1/2','v'],['Magmin','Magmin','1/2','a'],['Mefite da Poeira','Dust Mephit','1/2','ac'],['Mefite do Gelo','Ice Mephit','1/2','a'],
+['Mefite do Magma','Magma Mephit','1/2','a'],['Tridrone','Tridrone','1/2','a'],['Homem-Lagarto','Lizardfolk','1/2','e'],['Guerreiro Sahuagin','Sahuagin Warrior','1/2','e'],['Esqueleto de Cavalo de Guerra','Warhorse Skeleton','1/2','c'],
+['Urso Pardo','Brown Bear','1','g'],['Leão','Lion','1','x'],['Tigre','Tiger','1','x'],['Lobo Atroz','Dire Wolf','1','g'],['Hiena Gigante','Giant Hyena','1','g'],['Águia Gigante','Giant Eagle','1','x'],['Abutre Gigante','Giant Vulture','1','x'],
+['Polvo Gigante','Giant Octopus','1','e'],['Sapo-Boi Gigante','Giant Toad','1','e'],['Cão da Morte','Death Dog','1','g'],['Harpia','Harpy','1','x'],['Hipogrifo','Hippogriff','1','x'],['Dríade','Dryad','1','x'],['Kobold Escudo-Dracônico','Kobold Dragonshield','1','v'],
+['Kobold Feiticeiro de Escamas','Kobold Scale Sorcerer','1','v'],['Chicote Kuo-toa','Kuo-toa Whip','1','e'],['Quadrone','Quadrone','1','a'],['Cobra de Fogo','Salamander Fire Snake','1','a'],['Esfinge da Maravilha','Sphinx of Wonder','1','t'],['Enxame de Piranhas','Swarm of Piranhas','1','e'],
+['Filhote de Dragão de Latão','Brass Dragon Wyrmling','1','x'],['Filhote de Dragão de Cobre','Copper Dragon Wyrmling','1','x'],
+['Alossauro','Allosaurus','2','x'],['Plesiossauro','Plesiosaurus','2','e'],['Urso Polar','Polar Bear','2','x'],['Javali Gigante','Giant Boar','2','x'],['Alce Gigante','Giant Elk','2','x'],['Cobra Constritora Gigante','Giant Constrictor Snake','2','ev'],
+['Tubarão Caçador','Hunter Shark','2','e'],['Rinoceronte','Rhinoceros','2','x'],['Tigre-Dentes-de-Sabre','Saber-Toothed Tiger','2','x'],['Enxame de Cobras Venenosas','Swarm of Venomous Snakes','2','e'],['Árvore Desperta','Awakened Tree','2','x'],
+['Grifo','Griffon','2','x'],['Pégaso','Pegasus','2','x'],['Peryton','Peryton','2','x'],['Centauro Combatente','Centaur Trooper','2','x'],['Rastejador Carniceiro','Carrion Crawler','2','vc'],['Bocarra Balbuciante','Gibbering Mouther','2','v'],
+['Devorador de Intelecto','Intellect Devourer','2','v'],['Nothic','Nothic','2','a'],['Quaggoth','Quaggoth','2','v'],['Miconídeo Soberano','Myconid Sovereign','2','v'],['Fogo-Fátuo',"Will-o'-Wisp",'2','c'],['Diabo Espinhoso','Spined Devil','2','t'],
+['Bruxa do Mar','Sea Hag','2','e'],['Merrow','Merrow','2','e'],['Sacerdote Sahuagin','Sahuagin Priest','2','e'],['Sentinela Azer','Azer Sentinel','2','f'],['Monge Githzerai','Githzerai Monk','2','a'],['Pentadrone','Pentadrone','2','a'],
+['Berserker','Berserker','2','fg'],['Druida','Druid','2','x'],['Aprendiz de Mago','Mage Apprentice','2','a'],['Senhor da Matilha Gnoll','Gnoll Pack Lord','2','g'],
+['Filhote de Dragão Negro','Black Dragon Wyrmling','2','ve'],['Filhote de Dragão Verde','Green Dragon Wyrmling','2','vg'],['Filhote de Dragão Branco','White Dragon Wyrmling','2','vg'],['Filhote de Dragão de Bronze','Bronze Dragon Wyrmling','2','e'],['Filhote de Dragão de Prata','Silver Dragon Wyrmling','2','x'],
+['Anquilossauro','Ankylosaurus','3','x'],['Escorpião Gigante','Giant Scorpion','3','v'],['Orca','Killer Whale','3','e'],['Lobisomem','Werewolf','3','x'],['Lobo Invernal','Winter Wolf','3','g'],['Yeti','Yeti','3','g'],['Besta Deslocadora','Displacer Beast','3','g'],
+['Aranha de Fase','Phase Spider','3','va'],['Horror Gancho','Hook Horror','3','v'],['Espectador','Spectator','3','a'],['Doppelganger','Doppelganger','3','f'],['Pesadelo','Nightmare','3','t'],['Bruxa Verde','Green Hag','3','x'],['Estranho da Água','Water Weird','3','ae'],
+['Minotauro de Baphomet','Minotaur of Baphomet','3','g'],['Guerreiro Githyanki','Githyanki Warrior','3','a'],['Malison Yuan-ti','Yuan-ti Malison','3','t'],['Filhote de Dragão Azul','Blue Dragon Wyrmling','3','vg'],['Filhote de Dragão de Ouro','Gold Dragon Wyrmling','3','x'],
+['Elefante','Elephant','4','x'],['Javali-Lobisomem','Wereboar','4','x'],['Tigre-Lobisomem','Weretiger','4','x'],['Ettin','Ettin','4','g'],['Chuul','Chuul','4','e'],['Couatl','Couatl','4','t'],['Lâmia','Lamia','4','t'],['Súcubo','Succubus','4','t'],['Íncubo','Incubus','4','t'],
+['Demônio das Sombras','Shadow Demon','4','tc'],['Caveira Flamejante','Flameskull','4','ca'],['Naga Óssea','Bone Naga','4','c'],['Horror de Elmo','Helmed Horror','4','af'],['Capitão da Guarda','Guard Captain','4','f'],['Aeromante Aarakocra','Aarakocra Aeromancer','4','x'],
+['Presa de Yeenoghu','Gnoll Fang of Yeenoghu','4','g'],['Filhote de Dragão Vermelho','Red Dragon Wyrmling','4','vg'],
+['Triceratops','Triceratops','5','x'],['Tubarão Gigante','Giant Shark','5','e'],['Urso-Lobisomem','Werebear','5','x'],['Unicórnio','Unicorn','5','x'],['Elemental do Ar','Air Elemental','5','a'],['Elemental do Fogo','Fire Elemental','5','af'],['Elemental da Água','Water Elemental','5','ae'],
+['Salamandra','Salamander','5','a'],['Xorn','Xorn','5','v'],['Bulette','Bulette','5','v'],['Górgona','Gorgon','5','g'],['Remorhaz Jovem','Young Remorhaz','5','v'],['Monte Rastejante','Shambling Mound','5','e'],['Enxame de Ratos Cranianos','Swarm of Cranium Rats','5','e'],
+['Zumbi Observador','Beholder Zombie','5','c'],['Revenant','Revenant','5','c'],['Meio-Dragão','Half-Dragon','5','g'],['Bruxa da Noite','Night Hag','5','t'],['Cambion','Cambion','5','t'],['Diabo Farpado','Barbed Devil','5','t'],['Barlgura','Barlgura','5','t'],
+['Mezzoloth','Mezzoloth','5','t'],['Slaad Vermelho','Red Slaad','5','a'],['Barão Sahuagin','Sahuagin Baron','5','e'],
+['Mamute','Mammoth','6','x'],['Drider','Drider','6','v'],['Galeb Duhr','Galeb Duhr','6','v'],['Perseguidor Invisível','Invisible Stalker','6','a'],['Chasme','Chasme','6','t'],['Ciclope Sentinela','Cyclops Sentry','6','g'],['Piromante Azer','Azer Pyromancer','6','f'],
+['Arquissacerdote Kuo-toa','Kuo-toa Archpriest','6','e'],['Zerth Githzerai','Githzerai Zerth','6','a'],['Dragão Branco Jovem','Young White Dragon','6','vg'],['Dragão de Latão Jovem','Young Brass Dragon','6','x'],
+['Macaco Gigante','Giant Ape','7','x'],['Devorador de Mentes','Mind Flayer','7','v'],['Oni','Oni','7','g'],['Slaad Azul','Blue Slaad','7','a'],['Abominação Yuan-ti','Yuan-ti Abomination','7','t'],['Dragão de Cobre Jovem','Young Copper Dragon','7','x'],
+['Tiranossauro Rex','Tyrannosaurus Rex','8','x'],['Manto Sombrio','Cloaker','8','v'],['Fomoriano','Fomorian','8','v'],['Naga Espiritual','Spirit Naga','8','t'],['Slaad Verde','Green Slaad','8','a'],['Cavaleiro Githyanki','Githyanki Knight','8','a'],
+['Cavaleiro Sombrio','Blackguard','8','f'],['Dragão Verde Jovem','Young Green Dragon','8','vg'],['Dragão de Bronze Jovem','Young Bronze Dragon','8','e'],
+['Yeti Abominável','Abominable Yeti','9','g'],['Treant','Treant','9','x'],['Gigante das Nuvens','Cloud Giant','9','g'],['Nycaloth','Nycaloth','9','t'],['Slaad Cinzento','Gray Slaad','9','a'],['Campeão','Champion','9','f'],
+['Dragão Azul Jovem','Young Blue Dragon','9','vg'],['Dragão de Prata Jovem','Young Silver Dragon','9','x'],
+['Naga Guardiã','Guardian Naga','10','t'],['Deva','Deva','10','t'],['Slaad da Morte','Death Slaad','10','a'],['Dragão de Ouro Jovem','Young Gold Dragon','10','x'],
+['Remorhaz','Remorhaz','11','v'],['Roca','Roc','11','x'],['Esfinge do Saber','Sphinx of Lore','11','t'],['Djinni','Djinni','11','a'],['Efreeti','Efreeti','11','af'],['Dao','Dao','11','av'],['Marid','Marid','11','ae'],
+['Arcanaloth','Arcanaloth','12','ta'],['Erínia','Erinyes','12','t'],['Arquissacerdote','Archpriest','12','t'],
+['Observador','Beholder','13','v'],['Rakshasa','Rakshasa','13','t'],['Gigante da Tempestade','Storm Giant','13','g'],['Ultroloth','Ultroloth','13','t'],['Dragão Branco Adulto','Adult White Dragon','13','vg'],['Dragão de Latão Adulto','Adult Brass Dragon','13','x'],
+['Tirano da Morte','Death Tyrant','14','c'],['Diabo do Gelo','Ice Devil','14','t'],['Dragão de Cobre Adulto','Adult Copper Dragon','14','x'],
+['Dragão Verde Adulto','Adult Green Dragon','15','vg'],['Dragão de Bronze Adulto','Adult Bronze Dragon','15','e'],
+['Planetar','Planetar','16','t'],['Dragão Azul Adulto','Adult Blue Dragon','16','vg'],['Dragão de Prata Adulto','Adult Silver Dragon','16','x'],
+['Cavaleiro da Morte','Death Knight','17','cf'],['Tartaruga-Dragão','Dragon Turtle','17','e'],['Goristro','Goristro','17','t'],['Esfinge do Valor','Sphinx of Valor','17','t'],['Dragão de Ouro Adulto','Adult Gold Dragon','17','x'],
+['Demilich','Demilich','18','c'],['Dragão Branco Ancião','Ancient White Dragon','20','vg'],['Dragão de Latão Ancião','Ancient Brass Dragon','20','x'],['Solar','Solar','21','t'],['Dragão de Cobre Ancião','Ancient Copper Dragon','21','x'],
+['Dragão Verde Ancião','Ancient Green Dragon','22','vg'],['Dragão de Bronze Ancião','Ancient Bronze Dragon','22','e'],['Dragão Azul Ancião','Ancient Blue Dragon','23','vg'],['Dragão de Prata Ancião','Ancient Silver Dragon','23','x'],
+['Enxame de Mãos Rastejantes','Swarm of Crawling Claws','3','c'],['Pirata','Pirate','1','fe'],['Capitão Pirata','Pirate Captain','6','fe'],['Chefe dos Brutamontes','Tough Boss','4','fe'],['Membro de Troll','Troll Limb','1/2','v'],['Familiar Vampírico','Vampire Familiar','3','c'],
+['Arquelon','Archelon','4','e'],['Cervo','Deer','0','x'],['Cobra Voadora','Flying Snake','1/8','x'],['Hipopótamo','Hippopotamus','4','x'],['Cavalo-Marinho','Seahorse','0','e'],
+['Kraken','Kraken','23','e'],['Empiriano','Empyrean','23','t'],['Dragão Vermelho Ancião','Ancient Red Dragon','24','vfg'],['Dragão de Ouro Ancião','Ancient Gold Dragon','24','x'],['Tarrasque','Tarrasque','30','x']
+].map(([pt,en,cr,tags]) => ({pt,en,cr,xp:CRXP[cr],tags}));
+/*@@MESA-FIM*/
+
+/* ================= utilidades ================= */
+const $ = s => document.querySelector(s);
+const h = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* texto vindo do Claude: escapa, marca [Inventado] e mantém quebras de linha */
+const tx = s => h(s).replace(/\[\s*inventad[oa]\s*\]/gi, '<span class="chip inv" title="Não vem da história original">Inventado</span>').replace(/\n/g, '<br>');
+const arr = x => Array.isArray(x) ? x : [];
+const str = x => (x === null || x === undefined) ? '' : (typeof x === 'object' ? JSON.stringify(x) : String(x));
+const int = (x, d) => { const n = parseInt(x, 10); return Number.isFinite(n) ? n : d; };
+const fmt = n => Number(n || 0).toLocaleString('pt-BR');
+const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const DIFN = ['Baixa', 'Moderada', 'Alta', 'Acima de Alta'];
+const difIdx = s => { s = norm(s); return s.startsWith('baix') ? 0 : s.startsWith('mod') ? 1 : s.startsWith('alt') ? 2 : -1; };
+const orc = (nivel, jog) => BUD[clamp(int(nivel, 1), 1, 20)].map(v => v * jog);
+const MON_IDX = {}; MON.forEach(m => { MON_IDX[norm(m.en)] = m; MON_IDX[norm(m.pt)] = m; });
+const crXp = cr => CRXP[String(cr ?? '').trim().replace(/^nd\s*/i, '')] ?? null;
+const FIDEL = {fiel:'fiel: siga a trama e a ordem dos acontecimentos da história', adaptada:'adaptada: mantenha o essencial da trama e ajuste o resto ao grupo', livre:'livre: use só a premissa, os locais e os personagens como inspiração'};
+const PAPEIS = ['PNJs contratantes', 'Aliados do grupo', 'Antagonistas', 'Ausentes (só citados)', 'Misturado: alguns aliados, alguns antagonistas'];
+const TIERS = {complex:'Mais completa (mais lenta)', default:'Mais rápida'};
+
+/* ================= estado ================= */
+const S = {
+  tela:'lista', atual:null, lista:{}, caps:{}, carregou:false, avisoDb:'',
+  db:null, sample:null, dl:null, semIa:false, semDb:false, iaNegada:false,
+  ger:null, excluir:false, msg:'',
+  form:{historia:'', jogadores:4, nivel:3, sessoes:4, fidelidade:'adaptada', papel:PAPEIS[0], obs:'', tier:'complex'}
+};
+try { const f = JSON.parse(localStorage.getItem('aventuras-form') || 'null'); if (f) Object.assign(S.form, f); } catch {}
+const guardarForm = () => { try { localStorage.setItem('aventuras-form', JSON.stringify(S.form)); } catch {} };
+const capsDe = id => (id === EXEMPLO.id ? EXEMPLO.caps : S.caps[id]) || {};
+const aventura = id => id === EXEMPLO.id ? EXEMPLO : S.lista[id];
+
+/* ================= conferência de XP ================= */
+function fichaDe(fichas, nome){ const n = norm(nome); return arr(fichas).find(f => norm(f.nome) === n) || arr(fichas).find(f => n && (norm(f.nome).startsWith(n) || n.startsWith(norm(f.nome)))); }
+function avaliar(c, nivel, jog, fichas){
+  const linhas = arr(c.inimigos).map(i => {
+    const q = Math.max(1, int(i.qtd, 1)), nome = str(i.nome).trim(), f = fichaDe(fichas, nome);
+    if (f){ const xp = crXp(f.nd); return {nome:f.nome, det:'ND '+f.nd+' · ficha nos apêndices', q, xp:xp||0, ok:xp!==null}; }
+    const m = MON_IDX[norm(nome)];
+    if (m) return {nome:m.pt, en:m.en, det:'ND '+m.cr, q, xp:m.xp, ok:true};
+    return {nome, det:'não está na lista de monstros', q, xp:0, ok:false};
+  });
+  const total = linhas.reduce((t, l) => t + l.xp*l.q, 0), B = orc(nivel, jog);
+  const cls = total <= B[0] ? 0 : total <= B[1] ? 1 : total <= B[2] ? 2 : 3, dec = difIdx(c.dificuldade);
+  const achou = linhas.every(l => l.ok);
+  return {linhas, total, B, cls, dec, achou, ok: achou && cls === dec};
+}
+
+/* ================= normalização das respostas ================= */
+function normPlano(r, p){
+  r = (r && typeof r === 'object' && !Array.isArray(r)) ? r : {};
+  const caps = arr(r.capitulos).slice(0, p.sessoes);
+  let nv = p.nivel;
+  const capitulos = Array.from({length:p.sessoes}, (_, i) => { const c = caps[i] || {};
+    nv = clamp(int(c.nivel, nv), nv, 20); const x = {n:i+1, titulo:str(c.titulo)||'Capítulo '+(i+1), nivel:i===0?p.nivel:nv, dificuldade:DIFN[difIdx(c.dificuldade)]||'Moderada', resumo:str(c.resumo), segredo:str(c.segredo), local:str(c.local)}; nv = x.nivel; return x; });
+  const em = r.escolha_moral && typeof r.escolha_moral === 'object' ? r.escolha_moral : {};
+  return {
+    titulo:str(r.titulo)||'Aventura sem título', cenario:str(r.cenario), temas:arr(r.temas).map(str), origem:str(r.origem), dificuldade:str(r.dificuldade),
+    premissa:str(r.premissa), gancho:str(r.gancho),
+    contratante:{nome:str(r.contratante?.nome), quem:str(r.contratante?.quem), sabe:str(r.contratante?.sabe), esconde:str(r.contratante?.esconde)},
+    antagonistas:arr(r.antagonistas).map(a => ({nome:str(a.nome), papel:str(a.papel), nd:str(a.nd), capitulos:arr(a.capitulos).map(x=>int(x,0)).filter(Boolean), foge:str(a.foge)})).filter(a => a.nome),
+    aliados:arr(r.aliados).map(a => ({nome:str(a.nome), quem:str(a.quem), personalidade:str(a.personalidade), ficha:str(a.ficha)})).filter(a => a.nome),
+    capitulos, escolha:{capitulo:int(em.capitulo,0), descricao:str(em.descricao), consequencia_capitulo:int(em.consequencia_capitulo,0), consequencia:str(em.consequencia)},
+    marcos:str(r.marcos)
+  };
+}
+const normLista = x => arr(x).map(t => typeof t === 'string' ? {nome:'', texto:t} : {nome:str(t.nome), texto:str(t.texto ?? t.descricao)}).filter(t => t.nome || t.texto);
+function normFichas(r){
+  return arr(Array.isArray(r) ? r : r?.fichas).map(f => ({
+    nome:str(f.nome), tipo:str(f.tipo), nd:str(f.nd).replace(/^nd\s*/i,''), ca:str(f.ca), pv:str(f.pv), deslocamento:str(f.deslocamento),
+    atributos:Object.fromEntries(['FOR','DES','CON','INT','SAB','CAR'].map(k => [k, int(f.atributos?.[k], 10)])),
+    salvaguardas:str(f.salvaguardas), pericias:str(f.pericias), resistencias:str(f.resistencias), imunidades:str(f.imunidades), sentidos:str(f.sentidos), idiomas:str(f.idiomas),
+    tracos:normLista(f.tracos), acoes:normLista(f.acoes), acoes_bonus:normLista(f.acoes_bonus), reacoes:normLista(f.reacoes), lendarias:normLista(f.lendarias)
+  })).filter(f => f.nome);
+}
+function normCap(r, n, nivel){
+  r = (r && typeof r === 'object' && !Array.isArray(r)) ? r : {};
+  return {
+    n, titulo:str(r.titulo)||'Capítulo '+n, nivel:clamp(int(r.nivel, nivel), 1, 20), resumo:str(r.resumo), abertura:str(r.abertura),
+    cenas:arr(r.cenas).map(c => ({nome:str(c.nome), objetivo:str(c.objetivo), testes:arr(c.testes).map(t => ({pericia:str(t.pericia), cd:int(t.cd,0), uso:str(t.uso)})), sucesso:str(c.sucesso), falha:str(c.falha)})),
+    combates:arr(r.combates).map(c => ({nome:str(c.nome), principal:!!c.principal, dificuldade:DIFN[difIdx(c.dificuldade)]||str(c.dificuldade), inimigos:arr(c.inimigos).map(i => ({nome:str(i.nome), qtd:Math.max(1,int(i.qtd,1))})), terreno:str(c.terreno), objetivo:str(c.objetivo), tatica:str(c.tatica), fuga:str(c.fuga)})),
+    evento:str(r.evento), gancho:str(r.gancho), subida:str(r.subida), recompensas:arr(r.recompensas).map(str), ouro:str(r.ouro)
+  };
+}
+
+/* ================= prompts ================= */
+const REGRAS = `1. Os jogadores usam os próprios personagens. Os protagonistas da história original viram PNJs, conforme o papel indicado. Nunca deixe um PNJ resolver o conflito no lugar dos jogadores.
+2. Use a trama, os locais e os personagens da história, mas escreva todo o texto com palavras suas. Não copie falas nem trechos do original.
+3. Cada capítulo equivale a uma sessão e tem pelo menos um combate principal.
+4. Distribua as reviravoltas e os segredos da história, no máximo um por capítulo.
+5. Antagonistas recorrentes podem fugir em capítulos iniciais. Sempre explique como.
+6. Inclua pelo menos uma escolha moral com consequência mecânica num capítulo posterior (se houver só um capítulo, a consequência vem no fim dele).
+7. Se faltar informação na história, invente de forma coerente e marque com [Inventado].`;
+function cabecalho(p){
+  return `Você é um designer de aventuras de D&D 5.5 (regras de 2024: Livro do Jogador, Livro do Mestre e Livro dos Monstros de 2024). Sua tarefa é transformar uma história numa aventura jogável. Escreva em português do Brasil.
+
+## Entrada
+- História ou conto: ${p.historia}
+- Número de jogadores: ${p.jogadores}
+- Nível inicial do grupo: ${p.nivel}
+- Número de sessões (um capítulo por sessão): ${p.sessoes}
+- Fidelidade à história: ${FIDEL[p.fidelidade] || p.fidelidade}
+- Papel dos protagonistas originais: ${p.papel}
+- Observações do mestre: ${p.obs || 'nenhuma'}
+
+## Regras de adaptação
+${REGRAS}`;
+}
+const linhaOrc = (nv, jog) => { const B = orc(nv, jog); return `Nível ${nv}: Baixa até ${fmt(B[0])} XP · Moderada de ${fmt(B[0]+1)} a ${fmt(B[1])} XP · Alta de ${fmt(B[1]+1)} a ${fmt(B[2])} XP`; };
+const planoDif = n => n === 1 ? 'Alta' : n === 2 ? 'Moderada no capítulo 1 e Alta no capítulo 2' : 'Moderada nos primeiros capítulos, Alta em um ou dois capítulos do meio e Alta no último, contra o chefe';
+function promptPlano(p){
+  const niveis = []; for (let n = p.nivel; n <= Math.min(20, p.nivel + p.sessoes); n++) niveis.push('- ' + linhaOrc(n, p.jogadores));
+  return cabecalho(p) + `
+
+## Progressão e dificuldade
+- Defina o nível do grupo em cada capítulo. O capítulo 1 é no nível ${p.nivel}. O grupo sobe no máximo 1 nível por capítulo, em marcos coerentes com a história, e nunca passa do nível 20.
+- Dificuldade do combate principal de cada capítulo: ${planoDif(p.sessoes)}.
+- Orçamento de XP do grupo inteiro (Livro do Mestre 2024, já multiplicado pelos ${p.jogadores} jogadores):
+${niveis.join('\n')}
+- Antagonistas nomeados terão ficha própria. Dê a cada um um ND coerente com o papel. Um antagonista sozinho não deve passar do orçamento Alto do capítulo em que luta.
+
+## Esta etapa
+Escreva só o PLANO da aventura. Os capítulos serão escritos depois, um por vez, a partir dele.
+
+## Formato
+Responda somente com um objeto JSON, sem texto antes ou depois, neste formato:
+{
+  "titulo": "nome da aventura",
+  "cenario": "mundo e região onde se passa",
+  "temas": ["2 a 4 temas, ex.: horror, intriga, viagem"],
+  "origem": "de qual história, e de qual parte dela, a aventura vem",
+  "dificuldade": "Baixa, Moderada ou Alta (geral)",
+  "premissa": "2 a 4 frases",
+  "gancho": "como os personagens entram na história",
+  "contratante": {"nome": "", "quem": "quem é", "sabe": "o que ele sabe", "esconde": "o que ele esconde"},
+  "antagonistas": [{"nome": "", "papel": "", "nd": "ex.: 3 ou 1/2", "capitulos": [1, 2], "foge": "em que capítulo e como escapa, ou vazio"}],
+  "aliados": [{"nome": "", "quem": "", "personalidade": "", "ficha": "criatura do Livro dos Monstros 2024 sugerida, nome em inglês"}],
+  "capitulos": [{"n": 1, "titulo": "", "nivel": ${p.nivel}, "dificuldade": "Moderada", "resumo": "uma frase", "segredo": "reviravolta ou segredo revelado neste capítulo (no máximo um), ou vazio", "local": "onde acontece"}],
+  "escolha_moral": {"capitulo": 1, "descricao": "a escolha", "consequencia_capitulo": 2, "consequencia": "efeito mecânico concreto"},
+  "marcos": "quando e por que o grupo sobe de nível"
+}
+Use exatamente ${p.sessoes} capítulo(s). Marque com [Inventado] o que não vem da história.`;
+}
+function promptFichas(A){
+  const P = A.plano;
+  return `Você é um designer de monstros de D&D 5.5 (regras de 2024). Crie as fichas de estatísticas dos antagonistas nomeados da aventura "${P.titulo}". Escreva em português do Brasil.
+
+## Contexto
+${P.premissa}
+Grupo: ${A.params.jogadores} jogadores, do nível ${A.params.nivel} ao ${P.capitulos[P.capitulos.length-1].nivel}.
+
+## Antagonistas
+${P.antagonistas.map(a => `- ${a.nome} (ND ${a.nd}): ${a.papel}. Aparece nos capítulos ${a.capitulos.join(', ') || '?'}.${a.foge ? ' Foge: ' + a.foge : ''}`).join('\n')}
+
+## Regras
+- Use o ND indicado. CA, PV, bônus de ataque, dano por rodada e CD de salvaguarda seguem os valores típicos desse ND no Livro dos Monstros e no Livro do Mestre de 2024.
+- Escreva traços e ações com palavras suas.
+- Dano sempre com média e dados, ex.: "13 (2d8 + 4) de dano cortante".
+- Ações lendárias só para o chefe final, e só se o ND for 5 ou mais.
+- Quem foge precisa de um meio de fuga na ficha (ação, magia, item ou traço).
+
+## Formato
+Responda somente com um array JSON, uma ficha por antagonista, sem texto antes ou depois:
+[{"nome": "", "tipo": "Humanoide Médio (humano), Neutro e Mau", "nd": "3", "ca": "15 (cota de malha)", "pv": "58 (9d8 + 18)", "deslocamento": "9 m", "atributos": {"FOR": 14, "DES": 12, "CON": 14, "INT": 10, "SAB": 13, "CAR": 16}, "salvaguardas": "Sab +3", "pericias": "Enganação +5", "resistencias": "", "imunidades": "", "sentidos": "Percepção passiva 11", "idiomas": "Comum", "tracos": [{"nome": "", "texto": ""}], "acoes": [{"nome": "", "texto": ""}], "acoes_bonus": [], "reacoes": [], "lendarias": []}]`;
+}
+function promptCapitulo(A, n){
+  const P = A.plano, p = A.params, pc = P.capitulos[n-1], caps = capsDe(A.id), B = orc(pc.nivel, p.jogadores);
+  const ant = [];
+  for (let k = 1; k < n; k++){ const c = caps[k]; ant.push(c ? `- Capítulo ${k}, ${c.titulo}: ${c.resumo} Evento: ${c.evento} Gancho: ${c.gancho}` : `- Capítulo ${k}, ${P.capitulos[k-1].titulo} (ainda não escrito): ${P.capitulos[k-1].resumo}`); }
+  const fichas = arr(A.fichas).map(f => `- ${f.nome} · ND ${f.nd} · ${fmt(crXp(f.nd)||0)} XP`).join('\n') || '- nenhum';
+  const mons = MON.filter(m => m.xp <= B[2]).map(m => `${m.en} · ${m.pt} · ND ${m.cr} · ${m.xp} XP`).join('\n');
+  const em = P.escolha, extra = [];
+  if (em.capitulo === n) extra.push(`- Este capítulo apresenta a escolha moral do plano: ${em.descricao}`);
+  if (em.consequencia_capitulo === n) extra.push(`- Neste capítulo aparece a consequência da escolha moral: ${em.consequencia}`);
+  if (pc.segredo) extra.push(`- Segredo ou reviravolta a revelar neste capítulo: ${pc.segredo}`);
+  const planoCurto = {titulo:P.titulo, cenario:P.cenario, premissa:P.premissa, gancho:P.gancho, contratante:P.contratante, antagonistas:P.antagonistas, aliados:P.aliados.map(a=>a.nome+': '+a.quem), capitulos:P.capitulos, escolha_moral:P.escolha, marcos:P.marcos};
+  return cabecalho(p) + `
+
+## Plano da aventura (já definido; siga-o)
+${JSON.stringify(planoCurto)}
+
+## Antagonistas com ficha própria
+${fichas}
+
+## Capítulos anteriores
+${ant.length ? ant.join('\n') : '- Este é o primeiro capítulo.'}
+
+## Escreva agora o capítulo ${n} de ${p.sessoes}
+Plano deste capítulo: ${JSON.stringify(pc)}
+Nível do grupo: ${pc.nivel}. Orçamento do grupo inteiro: Baixa até ${fmt(B[0])} XP; Moderada de ${fmt(B[0]+1)} a ${fmt(B[1])} XP; Alta de ${fmt(B[1]+1)} a ${fmt(B[2])} XP.
+- Pelo menos um combate principal ("principal": true) com dificuldade ${pc.dificuldade}. Pode haver até 2 combates secundários, mais leves.
+- A soma de XP de cada combate precisa cair na faixa da dificuldade declarada. A página que recebe a resposta soma o XP e marca os combates fora da faixa.
+- Inimigos: use só criaturas da lista abaixo, com o nome em inglês escrito exatamente como está, ou os antagonistas com ficha, com o nome exato da ficha.
+- Cada combate tem um elemento de terreno interativo e um objetivo além de "matar todos" (resgatar, impedir um ritual, proteger alguém, cronômetro).
+- Antagonista recorrente que foge neste capítulo: explique como, no campo "fuga".
+- 2 a 4 cenas, cada uma com objetivo, testes (perícia em português e CD) e consequências de sucesso e de falha.
+- Recompensas: itens mágicos do Livro do Mestre 2024 adequados ao nível, mais ouro.
+${extra.join('\n')}
+Marque com [Inventado] o que não vem da história.
+
+## Criaturas permitidas (nome em inglês · nome em português · ND · XP cada)
+${mons}
+
+## Formato
+Responda somente com um objeto JSON, sem texto antes ou depois:
+{"titulo": "", "nivel": ${pc.nivel}, "resumo": "uma frase", "abertura": "texto para ler em voz alta, 2 a 4 frases", "cenas": [{"nome": "", "objetivo": "", "testes": [{"pericia": "Percepção", "cd": 13, "uso": "para que serve"}], "sucesso": "", "falha": ""}], "combates": [{"nome": "", "principal": true, "dificuldade": "${pc.dificuldade}", "inimigos": [{"nome": "Ghoul", "qtd": 2}], "terreno": "", "objetivo": "", "tatica": "tática dos inimigos", "fuga": "condição de fuga ou rendição"}], "evento": "reviravolta ou escolha do capítulo", "gancho": "gancho para o próximo capítulo", "subida": "subida de nível ao fim do capítulo, ou vazio", "recompensas": ["item ou tesouro"], "ouro": "ex.: 150 po"}`;
+}
+
+/* ================= banco de dados ================= */
+const semCampos = A => { const {id, exemplo, ...r} = A; return JSON.parse(JSON.stringify(r)); };
+async function salvarAv(A){ A.atualizada = Date.now(); S.lista[A.id] = A; if (S.db) await S.db.collection('aventuras').doc(A.id).set(semCampos(A)); }
+async function salvarCap(id, n, dados){ (S.caps[id] ||= {})[n] = dados; if (S.db) await S.db.collection('capitulos').doc(id+'--'+n).set({aventura:id, n, dados}); }
+async function excluirAv(id){
+  const n = Object.keys(S.caps[id] || {});
+  delete S.lista[id]; delete S.caps[id];
+  if (S.db){ for (const k of n) await S.db.collection('capitulos').doc(id+'--'+k).delete(); await S.db.collection('aventuras').doc(id).delete(); }
+}
+function assinar(){
+  const t = setTimeout(() => { if (!S.carregou){ S.avisoDb = 'Ainda não consegui ler as aventuras salvas. Elas aparecem assim que a conexão responder.'; render(); } }, 10000);
+  S.db.collection('aventuras').onSnapshot(snap => {
+    const novo = {}; snap.docs.forEach(d => { novo[d.id] = {id:d.id, ...d.data()}; });
+    S.lista = novo; if (!snap.metadata.fromCache){ clearTimeout(t); S.carregou = true; S.avisoDb = ''; } render();
+  }, e => { clearTimeout(t); S.carregou = true; S.avisoDb = 'Não consegui ler as aventuras salvas (' + e.code + '). Recarregue a página mais tarde.'; render(); });
+  S.db.collection('capitulos').onSnapshot(snap => {
+    const novo = {}; snap.docs.forEach(d => { const x = d.data(); if (x && x.aventura) (novo[x.aventura] ||= {})[x.n] = x.dados; });
+    S.caps = novo; render();
+  }, () => {});
+}
+
+/* ================= geração ================= */
+const ERROS = {
+  not_granted:'O Claude não foi liberado para esta página. Para gerar aventuras, permita o uso do Claude no menu de permissões do artefato.',
+  sampling_disabled:'O Claude não está disponível nesta conta.', rate_limited:'Limite de uso do Claude atingido por agora. Espere um pouco e clique em Continuar.',
+  refused:'O Claude recusou esta etapa. Mude a história ou as observações e tente de novo.', invalid_json:'A resposta veio num formato que a página não entendeu. Clique em Continuar para tentar de novo.',
+  prompt_too_large:'O texto da história está grande demais. Encurte o resumo.', session_expired:'Sua sessão expirou. Entre de novo no claude.ai e recarregue.',
+  empty_completion:'O Claude não respondeu nada nesta etapa. Clique em Continuar para tentar de novo.'
+};
+const msgErro = e => ERROS[e?.code] || (e?.code === 'cancelled' ? 'Geração parada. O que já ficou pronto está salvo; clique em Continuar para seguir.' : 'Falha de conexão com o Claude (' + (e?.code || e?.message || 'erro') + '). Clique em Continuar para tentar de novo.');
+function pedir(prompt, ctl){
+  return S.sample.json(prompt, {modelTier:S.form.tier === 'default' ? 'default' : 'complex', cache:false, signal:ctl.signal,
+    onText:({text}) => { if (S.ger){ S.ger.chars = text.length; const el = $('#chars'); if (el) el.textContent = fmt(text.length) + ' caracteres recebidos'; } }});
+}
+function passosFaltando(A){
+  const p = [], caps = capsDe(A.id);
+  if (!A.plano) p.push({k:'plano', rot:'Plano da aventura'});
+  if (!A.fichas) p.push({k:'fichas', rot:'Fichas dos antagonistas'});
+  for (let i = 1; i <= A.params.sessoes; i++) if (!caps[i]) p.push({k:'cap', n:i, rot:'Capítulo ' + i});
+  return p;
+}
+async function gerar(id, so){
+  if (S.ger && !S.ger.fim) return;
+  const A = S.lista[id]; if (!A || !S.sample) return;
+  const passos = so ? [{k:'cap', n:so, rot:'Capítulo ' + so + ' (de novo)'}] : passosFaltando(A);
+  if (!passos.length) return;
+  S.ger = {id, passos:passos.map(x => ({...x, st:'pend'})), chars:0, ctl:null, erro:'', fim:false};
+  render();
+  for (const ps of S.ger.passos){
+    ps.st = 'run'; S.ger.chars = 0; render();
+    const ctl = S.ger.ctl = new AbortController();
+    try {
+      if (ps.k === 'plano'){ A.plano = normPlano(await pedir(promptPlano(A.params), ctl), A.params); A.titulo = A.plano.titulo; await salvarAv(A); }
+      else if (ps.k === 'fichas'){ A.fichas = A.plano.antagonistas.length ? normFichas(await pedir(promptFichas(A), ctl)) : []; await salvarAv(A); }
+      else { const nv = A.plano.capitulos[ps.n-1].nivel; await salvarCap(id, ps.n, normCap(await pedir(promptCapitulo(A, ps.n), ctl), ps.n, nv)); await salvarAv(A); }
+      ps.st = 'ok';
+    } catch (e){
+      ps.st = 'erro'; S.ger.erro = e && e.code ? msgErro(e) : 'Erro ao salvar: ' + (e?.message || e); if (e?.code === 'not_granted') S.iaNegada = true; break;
+    }
+  }
+  S.ger.fim = true; S.ger.ctl = null;
+  if (!S.ger.erro) S.msg = so ? 'Capítulo ' + so + ' gerado de novo.' : 'Aventura pronta. Confira as verificações de XP antes de jogar.';
+  if (!S.ger.erro) S.ger = null;
+  render();
+}
+
+/* ================= exportação em Markdown ================= */
+function markdown(A){
+  const P = A.plano, p = A.params, caps = capsDe(A.id), L = [];
+  const lista = (t, xs) => { if (xs.length){ L.push('**' + t + '**', ''); xs.forEach(x => L.push('- ' + x)); L.push(''); } };
+  L.push('# ' + P.titulo, '', '## Metadados', '',
+    '- Título: ' + P.titulo, '- Mundo/cenário: ' + P.cenario, '- Nível: ' + p.nivel + ' → ' + P.capitulos[P.capitulos.length-1].nivel,
+    '- Jogadores: ' + p.jogadores, '- Sessões: ' + p.sessoes, '- Dificuldade geral: ' + P.dificuldade, '- Temas: ' + P.temas.join(', '), '- História de origem: ' + P.origem, '',
+    '## Visão geral', '', P.premissa, '', '**Gancho.** ' + P.gancho, '',
+    '**Contratante: ' + P.contratante.nome + '.** ' + P.contratante.quem, '', '- Sabe: ' + P.contratante.sabe, '- Esconde: ' + P.contratante.esconde, '',
+    '| Antagonista | Papel | ND | Capítulos |', '|---|---|---|---|', ...P.antagonistas.map(a => `| ${a.nome} | ${a.papel} | ${a.nd} | ${a.capitulos.join(', ')} |`), '',
+    '| Capítulo | Nível | Orçamento Moderado | Orçamento Alto | Combate principal |', '|---|---|---|---|---|',
+    ...P.capitulos.map(c => { const B = orc(c.nivel, p.jogadores); return `| ${c.n}. ${c.titulo} | ${c.nivel} | ${fmt(B[1])} XP | ${fmt(B[2])} XP | ${c.dificuldade} |`; }), '',
+    '**Marcos de nível.** ' + P.marcos, '', '**Escolha moral (capítulo ' + P.escolha.capitulo + ').** ' + P.escolha.descricao + ' Consequência no capítulo ' + P.escolha.consequencia_capitulo + ': ' + P.escolha.consequencia, '');
+  P.capitulos.forEach(pc => {
+    const c = caps[pc.n]; L.push('## Capítulo ' + pc.n + ' — ' + (c ? c.titulo : pc.titulo), '');
+    if (!c){ L.push('_Ainda não gerado._ ' + pc.resumo, ''); return; }
+    L.push('*Nível ' + c.nivel + ' · Sessão ' + pc.n + '.* ' + c.resumo, '', '> ' + c.abertura.replace(/\n/g, '\n> '), '', '### Cenas', '');
+    c.cenas.forEach(s => { L.push('#### ' + s.nome, '', '- Objetivo: ' + s.objetivo); s.testes.forEach(t => L.push('- Teste: ' + t.pericia + ' CD ' + t.cd + (t.uso ? ' (' + t.uso + ')' : ''))); L.push('- Sucesso: ' + s.sucesso, '- Falha: ' + s.falha, ''); });
+    L.push('### Combates', '');
+    c.combates.forEach(cb => { const v = avaliar(cb, c.nivel, p.jogadores, A.fichas);
+      L.push('#### ' + cb.nome + (cb.principal ? ' (principal)' : '') + ' · ' + cb.dificuldade, '', '| Inimigo | Qtd | XP | Total |', '|---|---|---|---|',
+        ...v.linhas.map(l => `| ${l.nome}${l.en ? ' (' + l.en + ')' : ''} | ${l.q} | ${fmt(l.xp)} | ${fmt(l.xp*l.q)} |`), `| **Total** | | | **${fmt(v.total)}** |`, '',
+        'Faixa do grupo no nível ' + c.nivel + ': Baixa até ' + fmt(v.B[0]) + ' · Moderada até ' + fmt(v.B[1]) + ' · Alta até ' + fmt(v.B[2]) + ' XP. Resultado: ' + DIFN[v.cls] + '.', '',
+        '- Terreno: ' + cb.terreno, '- Objetivo: ' + cb.objetivo, '- Tática: ' + cb.tatica, '- Fuga ou rendição: ' + cb.fuga, ''); });
+    L.push('### Evento', '', c.evento, '', '### Fim do capítulo', '', '- Gancho: ' + c.gancho);
+    if (c.subida) L.push('- Subida de nível: ' + c.subida);
+    L.push('- Ouro: ' + c.ouro, ''); lista('Recompensas', c.recompensas);
+  });
+  L.push('## Apêndices', '', '### Fichas dos inimigos personalizados', '');
+  arr(A.fichas).forEach(f => {
+    L.push('#### ' + f.nome, '', '*' + f.tipo + '*', '', '- CA ' + f.ca + ' · PV ' + f.pv + ' · Deslocamento ' + f.deslocamento,
+      '- ' + Object.entries(f.atributos).map(([k, v]) => k + ' ' + v + ' (' + mod(v) + ')').join(' · '));
+    [['Salvaguardas', f.salvaguardas], ['Perícias', f.pericias], ['Resistências', f.resistencias], ['Imunidades', f.imunidades], ['Sentidos', f.sentidos], ['Idiomas', f.idiomas]].forEach(([k, v]) => v && L.push('- ' + k + ': ' + v));
+    L.push('- ND ' + f.nd + ' (' + fmt(crXp(f.nd)||0) + ' XP)', '');
+    [['Traços', f.tracos], ['Ações', f.acoes], ['Ações bônus', f.acoes_bonus], ['Reações', f.reacoes], ['Ações lendárias', f.lendarias]].forEach(([k, xs]) => { if (xs.length){ L.push('**' + k + '**', ''); xs.forEach(x => L.push('- ' + (x.nome ? '***' + x.nome + '.*** ' : '') + x.texto)); L.push(''); } });
+  });
+  L.push('### PNJs aliados', '', '| Nome | Quem é | Personalidade | Ficha sugerida |', '|---|---|---|---|', ...P.aliados.map(a => `| ${a.nome} | ${a.quem} | ${a.personalidade} | ${a.ficha} |`), '');
+  return L.join('\n');
+}
+const mod = v => { const m = Math.floor((v - 10) / 2); return (m >= 0 ? '+' : '') + m; };
+
+/* ================= telas ================= */
+function render(){
+  $('#topo').innerHTML = S.tela === 'lista'
+    ? `<button class="btn pri" data-act="nova">Nova aventura</button>`
+    : `<button class="btn" data-act="lista">Minhas aventuras</button>${S.tela === 'ver' ? '<button class="btn pri" data-act="nova">Nova aventura</button>' : ''}`;
+  const avisos = [];
+  if (S.semIa && S.tela !== 'ver') avisos.push(`<div class="notice"><b>Gerar aventuras só funciona dentro do claude.ai.</b> Aqui dá para ver o exemplo e as aventuras salvas.</div>`);
+  if (S.semDb && !S.semIa) avisos.push(`<div class="notice"><b>Não dá para salvar nesta visualização.</b> A aventura fica só nesta aba; baixe o arquivo antes de fechar.</div>`);
+  if (S.avisoDb) avisos.push(`<div class="notice bad">${h(S.avisoDb)}</div>`);
+  if (S.msg) avisos.push(`<div class="notice" role="status"><b>${h(S.msg)}</b></div>`);
+  const corpo = S.tela === 'nova' ? telaNova() : S.tela === 'ver' && aventura(S.atual) ? telaVer(aventura(S.atual)) : telaLista();
+  $('#app').innerHTML = `<div class="stack">${avisos.join('')}${corpo}</div>`;
+}
+
+function telaLista(){
+  const xs = Object.values(S.lista).sort((a, b) => (b.atualizada||0) - (a.atualizada||0));
+  const card = (A, ex) => { const caps = capsDe(A.id), feitos = Object.keys(caps).length, n = A.params.sessoes, P = A.plano;
+    const st = ex ? '<span class="chip gold">Exemplo</span>' : !P ? '<span class="chip warn">Sem plano</span>' : feitos >= n && A.fichas ? '<span class="chip ok">Completa</span>' : `<span class="chip warn">${feitos} de ${n} capítulos</span>`;
+    return `<button class="panel card" data-act="abrir" data-id="${h(A.id)}"><div class="row between"><span class="eyebrow">${P && P.cenario ? h(P.cenario.slice(0, 40)) : 'Aventura'}</span>${st}</div>
+      <h3>${h(A.titulo || 'Nova aventura')}</h3>
+      <span class="muted small">${A.params.jogadores} jogadores · nível ${A.params.nivel}${P ? ' → ' + P.capitulos[P.capitulos.length-1].nivel : ''} · ${A.params.sessoes} ${A.params.sessoes > 1 ? 'sessões' : 'sessão'}</span>
+      ${P ? `<span class="small">${tx(P.premissa.slice(0, 180))}${P.premissa.length > 180 ? '…' : ''}</span>` : ''}</button>`; };
+  const vazio = !xs.length ? `<div class="panel empty"><h2>Nenhuma aventura ainda</h2><p>Conte uma história, de um livro, de uma série ou sua, e o gerador monta a aventura: plano, capítulos com cenas e combates, fichas dos vilões e a conferência de XP de cada combate. Abaixo há um exemplo pronto para você ver como fica.</p><button class="btn pri" data-act="nova">Criar a primeira aventura</button></div>` : '';
+  return `${vazio}<div class="cards">${xs.map(A => card(A)).join('')}${!xs.length ? card(EXEMPLO, true) : ''}</div>`;
+}
+
+function telaNova(){
+  const f = S.form, ok = !S.semIa && !S.iaNegada;
+  const opt = (o, v) => Object.entries(o).map(([k, t]) => `<option value="${h(k)}"${k === v ? ' selected' : ''}>${h(t)}</option>`).join('');
+  return `<form class="panel stack" id="form-nova"><h3 style="margin:0">Nova aventura</h3>
+    <div class="form">
+      <div class="f wide"><label for="f-historia">História ou conto</label>
+        <textarea id="f-historia" data-f="historia" rows="6" required placeholder="Ex.: Vox Machina, arco de Briarwood: o grupo volta a Whitestone para enfrentar os Briarwood. Pode colar um resumo com os acontecimentos, locais e personagens.">${h(f.historia)}</textarea>
+        <span class="hint">O Claude conhece histórias famosas, mas pode errar detalhes. Um resumo colado aqui deixa a aventura mais fiel.</span></div>
+      <div class="f"><label for="f-jogadores">Jogadores</label><input id="f-jogadores" data-f="jogadores" type="number" min="1" max="8" value="${f.jogadores}"></div>
+      <div class="f"><label for="f-nivel">Nível inicial</label><input id="f-nivel" data-f="nivel" type="number" min="1" max="20" value="${f.nivel}"></div>
+      <div class="f"><label for="f-sessoes">Sessões (capítulos)</label><input id="f-sessoes" data-f="sessoes" type="number" min="1" max="8" value="${f.sessoes}"></div>
+      <div class="f"><label for="f-fidelidade">Fidelidade à história</label><select id="f-fidelidade" data-f="fidelidade">${opt({fiel:'Fiel', adaptada:'Adaptada', livre:'Livre'}, f.fidelidade)}</select></div>
+      <div class="f half"><label for="f-papel">Papel dos protagonistas originais</label><input id="f-papel" data-f="papel" list="papeis" value="${h(f.papel)}"><datalist id="papeis">${PAPEIS.map(x => `<option value="${h(x)}">`).join('')}</datalist></div>
+      <div class="f half"><label for="f-tier">Geração</label><select id="f-tier" data-f="tier">${opt(TIERS, f.tier)}</select></div>
+      <div class="f wide"><label for="f-obs">Observações para o Claude (opcional)</label><textarea id="f-obs" data-f="obs" rows="3" placeholder="Ex.: o grupo tem um paladino e um bardo; evitar aranhas; quero mais intriga do que combate.">${h(f.obs)}</textarea></div>
+    </div>
+    <p class="muted small" style="margin:0">A aventura sai em <span id="n-etapas">${2 + clamp(int(f.sessoes, 1), 1, 8)}</span> etapas: plano, fichas dos vilões e um pedido por capítulo. Cada etapa leva de 1 a 3 minutos e usa o limite de uso da sua conta do Claude. O que fica pronto é salvo na hora.</p>
+    <div class="row"><button class="btn pri" type="submit"${ok ? '' : ' disabled'}>Gerar aventura</button><button class="btn" type="button" data-act="lista">Cancelar</button>
+    ${ok ? '' : `<span class="muted small">${S.iaNegada ? 'O Claude não foi liberado para esta página. Libere no menu de permissões do artefato e recarregue.' : 'Disponível só dentro do claude.ai.'}</span>`}</div></form>`;
+}
+
+/* ---------- leitura ---------- */
+function telaVer(A){
+  const P = A.plano, p = A.params, caps = capsDe(A.id), ex = !!A.exemplo, g = S.ger && S.ger.id === A.id ? S.ger : null;
+  const falta = !ex && passosFaltando(A).length, ativo = S.ger && !S.ger.fim;
+  const acoes = [];
+  if (S.dl && P) acoes.push(`<button class="btn" data-act="baixar">Baixar (.md)</button>`);
+  if (!ex && falta && !ativo && S.sample && !S.iaNegada) acoes.push(`<button class="btn pri" data-act="continuar">${P ? 'Continuar geração' : 'Gerar'}</button>`);
+  if (!ex && !ativo) acoes.push(`<button class="btn danger" data-act="excluir">Excluir</button>`);
+  const conf = S.excluir ? `<div class="confirm"><span>Excluir “${h(A.titulo)}” para sempre?</span><button class="btn sm danger" data-act="excluir-sim">Excluir</button><button class="btn sm" data-act="excluir-nao">Manter</button></div>` : '';
+  const prog = g ? `<div class="panel" aria-live="polite"><div class="row between"><h3 style="margin:0">${g.fim ? 'Geração interrompida' : 'Gerando a aventura'}</h3>${g.fim ? `<button class="btn sm" data-act="fechar-ger">Fechar</button>` : `<button class="btn sm danger" data-act="parar">Parar</button>`}</div>
+    <ol class="passos" style="margin-top:10px">${g.passos.map(x => `<li><span class="st ${x.st}">${{pend:'Na fila', run:'Gerando', ok:'Pronto', erro:'Falhou'}[x.st]}</span><span>${h(x.rot)}${x.st === 'run' ? ` <span class="muted small" id="chars">${g.chars ? fmt(g.chars) + ' caracteres recebidos' : 'o Claude está pensando…'}</span>` : ''}</span></li>`).join('')}</ol>
+    ${g.erro ? `<p class="small" style="color:var(--red);margin:10px 0 0">${h(g.erro)}</p>` : ''}</div>` : '';
+  if (!P) return `${conf}${prog}<div class="panel empty"><h2>${h(A.titulo || 'Nova aventura')}</h2><p>${tx(p.historia.slice(0, 300))}</p><p>O plano ainda não foi gerado.</p><div class="row">${acoes.join('')}</div></div>`;
+  const nvF = P.capitulos[P.capitulos.length-1].nivel;
+  const toc = [['visao', 'Visão geral'], ['verif', 'Verificações'], ...P.capitulos.map(c => ['cap-' + c.n, c.n + '. ' + ((caps[c.n] || c).titulo)]), ['apend', 'Apêndices']];
+  return `${conf}${prog}
+  <div class="panel titulo stack">
+    <div class="row between"><span class="eyebrow">${ex ? 'Exemplo · ' : ''}${h(P.origem.slice(0, 90))}</span><div class="row">${acoes.join('')}</div></div>
+    <h2>${h(P.titulo)}</h2>
+    <dl class="meta">
+      <div><dt>Cenário</dt><dd>${tx(P.cenario)}</dd></div>
+      <div><dt>Nível</dt><dd class="num">${p.nivel} → ${nvF}</dd></div>
+      <div><dt>Jogadores</dt><dd class="num">${p.jogadores}</dd></div>
+      <div><dt>Sessões</dt><dd class="num">${p.sessoes}</dd></div>
+      <div><dt>Dificuldade geral</dt><dd>${h(P.dificuldade)}</dd></div>
+      <div><dt>Temas</dt><dd>${h(P.temas.join(', '))}</dd></div>
+    </dl>
+  </div>
+  <div class="leitura">
+    <nav class="toc" aria-label="Sumário">${toc.map(([k, t]) => `<button data-act="ir" data-k="${k}">${h(t)}</button>`).join('')}</nav>
+    <div class="stack">${secVisao(A)}${secVerif(A)}${P.capitulos.map(c => secCap(A, c)).join('')}${secApend(A)}</div>
+  </div>`;
+}
+
+function secVisao(A){
+  const P = A.plano, p = A.params, caps = capsDe(A.id);
+  const prog = P.capitulos.map(c => { const B = orc(c.nivel, p.jogadores), cap = caps[c.n], pr = cap && cap.combates.find(x => x.principal) || cap && cap.combates[0];
+    const v = pr ? avaliar(pr, cap.nivel, p.jogadores, A.fichas) : null;
+    return `<tr><td>${c.n}. ${h((cap || c).titulo)}</td><td class="n">${c.nivel}</td><td class="n">${fmt(B[1])}</td><td class="n">${fmt(B[2])}</td><td>${h(c.dificuldade)}</td><td class="n">${v ? fmt(v.total) + ' ' + chipXp(v) : '<span class="muted">—</span>'}</td></tr>`; }).join('');
+  return `<section class="panel cap" id="visao"><span class="eyebrow">Visão geral</span>
+    <div class="prosa"><p>${tx(P.premissa)}</p><p><b>Gancho.</b> ${tx(P.gancho)}</p></div>
+    <div class="prosa"><p><b>${h(P.contratante.nome || 'Contratante')}.</b> ${tx(P.contratante.quem)}</p><p><b>O que sabe.</b> ${tx(P.contratante.sabe)}</p><p><b>O que esconde.</b> ${tx(P.contratante.esconde)}</p></div>
+    <h3>Antagonistas</h3>
+    <div class="tabwrap"><table><thead><tr><th>Nome</th><th>Papel</th><th class="n">ND</th><th>Capítulos</th><th>Fuga</th></tr></thead><tbody>
+      ${P.antagonistas.map(a => `<tr><td>${h(a.nome)}</td><td>${tx(a.papel)}</td><td class="n">${h(a.nd)}</td><td class="num">${a.capitulos.join(', ')}</td><td class="small">${tx(a.foge) || '<span class="muted">—</span>'}</td></tr>`).join('')}</tbody></table></div>
+    <h3>Progressão</h3>
+    <div class="tabwrap"><table><thead><tr><th>Capítulo</th><th class="n">Nível</th><th class="n">Moderado</th><th class="n">Alto</th><th>Combate principal</th><th class="n">XP real</th></tr></thead><tbody>${prog}</tbody></table></div>
+    <p class="muted small" style="margin:0">Orçamentos do grupo inteiro (${p.jogadores} jogadores), pelo Livro do Mestre 2024.</p>
+    <div class="prosa"><p><b>Marcos de nível.</b> ${tx(P.marcos)}</p>
+    <p><b>Escolha moral, capítulo ${P.escolha.capitulo}.</b> ${tx(P.escolha.descricao)}</p><p><b>Consequência, capítulo ${P.escolha.consequencia_capitulo}.</b> ${tx(P.escolha.consequencia)}</p></div>
+  </section>`;
+}
+const chipXp = v => !v.achou ? '<span class="chip bad">Criatura desconhecida</span>' : v.ok ? `<span class="chip ok">${DIFN[v.cls]}</span>` : `<span class="chip warn" title="Declarada: ${DIFN[v.dec] || '?'}">${DIFN[v.cls]}</span>`;
+
+function verificacoes(A){
+  const P = A.plano, p = A.params, caps = capsDe(A.id), out = [];
+  const feitos = P.capitulos.filter(c => caps[c.n]);
+  if (feitos.length < P.capitulos.length) out.push(['warn', `${P.capitulos.length - feitos.length} capítulo(s) ainda não gerado(s).`]);
+  let fora = [], desc = [], semPrincipal = [];
+  feitos.forEach(c => { const cap = caps[c.n]; if (!cap.combates.some(x => x.principal)) semPrincipal.push(c.n);
+    cap.combates.forEach(cb => { const v = avaliar(cb, cap.nivel, p.jogadores, A.fichas);
+      v.linhas.filter(l => !l.ok).forEach(l => desc.push(l.nome + ' (cap. ' + c.n + ')'));
+      if (v.achou && v.cls !== v.dec) fora.push(`${cb.nome} (cap. ${c.n}): declarado ${DIFN[v.dec] || '?'}, soma ${fmt(v.total)} XP = ${DIFN[v.cls]}`); }); });
+  if (feitos.length) out.push(fora.length ? ['warn', 'Combates fora da faixa declarada: ' + fora.join('; ') + '.'] : ['ok', 'Todos os combates gerados batem com a dificuldade declarada.']);
+  if (desc.length) out.push(['bad', 'Criaturas que não estão na lista de monstros nem nas fichas: ' + desc.join(', ') + '.']);
+  if (semPrincipal.length) out.push(['warn', 'Capítulo(s) sem combate principal: ' + semPrincipal.join(', ') + '.']);
+  let sobe = true; P.capitulos.forEach((c, i) => { if (i && (c.nivel < P.capitulos[i-1].nivel || c.nivel > P.capitulos[i-1].nivel + 1)) sobe = false; });
+  out.push(sobe && P.capitulos[0].nivel === p.nivel ? ['ok', `Progressão de nível coerente: ${P.capitulos.map(c => c.nivel).join(' → ')}.`] : ['warn', `Progressão de nível estranha: ${P.capitulos.map(c => c.nivel).join(' → ')}.`]);
+  const fogem = P.antagonistas.filter(a => a.foge);
+  fogem.forEach(a => { const ult = Math.max(0, ...a.capitulos); const primeiro = Math.min(...a.capitulos.length ? a.capitulos : [0]);
+    out.push(ult > primeiro ? ['ok', `${a.nome} foge e reaparece no capítulo ${ult}.`] : ['warn', `${a.nome} foge, mas o plano não mostra ele voltando depois.`]); });
+  const em = P.escolha;
+  if (!em.descricao) out.push(['warn', 'O plano não tem escolha moral.']);
+  else out.push(em.consequencia_capitulo > em.capitulo || (p.sessoes === 1 && em.consequencia_capitulo === 1) ? ['ok', `Escolha moral no capítulo ${em.capitulo}, com consequência no capítulo ${em.consequencia_capitulo}.`] : ['warn', `A consequência da escolha moral (capítulo ${em.consequencia_capitulo}) não vem depois da escolha (capítulo ${em.capitulo}).`]);
+  const semFicha = P.antagonistas.filter(a => !fichaDe(A.fichas, a.nome));
+  if (A.fichas && semFicha.length) out.push(['warn', 'Antagonistas sem ficha: ' + semFicha.map(a => a.nome).join(', ') + '.']);
+  return out;
+}
+function secVerif(A){
+  const xs = verificacoes(A), rot = {ok:'Certo', warn:'Atenção', bad:'Problema'};
+  return `<section class="panel cap" id="verif"><span class="eyebrow">Verificações feitas pela página</span>
+    <ul class="checks">${xs.map(([t, m]) => `<li><span class="chip ${t}">${rot[t]}</span><span>${h(m)}</span></li>`).join('')}</ul>
+    <p class="muted small" style="margin:0">A página soma o XP de cada combate com a lista de monstros da Mesa e as fichas dos antagonistas. Se um combate sair da faixa, ajuste as quantidades na mesa ou gere o capítulo de novo.</p></section>`;
+}
+
+function secCap(A, pc){
+  const c = capsDe(A.id)[pc.n], p = A.params, pode = !A.exemplo && S.sample && !S.iaNegada && !(S.ger && !S.ger.fim) && A.fichas;
+  if (!c) return `<section class="panel cap" id="cap-${pc.n}"><div class="caphead"><span class="eyebrow">Capítulo ${pc.n} · Nível ${pc.nivel} · ainda não gerado</span><h2>${h(pc.titulo)}</h2><p class="muted" style="margin:0">${tx(pc.resumo)}</p></div>
+    ${pode ? `<div><button class="btn" data-act="gerar-cap" data-n="${pc.n}">Gerar este capítulo</button></div>` : ''}</section>`;
+  const cenas = c.cenas.map(s => `<div class="cena"><h4>${h(s.nome)}</h4>
+      <p style="margin:0"><b style="color:var(--gold2)">Objetivo.</b> ${tx(s.objetivo)}</p>
+      ${s.testes.length ? `<ul class="testes">${s.testes.map(t => `<li><span class="chip gold">${h(t.pericia)} CD ${t.cd || '?'}</span> ${tx(t.uso)}</li>`).join('')}</ul>` : ''}
+      <p style="margin:0"><b style="color:var(--green)">Sucesso.</b> ${tx(s.sucesso)}</p><p style="margin:0"><b style="color:var(--red)">Falha.</b> ${tx(s.falha)}</p></div>`).join('');
+  const combates = c.combates.map(cb => { const v = avaliar(cb, c.nivel, p.jogadores, A.fichas);
+    return `<div class="combate${v.ok ? '' : ' fora'}"><div class="row between"><h4>${h(cb.nome)}</h4><div class="row">${cb.principal ? '<span class="chip gold">Principal</span>' : ''}<span class="chip">Declarado: ${h(cb.dificuldade)}</span>${chipXp(v)}</div></div>
+      <div class="tabwrap"><table><thead><tr><th>Inimigo</th><th class="n">Qtd</th><th class="n">XP cada</th><th class="n">Total</th></tr></thead><tbody>
+        ${v.linhas.map(l => `<tr><td>${h(l.nome)}${l.en ? ` <span class="muted small">(${h(l.en)})</span>` : ''}<div class="small ${l.ok ? 'muted' : ''}" ${l.ok ? '' : 'style="color:var(--red)"'}>${h(l.det)}</div></td><td class="n">${l.q}</td><td class="n">${fmt(l.xp)}</td><td class="n">${fmt(l.xp*l.q)}</td></tr>`).join('')}</tbody>
+        <tfoot><tr><td colspan="3">Soma</td><td class="n">${fmt(v.total)} XP</td></tr></tfoot></table></div>
+      <div class="faixa" aria-label="Faixa de dificuldade do grupo">${['Baixa até ' + fmt(v.B[0]), 'Moderada até ' + fmt(v.B[1]), 'Alta até ' + fmt(v.B[2]), 'Acima de ' + fmt(v.B[2])].map((t, i) => `<span class="${i === v.cls ? 'aqui' : ''}">${t}</span>`).join('')}</div>
+      <div class="prosa small"><p><b>Terreno.</b> ${tx(cb.terreno)}</p><p><b>Objetivo.</b> ${tx(cb.objetivo)}</p><p><b>Tática.</b> ${tx(cb.tatica)}</p><p><b>Fuga ou rendição.</b> ${tx(cb.fuga)}</p></div></div>`; }).join('');
+  return `<section class="panel cap" id="cap-${pc.n}">
+    <div class="row between" style="align-items:flex-start"><div class="caphead"><span class="eyebrow">Capítulo ${pc.n} · Sessão ${pc.n} · Nível ${c.nivel}</span><h2>${h(c.titulo)}</h2><p class="muted" style="margin:0">${tx(c.resumo)}</p></div>
+      ${pode ? `<button class="btn sm" data-act="gerar-cap" data-n="${pc.n}">Gerar de novo</button>` : ''}</div>
+    <blockquote class="ler"><span class="eyebrow">Leia em voz alta</span>${tx(c.abertura)}</blockquote>
+    <h3>Cenas</h3>${cenas || '<p class="muted">Sem cenas.</p>'}
+    <h3>Combates</h3>${combates || '<p class="muted">Sem combates.</p>'}
+    <h3>Evento</h3><div class="prosa"><p>${tx(c.evento)}</p></div>
+    <h3>Fim do capítulo</h3><div class="prosa"><p><b>Gancho.</b> ${tx(c.gancho)}</p>${c.subida ? `<p><b>Subida de nível.</b> ${tx(c.subida)}</p>` : ''}
+      <p><b>Recompensas.</b> ${c.recompensas.map(tx).join(' · ') || '—'}${c.ouro ? ' · ' + tx(c.ouro) : ''}</p></div>
+  </section>`;
+}
+
+function fichaHtml(f){
+  const bloco = (t, xs) => xs.length ? `<h5>${t}</h5>${xs.map(x => `<p>${x.nome ? `<b><i>${h(x.nome)}.</i></b> ` : ''}${tx(x.texto)}</p>`).join('')}` : '';
+  const linhas = [['Salvaguardas', f.salvaguardas], ['Perícias', f.pericias], ['Resistências', f.resistencias], ['Imunidades', f.imunidades], ['Sentidos', f.sentidos], ['Idiomas', f.idiomas]].filter(x => x[1]);
+  return `<div class="ficha"><div><h4>${h(f.nome)}</h4><span class="muted small"><i>${h(f.tipo)}</i></span></div>
+    <p class="linha"><b>CA</b> ${h(f.ca)} · <b>PV</b> ${h(f.pv)} · <b>Deslocamento</b> ${h(f.deslocamento)}</p>
+    <div class="attrs num">${Object.entries(f.atributos).map(([k, v]) => `<div><b>${k}</b>${v} (${mod(v)})</div>`).join('')}</div>
+    ${linhas.map(([k, v]) => `<p class="linha"><b>${k}</b> ${tx(v)}</p>`).join('')}
+    <p class="linha"><b>ND</b> ${h(f.nd)} <span class="muted num">(${fmt(crXp(f.nd) || 0)} XP)</span></p>
+    ${bloco('Traços', f.tracos)}${bloco('Ações', f.acoes)}${bloco('Ações bônus', f.acoes_bonus)}${bloco('Reações', f.reacoes)}${bloco('Ações lendárias', f.lendarias)}</div>`;
+}
+function secApend(A){
+  const P = A.plano;
+  return `<section class="panel cap" id="apend"><span class="eyebrow">Apêndices</span>
+    <h3>Fichas dos inimigos personalizados</h3>
+    ${A.fichas ? (A.fichas.length ? `<div class="cards">${A.fichas.map(fichaHtml).join('')}</div>` : '<p class="muted">Esta aventura não tem antagonistas com ficha própria.</p>') : '<p class="muted">As fichas ainda não foram geradas.</p>'}
+    <h3>PNJs aliados</h3>
+    <div class="tabwrap"><table><thead><tr><th>Nome</th><th>Quem é</th><th>Personalidade</th><th>Ficha sugerida</th></tr></thead><tbody>
+      ${P.aliados.map(a => { const m = MON_IDX[norm(a.ficha)]; return `<tr><td>${h(a.nome)}</td><td>${tx(a.quem)}</td><td>${tx(a.personalidade)}</td><td>${h(a.ficha)}${m ? ` <span class="muted small">(${h(m.pt)}, ND ${m.cr})</span>` : ''}</td></tr>`; }).join('') || '<tr><td colspan="4" class="muted">Nenhum.</td></tr>'}</tbody></table></div>
+  </section>`;
+}
+
+/* ================= eventos ================= */
+document.addEventListener('click', async e => {
+  const t = e.target.closest('[data-act]'); if (!t) return;
+  const a = t.dataset.act;
+  if (a !== 'ir') S.msg = '';
+  if (a === 'nova'){ S.tela = 'nova'; S.excluir = false; render(); window.scrollTo(0, 0); }
+  else if (a === 'lista'){ S.tela = 'lista'; S.excluir = false; render(); }
+  else if (a === 'abrir'){ S.tela = 'ver'; S.atual = t.dataset.id; S.excluir = false; render(); window.scrollTo(0, 0); }
+  else if (a === 'ir'){ const el = document.getElementById(t.dataset.k); if (el) el.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block:'start'}); }
+  else if (a === 'continuar'){ gerar(S.atual); }
+  else if (a === 'gerar-cap'){ gerar(S.atual, int(t.dataset.n, 1)); }
+  else if (a === 'parar'){ S.ger?.ctl?.abort(); }
+  else if (a === 'fechar-ger'){ S.ger = null; render(); }
+  else if (a === 'excluir'){ S.excluir = true; render(); }
+  else if (a === 'excluir-nao'){ S.excluir = false; render(); }
+  else if (a === 'excluir-sim'){ const id = S.atual; S.excluir = false; S.tela = 'lista'; render();
+    try { await excluirAv(id); S.msg = 'Aventura excluída.'; } catch (x){ S.msg = 'Não consegui excluir agora (' + (x.code || x.message) + ').'; } render(); }
+  else if (a === 'baixar'){ const A = aventura(S.atual); if (!A || !S.dl) return;
+    const nome = (A.titulo || 'aventura').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^\w -]+/g, '').trim().replace(/\s+/g, '-').toLowerCase() || 'aventura';
+    try { await S.dl.save({filename:nome + '.md', data:markdown(A)}); S.msg = 'Arquivo salvo.'; }
+    catch (x){ S.msg = x.code === 'declined' ? '' : 'Não consegui baixar o arquivo (' + x.code + ').'; } render(); }
+});
+document.addEventListener('input', e => { const k = e.target.dataset?.f; if (!k) return; S.form[k] = e.target.value; guardarForm();
+  if (k === 'sessoes'){ const el = $('#n-etapas'); if (el) el.textContent = String(2 + clamp(int(e.target.value, 1), 1, 8)); } });
+document.addEventListener('change', e => { const k = e.target.dataset?.f; if (k){ S.form[k] = e.target.value; guardarForm(); } });
+document.addEventListener('submit', async e => {
+  if (e.target.id !== 'form-nova') return; e.preventDefault();
+  const f = S.form, historia = String(f.historia || '').trim();
+  if (!historia){ $('#f-historia')?.focus(); return; }
+  const params = {historia, jogadores:clamp(int(f.jogadores, 4), 1, 8), nivel:clamp(int(f.nivel, 1), 1, 20), sessoes:clamp(int(f.sessoes, 3), 1, 8), fidelidade:f.fidelidade, papel:String(f.papel || PAPEIS[0]).trim(), obs:String(f.obs || '').trim()};
+  const id = 'av' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  const A = {id, titulo:'Nova aventura', params, plano:null, fichas:null, criada:Date.now(), atualizada:Date.now()};
+  try { await salvarAv(A); } catch (x){ S.msg = 'Não consegui salvar a aventura (' + (x.code || x.message) + ').'; render(); return; }
+  S.tela = 'ver'; S.atual = id; render(); window.scrollTo(0, 0);
+  gerar(id);
+});
+
+/* ================= exemplo (aventura original, só para mostrar o formato) ================= */
+const EXEMPLO = {id:'exemplo', exemplo:true, titulo:'O Sino Afogado de Vau-Cinzento',
+  params:{historia:'Exemplo: um vilarejo à beira de um lago onde um sino afundado volta a tocar à noite.', jogadores:4, nivel:3, sessoes:2, fidelidade:'livre', papel:'Ausentes (só citados)', obs:''},
+  plano:{titulo:'O Sino Afogado de Vau-Cinzento', cenario:'Vau-Cinzento, vilarejo de pescadores à beira do Lago Turvo', temas:['horror', 'mistério'], origem:'Aventura de exemplo, criada para mostrar o formato do gerador', dificuldade:'Moderada',
+    premissa:'Há vinte anos, o sino da capela de Vau-Cinzento afundou no lago durante uma tempestade. Agora ele toca toda noite, debaixo da água, e quem escuta o som sonha com afogados. Na terceira noite, os mortos do lago começaram a sair para a margem.',
+    gancho:'O alcaide oferece 200 po para quem descobrir por que o sino toca e fazer os mortos voltarem para o fundo.',
+    contratante:{nome:'Alcaide Oswin Darrow', quem:'Velho pescador que comanda o vilarejo há duas décadas.', sabe:'Que o sino não afundou sozinho: foi derrubado de propósito.', esconde:'Foi ele quem derrubou o sino, para esconder no fundo do lago o corpo de um rival que ele matou. [Inventado]'},
+    antagonistas:[{nome:'Irmã Maren', papel:'Sacerdotisa afogada que voltou como morta-viva e quer que o vilarejo pague pelo crime do alcaide.', nd:'3', capitulos:[1, 2], foge:'No capítulo 1, mergulha no lago e some na neblina quando perde metade dos PV.'}],
+    aliados:[{nome:'Tilda Vaurel', quem:'Filha do homem que o alcaide matou.', personalidade:'Desconfiada, corajosa e boa de barco.', ficha:'Scout'}],
+    capitulos:[{n:1, titulo:'Os Afogados da Margem', nivel:3, dificuldade:'Moderada', resumo:'O grupo defende o vilarejo dos mortos que saem do lago e vê Irmã Maren pela primeira vez.', segredo:'O sino foi derrubado de propósito.', local:'Margem do Lago Turvo'},
+      {n:2, titulo:'A Capela Submersa', nivel:4, dificuldade:'Alta', resumo:'O grupo desce até a capela afundada para silenciar o sino e enfrentar Irmã Maren.', segredo:'O alcaide é o assassino.', local:'Capela no fundo do lago'}],
+    escolha:{capitulo:1, descricao:'Entregar o alcaide para Irmã Maren em troca de paz, ou protegê-lo até o julgamento.', consequencia_capitulo:2, consequencia:'Se o grupo protegeu o alcaide, Maren tem vantagem nas jogadas de ataque contra quem o defendeu. Se o entregou, Tilda se junta ao grupo e dá vantagem nos testes de Sobrevivência no lago.'},
+    marcos:'O grupo sobe para o nível 4 ao fim do capítulo 1, depois de salvar o vilarejo na primeira noite.'},
+  fichas:[{nome:'Irmã Maren', tipo:'Morto-vivo Médio, Neutro e Mau', nd:'3', ca:'14 (vestes encharcadas, escudo)', pv:'60 (11d8 + 11)', deslocamento:'9 m, natação 9 m', atributos:{FOR:12, DES:14, CON:12, INT:11, SAB:16, CAR:15},
+    salvaguardas:'Sab +5', pericias:'Religião +2, Intimidação +4', resistencias:'Necrótico', imunidades:'Veneno; Envenenado, Exaustão', sentidos:'Visão no escuro 18 m, Percepção passiva 13', idiomas:'Comum',
+    tracos:[{nome:'Anfíbia', texto:'Respira ar e água.'}, {nome:'Badalo do Fundo', texto:'Enquanto o sino estiver tocando, Maren recupera 5 PV no início de cada turno dela, se tiver pelo menos 1 PV.'}],
+    acoes:[{nome:'Ataques Múltiplos', texto:'Maren faz dois ataques de Toque Gélido.'}, {nome:'Toque Gélido', texto:'Ataque corpo a corpo: +5 para acertar, alcance 1,5 m. Acerto: 7 (1d8 + 3) de dano necrótico.'}, {nome:'Chamado das Águas (Recarga 5–6)', texto:'Cada criatura num raio de 3 m faz uma salvaguarda de Força CD 13. Falha: 10 (3d6) de dano de concussão e fica Caída. Sucesso: metade do dano.'}],
+    acoes_bonus:[{nome:'Mergulho na Neblina', texto:'Se estiver a até 1,5 m de água, Maren some debaixo dela e fica Invisível até o início do próximo turno dela.'}], reacoes:[], lendarias:[]}],
+  caps:{
+    1:{n:1, titulo:'Os Afogados da Margem', nivel:3, resumo:'Na primeira noite, os mortos saem do lago e o grupo precisa proteger o vilarejo.',
+      abertura:'A neblina cobre o lago como um lençol molhado. Debaixo da água, um sino bate devagar, e cada badalada parece mais perto. Na margem, alguém grita: as redes estão se mexendo sozinhas.',
+      cenas:[{nome:'A taverna do Anzol Torto', objetivo:'Descobrir o que os moradores sabem sobre o sino.', testes:[{pericia:'Persuasão', cd:12, uso:'convencer o taverneiro a contar a história do naufrágio'}, {pericia:'Intuição', cd:14, uso:'perceber que o alcaide mente sobre a tempestade'}], sucesso:'O grupo descobre que não houve tempestade na noite em que o sino afundou.', falha:'Os moradores se fecham, e o grupo só ouve boatos.'},
+        {nome:'As redes da margem', objetivo:'Achar a origem dos mortos.', testes:[{pericia:'Sobrevivência', cd:13, uso:'seguir as pegadas molhadas até a água'}], sucesso:'O grupo encontra o ponto onde o sino está, a 20 metros da margem.', falha:'Os mortos chegam antes, e o grupo começa o combate cercado.'}],
+      combates:[{nome:'A primeira maré', principal:true, dificuldade:'Moderada', inimigos:[{nome:'Ghoul', qtd:2}, {nome:'Zombie', qtd:6}], terreno:'Píer de madeira podre: quem passar de 2 criaturas num mesmo trecho faz salvaguarda de Destreza CD 12 ou cai na água.', objetivo:'Impedir que os mortos cheguem às casas por 5 rodadas.', tatica:'Os zumbis avançam em linha; os carniçais esperam alguém cair no píer para atacar.', fuga:'Com o amanhecer, os mortos voltam para o lago. Irmã Maren aparece na neblina e mergulha quando perde metade dos PV.'}],
+      evento:'Irmã Maren fala com o grupo de dentro da água: “Tragam o homem que me afogou, e o sino se cala.” Começa a escolha moral.', gancho:'Tilda Vaurel procura o grupo à noite e diz saber onde fica a capela afundada.', subida:'O grupo sobe para o nível 4.', recompensas:['Poção de Respirar na Água', 'Amuleto de prata da capela (25 po)'], ouro:'200 po do alcaide'},
+    2:{n:2, titulo:'A Capela Submersa', nivel:4, resumo:'O grupo desce até a capela no fundo do lago para silenciar o sino.',
+      abertura:'A água é fria e escura, e a luz da superfície some depois de poucos metros. Lá embaixo, entre as algas, a torre da capela ainda está de pé, e o sino balança sem que ninguém o toque.',
+      cenas:[{nome:'A descida', objetivo:'Chegar à capela sem se perder.', testes:[{pericia:'Atletismo', cd:13, uso:'nadar contra a correnteza'}, {pericia:'Percepção', cd:14, uso:'ver a entrada pela janela quebrada'}], sucesso:'O grupo entra pela janela e pega os mortos de surpresa.', falha:'Cada personagem fica com 1 nível de Exaustão ao chegar.'},
+        {nome:'O corpo no sino', objetivo:'Descobrir o segredo do alcaide.', testes:[{pericia:'Investigação', cd:13, uso:'achar o corpo do pai de Tilda preso no sino'}], sucesso:'O grupo encontra o broche do alcaide junto ao corpo: a prova do crime.', falha:'A prova só aparece depois do combate.'}],
+      combates:[{nome:'O altar afogado', principal:true, dificuldade:'Alta', inimigos:[{nome:'Irmã Maren', qtd:1}, {nome:'Ghoul', qtd:3}, {nome:'Zombie', qtd:6}], terreno:'O sino pode ser preso com uma ação e um teste de Atletismo CD 15; isso desliga o traço Badalo do Fundo.', objetivo:'Silenciar o sino antes que Maren recupere toda a vida.', tatica:'Os carniçais protegem o sino; Maren usa Chamado das Águas quando 3 ou mais personagens estão juntos.', fuga:'Maren não foge: com o sino calado, ela pede para o grupo levar a prova ao vilarejo e se desfaz na água.'}],
+      evento:'A consequência da escolha moral entra em jogo, e o grupo decide o que fazer com a prova contra o alcaide.', gancho:'Com o alcaide preso ou fugido, Vau-Cinzento precisa de um novo líder.', subida:'', recompensas:['Tridente +1', 'Sino de prata recuperado (vale 250 po)'], ouro:'120 po no altar'}}
+};
+
+/* ================= início ================= */
+render();
+if (window.claude && window.claude.use){
+  window.claude.use('db').then(db => { S.db = db; if (!db){ S.semDb = true; S.carregou = true; render(); return; } assinar(); });
+  window.claude.use('sample').then(s => { S.sample = s; S.semIa = !s; render(); });
+  window.claude.use('downloads').then(d => { S.dl = d; render(); });
+} else { S.semIa = true; S.semDb = true; render(); }
+</script>
