@@ -292,6 +292,26 @@ textarea{min-height:70px;resize:vertical}
 @media (prefers-reduced-motion:no-preference){.av .st.run{animation:av-pulsa 1.4s ease-in-out infinite}}
 @keyframes av-pulsa{50%{opacity:.45}}
 .av .confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 12px;border:1px solid var(--red);border-radius:8px}
+/* aba Homebrew (usa os estilos .av) */
+.hb .hb-card{display:flex;flex-direction:column;gap:8px}
+.hb .hb-card h3{font-size:15px;color:var(--text);margin:0}
+.hb .hb-card a{color:var(--gold2)}
+.hb .hb-check{display:flex;gap:10px;align-items:flex-start;margin-top:12px;cursor:pointer}
+.hb .hb-check input{margin-top:4px;width:18px;height:18px;accent-color:var(--gold)}
+.hb .hb-drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;border:2px dashed var(--line2);border-radius:var(--r);padding:22px 14px;cursor:pointer;background:var(--bg)}
+.hb .hb-drop:hover,.hb .hb-drop.sobre,.hb .hb-drop:focus-within{border-color:var(--gold)}
+.hb .hb-drop b{color:var(--gold2)}
+.hb .hb-drop input{position:absolute;width:1px;height:1px;opacity:0}
+.hb .hb-thumbs{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.hb .hb-thumbs figure{position:relative;margin:0;width:110px}
+.hb .hb-thumbs img{width:110px;height:110px;object-fit:cover;border-radius:8px;border:1px solid var(--line2);display:block}
+.hb .hb-thumbs .btn{position:absolute;top:4px;right:4px;padding:2px 7px}
+.hb .hb-thumbs figcaption{text-align:center}
+.hb .hb-atr{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.hb .hb-atr label{display:flex;flex-direction:column;gap:4px;text-align:center;font-size:11px;color:var(--muted)}
+.hb .hb-atr input{text-align:center;background:var(--bg);border:1px solid var(--line2);border-radius:8px;padding:8px 4px;width:100%;font-size:15px;color:var(--text)}
+.hb .cards{align-items:start}
+@media (max-width:480px){.hb .hb-atr{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -1851,13 +1871,14 @@ const ICON = {
   masmorra:'<rect x="3" y="3" width="7" height="6"/><rect x="14" y="13" width="7" height="8"/><path d="M10 6h4v7"/>',
   grupo:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><circle cx="17" cy="9" r="2.5"/><path d="M16 15c3 0 5 2 5 5"/>',
   coroa:'<path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/>',
-  livro:'<path d="M4 5c3-1.5 5.5-1.5 8 0v15c-2.5-1.5-5-1.5-8 0z"/><path d="M12 5c2.5-1.5 5-1.5 8 0v15c-3-1.5-5.5-1.5-8 0"/>'
+  livro:'<path d="M4 5c3-1.5 5.5-1.5 8 0v15c-2.5-1.5-5-1.5-8 0z"/><path d="M12 5c2.5-1.5 5-1.5 8 0v15c-3-1.5-5.5-1.5-8 0"/>',
+  frasco:'<path d="M9 3h6M10 3v6L5 18a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/><path d="M7.5 14h9"/>'
 };
 const icon = k => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">${ICON[k]}</svg>`;
 function podeMestrar(){ return S.isOwner || (!!S.myId && S.mestres.includes(S.myId)); }
 function abas(){
   if (S.isMaster){
-    const t = [['fichas','Fichas','ficha',pendingList().length],['masmorras','Masmorras','masmorra'],['aventuras','Aventuras','livro']];
+    const t = [['fichas','Fichas','ficha',pendingList().length],['masmorras','Masmorras','masmorra'],['aventuras','Aventuras','livro'],['homebrew','Homebrew','frasco']];
     if (S.isOwner && S.mode==='db') t.push(['mestres','Mestres','coroa',0]);
     return t;
   }
@@ -1908,6 +1929,7 @@ function viewAba(){
     case 'grupo': return viewFichas();
     case 'masmorras': case 'masmorra': return MAS.view();
     case 'aventuras': return AV.view();
+    case 'homebrew': return HB.view();
     case 'mestres': return S.isOwner ? `<div class="stack">${viewMestres()}<div class="panel" style="max-width:680px"><h3>Andamento da união</h3>${etapas()}</div></div>` : '';
   }
   return '';
@@ -2617,7 +2639,7 @@ function setPath(obj,path,val){ const ks=path.split('.'); let o=obj; ks.slice(0,
 document.addEventListener('click', async e=>{
   const t=e.target.closest('[data-act]'); if(!t || t.tagName==='SELECT') return;
   const a=t.dataset.act;
-  if ((MESA_API.ativo() || S.aba==='aventuras') && a!=='aba' && a!=='ver-como') return;
+  if ((MESA_API.ativo() || S.aba==='aventuras' || S.aba==='homebrew') && a!=='aba' && a!=='ver-como') return;
   if (a==='regra'){ openPop(t); return; }
   if (a==='pop-close'){ closePop(); return; }
   if (a==='pop-edit'){ S.pop.edit=true; renderPop(true); $('#pop-txt')?.focus(); return; }
@@ -2801,7 +2823,7 @@ const MESA_API = {
   candidatos: (camp, extras) => candidatosGrupo(camp||'', extras||[]),
   mudarPv: (id, modo, n) => { const c=S.chars.find(x=>x.id===id); if (c) aplicarPv(c, modo, n); },
   abrirFicha: id => abrirFicha(id), toast: m => toast(m),
-  abaAv: () => S.aba==='aventuras', irAba: k => { entrarAba(k); render(true); window.scrollTo(0,0); }
+  abaAv: () => S.aba==='aventuras', abaHb: () => S.aba==='homebrew', irAba: k => { entrarAba(k); render(true); window.scrollTo(0,0); }
 };
 const MAS = (function(M){
 'use strict';
@@ -3046,7 +3068,9 @@ const SRD = {"Aboleth":{"tipo":"Grande Aberração, Leal e Mau","ca":"17","pv":"
 const monSlug = en => String(en).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 const mod = v => { const m = Math.floor((v-10)/2); return (m>=0?'+':'−')+Math.abs(m); };
 /* troca nomes de monstros conhecidos dentro de um texto por links (nomes mais longos primeiro) */
-const MON_RE = new RegExp('('+MON.map(m=>m.pt).sort((a,b)=>b.length-a.length).map(s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')','g');
+let MON_RE; /* refeito quando chegam monstros homebrew */
+function remontarMonRe(){ MON_RE = new RegExp('('+MON.map(m=>m.pt).sort((a,b)=>b.length-a.length).map(s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')','g'); }
+remontarMonRe();
 const linkMon = txt => h(txt).replace(MON_RE, n => MON_BY_PT[n] ? `<button class="rl" data-act="mon" data-en="${h(MON_BY_PT[n].en)}">${n}</button>` : n);
 
 /* ================= temas ================= */
@@ -3591,10 +3615,14 @@ function genMap(rng, tamanho, tema, rngSec){
 const MON_DG = MON.filter(m=>m.tags!=='x'); /* reserva quando o tema não tem opções: só criaturas de masmorra */
 /* reserva do campo aberto: criaturas de ar livre e as dos cenários abertos */
 const MON_AB = MON.filter(m=>m.tags.includes('x') || Object.values(TEMAS).some(t=>t.aberto && t.pool.includes(m.en)));
-function poolFor(tema){ const T=TEMAS[tema]; if (T.pool) return MON.filter(m=>T.pool.includes(m.en)); const t=T.tag; return MON.filter(m=>m.tags.includes(t)); }
+/* homebrew entra no fim da lista (sem homebrew as masmorras saem iguais); "só chefe" só entra quando a lista é para o chefe */
+function poolFor(tema, chefe){ const T=TEMAS[tema];
+  const base = T.pool ? MON.filter(m=>!m.hb && T.pool.includes(m.en)) : MON.filter(m=>!m.hb && m.tags.includes(T.tag));
+  const hb = MON.filter(m=>m.hb && m.temas.includes(tema) && (chefe || !m.soChefe));
+  return hb.length ? base.concat(hb) : base; }
 function buildEncounter(rng, p, dif, chefe, forcar){
   const per = BUD[p.nivel][dif]; let alvo = per*p.jogadores; if (chefe && p.ritmo==='pesado') alvo=Math.round(alvo*1.25);
-  const pool = poolFor(p.tema), RES = TEMAS[p.tema].aberto ? MON_AB : MON_DG;
+  const pool = poolFor(p.tema, chefe), RES = TEMAS[p.tema].aberto ? MON_AB : MON_DG;
   const fits = (list,lo,hi) => list.filter(m=>m.xp<=hi && m.xp>=lo);
   let cand = fits(pool, alvo/(chefe?4:10), alvo*(chefe?.85:1)); if (cand.length<2) cand = fits(RES, alvo/(chefe?4:10), alvo*(chefe?.85:1));
   if (!cand.length) cand = [RES.filter(m=>m.xp<=alvo).sort((a,b)=>b.xp-a.xp)[0] || MON[0]];
@@ -3604,7 +3632,7 @@ function buildEncounter(rng, p, dif, chefe, forcar){
   const grupos=[{pt:prim.pt,en:prim.en,cr:prim.cr,xp:prim.xp,qtd:n}];
   let resto = alvo - n*prim.xp;
   if (resto >= alvo*.2){
-    let c2 = pool.filter(m=>m.xp<=resto && m.pt!==prim.pt && m.xp>=resto/6); if(!c2.length) c2 = RES.filter(m=>m.xp<=resto && m.pt!==prim.pt && m.xp>=resto/6);
+    let c2 = pool.filter(m=>m.xp<=resto && m.pt!==prim.pt && m.xp>=resto/6 && !m.soChefe); if(!c2.length) c2 = RES.filter(m=>m.xp<=resto && m.pt!==prim.pt && m.xp>=resto/6);
     if (c2.length){ const s=rng.pick(c2); const k=Math.max(1,Math.min(6,Math.floor(resto/s.xp))); grupos.push({pt:s.pt,en:s.en,cr:s.cr,xp:s.xp,qtd:k}); }
   }
   const xp = grupos.reduce((t,gp)=>t+gp.xp*gp.qtd,0);
@@ -3637,7 +3665,8 @@ function chefeInfo(en){
   const m = MON_BY_EN[en]; if (!m) return null;
   const o = SRD[en], st = STATS[en];
   let cat = CAT_DE[en] || 'monstro';
-  if (o){ const p = CAT_PALAVRA.find(([w])=>o.tipo.includes(w)); if (p) cat = p[1]; }
+  const tp = o ? o.tipo : HB_MON[en] && HB_MON[en].ficha ? String(HB_MON[en].ficha.tipo||'') : '';
+  if (tp){ const p = CAT_PALAVRA.find(([w])=>tp.includes(w)); if (p) cat = p[1]; }
   const intel = o ? o.atr[3] : st ? st.atr[3] : null;
   let tipo;
   if (['fera','gosma','planta'].includes(cat) || FERAS_EXTRA.has(en) || (intel!=null && intel<=5)) tipo = 'fera';
@@ -4354,7 +4383,7 @@ function itemPopView(){
   return `<div class="mpop-bg" data-act="pop-bg"><div class="mpop" data-act="noop" role="dialog" aria-modal="true" aria-label="Descrição de ${h(nome)}">
     <div class="row" style="justify-content:space-between;align-items:flex-start"><div><h2>${h(nome)}</h2><div class="en">Item mágico${rar?' '+h(rar):''} · ${h(it.sint||'Não exige sintonia')}</div></div><button class="btn sm" data-act="pop-close" id="pop-close">Fechar</button></div>
     <div class="sb">${body}</div>
-    ${S.popEdit?'':`<div class="row" style="justify-content:space-between"><span class="small muted">${custom!=null?'Texto editado pelo mestre.':'Resumo do app; confira o Livro do Mestre em caso de dúvida.'}</span>
+    ${S.popEdit?'':`<div class="row" style="justify-content:space-between"><span class="small muted">${HB_ITEM[k]?'Homebrew · Fonte: '+h(fonteTxt(HB_ITEM[k].fonte))+(custom!=null?' · texto editado pelo mestre':''):custom!=null?'Texto editado pelo mestre.':'Resumo do app; confira o Livro do Mestre em caso de dúvida.'}</span>
       ${isMestre()?`<span class="row"><button class="btn sm" data-act="mon-edit">Editar texto</button>${custom!=null?`<button class="btn sm danger" data-act="mon-reset">${S.popResetArm?'Confirmar: voltar ao resumo':'Voltar ao resumo'}</button>`:''}</span>`:''}</div>`}
   </div></div>`;
 }
@@ -4397,7 +4426,7 @@ function lerFichaForm(){
 function popView(){
   if (isItemPop()) return itemPopView();
   const m = MON_BY_EN[S.pop]; if (!m) return '';
-  const slug = monSlug(m.en), st = monFicha(m.en, S.monTxt[slug]), o = st.oficial;
+  const slug = monSlug(m.en), st = monFicha(m.en, S.monTxt[slug]), o = st.oficial, hbm = HB_MON[m.en] || null;
   const NOMES_ATR = ['FOR','DES','CON','INT','SAB','CAR'];
   const temFicha = st.ca!=null || st.pv || st.desl || st.atr;
   let corpo;
@@ -4413,7 +4442,7 @@ function popView(){
     <p id="mf-err" class="dirty" role="alert" style="margin:0"></p>
     <div class="row"><button class="btn pri" data-act="mon-save">Salvar ficha</button><button class="btn" data-act="mon-cancel">Cancelar</button></div>`;
   else {
-    const info = o ? o.info : [];
+    const info = o ? o.info : hbm ? (hbm.ficha.info||[]).filter(x=>Array.isArray(x) && x[0] && x[1]) : [];
     const meuOuPt = st.texto.trim() ? statLinesHtml(st.texto.split('\n').filter(x=>x.trim())) : '';
     let texto;
     if (meuOuPt && o) texto = `${meuOuPt}
@@ -4421,14 +4450,14 @@ function popView(){
     else if (meuOuPt) texto = meuOuPt;
     else if (o) texto = oficialHtml(o) + originalHtml(o);
     else texto = `<p class="muted">O app ainda não tem a ficha deste monstro: ele não faz parte do SRD 5.2.1. Consulte o Livro dos Monstros 2024${st.pag?'':' (no livro em inglês: '+h(m.en)+')'}${isMestre()?'; com o botão Preencher ficha você copia CA, PV, atributos e ações do seu livro para cá.':'.'}</p>`;
-    corpo = `${temFicha?`<dl class="kv">${st.ca!=null?`<dt>Classe de Armadura</dt><dd>${h(st.ca)}</dd>`:''}${st.pv?`<dt>Pontos de Vida</dt><dd>${h(st.pv)}</dd>`:''}${st.desl?`<dt>Deslocamento</dt><dd>${h(st.desl)}</dd>`:''}${o&&o.ini?`<dt>Iniciativa</dt><dd>${h(o.ini)}</dd>`:''}</dl>
+    corpo = `${temFicha?`<dl class="kv">${st.ca!=null?`<dt>Classe de Armadura</dt><dd>${h(st.ca)}</dd>`:''}${st.pv?`<dt>Pontos de Vida</dt><dd>${h(st.pv)}</dd>`:''}${st.desl?`<dt>Deslocamento</dt><dd>${h(st.desl)}</dd>`:''}${o&&o.ini?`<dt>Iniciativa</dt><dd>${h(o.ini)}</dd>`:hbm&&hbm.ficha.ini?`<dt>Iniciativa</dt><dd>${h(hbm.ficha.ini)}</dd>`:''}</dl>
     ${st.atr?`<div class="atr">${st.atr.map((v,i)=>`<div><b>${NOMES_ATR[i]}</b><span>${v} (${mod(v)})</span></div>`).join('')}</div>`:''}`:''}
     ${info.length?`<dl class="kv info">${info.map(([k,v])=>`<dt>${h(k)}</dt><dd>${h(v)}</dd>`).join('')}</dl>`:''}
     <div class="sb">${texto}</div>`;
   }
-  const nota = st.editada ? 'Ficha preenchida pelo mestre.' : o ? 'Ficha oficial do SRD 5.2.1, traduzida para o português.' : st.resumoPt ? 'Resumo escrito de memória (este monstro não está no SRD 5.2.1); confira o livro.' : '';
+  const nota = hbm ? 'Homebrew'+(hbm.soChefe?' · só chefe de masmorra':'')+' · Fonte: '+h(fonteTxt(hbm.fonte))+(st.editada?' · ficha editada pelo mestre':'') : st.editada ? 'Ficha preenchida pelo mestre.' : o ? 'Ficha oficial do SRD 5.2.1, traduzida para o português.' : st.resumoPt ? 'Resumo escrito de memória (este monstro não está no SRD 5.2.1); confira o livro.' : '';
   return `<div class="mpop-bg" data-act="pop-bg"><div class="mpop" data-act="noop" role="dialog" aria-modal="true" aria-label="Ficha de ${h(m.pt)}">
-    <div class="row" style="justify-content:space-between;align-items:flex-start"><div><h2>${h(m.pt)}</h2><div class="en">${h(m.en)} · ND ${h(m.cr)} · ${fmt(m.xp)} XP${st.pag?` · <b>Livro dos Monstros 2024, p. ${h(st.pag)}</b>`:''}</div>${o?`<div class="en">${h(o.tipo)}</div>`:''}</div><button class="btn sm" data-act="pop-close" id="pop-close">Fechar</button></div>
+    <div class="row" style="justify-content:space-between;align-items:flex-start"><div><h2>${h(m.pt)}</h2><div class="en">${h(m.en)} · ND ${h(m.cr)} · ${fmt(m.xp)} XP${st.pag?` · <b>Livro dos Monstros 2024, p. ${h(st.pag)}</b>`:''}</div>${o?`<div class="en">${h(o.tipo)}</div>`:hbm&&hbm.ficha.tipo?`<div class="en">${h(hbm.ficha.tipo)}</div>`:''}</div><button class="btn sm" data-act="pop-close" id="pop-close">Fechar</button></div>
     ${corpo}
     ${S.popEdit?'':`<div class="row" style="justify-content:space-between"><span class="small muted">${nota}</span>
       ${isMestre()?`<span class="row"><button class="btn sm" data-act="mon-edit">${o||STATS[m.en]||st.editada?'Editar ficha':'Preencher ficha'}</button>${st.editada?`<button class="btn sm danger" data-act="mon-reset">${S.popResetArm?'Confirmar: apagar o que escrevi':'Apagar o que escrevi'}</button>`:''}</span>`:''}</div>
@@ -4622,6 +4651,46 @@ function start(db){
 }
 function reset(){ S.sel = null; S.openPub = null; S.pop = null; S.popEdit = false; }
 const autores = () => Object.values(S.lista).map(d=>d.autor).filter(x=>typeof x==='string');
+/* ===== homebrew (aba Homebrew): monstros e itens do mestre entram nas listas da Mesa =====
+   Coleção "homebrew": monstro {tipo, pt, en, cr, soChefe, temas[], ficha{tipo,ca,pv,desl,ini,atr,info,linhas}, fonte{nome,pagina,link}}
+   item {tipo, nome, raridade, categoria, sint, linhas[], tesouro, fonte}. Nomes que já existem na Mesa ficam de fora. */
+const HB_MON = {}, HB_ITEM = {};
+let hbFeitos = [];
+const fonteTxt = f => { f = f || {}; const n = String(f.nome||'').trim() || 'não informada'; return n + (String(f.pagina||'').trim() ? ', p. '+String(f.pagina).trim() : ''); };
+function hbConflito(tipo, nomes, ignorar){
+  const lim = s => String(s||'').trim().toLowerCase();
+  const alvo = nomes.map(lim).filter(Boolean);
+  if (tipo==='item') return alvo.some(n => Object.keys(ITEM_DESC).some(k => lim(k)===n && !(HB_ITEM[k] && HB_ITEM[k].id===ignorar)));
+  return alvo.some(n => MON.some(m => (lim(m.pt)===n || lim(m.en)===n) && !(m.hb && HB_MON[m.en] && HB_MON[m.en].id===ignorar)));
+}
+function aplicarHb(lista){
+  hbFeitos.forEach(x => {
+    if (x.m){ const i = MON.indexOf(x.m); if (i>=0) MON.splice(i,1); delete MON_BY_EN[x.m.en]; delete MON_BY_PT[x.m.pt]; delete STATS[x.m.en]; delete HB_MON[x.m.en]; }
+    else { if (x.rar){ const L = ITENS[x.rar], i = L.indexOf(x.nome); if (i>=0) L.splice(i,1); } delete ITEM_DESC[x.nome]; delete HB_ITEM[x.nome]; }
+  });
+  hbFeitos = [];
+  const docs = Object.values(lista||{}).filter(Boolean).sort((a,b)=>String(a.id).localeCompare(String(b.id)));
+  for (const x of docs){
+    if (x.tipo==='monstro'){
+      const pt = String(x.pt||'').trim(), en = String(x.en||'').trim() || pt, cr = String(x.cr||'').trim();
+      if (!pt || CRXP[cr]==null || MON_BY_EN[en] || MON_BY_PT[pt]) continue;
+      const f = x.ficha || {};
+      const m = {pt, en, cr, xp:CRXP[cr], tags:'', hb:true, soChefe:!!x.soChefe, temas:(Array.isArray(x.temas)?x.temas:[]).filter(t=>TEMAS[t])};
+      MON.push(m); MON_BY_EN[en] = m; MON_BY_PT[pt] = m;
+      const atr = Array.isArray(f.atr) && f.atr.length===6 && f.atr.every(v=>Number.isFinite(+v)) ? f.atr.map(Number) : null;
+      STATS[en] = {ca:f.ca==null||String(f.ca).trim()===''?'—':String(f.ca), pv:String(f.pv||''), desl:String(f.desl||''), atr, linhas:(Array.isArray(f.linhas)?f.linhas:[]).map(String)};
+      HB_MON[en] = {...x, ficha:{...f, info:Array.isArray(f.info)?f.info:[]}}; hbFeitos.push({m});
+    } else if (x.tipo==='item'){
+      const nome = String(x.nome||'').trim(), rar = RAR_NOME[x.raridade] ? x.raridade : null;
+      if (!nome || ITEM_DESC[nome] || itemKey(nome)) continue;
+      ITEM_DESC[nome] = {sint:String(x.sint||''), linhas:(Array.isArray(x.linhas)?x.linhas:[]).map(String)};
+      const entra = rar && x.tesouro!==false && ITENS[rar];
+      if (entra) ITENS[rar].push(nome);
+      HB_ITEM[nome] = x; hbFeitos.push({nome, rar:entra?rar:null});
+    }
+  }
+  remontarMonRe();
+}
 /* usado pela aba Aventuras: gerar a planta, guardar e abrir a masmorra de um capítulo */
 const av = {
   dados:{BUD, CRXP, MON},
@@ -4633,7 +4702,19 @@ const av = {
     if (!forcar && S.dirty && S.cur && !exemplo && S.cur.id!==id) return 'sujo';
     S.cur = prepar(clone(d)); S.sel = null; S.dirty = false; S.tab = 'gerar'; return ''; }
 };
-return {view, depois, start, papel, reset, autores, av};
+/* usado pela aba Homebrew */
+const hb = {
+  temas: () => Object.fromEntries(Object.entries(TEMAS).map(([k,t])=>[k,{nome:t.nome, aberto:!!t.aberto}])),
+  CRXP, RAR_NOME, conflito: hbConflito, fonteTxt,
+  ativo: id => hbFeitos.some(f => f.m ? HB_MON[f.m.en] && HB_MON[f.m.en].id===id : HB_ITEM[f.nome] && HB_ITEM[f.nome].id===id),
+  aplicar(lista){ aplicarHb(lista); if (!S.popEdit) render(); },
+  /* monstros ou itens que já estão em masmorras salvas (para avisar antes de excluir) */
+  emUso(x){ const nome = x.tipo==='item' ? x.nome : x.en; let n = 0;
+    Object.values(S.lista).forEach(d => (d.andares||[d]).forEach(A => (A.salas||[]).forEach(s => {
+      if (x.tipo==='item' ? s.tesouro && s.tesouro.itens.some(it=>itemNome(it)===nome) : s.encontro && s.encontro.grupos.some(g=>g.en===nome)) n++; })));
+    return n; }
+};
+return {view, depois, start, papel, reset, autores, av, hb};
 })(MESA_API);
 
 /* ============ AVENTURAS (gerador de aventuras; só mestres) ============
@@ -4654,7 +4735,9 @@ const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const DIFN = ['Baixa', 'Moderada', 'Alta', 'Acima de Alta'];
 const difIdx = s => { s = norm(s); return s.startsWith('baix') ? 0 : s.startsWith('mod') ? 1 : s.startsWith('alt') ? 2 : -1; };
 const orc = (nivel, jog) => BUD[clamp(int(nivel, 1), 1, 20)].map(v => v * jog);
-const MON_IDX = {}; MON.forEach(m => { MON_IDX[norm(m.en)] = m; MON_IDX[norm(m.pt)] = m; });
+const MON_IDX = {}; /* refeito quando chegam monstros homebrew (reindexar) */
+function reindexar(){ Object.keys(MON_IDX).forEach(k => delete MON_IDX[k]); MON.forEach(m => { MON_IDX[norm(m.en)] = m; MON_IDX[norm(m.pt)] = m; }); }
+reindexar();
 const crXp = cr => CRXP[String(cr ?? '').trim().replace(/^nd\s*/i, '')] ?? null;
 const FIDEL = {fiel:'fiel: siga a trama e a ordem dos acontecimentos da história', adaptada:'adaptada: mantenha o essencial da trama e ajuste o resto ao grupo', livre:'livre: use só a premissa, os locais e os personagens como inspiração'};
 const PAPEIS = ['PNJs contratantes', 'Aliados do grupo', 'Antagonistas', 'Ausentes (só citados)', 'Misturado: alguns aliados, alguns antagonistas'];
@@ -4810,7 +4893,7 @@ function promptCapitulo(A, n){
   const ant = [];
   for (let k = 1; k < n; k++){ const c = caps[k]; ant.push(c ? `- Capítulo ${k}, ${c.titulo}: ${c.resumo} Evento: ${c.evento} Gancho: ${c.gancho}` : `- Capítulo ${k}, ${P.capitulos[k-1].titulo} (ainda não escrito): ${P.capitulos[k-1].resumo}`); }
   const fichas = arr(A.fichas).map(f => `- ${f.nome} · ND ${f.nd} · ${fmt(crXp(f.nd)||0)} XP`).join('\n') || '- nenhum';
-  const mons = MON.filter(m => m.xp <= B[2]).map(m => `${m.en} · ${m.pt} · ND ${m.cr} · ${m.xp} XP`).join('\n');
+  const mons = MON.filter(m => m.xp <= B[2]).map(m => `${m.en} · ${m.pt} · ND ${m.cr} · ${m.xp} XP${m.soChefe ? ' · só como chefe' : ''}`).join('\n');
   const em = P.escolha, extra = [];
   if (em.capitulo === n) extra.push(`- Este capítulo apresenta a escolha moral do plano: ${em.descricao}`);
   if (em.consequencia_capitulo === n) extra.push(`- Neste capítulo aparece a consequência da escolha moral: ${em.consequencia}`);
@@ -5412,8 +5495,405 @@ function start(db){
   } else S.semIa = true;
   papel();
 }
-return {view, start, papel};
+return {view, start, papel, reindexar};
 })(MESA_API, MAS.av);
+
+/* ================= HOMEBREW (aba só de mestres) =================
+   O mestre manda prints (vários), texto colado ou o link da fonte; o Claude lê a ficha, traduz e diz de onde ela veio.
+   O mestre revisa e salva na coleção "homebrew". Os monstros e itens entram nas listas da Mesa (MAS.hb.aplicar):
+   monstros nos temas escolhidos (ou só como chefe), itens nos tesouros da raridade. Todo item do catálogo tem fonte. */
+const HB = (function(M, X, AVm){
+const $ = s => document.querySelector(s);
+const h = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const arr = x => Array.isArray(x) ? x : [];
+const str = x => (x === null || x === undefined) ? '' : String(x).trim();
+const fmt = n => Number(n || 0).toLocaleString('pt-BR');
+const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+const slug = s => norm(s).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'x';
+const render = () => M.render();
+const RARS = {comum:'Comum', incomum:'Incomum', rara:'Rara', muitorara:'Muito rara', lendaria:'Lendária'};
+const RAR_PL = {comum:'comuns', incomum:'incomuns', rara:'raros', muitorara:'muito raros', lendaria:'lendários'};
+const CRS = Object.keys(X.CRXP);
+const ATR = ['FOR', 'DES', 'CON', 'INT', 'SAB', 'CAR'];
+const mod = v => { const m = Math.floor((v - 10) / 2); return (m >= 0 ? '+' : '−') + Math.abs(m); };
+const DEMO = 'mesa-homebrew-demo';
+
+const formVazio = () => ({tipo:'monstro', imgs:[], texto:'', link:'', fonte:'', soChefe:false});
+const S = {tela:'catalogo', filtro:'todos', lista:{}, carregou:false, aviso:'', msg:'', erro:'', db:null, sample:null, lim:null,
+  form:formVazio(), ger:null, rev:null, apagar:null, aberto:null, salvando:false};
+
+/* ---------- dados ---------- */
+function aplicar(){ X.aplicar(S.lista); if (AVm && AVm.reindexar) AVm.reindexar(); }
+function lerDemo(){ try { return JSON.parse(localStorage.getItem(DEMO) || '{}') || {}; } catch { return {}; } }
+function gravarDemo(){ try { const o = {}; Object.values(S.lista).forEach(x => { const {id, ...r} = x; o[id] = r; }); localStorage.setItem(DEMO, JSON.stringify(o)); } catch {} }
+async function salvarDoc(id, doc){
+  S.lista = {...S.lista, [id]:{id, ...doc}};
+  if (S.db) await S.db.collection('homebrew').doc(id).set(doc); else gravarDemo();
+  aplicar();
+}
+async function excluirDoc(id){
+  const novo = {...S.lista}; delete novo[id]; S.lista = novo;
+  if (S.db) await S.db.collection('homebrew').doc(id).delete(); else gravarDemo();
+  aplicar();
+}
+
+/* ---------- Claude ---------- */
+const ERROS = {
+  not_granted:'O Claude não foi liberado para esta página. Permita o uso do Claude no menu de permissões da Mesa, ou preencha à mão.',
+  sampling_disabled:'O Claude não está disponível nesta conta. Use Preencher à mão.',
+  rate_limited:'Limite de uso do Claude atingido por agora. Espere um pouco e tente de novo.',
+  refused:'O Claude recusou o pedido. Confira o material enviado e tente de novo.',
+  invalid_json:'A resposta veio num formato que a página não entendeu. Tente de novo.',
+  prompt_too_large:'O texto colado é grande demais. Mande só a ficha do monstro ou do item.',
+  images_unavailable:'Esta visualização não consegue enviar imagens ao Claude. Cole o texto da ficha no campo de texto.',
+  image_rejected:'O Claude não aceitou uma das imagens (formato, tamanho ou quantidade). Use PNG, JPG ou WebP.',
+  session_expired:'Sua sessão expirou. Entre de novo no claude.ai e recarregue a página.',
+  empty_completion:'O Claude não respondeu nada. Tente de novo.'
+};
+const msgErro = e => ERROS[e && e.code] || (e && e.code === 'cancelled' ? 'Leitura parada.' : 'Falha ao falar com o Claude (' + h((e && (e.code || e.message)) || 'erro') + '). Tente de novo.');
+
+function prompt(f){
+  const temas = Object.entries(X.temas()).map(([k, t]) => `${k} (${t.nome}${t.aberto ? ', ao ar livre' : ''})`).join(', ');
+  const mat = [];
+  if (f.imgs.length) mat.push(`- ${f.imgs.length === 1 ? '1 imagem anexada (print da ficha)' : f.imgs.length + ' imagens anexadas, na ordem em que o mestre enviou; podem ser partes da mesma ficha (continue de uma para a outra)'}`);
+  if (str(f.texto)) mat.push('- Texto colado pelo mestre:\n"""\n' + str(f.texto).slice(0, 12000) + '\n"""');
+  if (str(f.link)) mat.push('- Link de onde o conteúdo veio (você não consegue abrir; use só o endereço como pista da fonte): ' + str(f.link).slice(0, 500));
+  if (str(f.fonte)) mat.push('- Fonte informada pelo mestre: ' + str(f.fonte).slice(0, 200));
+  const mon = f.tipo === 'monstro';
+  const formato = mon
+    ? `{"pt": "nome em português", "en": "nome original, como está na fonte", "cr": "Nível de Desafio só com o número: 0, 1/8, 1/4, 1/2, 1 a 30", "tipo": "Tamanho, tipo e tendência, ex.: Médio Morto-Vivo, Neutro e Mau", "ca": "16", "pv": "45 (6d10+12)", "desl": "9 m, voo 18 m", "ini": "+2 (12), ou vazio", "atr": [FOR, DES, CON, INT, SAB, CAR], "info": [["Salvaguardas", "..."], ["Perícias", "..."], ["Resistências", "..."], ["Imunidades", "..."], ["Sentidos", "..."], ["Idiomas", "..."]], "linhas": ["— Traços —", "Nome do traço. Texto.", "— Ações —", "Ataque Múltiplo. Texto.", "Nome do ataque. Corpo a corpo +5 (1,5 m). Acerto: 8 (1d10+3) Perfurante."], "temas": ["chaves dos temas"], "fonte": {"nome": "", "pagina": "", "certeza": "alta, media ou baixa", "como": "uma frase dizendo como identificou"}}`
+    : `{"nome": "nome em português", "original": "nome original, como está na fonte", "raridade": "comum, incomum, rara, muitorara, lendaria ou artefato", "categoria": "ex.: Arma (espada longa), Anel, Poção, Item Maravilhoso", "sint": "Exige sintonia (e por quem), ou vazio se não exige", "linhas": ["Nome da propriedade. Texto.", "..."], "fonte": {"nome": "", "pagina": "", "certeza": "alta, media ou baixa", "como": "uma frase dizendo como identificou"}}`;
+  return `Você ajuda um mestre de D&D 5ª edição (regras de 2024) a cadastrar ${mon ? 'um monstro' : 'um item mágico'} na Mesa de RPG dele.
+
+## Material
+${mat.join('\n')}
+
+## O que fazer
+1. Leia ${mon ? 'a ficha do monstro' : 'a descrição do item'} e transcreva todo o conteúdo em português do Brasil, com os termos oficiais do D&D 2024 em português (Classe de Armadura, Pontos de Vida, Vantagem, Ação Bônus, Reação, salvaguarda, Força, Destreza, Constituição, Inteligência, Sabedoria, Carisma, condições e tipos de dano com inicial maiúscula). Converta distâncias para metros (5 pés = 1,5 m).
+2. Não invente nada. Se uma parte estiver ilegível ou cortada, escreva [ilegível] no lugar. Se o material não for ${mon ? 'a ficha de um monstro' : 'um item'}, devolva os campos vazios e explique em fonte.como.
+3. Cada linha de "linhas" começa com o nome do traço, ação ou propriedade seguido de ponto. Use linhas de seção como "— Ações —" quando a ficha tiver seções.
+4. Fonte: diga de onde o conteúdo foi tirado (livro, suplemento, revista, site ou autor). Use logotipos, rodapé, número de página, marca d'água, o estilo da diagramação, o endereço do link e o seu conhecimento. Dê a página só se ela aparecer no material ou se você tiver certeza. Se não conseguir identificar, use o nome do site do link; sem link, escreva "Homebrew (fonte não identificada)" com certeza baixa. Se o mestre informou a fonte, use a dele.
+${mon ? `5. Escolha de 1 a 3 temas de masmorra em que esta criatura faz sentido, usando só estas chaves: ${temas}.\n` : ''}
+## Formato
+Responda somente com um objeto JSON, sem texto antes ou depois:
+${formato}`;
+}
+const crDe = v => { const m = str(v).replace(/^nd\s*/i, '').match(/^(\d+\/\d+|\d+)/); return m && X.CRXP[m[1]] != null ? m[1] : ''; };
+const certeza = v => { const n = norm(v); return n.startsWith('alt') ? 'alta' : n.startsWith('med') ? 'media' : n.startsWith('baix') ? 'baixa' : ''; };
+function fonteDe(r, f){
+  const o = r && typeof r.fonte === 'object' && r.fonte ? r.fonte : {};
+  return {nome:str(o.nome) || str(f.fonte), pagina:str(o.pagina), link:str(f.link), certeza:certeza(o.certeza), como:str(o.como)};
+}
+function revDe(r, f){
+  r = r && typeof r === 'object' ? r : {};
+  if (f.tipo === 'monstro'){
+    const atr = arr(r.atr).length === 6 ? arr(r.atr).map(v => str(v)) : ['', '', '', '', '', ''];
+    const temas = arr(r.temas).map(str).filter(t => X.temas()[t]).slice(0, 4);
+    return {tipo:'monstro', pt:str(r.pt), en:str(r.en), cr:crDe(r.cr), soChefe:!!f.soChefe, temas,
+      ficha:{tipo:str(r.tipo), ca:str(r.ca), pv:str(r.pv), desl:str(r.desl), ini:str(r.ini), atr,
+        infoTxt:arr(r.info).filter(x => Array.isArray(x) && str(x[0]) && str(x[1])).map(x => str(x[0]) + ': ' + str(x[1])).join('\n'),
+        linhasTxt:arr(r.linhas).map(str).filter(Boolean).join('\n')},
+      fonte:fonteDe(r, f)};
+  }
+  let rar = norm(r.raridade).replace(/\s+/g, ''), tes = true;
+  if (rar.startsWith('artef')){ rar = 'lendaria'; tes = false; }
+  rar = rar.startsWith('muito') ? 'muitorara' : rar.startsWith('lend') ? 'lendaria' : rar.startsWith('rar') ? 'rara' : rar.startsWith('incom') ? 'incomum' : rar.startsWith('com') ? 'comum' : '';
+  return {tipo:'item', nome:str(r.nome), original:str(r.original), raridade:rar, categoria:str(r.categoria), sint:str(r.sint),
+    linhasTxt:arr(r.linhas).map(str).filter(Boolean).join('\n'), tesouro:tes, fonte:fonteDe(r, f)};
+}
+async function ler(){
+  const f = S.form;
+  if (!S.sample || S.ger) return;
+  if (!f.imgs.length && !str(f.texto) && !str(f.link)){ S.erro = 'Mande pelo menos um print, o texto da ficha ou o link.'; render(); return; }
+  if (f.imgs.length && !(S.lim && S.lim.images)){ S.erro = ERROS.images_unavailable; render(); return; }
+  const ctl = new AbortController();
+  S.erro = ''; S.ger = {chars:0, ctl}; render();
+  try {
+    const op = {modelTier:'default', cache:false, signal:ctl.signal,
+      onText:({text}) => { if (S.ger){ S.ger.chars = text.length; const el = $('#hb-chars'); if (el) el.textContent = fmt(text.length) + ' caracteres recebidos'; } }};
+    if (f.imgs.length) op.images = f.imgs.map(i => i.blob);
+    const r = await S.sample.json(prompt(f), op);
+    S.rev = revDe(r, f); S.tela = 'revisar';
+    if (!S.rev.fonte.nome) S.rev.fonte.nome = str(f.link) ? siteDe(f.link) : 'Homebrew (fonte não identificada)';
+  } catch (e){
+    S.erro = msgErro(e);
+    if (e && e.code === 'not_granted') S.negado = true;
+  }
+  S.ger = null; render(); window.scrollTo(0, 0);
+}
+const siteDe = u => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return ''; } };
+
+/* ---------- prints ---------- */
+async function miniatura(blob){
+  const bmp = await createImageBitmap(blob);
+  const k = Math.min(1, 220 / Math.max(bmp.width, bmp.height)), c = document.createElement('canvas');
+  c.width = Math.max(1, Math.round(bmp.width * k)); c.height = Math.max(1, Math.round(bmp.height * k));
+  c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height); if (bmp.close) bmp.close();
+  return c.toDataURL('image/jpeg', .8);
+}
+async function addImgs(files){
+  const tipos = S.lim && S.lim.images && arr(S.lim.images.mediaTypes).length ? S.lim.images.mediaTypes : ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+  const max = S.lim && S.lim.images && S.lim.images.maxCount ? S.lim.images.maxCount : 5;
+  const ruins = [];
+  for (const file of Array.from(files || [])){
+    if (!file || !String(file.type).startsWith('image/')) continue;
+    if (!tipos.includes(file.type)){ ruins.push(file.name || file.type); continue; }
+    if (S.form.imgs.length >= max){ S.erro = 'Cabem até ' + max + ' prints por leitura. Os outros ficaram de fora.'; break; }
+    let mini = ''; try { mini = await miniatura(file); } catch { ruins.push(file.name || 'imagem'); continue; }
+    S.form.imgs.push({id:Math.random().toString(36).slice(2), blob:file, mini, nome:file.name || 'print colado'});
+  }
+  if (ruins.length) S.erro = 'Não consegui usar: ' + ruins.map(h).join(', ') + '. Use PNG, JPG ou WebP (fotos HEIC do iPhone: tire um print da tela).';
+  render();
+}
+
+/* ---------- revisão: validar e salvar ---------- */
+const linhas = t => String(t || '').split('\n').map(s => s.trim()).filter(Boolean);
+function montar(r){
+  const fonte = {nome:str(r.fonte.nome), pagina:str(r.fonte.pagina), link:str(r.fonte.link), certeza:r.fonte.certeza || '', como:str(r.fonte.como)};
+  if (!fonte.nome) return {erro:'Diga de onde veio o conteúdo (campo Fonte). Se foi você que criou, escreva "Criação do mestre".'};
+  if (fonte.link && !/^https?:\/\//i.test(fonte.link)) return {erro:'O link precisa começar com http:// ou https://.'};
+  if (r.tipo === 'monstro'){
+    const pt = str(r.pt), en = str(r.en) || pt;
+    if (!pt) return {erro:'Dê um nome em português ao monstro.'};
+    if (X.CRXP[r.cr] == null) return {erro:'Escolha o Nível de Desafio (ND).'};
+    if (!r.temas.length) return {erro:'Escolha pelo menos um tema de masmorra' + (r.soChefe ? ' (o monstro só vai ser chefe nas masmorras desses temas).' : '.')};
+    const a = r.ficha.atr.map(str), algum = a.some(Boolean);
+    if (algum && !a.every(v => /^\d{1,2}$/.test(v))) return {erro:'Preencha os seis atributos com números (ex.: 14) ou deixe todos vazios.'};
+    if (X.conflito('monstro', [pt, en], r.id)) return {erro:'Já existe um monstro com o nome "' + h(pt) + '" ou "' + h(en) + '" na Mesa. Mude o nome.'};
+    const info = linhas(r.ficha.infoTxt).map(l => { const i = l.indexOf(':'); return i > 0 ? [l.slice(0, i).trim(), l.slice(i + 1).trim()] : ['Outros', l]; });
+    return {doc:{tipo:'monstro', pt, en, cr:r.cr, soChefe:!!r.soChefe, temas:r.temas,
+      ficha:{tipo:str(r.ficha.tipo), ca:str(r.ficha.ca), pv:str(r.ficha.pv), desl:str(r.ficha.desl), ini:str(r.ficha.ini), atr:algum ? a.map(Number) : null, info, linhas:linhas(r.ficha.linhasTxt)}, fonte}};
+  }
+  const nome = str(r.nome);
+  if (!nome) return {erro:'Dê um nome ao item.'};
+  if (!RARS[r.raridade]) return {erro:'Escolha a raridade do item.'};
+  if (!linhas(r.linhasTxt).length) return {erro:'Escreva o que o item faz.'};
+  if (X.conflito('item', [nome], r.id)) return {erro:'Já existe um item chamado "' + h(nome) + '" na Mesa. Mude o nome.'};
+  return {doc:{tipo:'item', nome, original:str(r.original), raridade:r.raridade, categoria:str(r.categoria), sint:str(r.sint), linhas:linhas(r.linhasTxt), tesouro:!!r.tesouro, fonte}};
+}
+async function salvar(){
+  const r = S.rev; if (!r || S.salvando) return;
+  const m = montar(r); if (m.erro){ S.erro = m.erro; render(); return; }
+  const antigo = r.id && S.lista[r.id];
+  const id = r.id || (r.tipo === 'item' ? 'i-' : 'm-') + slug(r.tipo === 'item' ? m.doc.nome : m.doc.pt) + '-' + Math.random().toString(36).slice(2, 6);
+  const doc = {...m.doc, autor:(antigo && antigo.autor) || M.myId() || '', criado:(antigo && antigo.criado) || Date.now(), atualizado:Date.now()};
+  S.salvando = true; S.erro = ''; render();
+  try {
+    await salvarDoc(id, doc);
+    const nome = doc.tipo === 'item' ? doc.nome : doc.pt;
+    S.msg = h(nome) + (antigo ? ' foi atualizado.' : ' entrou no catálogo.') + ' ' + (doc.tipo === 'monstro'
+      ? (doc.soChefe ? 'Ele só aparece como chefe, nas masmorras novas de ' : 'Ele já pode aparecer nas masmorras novas de ') + doc.temas.map(t => (X.temas()[t] || {}).nome || t).join(', ') + '.'
+      : (doc.tesouro ? 'Ele já pode aparecer nos tesouros das masmorras novas (itens ' + RAR_PL[doc.raridade] + ').' : 'Ele fica só no catálogo, fora dos tesouros sorteados.'));
+    S.rev = null; S.form = formVazio(); S.tela = 'catalogo'; S.aberto = id;
+  } catch (e){ S.erro = 'Não foi possível salvar (' + h((e && (e.code || e.message)) || 'erro') + ').'; }
+  S.salvando = false; render(); window.scrollTo(0, 0);
+}
+function editar(id){
+  const x = S.lista[id]; if (!x) return;
+  if (x.tipo === 'monstro'){ const f = x.ficha || {};
+    S.rev = {id, tipo:'monstro', pt:x.pt || '', en:x.en || '', cr:x.cr || '', soChefe:!!x.soChefe, temas:arr(x.temas).slice(),
+      ficha:{tipo:f.tipo || '', ca:f.ca || '', pv:f.pv || '', desl:f.desl || '', ini:f.ini || '', atr:arr(f.atr).length === 6 ? f.atr.map(String) : ['', '', '', '', '', ''],
+        infoTxt:arr(f.info).map(i => i[0] + ': ' + i[1]).join('\n'), linhasTxt:arr(f.linhas).join('\n')}, fonte:{...(x.fonte || {})}};
+  } else S.rev = {id, tipo:'item', nome:x.nome || '', original:x.original || '', raridade:x.raridade || '', categoria:x.categoria || '', sint:x.sint || '', linhasTxt:arr(x.linhas).join('\n'), tesouro:x.tesouro !== false, fonte:{...(x.fonte || {})}};
+  S.rev.fonte = {nome:'', pagina:'', link:'', certeza:'', como:'', ...S.rev.fonte};
+  S.tela = 'revisar'; S.erro = ''; S.msg = ''; render(); window.scrollTo(0, 0);
+}
+function manual(){
+  const f = S.form;
+  S.rev = revDe({}, f); S.rev.fonte.nome = str(f.fonte) || (str(f.link) ? siteDe(f.link) : '');
+  S.tela = 'revisar'; S.erro = ''; render(); window.scrollTo(0, 0);
+}
+
+/* ---------- telas ---------- */
+const fonteHtml = f => { f = f || {}; const t = h(X.fonteTxt(f)); return f.link ? `<a href="${h(f.link)}" target="_blank" rel="noopener noreferrer">${t} ↗</a>` : t; };
+function fichaHtml(x){
+  if (x.tipo === 'item') return `<div class="ficha">${x.categoria || x.sint ? `<p class="muted small">${h([x.categoria, x.sint || 'Não exige sintonia'].filter(Boolean).join(' · '))}</p>` : ''}${arr(x.linhas).map(linhaHtml).join('')}</div>`;
+  const f = x.ficha || {};
+  const kv = [['CA', f.ca], ['PV', f.pv], ['Deslocamento', f.desl], ['Iniciativa', f.ini]].filter(([, v]) => str(v));
+  return `<div class="ficha">${f.tipo ? `<p class="muted small">${h(f.tipo)}</p>` : ''}
+    ${kv.length ? `<p>${kv.map(([k, v]) => `<b>${k}</b> ${h(v)}`).join(' · ')}</p>` : ''}
+    ${arr(f.atr).length === 6 ? `<div class="attrs">${f.atr.map((v, i) => `<div><b>${ATR[i]}</b>${h(v)} (${mod(+v)})</div>`).join('')}</div>` : ''}
+    ${arr(f.info).map(([k, v]) => `<p><b>${h(k)}.</b> ${h(v)}</p>`).join('')}
+    ${arr(f.linhas).map(linhaHtml).join('')}</div>`;
+}
+const linhaHtml = l => { l = String(l); if (/^—.*—$/.test(l.trim())) return `<h5>${h(l.replace(/—/g, '').trim())}</h5>`; const i = l.indexOf('. '); return i > 0 && i < 70 ? `<p><b>${h(l.slice(0, i + 1))}</b> ${h(l.slice(i + 2))}</p>` : `<p>${h(l)}</p>`; };
+const sub = n => `<div class="subnav" role="group" aria-label="Homebrew">${[['catalogo', 'Catálogo' + (n ? ' (' + n + ')' : '')], ['novo', 'Adicionar']].map(([k, l]) => { const on = S.tela === k || (k === 'novo' && S.tela === 'revisar'); return `<button class="${on ? 'on' : ''}" data-act="hb-${k}" ${on ? 'aria-current="page"' : ''}>${h(l)}</button>`; }).join('')}</div>`;
+function catalogo(){
+  const todos = Object.values(S.lista).sort((a, b) => (a.tipo === b.tipo ? 0 : a.tipo === 'monstro' ? -1 : 1) || String(a.pt || a.nome).localeCompare(String(b.pt || b.nome), 'pt'));
+  const nM = todos.filter(x => x.tipo === 'monstro').length, nI = todos.length - nM;
+  const lista = todos.filter(x => S.filtro === 'todos' || (S.filtro === 'monstros' ? x.tipo === 'monstro' : x.tipo === 'item'));
+  if (!S.carregou) return `<div class="panel muted">Carregando o catálogo…</div>`;
+  if (!todos.length) return `<div class="panel empty"><h2>Nenhum homebrew ainda</h2><p>Mande prints de uma ficha de monstro ou de um item mágico (de um livro, de um site ou criado por você). O Claude lê, traduz e anota de onde veio; você revisa e salva. Os monstros entram no sorteio das masmorras dos temas escolhidos, e os itens nos tesouros.</p><button class="btn pri" data-act="hb-novo">Adicionar o primeiro</button></div>`;
+  const temas = X.temas();
+  const card = x => {
+    const mon = x.tipo === 'monstro', nome = mon ? x.pt : x.nome, ok = X.ativo(x.id), aberto = S.aberto === x.id, arm = S.apagar === x.id;
+    const uso = arm ? X.emUso(x) : 0;
+    const linha2 = mon ? `Monstro · ND ${h(x.cr)} · ${fmt(X.CRXP[x.cr])} XP${x.en && x.en !== x.pt ? ' · ' + h(x.en) : ''}` : `Item mágico · ${h((RARS[x.raridade] || '').toLowerCase())}${x.categoria ? ' · ' + h(x.categoria) : ''}`;
+    const chips = [];
+    if (!ok) chips.push('<span class="chip bad" title="Outro monstro ou item da Mesa já usa este nome">Fora das listas: nome repetido</span>');
+    if (mon && x.soChefe) chips.push('<span class="chip gold">Só chefe de masmorra</span>');
+    if (mon) arr(x.temas).forEach(t => chips.push(`<span class="chip">${h((temas[t] || {}).nome || t)}</span>`));
+    if (!mon) chips.push(x.tesouro !== false ? '<span class="chip">Nos tesouros</span>' : '<span class="chip">Fora dos tesouros</span>');
+    return `<div class="panel hb-card" data-busca="${h(norm([nome, x.en, x.original, x.fonte && x.fonte.nome].join(' ')))}">
+      <div class="row between" style="align-items:flex-start"><div style="min-width:0"><h3>${h(nome)}</h3><p class="muted small" style="margin:2px 0 0">${linha2}</p></div></div>
+      ${chips.length ? `<div class="row" style="gap:6px">${chips.join('')}</div>` : ''}
+      <p class="small" style="margin:0"><span class="muted">Fonte:</span> ${fonteHtml(x.fonte)}</p>
+      ${aberto ? fichaHtml(x) : ''}
+      <div class="row"><button class="btn sm" data-act="hb-ver" data-id="${h(x.id)}" aria-expanded="${aberto}">${aberto ? 'Fechar ficha' : 'Ver ficha'}</button><button class="btn sm" data-act="hb-editar" data-id="${h(x.id)}">Editar</button>
+        <button class="btn sm danger" data-act="hb-excluir" data-id="${h(x.id)}">${arm ? 'Confirmar exclusão' : 'Excluir'}</button>${arm ? `<button class="btn sm" data-act="hb-nao">Cancelar</button>` : ''}</div>
+      ${arm ? `<p class="small" style="margin:0;color:var(--orange)">${uso ? `Está em ${uso} ${uso === 1 ? 'sala' : 'salas'} de masmorras salvas: o nome continua lá, mas a ficha some.` : 'Sai do catálogo e das masmorras novas.'}</p>` : ''}
+    </div>`;
+  };
+  const f = (k, l) => `<button class="btn sm${S.filtro === k ? ' pri' : ''}" data-act="hb-filtro" data-f="${k}" aria-pressed="${S.filtro === k}">${l}</button>`;
+  return `<div class="row between"><div class="row" style="gap:6px">${f('todos', 'Todos (' + todos.length + ')')}${f('monstros', 'Monstros (' + nM + ')')}${f('itens', 'Itens (' + nI + ')')}</div>
+      <div class="f" style="flex:1 1 200px;max-width:320px"><input id="hb-busca" data-hb-busca type="search" placeholder="Buscar por nome ou fonte" aria-label="Buscar no catálogo"></div></div>
+    ${lista.length ? `<div class="cards" id="hb-cards">${lista.map(card).join('')}</div><p class="muted small" id="hb-nada" hidden>Nada encontrado.</p>` : '<p class="muted">Nada nesta categoria.</p>'}`;
+}
+function novo(){
+  const f = S.form, mon = f.tipo === 'monstro', podeImg = !!(S.lim && S.lim.images), max = podeImg && S.lim.images.maxCount ? S.lim.images.maxCount : 5;
+  const semIa = !S.sample || S.negado;
+  const tipoBtn = (k, l) => `<button class="btn${f.tipo === k ? ' pri' : ''}" data-act="hb-tipo" data-t="${k}" aria-pressed="${f.tipo === k}">${l}</button>`;
+  const ger = S.ger ? `<div class="row" aria-live="polite"><span class="st run">Lendo</span><span class="small muted" id="hb-chars">${S.ger.chars ? fmt(S.ger.chars) + ' caracteres recebidos' : 'o Claude está lendo a ficha…'}</span><button class="btn sm" data-act="hb-parar">Parar</button></div>` : '';
+  return `<div class="stack">
+    <div class="panel"><h3>1. O que você vai adicionar</h3><div class="row">${tipoBtn('monstro', 'Monstro')}${tipoBtn('item', 'Item mágico')}</div>
+      ${mon ? `<label class="hb-check"><input type="checkbox" data-hbc="soChefe" ${f.soChefe ? 'checked' : ''}> <span><b>Só chefe de masmorra</b><br><span class="muted small">Ele nunca aparece como monstro comum: só pode ser sorteado para a sala do chefe.</span></span></label>` : ''}</div>
+    <div class="panel"><h3>2. Material</h3>
+      ${podeImg ? `<label class="hb-drop" id="hb-drop"><input type="file" data-hb-file multiple accept="${h(arr(S.lim.images.mediaTypes).join(',') || 'image/*')}">
+        <b>Escolher prints</b><span class="muted small">ou arraste para cá, ou cole com Ctrl+V · até ${max} imagens, podem ser partes da mesma ficha</span></label>
+        ${f.imgs.length ? `<div class="hb-thumbs">${f.imgs.map((im, i) => `<figure><img src="${im.mini}" alt="Print ${i + 1}: ${h(im.nome)}"><button class="btn sm" data-act="hb-img-del" data-i="${i}" aria-label="Tirar o print ${i + 1}">✕</button><figcaption class="small muted">${i + 1}</figcaption></figure>`).join('')}</div>` : ''}`
+        : `<p class="notice">${S.lim ? 'Esta visualização não consegue enviar imagens ao Claude.' : 'Prints ficam disponíveis quando o Claude estiver liberado nesta página.'} Cole o texto da ficha abaixo.</p>`}
+      <div class="form" style="margin-top:12px">
+        <div class="f wide"><label for="hb-texto">Texto da ficha (opcional)</label><textarea id="hb-texto" data-hbm="texto" placeholder="Cole aqui o texto, se tiver">${h(f.texto)}</textarea></div>
+        <div class="f half"><label for="hb-link">Link de onde veio (opcional)</label><input id="hb-link" data-hbm="link" type="url" inputmode="url" value="${h(f.link)}" placeholder="https://…"><span class="hint">O Claude não abre o link; ele vira a referência da fonte.</span></div>
+        <div class="f half"><label for="hb-fonte">Fonte, se você souber (opcional)</label><input id="hb-fonte" data-hbm="fonte" value="${h(f.fonte)}" placeholder="ex.: Livro dos Monstros 2024, p. 120"><span class="hint">Se ficar vazio, o Claude identifica de onde veio.</span></div>
+      </div></div>
+    ${S.erro ? `<p class="notice bad" role="alert">${S.erro}</p>` : ''}
+    <div class="row"><button class="btn pri" data-act="hb-ler" ${semIa || S.ger ? 'disabled' : ''}>Ler com o Claude</button><button class="btn" data-act="hb-manual" ${S.ger ? 'disabled' : ''}>Preencher à mão</button>
+      ${semIa ? `<span class="small muted">${S.negado ? 'O Claude não foi liberado nesta página.' : 'O Claude não está disponível nesta visualização.'}</span>` : '<span class="small muted">A leitura gasta um pedido ao Claude.</span>'}</div>
+    ${ger}</div>`;
+}
+function revisar(){
+  const r = S.rev, mon = r.tipo === 'monstro', fo = r.fonte;
+  const inp = (path, rot, val, extra = '') => `<div class="f${extra.includes('wide') ? ' wide' : extra.includes('half') ? ' half' : ''}"><label for="hb-r-${path}">${rot}</label><input id="hb-r-${path}" data-hbf="${path}" value="${h(val)}"></div>`;
+  const ta = (path, rot, val, hint) => `<div class="f wide"><label for="hb-r-${path}">${rot}</label><textarea id="hb-r-${path}" data-hbf="${path}" rows="${Math.min(18, Math.max(4, String(val).split('\n').length + 1))}">${h(val)}</textarea>${hint ? `<span class="hint">${hint}</span>` : ''}</div>`;
+  const cert = fo.certeza ? `<span class="chip ${fo.certeza === 'alta' ? 'ok' : fo.certeza === 'media' ? 'warn' : 'bad'}">certeza ${fo.certeza === 'media' ? 'média' : fo.certeza}</span>` : '';
+  const temas = X.temas();
+  const corpo = mon ? `<div class="panel"><h3>Monstro</h3><div class="form">
+      ${inp('pt', 'Nome em português *', r.pt, 'half')}${inp('en', 'Nome original', r.en, 'half')}
+      <div class="f"><label for="hb-r-cr">Nível de Desafio *</label><select id="hb-r-cr" data-hbf="cr"><option value="">—</option>${CRS.map(c => `<option value="${c}"${c === r.cr ? ' selected' : ''}>ND ${c} (${fmt(X.CRXP[c])} XP)</option>`).join('')}</select></div>
+      ${inp('ficha.tipo', 'Tamanho, tipo e tendência', r.ficha.tipo, 'half')}${inp('ficha.ca', 'Classe de Armadura', r.ficha.ca)}
+      ${inp('ficha.pv', 'Pontos de Vida', r.ficha.pv)}${inp('ficha.desl', 'Deslocamento', r.ficha.desl, 'half')}${inp('ficha.ini', 'Iniciativa', r.ficha.ini)}
+      <div class="f wide"><span class="small muted">Atributos</span><div class="hb-atr">${ATR.map((a, i) => `<label><b>${a}</b><input id="hb-r-atr${i}" data-hbf="ficha.atr.${i}" inputmode="numeric" value="${h(r.ficha.atr[i])}" aria-label="${a}"></label>`).join('')}</div></div>
+      ${ta('ficha.infoTxt', 'Salvaguardas, perícias, resistências, sentidos, idiomas', r.ficha.infoTxt, 'Uma por linha, no formato "Sentidos: Visão no Escuro 18 m".')}
+      ${ta('ficha.linhasTxt', 'Traços e ações', r.ficha.linhasTxt, 'Uma por linha. O trecho até o primeiro ponto aparece em destaque. Linhas como "— Ações —" viram títulos.')}
+    </div></div>
+    <div class="panel"><h3>Onde ele aparece</h3>
+      <p class="small muted" style="margin:0 0 8px">Temas de masmorra *</p>
+      <div class="row" style="gap:6px">${Object.entries(temas).map(([k, t]) => `<button class="btn sm${r.temas.includes(k) ? ' pri' : ''}" data-act="hb-tema" data-t="${k}" aria-pressed="${r.temas.includes(k)}">${h(t.nome)}</button>`).join('')}</div>
+      <label class="hb-check"><input type="checkbox" data-hbc="rev.soChefe" ${r.soChefe ? 'checked' : ''}> <span><b>Só chefe de masmorra</b><br><span class="muted small">Só pode ser sorteado para a sala do chefe, nunca como monstro comum.</span></span></label></div>`
+    : `<div class="panel"><h3>Item mágico</h3><div class="form">
+      ${inp('nome', 'Nome em português *', r.nome, 'half')}${inp('original', 'Nome original', r.original, 'half')}
+      <div class="f"><label for="hb-r-raridade">Raridade *</label><select id="hb-r-raridade" data-hbf="raridade"><option value="">—</option>${Object.entries(RARS).map(([k, l]) => `<option value="${k}"${k === r.raridade ? ' selected' : ''}>${l}</option>`).join('')}</select></div>
+      ${inp('categoria', 'Categoria', r.categoria)}${inp('sint', 'Sintonia', r.sint, 'half')}
+      ${ta('linhasTxt', 'O que o item faz *', r.linhasTxt, 'Uma propriedade por linha. O trecho até o primeiro ponto aparece em destaque.')}
+    </div>
+    <label class="hb-check"><input type="checkbox" data-hbc="rev.tesouro" ${r.tesouro ? 'checked' : ''}> <span><b>Pode aparecer nos tesouros das masmorras</b><br><span class="muted small">Entra no sorteio de tesouros da raridade escolhida.</span></span></label></div>`;
+  return `<div class="stack">
+    <p class="notice">${r.id ? 'Editando um homebrew do catálogo.' : 'Confira o que o Claude leu. Corrija o que precisar antes de salvar.'}</p>
+    ${corpo}
+    <div class="panel"><h3>Fonte *</h3><div class="form">
+      ${inp('fonte.nome', 'De onde veio (livro, site, autor)', fo.nome, 'half')}${inp('fonte.pagina', 'Página', fo.pagina)}${inp('fonte.link', 'Link', fo.link)}
+    </div>${fo.como || cert ? `<p class="small muted" style="margin:10px 0 0">${cert} ${fo.como ? 'Como o Claude identificou: ' + h(fo.como) : ''}</p>` : ''}</div>
+    ${S.erro ? `<p class="notice bad" role="alert">${S.erro}</p>` : ''}
+    <div class="row"><button class="btn pri" data-act="hb-salvar" ${S.salvando ? 'disabled' : ''}>${S.salvando ? 'Salvando…' : r.id ? 'Salvar alterações' : 'Salvar no catálogo'}</button>
+      ${r.id ? '' : '<button class="btn" data-act="hb-voltar">Voltar ao material</button>'}<button class="btn" data-act="hb-descartar">${r.id ? 'Cancelar' : 'Descartar'}</button></div></div>`;
+}
+function view(){
+  if (!M.isMestre()) return '';
+  const n = Object.keys(S.lista).length;
+  const corpo = S.tela === 'novo' ? novo() : S.tela === 'revisar' && S.rev ? revisar() : catalogo();
+  return `<div class="av hb">${sub(n)}<div class="stack">
+    ${S.aviso ? `<p class="notice bad">${h(S.aviso)}</p>` : ''}${S.msg && S.tela === 'catalogo' ? `<p class="notice" role="status">${S.msg}</p>` : ''}${corpo}</div></div>`;
+}
+
+/* ---------- eventos (só nesta aba) ---------- */
+function setPath(o, path, v){ const ks = path.split('.'); let x = o; ks.slice(0, -1).forEach(k => { x = x[k]; }); x[ks[ks.length - 1]] = v; }
+document.addEventListener('click', e => {
+  if (!M.abaHb()) return;
+  const t = e.target.closest('[data-act^="hb-"]'); if (!t) return;
+  const a = t.dataset.act.slice(3), id = t.dataset.id;
+  if (a === 'catalogo'){ S.tela = 'catalogo'; S.erro = ''; render(); return; }
+  if (a === 'novo'){ S.tela = S.rev && !S.rev.id ? 'revisar' : 'novo'; if (S.rev && S.rev.id){ S.rev = null; S.tela = 'novo'; } S.msg = ''; S.erro = ''; render(); return; }
+  if (a === 'filtro'){ S.filtro = t.dataset.f; render(); return; }
+  if (a === 'tipo'){ S.form.tipo = t.dataset.t; render(); return; }
+  if (a === 'img-del'){ S.form.imgs.splice(+t.dataset.i, 1); S.erro = ''; render(); return; }
+  if (a === 'ler'){ ler(); return; }
+  if (a === 'parar'){ if (S.ger) S.ger.ctl.abort(); return; }
+  if (a === 'manual'){ manual(); return; }
+  if (a === 'tema'){ const k = t.dataset.t, L = S.rev.temas; const i = L.indexOf(k); if (i >= 0) L.splice(i, 1); else L.push(k); render(); return; }
+  if (a === 'salvar'){ salvar(); return; }
+  if (a === 'voltar'){ S.tela = 'novo'; S.erro = ''; render(); return; }
+  if (a === 'descartar'){ const ed = S.rev && S.rev.id; S.rev = null; S.erro = ''; if (!ed) S.form = formVazio(); S.tela = ed ? 'catalogo' : 'novo'; render(); return; }
+  if (a === 'ver'){ S.aberto = S.aberto === id ? null : id; render(); return; }
+  if (a === 'editar'){ editar(id); return; }
+  if (a === 'nao'){ S.apagar = null; render(); return; }
+  if (a === 'excluir'){
+    if (S.apagar !== id){ S.apagar = id; render(); return; }
+    const x = S.lista[id], nome = x ? x.pt || x.nome : '';
+    S.apagar = null;
+    excluirDoc(id).then(() => { S.msg = h(nome) + ' saiu do catálogo.'; render(); }, err => { S.msg = 'Não foi possível excluir (' + h((err && (err.code || err.message)) || 'erro') + ').'; render(); });
+    return;
+  }
+});
+document.addEventListener('input', e => {
+  if (!M.abaHb()) return;
+  const el = e.target;
+  if (el.dataset.hbm){ S.form[el.dataset.hbm] = el.value; return; }
+  if (el.dataset.hbf && S.rev){ setPath(S.rev, el.dataset.hbf, el.value); return; }
+  if (el.hasAttribute('data-hb-busca')){
+    const q = norm(el.value); let vis = 0;
+    document.querySelectorAll('#hb-cards .hb-card').forEach(c => { const ok = !q || c.dataset.busca.includes(q); c.hidden = !ok; if (ok) vis++; });
+    const n = $('#hb-nada'); if (n) n.hidden = vis > 0;
+  }
+});
+document.addEventListener('change', e => {
+  if (!M.abaHb()) return;
+  const el = e.target;
+  if (el.dataset.hbc){ const k = el.dataset.hbc; if (k.startsWith('rev.')){ if (S.rev) S.rev[k.slice(4)] = el.checked; } else S.form[k] = el.checked; return; }
+  if (el.dataset.hbf && S.rev){ setPath(S.rev, el.dataset.hbf, el.value); return; }
+  if (el.hasAttribute('data-hb-file')){ const fs = Array.from(el.files || []); el.value = ''; addImgs(fs); }
+});
+document.addEventListener('paste', e => {
+  if (!M.abaHb() || S.tela !== 'novo' || !(S.lim && S.lim.images)) return;
+  const fs = Array.from((e.clipboardData && e.clipboardData.files) || []).filter(f => String(f.type).startsWith('image/'));
+  if (fs.length){ e.preventDefault(); addImgs(fs); }
+});
+document.addEventListener('dragover', e => { if (M.abaHb() && e.target.closest && e.target.closest('#hb-drop')){ e.preventDefault(); e.target.closest('#hb-drop').classList.add('sobre'); } });
+document.addEventListener('dragleave', e => { const d = e.target.closest && e.target.closest('#hb-drop'); if (d) d.classList.remove('sobre'); });
+document.addEventListener('drop', e => { if (!M.abaHb()) return; const d = e.target.closest && e.target.closest('#hb-drop'); if (!d) return; e.preventDefault(); d.classList.remove('sobre'); addImgs(e.dataTransfer && e.dataTransfer.files); });
+
+/* ---------- início ---------- */
+function start(db){
+  S.db = db || null;
+  if (!db){ const o = lerDemo(); S.lista = Object.fromEntries(Object.entries(o).map(([id, x]) => [id, {id, ...x}])); S.carregou = true; aplicar(); }
+  else {
+    const t = setTimeout(() => { if (!S.carregou){ S.aviso = 'Ainda não consegui ler o catálogo de homebrew. Ele aparece assim que a conexão responder.'; render(); } }, 10000);
+    db.collection('homebrew').onSnapshot(snap => {
+      const novo = {}; snap.docs.forEach(d => { novo[d.id] = {id:d.id, ...d.data()}; });
+      S.lista = novo; if (!snap.metadata || !snap.metadata.fromCache){ clearTimeout(t); S.carregou = true; S.aviso = ''; }
+      aplicar(); render();
+    }, err => { clearTimeout(t); S.carregou = true; S.aviso = 'Não consegui ler o catálogo de homebrew (' + ((err && err.code) || 'erro') + ').'; render(); });
+  }
+  if (window.claude && typeof window.claude.use === 'function'){
+    Promise.resolve(window.claude.use('sample')).then(async x => {
+      S.sample = x || null;
+      if (x && typeof x.limits === 'function'){ try { S.lim = await x.limits(); } catch { S.lim = {}; } } else S.lim = {};
+      render();
+    }, () => {});
+  }
+}
+return {view, start};
+})(MESA_API, MAS.hb, AV);
 
 /* ============ INICIALIZAÇÃO ============ */
 function subscribe(){
@@ -5473,6 +5953,7 @@ async function init(){
   }
   MAS.start(S.mode==='db' ? db : null);
   AV.start(S.mode==='db' ? db : null);
+  HB.start(S.mode==='db' ? db : null);
   subscribe(); render();
 }
 init();
