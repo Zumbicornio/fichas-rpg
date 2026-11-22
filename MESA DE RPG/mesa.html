@@ -292,6 +292,25 @@ textarea{min-height:70px;resize:vertical}
 @media (prefers-reduced-motion:no-preference){.av .st.run{animation:av-pulsa 1.4s ease-in-out infinite}}
 @keyframes av-pulsa{50%{opacity:.45}}
 .av .confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 12px;border:1px solid var(--red);border-radius:8px}
+/* imagem dos monstros (janela da ficha) */
+.vh{position:absolute!important;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none}
+.mas label.btn{position:relative}
+.mas .mon-img{margin:0}
+.mas .mon-img-b{display:block;width:100%;padding:0;border:1px solid var(--line2);border-radius:8px;background:var(--bg);cursor:zoom-in;overflow:hidden}
+.mas .mon-img-b:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
+.mas .mon-img img{display:block;width:100%;max-height:260px;object-fit:contain}
+.mas .mon-img.grande .mon-img-b{cursor:zoom-out}
+.mas .mon-img.grande img{max-height:75vh}
+.mas .img-ctl{gap:8px}
+.mas .mon-mini{display:inline-block;vertical-align:middle;width:34px;height:34px;padding:0;margin-right:8px;border:1px solid var(--line2);border-radius:6px;overflow:hidden;background:var(--bg);cursor:zoom-in}
+.mas .mon-mini img{width:100%;height:100%;object-fit:cover;display:block}
+.hb .hb-img{display:block;max-width:100%;max-height:260px;object-fit:contain;border-radius:8px;border:1px solid var(--line2);background:var(--bg)}
+.hb .hb-crop{display:grid;grid-template-columns:minmax(0,max-content) 240px;justify-content:start;gap:18px;align-items:start}
+.hb .hb-crop img{display:block;max-width:100%;max-height:320px;object-fit:contain;border-radius:8px;border:1px solid var(--line2);background:var(--bg);min-height:60px}
+.hb .hb-sliders{display:flex;flex-direction:column;gap:10px}
+.hb .hb-sliders label{display:flex;flex-direction:column;gap:2px;font-size:12px;color:var(--muted)}
+.hb .hb-sliders input{width:100%;accent-color:var(--gold)}
+@media (max-width:600px){.hb .hb-crop{grid-template-columns:minmax(0,1fr)}}
 /* aba Homebrew (usa os estilos .av) */
 .hb .hb-card{display:flex;flex-direction:column;gap:8px}
 .hb .hb-card h3{font-size:15px;color:var(--text);margin:0}
@@ -4024,7 +4043,7 @@ const S = {
   params:{tema:'cripta', tamanho:'media', nivel:3, jogadores:4, ritmo:'padrao', itens:'normal', andares:1, semente:'', nome:''}, andarDe:{},
   cur:null, sel:null, dirty:false, genArm:false, zoom:false,
   lista:{}, publicas:{}, openPub:null, notice:'', saving:false, delArm:null, loaded:false,
-  monTxt:{}, pop:null, popEdit:false, popResetArm:false,
+  monTxt:{}, pop:null, popEdit:false, popResetArm:false, imgs:{}, assets:null, dbMode:false, imgZoom:false, imgBusy:false, imgMsg:'', imgDelArm:false,
   mestres:[], pessoas:[], nomes:{}, busca:'', achados:[], userApi:null
 };
 /* mestre = dono do app ou alguém que o dono pôs na lista (config/mestres) */
@@ -4056,7 +4075,7 @@ function makeLocalStore(){
   let mem = {masmorras:{}, publicas:{}};
   try { const raw = localStorage.getItem('gerador-masmorras-demo'); if (raw) mem = JSON.parse(raw); } catch {}
   const persist = () => { try { localStorage.setItem('gerador-masmorras-demo', JSON.stringify(mem)); } catch {} };
-  const L=[], P=[], M=[];
+  const L=[], P=[], M=[], IM=[];
   return {
     onLista(cb){ L.push(cb); setTimeout(()=>cb(clone(mem.masmorras))); },
     onPublicas(cb){ P.push(cb); setTimeout(()=>cb(clone(mem.publicas))); },
@@ -4066,7 +4085,10 @@ function makeLocalStore(){
     async saveMestres(){}, registrar(){ return Promise.resolve(); }, onPessoas(){},
     onMonstros(cb){ M.push(cb); setTimeout(()=>cb(clone(mem.monstros||{}))); },
     async saveMonstro(slug, dados){ mem.monstros = mem.monstros||{}; mem.monstros[slug] = clone(dados); persist(); M.forEach(f=>f(clone(mem.monstros))); },
-    async delMonstro(slug){ if (mem.monstros) delete mem.monstros[slug]; persist(); M.forEach(f=>f(clone(mem.monstros||{}))); }
+    async delMonstro(slug){ if (mem.monstros) delete mem.monstros[slug]; persist(); M.forEach(f=>f(clone(mem.monstros||{}))); },
+    onImagens(cb){ IM.push(cb); setTimeout(()=>cb(clone(mem.imagens||{}))); },
+    async saveImagem(slug, d){ mem.imagens = mem.imagens||{}; mem.imagens[slug] = clone(d); persist(); IM.forEach(f=>f(clone(mem.imagens))); },
+    async delImagem(slug){ if (mem.imagens) delete mem.imagens[slug]; persist(); IM.forEach(f=>f(clone(mem.imagens||{}))); }
   };
 }
 function makeDbStore(db){
@@ -4089,7 +4111,10 @@ function makeDbStore(db){
     onPessoas(cb, err){ return db.collection('pessoas').onSnapshot(s=>cb(Object.keys(toMap(s))), err); },
     onMonstros(cb, err){ return db.collection('monstros').onSnapshot(s=>cb(toMap(s)), err); },
     saveMonstro(slug, dados){ return q('mon:'+slug, ()=>db.doc('monstros/'+slug).set(dados)); },
-    delMonstro(slug){ return q('mon:'+slug, ()=>db.doc('monstros/'+slug).delete()); }
+    delMonstro(slug){ return q('mon:'+slug, ()=>db.doc('monstros/'+slug).delete()); },
+    onImagens(cb, err){ return db.collection('imagens').onSnapshot(s=>cb(toMap(s)), err); },
+    saveImagem(slug, d){ return q('img:'+slug, ()=>db.doc('imagens/'+slug).set(d)); },
+    delImagem(slug){ return q('img:'+slug, ()=>db.doc('imagens/'+slug).delete()); }
   };
 }
 
@@ -4292,9 +4317,9 @@ const verCtl = (k, i, on) => `<span class="row" style="gap:6px"><span class="mut
 const tracosHtml = g => (g.tracos||[]).map(n=>`<div class="small" style="flex-basis:100%;padding-left:12px;border-left:2px solid var(--gold)"><b>${g.qtd>1?'Um deles':'Traço'} · ${h(n)}.</b> ${h(TRACOS[n]||'')}</div>`).join('');
 function encHtml(e, extra, jog){
   if (!e) return '';
-  if (jog) return `<div class="panel"><h3>Monstros</h3><div class="mon">${e.grupos.map(g=>`<div class="m"><span><span class="q num">${g.qtd}×</span> ${h(g.pt)}</span></div>`).join('')}</div></div>`;
+  if (jog) return `<div class="panel"><h3>Monstros</h3><div class="mon">${e.grupos.map(g=>`<div class="m"><span>${imgMini(g)}<span class="q num">${g.qtd}×</span> ${imgMini(g) ? `<button class="rl" data-act="img-ver" data-en="${h(g.en)}">${h(g.pt)}</button>` : h(g.pt)}</span></div>`).join('')}</div></div>`;
   return `<div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:8px"><h3 style="margin:0">Encontro · dificuldade ${h(DIFS[e.dif])}</h3>${extra||''}</div>
-    <div class="mon">${e.grupos.map(g=>`<div class="m"><span><span class="q num">${g.qtd}×</span> ${MON_BY_EN[g.en] ? `<button class="rl" data-act="mon" data-en="${h(g.en)}">${h(g.pt)}</button> <span class="en">(${h(g.en)})</span>` : `${h(g.pt)} <span class="en">(ficha nas anotações)</span>`}</span><span class="muted small num">ND ${h(g.cr)} · ${fmt(g.xp)} XP cada</span>${tracosHtml(g)}</div>`).join('')}</div>
+    <div class="mon">${e.grupos.map(g=>`<div class="m"><span>${imgMini(g)}<span class="q num">${g.qtd}×</span> ${MON_BY_EN[g.en] ? `<button class="rl" data-act="mon" data-en="${h(g.en)}">${h(g.pt)}</button> <span class="en">(${h(g.en)})</span>` : `${h(g.pt)} <span class="en">(ficha nas anotações)</span>`}</span><span class="muted small num">ND ${h(g.cr)} · ${fmt(g.xp)} XP cada</span>${tracosHtml(g)}</div>`).join('')}</div>
     <p class="small muted num" style="margin:8px 0 0">Total ${fmt(e.xp)} XP · orçamento ${fmt(e.orcamento)} XP</p>
     ${e.comport?`<p style="margin:8px 0 0">${h(e.comport)}</p>`:''}</div>`;
 }
@@ -4423,7 +4448,80 @@ function lerFichaForm(){
   if (algum && !todos) return {erro:'Preencha os seis atributos com números (ex.: 14) ou deixe todos vazios.'};
   return {dados:{ca:v('mf-ca') || null, pv:v('mf-pv'), desl:v('mf-desl'), pag:v('mf-pag'), atr: algum ? a.map(Number) : null, texto: (document.getElementById('mon-txt')||{}).value || ''}};
 }
+/* ===== imagem dos monstros (coleção "imagens", doc m-<slug>: {asset, jogadores, autor, at}; na demonstração, {url} em dataURL) =====
+   O arquivo fica no armazenamento da Mesa (assets, só Editores enviam); jogadores só veem quando jogadores=true. */
+const imgSlug = en => 'm-'+monSlug(en);
+const imgDe = en => S.imgs[imgSlug(en)] || null;
+const imgSrc = x => x ? (x.asset ? '/_blob/'+x.asset : (x.url||'')) : '';
+const podeImg = () => !S.dbMode || !!S.assets;
+/* recorta (caixa em frações [esq, topo, dir, base]) e reduz para no máximo 900 px; devolve um Blob WebP (ou JPEG) */
+async function recortarImg(src, caixa, max){
+  const bmp = await createImageBitmap(src);
+  const [l,t,r,b] = Array.isArray(caixa) && caixa.length===4 ? caixa : [0,0,1,1];
+  const sx = Math.round(Math.max(0,Math.min(1,l))*bmp.width), sy = Math.round(Math.max(0,Math.min(1,t))*bmp.height);
+  const sw = Math.max(8, Math.round(Math.max(0,Math.min(1,r))*bmp.width) - sx), sh = Math.max(8, Math.round(Math.max(0,Math.min(1,b))*bmp.height) - sy);
+  const k = Math.min(1, (max||900)/Math.max(sw, sh)), c = document.createElement('canvas');
+  c.width = Math.max(1, Math.round(sw*k)); c.height = Math.max(1, Math.round(sh*k));
+  c.getContext('2d').drawImage(bmp, sx, sy, sw, sh, 0, 0, c.width, c.height); if (bmp.close) bmp.close();
+  let blob = await new Promise(res=>c.toBlob(res, 'image/webp', .85));
+  if (!blob || blob.type!=='image/webp') blob = await new Promise(res=>c.toBlob(res, 'image/jpeg', .85));
+  return blob;
+}
+const lerDataUrl = blob => new Promise((res, rej)=>{ const f = new FileReader(); f.onload = ()=>res(f.result); f.onerror = rej; f.readAsDataURL(blob); });
+async function salvarImg(en, blob, jogadores){
+  const slug = imgSlug(en), velho = S.imgs[slug];
+  let doc;
+  if (S.dbMode){
+    if (!S.assets) throw {code:'sem_permissao'};
+    const r = await S.assets.upload(blob, {type:blob.type});
+    doc = {asset:r.id, jogadores:!!jogadores, autor:M.myId()||'', at:Date.now()};
+  } else doc = {url:await lerDataUrl(await recortarImg(blob, null, 500)), jogadores:!!jogadores, autor:M.myId()||'', at:Date.now()};
+  S.imgs = {...S.imgs, [slug]:doc};
+  await store.saveImagem(slug, doc);
+  if (velho && velho.asset && S.assets && velho.asset!==doc.asset) S.assets.delete(velho.asset).catch(()=>{});
+}
+async function removerImg(en){
+  const slug = imgSlug(en), velho = S.imgs[slug]; if (!velho) return;
+  const novo = {...S.imgs}; delete novo[slug]; S.imgs = novo;
+  await store.delImagem(slug);
+  if (velho.asset && S.assets) S.assets.delete(velho.asset).catch(()=>{});
+}
+async function imgJogadores(en, v){ const slug = imgSlug(en), x = S.imgs[slug]; if (!x) return; const doc = {...x, jogadores:!!v}; S.imgs = {...S.imgs, [slug]:doc}; await store.saveImagem(slug, doc); }
+async function moverImg(de, para){ const a = imgSlug(de), b = imgSlug(para), x = S.imgs[a]; if (!x || a===b) return; S.imgs = {...S.imgs, [b]:x}; await store.saveImagem(b, x); const n = {...S.imgs}; delete n[a]; S.imgs = n; await store.delImagem(a); }
+const erroImg = e => e && e.code==='sem_permissao' ? 'Só quem tem acesso de Editor à Mesa pode enviar imagens.' : e && e.code==='quota_exceeded' ? 'O espaço de arquivos da Mesa acabou. Remova imagens que não usa mais.' : e && e.code==='unsupported_type' ? 'Formato de imagem não aceito. Use PNG, JPG ou WebP.' : 'Não foi possível salvar a imagem ('+h((e && (e.code||e.message)) || 'erro')+').';
+const IMG_TIPOS = /^image\/(png|jpeg|webp|gif)$/;
+async function imgDoArquivo(en, file){
+  if (!file) return;
+  if (!IMG_TIPOS.test(file.type)){ S.imgMsg = 'Formato de imagem não aceito. Use PNG, JPG ou WebP (fotos HEIC do iPhone: tire um print da tela).'; render(); return; }
+  S.imgBusy = true; S.imgMsg = ''; render();
+  try { await salvarImg(en, await recortarImg(file, null), imgDe(en) ? imgDe(en).jogadores : false); }
+  catch (e){ S.imgMsg = erroImg(e); }
+  S.imgBusy = false; render();
+}
+function imgBloco(m){
+  const im = imgDe(m.en), mestre = isMestre(), ver = im && (mestre || im.jogadores);
+  const fig = ver ? `<figure class="mon-img${S.imgZoom?' grande':''}"><button class="mon-img-b" data-act="img-zoom" aria-label="${S.imgZoom?'Diminuir':'Ampliar'} a imagem"><img src="${h(imgSrc(im))}" alt="Imagem de ${h(m.pt)}"></button></figure>` : '';
+  if (!mestre || !podeImg()) return fig;
+  const ctl = `<div class="row img-ctl">
+      <label class="btn sm">${S.imgBusy?'Enviando…':im?'Trocar imagem':'Adicionar imagem'}<input type="file" class="vh" accept="image/png,image/jpeg,image/webp,image/gif" data-img-mon="${h(m.en)}" ${S.imgBusy?'disabled':''}></label>
+      ${im?`<button class="btn sm" data-act="img-jog">${im.jogadores?'Esconder dos jogadores':'Mostrar aos jogadores'}</button>
+      <button class="btn sm danger" data-act="img-del">${S.imgDelArm?'Confirmar: remover':'Remover imagem'}</button>
+      ${im.jogadores?'<span class="badge gold">Os jogadores veem</span>':'<span class="badge">Só o mestre vê</span>'}`:'<span class="small muted">ou cole com Ctrl+V</span>'}</div>
+    ${S.imgMsg?`<p class="small" role="alert" style="margin:0;color:var(--red)">${S.imgMsg}</p>`:''}`;
+  return fig + ctl;
+}
+/* só a imagem (é o que o jogador abre: ele não vê a ficha) */
+function imgPopView(){
+  const en = S.pop.slice(4), m = MON_BY_EN[en], im = imgDe(en);
+  if (!im || (!isMestre() && !im.jogadores)) return '';
+  const nome = m ? m.pt : en;
+  return `<div class="mpop-bg" data-act="pop-bg"><div class="mpop" data-act="noop" role="dialog" aria-modal="true" aria-label="Imagem de ${h(nome)}">
+    <div class="row" style="justify-content:space-between;align-items:flex-start"><h2>${h(nome)}</h2><button class="btn sm" data-act="pop-close" id="pop-close">Fechar</button></div>
+    <figure class="mon-img grande"><img src="${h(imgSrc(im))}" alt="Imagem de ${h(nome)}"></figure></div></div>`;
+}
+const imgMini = g => { const im = imgDe(g.en); return im && (isMestre() || im.jogadores) ? `<button class="mon-mini" data-act="img-ver" data-en="${h(g.en)}" aria-label="Ver a imagem de ${h(g.pt)}"><img src="${h(imgSrc(im))}" alt=""></button>` : ''; };
 function popView(){
+  if (typeof S.pop==='string' && S.pop.startsWith('img:')) return imgPopView();
   if (isItemPop()) return itemPopView();
   const m = MON_BY_EN[S.pop]; if (!m) return '';
   const slug = monSlug(m.en), st = monFicha(m.en, S.monTxt[slug]), o = st.oficial, hbm = HB_MON[m.en] || null;
@@ -4458,6 +4556,7 @@ function popView(){
   const nota = hbm ? 'Homebrew'+(hbm.soChefe?' · só chefe de masmorra':'')+' · Fonte: '+h(fonteTxt(hbm.fonte))+(st.editada?' · ficha editada pelo mestre':'') : st.editada ? 'Ficha preenchida pelo mestre.' : o ? 'Ficha oficial do SRD 5.2.1, traduzida para o português.' : st.resumoPt ? 'Resumo escrito de memória (este monstro não está no SRD 5.2.1); confira o livro.' : '';
   return `<div class="mpop-bg" data-act="pop-bg"><div class="mpop" data-act="noop" role="dialog" aria-modal="true" aria-label="Ficha de ${h(m.pt)}">
     <div class="row" style="justify-content:space-between;align-items:flex-start"><div><h2>${h(m.pt)}</h2><div class="en">${h(m.en)} · ND ${h(m.cr)} · ${fmt(m.xp)} XP${st.pag?` · <b>Livro dos Monstros 2024, p. ${h(st.pag)}</b>`:''}</div>${o?`<div class="en">${h(o.tipo)}</div>`:hbm&&hbm.ficha.tipo?`<div class="en">${h(hbm.ficha.tipo)}</div>`:''}</div><button class="btn sm" data-act="pop-close" id="pop-close">Fechar</button></div>
+    ${S.popEdit?'':imgBloco(m)}
     ${corpo}
     ${S.popEdit?'':`<div class="row" style="justify-content:space-between"><span class="small muted">${nota}</span>
       ${isMestre()?`<span class="row"><button class="btn sm" data-act="mon-edit">${o||STATS[m.en]||st.editada?'Editar ficha':'Preencher ficha'}</button>${st.editada?`<button class="btn sm danger" data-act="mon-reset">${S.popResetArm?'Confirmar: apagar o que escrevi':'Apagar o que escrevi'}</button>`:''}</span>`:''}</div>
@@ -4544,8 +4643,13 @@ document.addEventListener('click', e=>{
   if (a!=='excluir') S.delArm = null;
   if (a!=='mon-reset') S.popResetArm = false;
   if (a==='noop') return;
-  if (a==='mon' || a==='item'){ S.pop = a==='item' ? 'item:'+t.dataset.it : t.dataset.en; S.popEdit = false; render(); const c=document.getElementById('pop-close'); if (c) c.focus(); return; }
-  if (a==='pop-close' || (a==='pop-bg' && e.target===t)){ S.pop = null; S.popEdit = false; render(); return; }
+  if (a==='mon' || a==='item'){ S.pop = a==='item' ? 'item:'+t.dataset.it : t.dataset.en; S.popEdit = false; S.imgZoom = false; S.imgMsg = ''; render(); const c=document.getElementById('pop-close'); if (c) c.focus(); return; }
+  if (a!=='img-del') S.imgDelArm = false;
+  if (a==='pop-close' || (a==='pop-bg' && e.target===t)){ S.pop = null; S.popEdit = false; S.imgZoom = false; S.imgMsg = ''; render(); return; }
+  if (a==='img-zoom'){ S.imgZoom = !S.imgZoom; render(); return; }
+  if (a==='img-ver'){ S.pop = 'img:'+t.dataset.en; S.popEdit = false; render(); const c=document.getElementById('pop-close'); if (c) c.focus(); return; }
+  if (a==='img-jog' && typeof S.pop==='string'){ const im = imgDe(S.pop); if (im) imgJogadores(S.pop, !im.jogadores).catch(e=>{ S.imgMsg = erroImg(e); render(); }); render(); return; }
+  if (a==='img-del' && typeof S.pop==='string'){ if (!S.imgDelArm){ S.imgDelArm = true; render(); return; } S.imgDelArm = false; removerImg(S.pop).catch(e=>{ S.imgMsg = erroImg(e); render(); }); S.imgZoom = false; render(); return; }
   if (a==='mon-edit'){ S.popEdit = true; render(); const ta=document.getElementById('mon-txt'); if (ta) ta.focus(); return; }
   if (a==='mon-cancel'){ S.popEdit = false; render(); return; }
   if (a==='mon-save'){
@@ -4616,6 +4720,7 @@ document.addEventListener('input', e=>{
 });
 document.addEventListener('change', e=>{
   const t = e.target; if (!M.ativo()) return;
+  if (t.dataset.imgMon){ const f = t.files && t.files[0]; const en = t.dataset.imgMon; t.value = ''; imgDoArquivo(en, f); return; }
   if (t.dataset.actChange==='grupo-incluir' && S.cur){ if (!t.value) return; const ex = S.cur.params.extras = S.cur.params.extras||[]; if (!ex.includes(t.value)) ex.push(t.value);
     S.dirty = true; render(); M.toast(S.cur.publicada ? 'Incluído. Salve para os jogadores verem.' : 'Incluído no grupo desta masmorra.'); return; }
   if (t.dataset.actChange==='grupo' && S.cur){ S.cur.params.campanha = t.value; S.dirty = true; render(); return; }
@@ -4646,6 +4751,9 @@ function start(db){
   store = db ? makeDbStore(db) : makeLocalStore();
   const err = what => e => { S.notice = 'Não foi possível carregar '+what+' ('+h(e && (e.code||e.message))+').'; render(); };
   store.onMonstros(m=>{ S.monTxt = m; if (!S.popEdit) render(); }, err('os textos dos monstros'));
+  S.dbMode = !!db;
+  store.onImagens(m=>{ const n = {}; Object.entries(m||{}).forEach(([k,v])=>{ const {id, ...r} = v||{}; n[k] = r; }); S.imgs = n; if (!S.popEdit) render(); }, ()=>{});
+  if (db && window.claude && typeof window.claude.use==='function') Promise.resolve(window.claude.use('assets')).then(a=>{ S.assets = a || null; render(); }, ()=>{});
   store.onPublicas(m=>{ Object.values(m).forEach(prepar); S.publicas = m; if (S.openPub && !m[S.openPub]) S.openPub = null; render(); }, err('as masmorras visíveis'));
   S.loaded = true; papel();
 }
@@ -4702,8 +4810,15 @@ const av = {
     if (!forcar && S.dirty && S.cur && !exemplo && S.cur.id!==id) return 'sujo';
     S.cur = prepar(clone(d)); S.sel = null; S.dirty = false; S.tab = 'gerar'; return ''; }
 };
+/* colar imagem com Ctrl+V na ficha aberta de um monstro (mestre) */
+document.addEventListener('paste', e=>{
+  if (!M.ativo() || !S.pop || isItemPop() || S.popEdit || !isMestre() || !podeImg() || !MON_BY_EN[S.pop]) return;
+  const f = Array.from((e.clipboardData && e.clipboardData.files) || []).find(x=>String(x.type).startsWith('image/'));
+  if (f){ e.preventDefault(); imgDoArquivo(S.pop, f); }
+});
 /* usado pela aba Homebrew */
 const hb = {
+  img: {pode:podeImg, de:en=>{ const x = imgDe(en); return x ? {src:imgSrc(x), jogadores:!!x.jogadores} : null; }, recortar:recortarImg, salvar:salvarImg, remover:removerImg, jogadores:imgJogadores, mover:moverImg, erro:erroImg},
   temas: () => Object.fromEntries(Object.entries(TEMAS).map(([k,t])=>[k,{nome:t.nome, aberto:!!t.aberto}])),
   CRXP, RAR_NOME, conflito: hbConflito, fonteTxt,
   ativo: id => hbFeitos.some(f => f.m ? HB_MON[f.m.en] && HB_MON[f.m.en].id===id : HB_ITEM[f.nome] && HB_ITEM[f.nome].id===id),
@@ -5560,8 +5675,9 @@ function prompt(f){
   if (str(f.link)) mat.push('- Link de onde o conteúdo veio (você não consegue abrir; use só o endereço como pista da fonte): ' + str(f.link).slice(0, 500));
   if (str(f.fonte)) mat.push('- Fonte informada pelo mestre: ' + str(f.fonte).slice(0, 200));
   const mon = f.tipo === 'monstro';
+  const imgFmt = mon && f.imgs.length ? ', "imagem": {"print": 1, "caixa": [0.05, 0.1, 0.5, 0.6]}' : '';
   const formato = mon
-    ? `{"pt": "nome em português", "en": "nome original, como está na fonte", "cr": "Nível de Desafio só com o número: 0, 1/8, 1/4, 1/2, 1 a 30", "tipo": "Tamanho, tipo e tendência, ex.: Médio Morto-Vivo, Neutro e Mau", "ca": "16", "pv": "45 (6d10+12)", "desl": "9 m, voo 18 m", "ini": "+2 (12), ou vazio", "atr": [FOR, DES, CON, INT, SAB, CAR], "info": [["Salvaguardas", "..."], ["Perícias", "..."], ["Resistências", "..."], ["Imunidades", "..."], ["Sentidos", "..."], ["Idiomas", "..."]], "linhas": ["— Traços —", "Nome do traço. Texto.", "— Ações —", "Ataque Múltiplo. Texto.", "Nome do ataque. Corpo a corpo +5 (1,5 m). Acerto: 8 (1d10+3) Perfurante."], "temas": ["chaves dos temas"], "fonte": {"nome": "", "pagina": "", "certeza": "alta, media ou baixa", "como": "uma frase dizendo como identificou"}}`
+    ? `{"pt": "nome em português", "en": "nome original, como está na fonte", "cr": "Nível de Desafio só com o número: 0, 1/8, 1/4, 1/2, 1 a 30", "tipo": "Tamanho, tipo e tendência, ex.: Médio Morto-Vivo, Neutro e Mau", "ca": "16", "pv": "45 (6d10+12)", "desl": "9 m, voo 18 m", "ini": "+2 (12), ou vazio", "atr": [FOR, DES, CON, INT, SAB, CAR], "info": [["Salvaguardas", "..."], ["Perícias", "..."], ["Resistências", "..."], ["Imunidades", "..."], ["Sentidos", "..."], ["Idiomas", "..."]], "linhas": ["— Traços —", "Nome do traço. Texto.", "— Ações —", "Ataque Múltiplo. Texto.", "Nome do ataque. Corpo a corpo +5 (1,5 m). Acerto: 8 (1d10+3) Perfurante."], "temas": ["chaves dos temas"], "fonte": {"nome": "", "pagina": "", "certeza": "alta, media ou baixa", "como": "uma frase dizendo como identificou"}${imgFmt}}`
     : `{"nome": "nome em português", "original": "nome original, como está na fonte", "raridade": "comum, incomum, rara, muitorara, lendaria ou artefato", "categoria": "ex.: Arma (espada longa), Anel, Poção, Item Maravilhoso", "sint": "Exige sintonia (e por quem), ou vazio se não exige", "linhas": ["Nome da propriedade. Texto.", "..."], "fonte": {"nome": "", "pagina": "", "certeza": "alta, media ou baixa", "como": "uma frase dizendo como identificou"}}`;
   return `Você ajuda um mestre de D&D 5ª edição (regras de 2024) a cadastrar ${mon ? 'um monstro' : 'um item mágico'} na Mesa de RPG dele.
 
@@ -5573,7 +5689,7 @@ ${mat.join('\n')}
 2. Não invente nada. Se uma parte estiver ilegível ou cortada, escreva [ilegível] no lugar. Se o material não for ${mon ? 'a ficha de um monstro' : 'um item'}, devolva os campos vazios e explique em fonte.como.
 3. Cada linha de "linhas" começa com o nome do traço, ação ou propriedade seguido de ponto. Use linhas de seção como "— Ações —" quando a ficha tiver seções.
 4. Fonte: diga de onde o conteúdo foi tirado (livro, suplemento, revista, site ou autor). Use logotipos, rodapé, número de página, marca d'água, o estilo da diagramação, o endereço do link e o seu conhecimento. Dê a página só se ela aparecer no material ou se você tiver certeza. Se não conseguir identificar, use o nome do site do link; sem link, escreva "Homebrew (fonte não identificada)" com certeza baixa. Se o mestre informou a fonte, use a dele.
-${mon ? `5. Escolha de 1 a 3 temas de masmorra em que esta criatura faz sentido, usando só estas chaves: ${temas}.\n` : ''}
+${mon ? `5. Escolha de 1 a 3 temas de masmorra em que esta criatura faz sentido, usando só estas chaves: ${temas}.\n` : ''}${mon && f.imgs.length ? `6. Se algum print mostrar a ilustração da criatura (desenho ou arte), diga em qual print ela está (1 = o primeiro) e a caixa que contém só a ilustração, em frações da largura e da altura da imagem: [esquerda, topo, direita, base], de 0 a 1. Sem ilustração, use "print": 0.\n` : ''}
 ## Formato
 Responda somente com um objeto JSON, sem texto antes ou depois:
 ${formato}`;
@@ -5584,6 +5700,16 @@ function fonteDe(r, f){
   const o = r && typeof r.fonte === 'object' && r.fonte ? r.fonte : {};
   return {nome:str(o.nome) || str(f.fonte), pagina:str(o.pagina), link:str(f.link), certeza:certeza(o.certeza), como:str(o.como)};
 }
+/* imagem do monstro na revisão: modo recorte (de um print), arquivo, atual (já salva) ou nenhuma */
+function imgInicial(r, f){
+  const im = r && r.imagem && typeof r.imagem === 'object' ? r.imagem : null, n = parseInt(im && im.print, 10);
+  const cx = im && Array.isArray(im.caixa) && im.caixa.length === 4 && im.caixa.every(v => Number.isFinite(+v)) ? im.caixa.map(Number) : null;
+  if (f.imgs.length && n >= 1 && n <= f.imgs.length && cx && cx[2] > cx[0] && cx[3] > cx[1]){
+    const m = .02; /* folga para não cortar a borda da arte */
+    return {modo:'recorte', i:n - 1, caixa:[Math.max(0, cx[0] - m), Math.max(0, cx[1] - m), Math.min(1, cx[2] + m), Math.min(1, cx[3] + m)], achou:true, jogadores:false, arquivo:null};
+  }
+  return {modo:'nenhuma', i:0, caixa:[0, 0, 1, 1], achou:false, jogadores:false, arquivo:null};
+}
 function revDe(r, f){
   r = r && typeof r === 'object' ? r : {};
   if (f.tipo === 'monstro'){
@@ -5593,7 +5719,7 @@ function revDe(r, f){
       ficha:{tipo:str(r.tipo), ca:str(r.ca), pv:str(r.pv), desl:str(r.desl), ini:str(r.ini), atr,
         infoTxt:arr(r.info).filter(x => Array.isArray(x) && str(x[0]) && str(x[1])).map(x => str(x[0]) + ': ' + str(x[1])).join('\n'),
         linhasTxt:arr(r.linhas).map(str).filter(Boolean).join('\n')},
-      fonte:fonteDe(r, f)};
+      fonte:fonteDe(r, f), img:imgInicial(r, f)};
   }
   let rar = norm(r.raridade).replace(/\s+/g, ''), tes = true;
   if (rar.startsWith('artef')){ rar = 'lendaria'; tes = false; }
@@ -5680,13 +5806,27 @@ async function salvar(){
   S.salvando = true; S.erro = ''; render();
   try {
     await salvarDoc(id, doc);
+    const avisoImg = doc.tipo === 'monstro' ? await gravarImg(r, antigo, doc) : '';
     const nome = doc.tipo === 'item' ? doc.nome : doc.pt;
     S.msg = h(nome) + (antigo ? ' foi atualizado.' : ' entrou no catálogo.') + ' ' + (doc.tipo === 'monstro'
       ? (doc.soChefe ? 'Ele só aparece como chefe, nas masmorras novas de ' : 'Ele já pode aparecer nas masmorras novas de ') + doc.temas.map(t => (X.temas()[t] || {}).nome || t).join(', ') + '.'
-      : (doc.tesouro ? 'Ele já pode aparecer nos tesouros das masmorras novas (itens ' + RAR_PL[doc.raridade] + ').' : 'Ele fica só no catálogo, fora dos tesouros sorteados.'));
+      : (doc.tesouro ? 'Ele já pode aparecer nos tesouros das masmorras novas (itens ' + RAR_PL[doc.raridade] + ').' : 'Ele fica só no catálogo, fora dos tesouros sorteados.')) + avisoImg;
     S.rev = null; S.form = formVazio(); S.tela = 'catalogo'; S.aberto = id;
   } catch (e){ S.erro = 'Não foi possível salvar (' + h((e && (e.code || e.message)) || 'erro') + ').'; }
   S.salvando = false; render(); window.scrollTo(0, 0);
+}
+/* grava a imagem escolhida na revisão (depois do monstro salvo); devolve um aviso se falhar */
+async function gravarImg(r, antigo, doc){
+  const I = X.img, im = r.img; if (!im || !I.pode()) return '';
+  const enVelho = antigo && antigo.tipo === 'monstro' ? (antigo.en || antigo.pt) : null, en = doc.en;
+  try {
+    if (enVelho && enVelho !== en && I.de(enVelho)) await I.mover(enVelho, en);
+    if (im.modo === 'recorte'){ const p = S.form.imgs[im.i]; if (p) await I.salvar(en, await I.recortar(p.blob, im.caixa), im.jogadores); }
+    else if (im.modo === 'arquivo'){ if (im.arquivo) await I.salvar(en, await I.recortar(im.arquivo, null), im.jogadores); }
+    else if (im.modo === 'atual'){ const a = I.de(en); if (a && a.jogadores !== !!im.jogadores) await I.jogadores(en, im.jogadores); }
+    else if (I.de(en)) await I.remover(en);
+    return '';
+  } catch (e){ return ' A imagem não foi salva: ' + I.erro(e); }
 }
 function editar(id){
   const x = S.lista[id]; if (!x) return;
@@ -5694,6 +5834,8 @@ function editar(id){
     S.rev = {id, tipo:'monstro', pt:x.pt || '', en:x.en || '', cr:x.cr || '', soChefe:!!x.soChefe, temas:arr(x.temas).slice(),
       ficha:{tipo:f.tipo || '', ca:f.ca || '', pv:f.pv || '', desl:f.desl || '', ini:f.ini || '', atr:arr(f.atr).length === 6 ? f.atr.map(String) : ['', '', '', '', '', ''],
         infoTxt:arr(f.info).map(i => i[0] + ': ' + i[1]).join('\n'), linhasTxt:arr(f.linhas).join('\n')}, fonte:{...(x.fonte || {})}};
+    const a = X.img.de(x.en || x.pt);
+    S.rev.img = {modo:a ? 'atual' : 'nenhuma', i:0, caixa:[0, 0, 1, 1], achou:false, jogadores:!!(a && a.jogadores), arquivo:null};
   } else S.rev = {id, tipo:'item', nome:x.nome || '', original:x.original || '', raridade:x.raridade || '', categoria:x.categoria || '', sint:x.sint || '', linhasTxt:arr(x.linhas).join('\n'), tesouro:x.tesouro !== false, fonte:{...(x.fonte || {})}};
   S.rev.fonte = {nome:'', pagina:'', link:'', certeza:'', como:'', ...S.rev.fonte};
   S.tela = 'revisar'; S.erro = ''; S.msg = ''; render(); window.scrollTo(0, 0);
@@ -5708,9 +5850,9 @@ function manual(){
 const fonteHtml = f => { f = f || {}; const t = h(X.fonteTxt(f)); return f.link ? `<a href="${h(f.link)}" target="_blank" rel="noopener noreferrer">${t} ↗</a>` : t; };
 function fichaHtml(x){
   if (x.tipo === 'item') return `<div class="ficha">${x.categoria || x.sint ? `<p class="muted small">${h([x.categoria, x.sint || 'Não exige sintonia'].filter(Boolean).join(' · '))}</p>` : ''}${arr(x.linhas).map(linhaHtml).join('')}</div>`;
-  const f = x.ficha || {};
+  const f = x.ficha || {}, im = X.img.de(x.en || x.pt);
   const kv = [['CA', f.ca], ['PV', f.pv], ['Deslocamento', f.desl], ['Iniciativa', f.ini]].filter(([, v]) => str(v));
-  return `<div class="ficha">${f.tipo ? `<p class="muted small">${h(f.tipo)}</p>` : ''}
+  return `<div class="ficha">${im ? `<img class="hb-img" src="${h(im.src)}" alt="Imagem de ${h(x.pt)}"><p class="small muted">${im.jogadores ? 'Os jogadores veem esta imagem.' : 'Só o mestre vê esta imagem.'}</p>` : ''}${f.tipo ? `<p class="muted small">${h(f.tipo)}</p>` : ''}
     ${kv.length ? `<p>${kv.map(([k, v]) => `<b>${k}</b> ${h(v)}`).join(' · ')}</p>` : ''}
     ${arr(f.atr).length === 6 ? `<div class="attrs">${f.atr.map((v, i) => `<div><b>${ATR[i]}</b>${h(v)} (${mod(+v)})</div>`).join('')}</div>` : ''}
     ${arr(f.info).map(([k, v]) => `<p><b>${h(k)}.</b> ${h(v)}</p>`).join('')}
@@ -5772,6 +5914,38 @@ function novo(){
       ${semIa ? `<span class="small muted">${S.negado ? 'O Claude não foi liberado nesta página.' : 'O Claude não está disponível nesta visualização.'}</span>` : '<span class="small muted">A leitura gasta um pedido ao Claude.</span>'}</div>
     ${ger}</div>`;
 }
+/* painel "Imagem do monstro" na revisão: recorte de um print (com bordas ajustáveis), outro arquivo, a atual ou nenhuma */
+function imgPainel(r){
+  const im = r.img, orig = r.id && S.lista[r.id], atual = orig ? X.img.de(orig.en || orig.pt) : null, prints = S.form.imgs;
+  if (im.modo === 'recorte' && !prints[im.i]) im.modo = 'nenhuma';
+  const bt = (m, l) => `<button class="btn sm${im.modo === m ? ' pri' : ''}" data-act="hb-img-modo" data-m="${m}" aria-pressed="${im.modo === m}">${l}</button>`;
+  let corpo = '';
+  if (im.modo === 'recorte'){
+    corpo = `${prints.length > 1 ? `<div class="row" style="gap:6px"><span class="small muted">Print</span>${prints.map((p, i) => `<button class="btn sm${im.i === i ? ' pri' : ''}" data-act="hb-img-print" data-i="${i}" aria-pressed="${im.i === i}">${i + 1}</button>`).join('')}</div>` : ''}
+      <div class="hb-crop"><img id="hb-crop-prev" alt="Prévia do recorte"><div class="hb-sliders">${['Esquerda', 'Topo', 'Direita', 'Base'].map((l, k) => `<label><span>${l}</span><input type="range" min="0" max="100" step="1" value="${Math.round(im.caixa[k] * 100)}" data-hb-caixa="${k}" aria-label="Borda ${l.toLowerCase()} do recorte"></label>`).join('')}</div></div>
+      <p class="small muted" style="margin:0">${im.achou ? 'O Claude marcou onde está a ilustração. Se o recorte não ficou bom, ajuste as bordas.' : 'Ajuste as bordas para deixar só a ilustração.'}</p>`;
+    queueMicrotask(desenharRecorte);
+  } else if (im.modo === 'arquivo'){
+    corpo = `<label class="hb-drop"><input type="file" data-hb-imgfile accept="image/png,image/jpeg,image/webp,image/gif"><b>${im.arquivo ? 'Trocar arquivo' : 'Escolher imagem'}</b><span class="muted small">PNG, JPG ou WebP</span></label>${im.mini ? `<img class="hb-img" src="${im.mini}" alt="Imagem escolhida">` : ''}`;
+  } else if (im.modo === 'atual' && atual) corpo = `<img class="hb-img" src="${h(atual.src)}" alt="Imagem atual">`;
+  return `<div class="panel"><h3>Imagem do monstro</h3><div class="stack" style="gap:10px">
+    <div class="row" style="gap:6px">${atual ? bt('atual', 'Manter a atual') : ''}${prints.length ? bt('recorte', 'Recorte do print') : ''}${bt('arquivo', atual ? 'Trocar por outro arquivo' : 'Outro arquivo')}${bt('nenhuma', atual ? 'Remover a imagem' : 'Sem imagem')}</div>
+    ${corpo}
+    ${im.modo !== 'nenhuma' ? `<label class="hb-check" style="margin-top:0"><input type="checkbox" data-hbc="rev.img.jogadores" ${im.jogadores ? 'checked' : ''}> <span><b>Mostrar aos jogadores</b><br><span class="muted small">Eles veem a imagem na ficha do monstro. Dá para mudar depois, na própria ficha.</span></span></label>` : ''}
+  </div></div>`;
+}
+async function desenharRecorte(){
+  const r = S.rev, im = r && r.img, el = $('#hb-crop-prev'); if (!im || im.modo !== 'recorte' || !el) return;
+  const p = S.form.imgs[im.i]; if (!p) return;
+  try {
+    const bmp = await (p.bmp ||= createImageBitmap(p.blob));
+    const [l, t, rr, b] = im.caixa, sx = l * bmp.width, sy = t * bmp.height, sw = Math.max(4, (rr - l) * bmp.width), sh = Math.max(4, (b - t) * bmp.height);
+    const k = Math.min(1, 420 / Math.max(sw, sh)), c = document.createElement('canvas');
+    c.width = Math.max(1, Math.round(sw * k)); c.height = Math.max(1, Math.round(sh * k));
+    c.getContext('2d').drawImage(bmp, sx, sy, sw, sh, 0, 0, c.width, c.height);
+    el.src = c.toDataURL('image/jpeg', .85);
+  } catch {}
+}
 function revisar(){
   const r = S.rev, mon = r.tipo === 'monstro', fo = r.fonte;
   const inp = (path, rot, val, extra = '') => `<div class="f${extra.includes('wide') ? ' wide' : extra.includes('half') ? ' half' : ''}"><label for="hb-r-${path}">${rot}</label><input id="hb-r-${path}" data-hbf="${path}" value="${h(val)}"></div>`;
@@ -5800,7 +5974,7 @@ function revisar(){
     <label class="hb-check"><input type="checkbox" data-hbc="rev.tesouro" ${r.tesouro ? 'checked' : ''}> <span><b>Pode aparecer nos tesouros das masmorras</b><br><span class="muted small">Entra no sorteio de tesouros da raridade escolhida.</span></span></label></div>`;
   return `<div class="stack">
     <p class="notice">${r.id ? 'Editando um homebrew do catálogo.' : 'Confira o que o Claude leu. Corrija o que precisar antes de salvar.'}</p>
-    ${corpo}
+    ${corpo}${mon && r.img && X.img.pode() ? imgPainel(r) : ''}
     <div class="panel"><h3>Fonte *</h3><div class="form">
       ${inp('fonte.nome', 'De onde veio (livro, site, autor)', fo.nome, 'half')}${inp('fonte.pagina', 'Página', fo.pagina)}${inp('fonte.link', 'Link', fo.link)}
     </div>${fo.como || cert ? `<p class="small muted" style="margin:10px 0 0">${cert} ${fo.como ? 'Como o Claude identificou: ' + h(fo.como) : ''}</p>` : ''}</div>
@@ -5830,6 +6004,8 @@ document.addEventListener('click', e => {
   if (a === 'ler'){ ler(); return; }
   if (a === 'parar'){ if (S.ger) S.ger.ctl.abort(); return; }
   if (a === 'manual'){ manual(); return; }
+  if (a === 'img-modo' && S.rev && S.rev.img){ S.rev.img.modo = t.dataset.m; render(); return; }
+  if (a === 'img-print' && S.rev && S.rev.img){ const im = S.rev.img, i = +t.dataset.i; if (im.i !== i){ im.i = i; im.caixa = [0, 0, 1, 1]; im.achou = false; } render(); return; }
   if (a === 'tema'){ const k = t.dataset.t, L = S.rev.temas; const i = L.indexOf(k); if (i >= 0) L.splice(i, 1); else L.push(k); render(); return; }
   if (a === 'salvar'){ salvar(); return; }
   if (a === 'voltar'){ S.tela = 'novo'; S.erro = ''; render(); return; }
@@ -5841,7 +6017,7 @@ document.addEventListener('click', e => {
     if (S.apagar !== id){ S.apagar = id; render(); return; }
     const x = S.lista[id], nome = x ? x.pt || x.nome : '';
     S.apagar = null;
-    excluirDoc(id).then(() => { S.msg = h(nome) + ' saiu do catálogo.'; render(); }, err => { S.msg = 'Não foi possível excluir (' + h((err && (err.code || err.message)) || 'erro') + ').'; render(); });
+    excluirDoc(id).then(() => { S.msg = h(nome) + ' saiu do catálogo.'; if (x && x.tipo === 'monstro' && X.img.de(x.en || x.pt)) X.img.remover(x.en || x.pt).catch(() => {}); render(); }, err => { S.msg = 'Não foi possível excluir (' + h((err && (err.code || err.message)) || 'erro') + ').'; render(); });
     return;
   }
 });
@@ -5850,6 +6026,12 @@ document.addEventListener('input', e => {
   const el = e.target;
   if (el.dataset.hbm){ S.form[el.dataset.hbm] = el.value; return; }
   if (el.dataset.hbf && S.rev){ setPath(S.rev, el.dataset.hbf, el.value); return; }
+  if (el.dataset.hbCaixa != null && S.rev && S.rev.img){
+    const c = S.rev.img.caixa, k = +el.dataset.hbCaixa, v = +el.value / 100, min = .04;
+    c[k] = k < 2 ? Math.min(v, c[k + 2] - min) : Math.max(v, c[k - 2] + min);
+    c[k] = Math.max(0, Math.min(1, c[k])); if (Math.round(c[k] * 100) !== +el.value) el.value = Math.round(c[k] * 100);
+    desenharRecorte(); return;
+  }
   if (el.hasAttribute('data-hb-busca')){
     const q = norm(el.value); let vis = 0;
     document.querySelectorAll('#hb-cards .hb-card').forEach(c => { const ok = !q || c.dataset.busca.includes(q); c.hidden = !ok; if (ok) vis++; });
@@ -5859,7 +6041,13 @@ document.addEventListener('input', e => {
 document.addEventListener('change', e => {
   if (!M.abaHb()) return;
   const el = e.target;
-  if (el.dataset.hbc){ const k = el.dataset.hbc; if (k.startsWith('rev.')){ if (S.rev) S.rev[k.slice(4)] = el.checked; } else S.form[k] = el.checked; return; }
+  if (el.dataset.hbc){ const k = el.dataset.hbc; if (k.startsWith('rev.')){ if (S.rev) setPath(S.rev, k.slice(4), el.checked); } else S.form[k] = el.checked; return; }
+  if (el.hasAttribute('data-hb-imgfile') && S.rev && S.rev.img){
+    const f = el.files && el.files[0]; el.value = ''; if (!f) return;
+    if (!/^image\/(png|jpeg|webp|gif)$/.test(f.type)){ S.erro = 'Formato de imagem não aceito. Use PNG, JPG ou WebP.'; render(); return; }
+    miniatura(f).then(mini => { S.rev.img.arquivo = f; S.rev.img.mini = mini; S.erro = ''; render(); }, () => { S.erro = 'Não consegui abrir esta imagem.'; render(); });
+    return;
+  }
   if (el.dataset.hbf && S.rev){ setPath(S.rev, el.dataset.hbf, el.value); return; }
   if (el.hasAttribute('data-hb-file')){ const fs = Array.from(el.files || []); el.value = ''; addImgs(fs); }
 });
