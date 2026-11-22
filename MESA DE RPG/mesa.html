@@ -191,6 +191,107 @@ textarea{min-height:70px;resize:vertical}
   .hide-cel{display:none}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* ===== Aventuras (gerador de aventuras dentro da Mesa) ===== */
+.av{--ink-on-gold:#1a140c;--quote:#211b15}
+.av .subnav{margin-bottom:14px}
+.av .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.av .between{justify-content:space-between}
+.av .muted{color:var(--muted)} .av .small{font-size:12.5px}
+.av .num{font-variant-numeric:tabular-nums}
+.av .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;min-width:0}
+.av .panel h3{font-size:14px;color:var(--gold);margin-bottom:10px}
+.av .stack{display:flex;flex-direction:column;gap:14px}
+.av .notice{background:var(--panel2);border:1px solid var(--line2);border-radius:var(--r);padding:10px 14px;margin:0;color:var(--muted)}
+.av .notice b{color:var(--text)}
+.av .notice.bad{border-color:var(--red)}
+.av .btn{display:inline-flex;align-items:center;gap:6px;background:var(--panel2);border:1px solid var(--line2);border-radius:8px;padding:8px 14px;cursor:pointer;color:var(--text);text-decoration:none}
+.av .btn:hover{border-color:var(--gold)}
+.av .btn.pri{background:var(--gold);border-color:var(--gold);color:var(--ink-on-gold);font-weight:600}
+.av .btn.pri:hover{background:var(--gold2)}
+.av .btn.sm{padding:4px 10px;font-size:12.5px}
+.av .btn.danger{border-color:var(--red);color:var(--red)}
+.av .btn:disabled{opacity:.5;cursor:not-allowed}
+.av .btn:focus-visible,.av .toc button:focus-visible,.av input:focus-visible,.av select:focus-visible,.av textarea:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
+.av .chip{display:inline-block;padding:1px 9px;border-radius:99px;border:1px solid var(--line2);font-size:11.5px;color:var(--muted);white-space:nowrap;vertical-align:1px}
+.av .chip.ok{color:var(--green);border-color:var(--green)}
+.av .chip.warn{color:var(--orange);border-color:var(--orange)}
+.av .chip.bad{color:var(--red);border-color:var(--red)}
+.av .chip.gold{color:var(--gold2);border-color:var(--gold)}
+.av .chip.inv{color:var(--violet);border-color:var(--violet);font-size:10.5px;padding:0 7px;margin:0 2px}
+.av .eyebrow{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+/* formulário */
+.av .form{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.av .f{display:flex;flex-direction:column;gap:6px;min-width:0}
+.av .f.wide{grid-column:1/-1}
+.av .f.half{grid-column:span 2}
+.av .f label{font-size:12.5px;color:var(--muted)}
+.av .f input,.av .f select,.av .f textarea{background:var(--bg);border:1px solid var(--line2);border-radius:8px;padding:8px 10px;width:100%}
+.av .f textarea{resize:vertical;min-height:90px;line-height:1.5}
+.av .f .hint{font-size:12px;color:var(--muted)}
+@media (max-width:720px){.av .form{grid-template-columns:repeat(2,minmax(0,1fr))}.av .f.half{grid-column:1/-1}}
+/* lista */
+.av .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.av .card{display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer}
+.av .card:hover{border-color:var(--gold)}
+.av .card h3{font-size:15px;color:var(--text);margin:0}
+.av .empty{display:flex;flex-direction:column;gap:10px;align-items:flex-start;padding:24px}
+.av .empty h2{font-size:18px}
+.av .empty p{margin:0;max-width:60ch;color:var(--muted)}
+/* leitura */
+.av .leitura{display:grid;grid-template-columns:220px minmax(0,1fr);gap:18px;align-items:start}
+.av .toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);display:flex;flex-direction:column;gap:2px}
+.av .toc button{background:none;border:0;border-left:2px solid var(--line);text-align:left;padding:6px 10px;color:var(--muted);cursor:pointer}
+.av .toc button:hover{color:var(--text);border-color:var(--gold)}
+@media (max-width:900px){.av .leitura{grid-template-columns:minmax(0,1fr)}.av .toc{position:static;flex-direction:row;flex-wrap:wrap;gap:6px}.av .toc button{border:1px solid var(--line2);border-radius:99px;padding:4px 12px}}
+.av .titulo h2{font-size:24px;color:var(--gold2)}
+.av .meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 18px;margin:0}
+.av .meta div{min-width:0}
+.av .meta dt{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.av .meta dd{margin:2px 0 0}
+.av .prosa p{margin:0 0 10px;max-width:72ch}
+.av .prosa p:last-child{margin-bottom:0}
+.av .prosa b{color:var(--gold2);font-weight:600}
+.av .tabwrap{overflow-x:auto}
+.av table{border-collapse:collapse;width:100%;font-size:13px}
+.av th,.av td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.av th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.av td.n,.av th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.av tfoot td{border-bottom:0;font-weight:600}
+.av .cap{display:flex;flex-direction:column;gap:16px;scroll-margin-top:12px}
+.av .cap>h3{margin:4px 0 0;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.av .caphead h2{font-size:21px;color:var(--gold2);margin:4px 0 6px}
+.av blockquote.ler{margin:0;padding:12px 16px;background:var(--quote);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;font-style:italic;max-width:76ch}
+.av blockquote.ler .eyebrow{display:block;font-style:normal;margin-bottom:4px}
+.av .cena{border-top:1px dashed var(--line2);padding-top:12px;display:flex;flex-direction:column;gap:6px}
+.av .cena:first-of-type{border-top:0;padding-top:0}
+.av .cena h4{font-size:14px;color:var(--text)}
+.av .testes{display:flex;flex-direction:column;gap:4px;margin:0;padding:0;list-style:none}
+.av .combate{border:1px solid var(--line2);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+.av .combate h4{font-size:14px}
+.av .combate.fora{border-color:var(--orange)}
+.av .faixa{display:flex;gap:4px;flex-wrap:wrap}
+.av .faixa span{font-size:11.5px;padding:2px 8px;border-radius:6px;background:var(--panel2);color:var(--muted)}
+.av .faixa span.aqui{background:var(--gold);color:var(--ink-on-gold);font-weight:600}
+.av .checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.av .checks li{display:flex;gap:10px;align-items:baseline}
+/* ficha */
+.av .ficha{border:1px solid var(--line2);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:8px;background:var(--bg)}
+.av .ficha h4{font-size:16px;color:var(--gold2)}
+.av .ficha .linha{margin:0}
+.av .ficha .attrs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;text-align:center}
+.av .ficha .attrs div{background:var(--panel2);border-radius:6px;padding:4px 2px}
+.av .ficha .attrs b{display:block;font-size:11px;letter-spacing:.06em;color:var(--muted)}
+@media (max-width:480px){.av .ficha .attrs{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.av .ficha h5{margin:6px 0 0;font-family:var(--display);font-size:13px;color:var(--gold);border-bottom:1px solid var(--line2);padding-bottom:2px}
+.av .ficha p{margin:0}
+/* progresso */
+.av .passos{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.av .passos li{display:flex;gap:10px;align-items:baseline}
+.av .st{font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 8px;border-radius:99px;border:1px solid currentColor;white-space:nowrap;min-width:84px;text-align:center}
+.av .st.pend{color:var(--muted)} .av .st.run{color:var(--gold2)} .av .st.ok{color:var(--green)} .av .st.erro{color:var(--red)}
+@media (prefers-reduced-motion:no-preference){.av .st.run{animation:av-pulsa 1.4s ease-in-out infinite}}
+@keyframes av-pulsa{50%{opacity:.45}}
+.av .confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 12px;border:1px solid var(--red);border-radius:8px}
 </style>
 </head>
 <body>
@@ -1749,13 +1850,14 @@ const ICON = {
   ficha:'<path d="M6 3h9l3 3v15H6z"/><path d="M9 9h6M9 13h6M9 17h4"/>',
   masmorra:'<rect x="3" y="3" width="7" height="6"/><rect x="14" y="13" width="7" height="8"/><path d="M10 6h4v7"/>',
   grupo:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><circle cx="17" cy="9" r="2.5"/><path d="M16 15c3 0 5 2 5 5"/>',
-  coroa:'<path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/>'
+  coroa:'<path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/>',
+  livro:'<path d="M4 5c3-1.5 5.5-1.5 8 0v15c-2.5-1.5-5-1.5-8 0z"/><path d="M12 5c2.5-1.5 5-1.5 8 0v15c-3-1.5-5.5-1.5-8 0"/>'
 };
 const icon = k => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">${ICON[k]}</svg>`;
 function podeMestrar(){ return S.isOwner || (!!S.myId && S.mestres.includes(S.myId)); }
 function abas(){
   if (S.isMaster){
-    const t = [['fichas','Fichas','ficha',pendingList().length],['masmorras','Masmorras','masmorra']];
+    const t = [['fichas','Fichas','ficha',pendingList().length],['masmorras','Masmorras','masmorra'],['aventuras','Aventuras','livro']];
     if (S.isOwner && S.mode==='db') t.push(['mestres','Mestres','coroa',0]);
     return t;
   }
@@ -1805,6 +1907,7 @@ function viewAba(){
     case 'fichas': case 'minha': return subnav()+viewFichas();
     case 'grupo': return viewFichas();
     case 'masmorras': case 'masmorra': return MAS.view();
+    case 'aventuras': return AV.view();
     case 'mestres': return S.isOwner ? `<div class="stack">${viewMestres()}<div class="panel" style="max-width:680px"><h3>Andamento da união</h3>${etapas()}</div></div>` : '';
   }
   return '';
@@ -2514,7 +2617,7 @@ function setPath(obj,path,val){ const ks=path.split('.'); let o=obj; ks.slice(0,
 document.addEventListener('click', async e=>{
   const t=e.target.closest('[data-act]'); if(!t || t.tagName==='SELECT') return;
   const a=t.dataset.act;
-  if (MESA_API.ativo() && a!=='aba' && a!=='ver-como') return;
+  if ((MESA_API.ativo() || S.aba==='aventuras') && a!=='aba' && a!=='ver-como') return;
   if (a==='regra'){ openPop(t); return; }
   if (a==='pop-close'){ closePop(); return; }
   if (a==='pop-edit'){ S.pop.edit=true; renderPop(true); $('#pop-txt')?.focus(); return; }
@@ -2697,7 +2800,8 @@ const MESA_API = {
   grupo: (camp, extras) => grupoFichas(camp||'', extras||[]), campanhas: () => campaigns(elegiveis()),
   candidatos: (camp, extras) => candidatosGrupo(camp||'', extras||[]),
   mudarPv: (id, modo, n) => { const c=S.chars.find(x=>x.id===id); if (c) aplicarPv(c, modo, n); },
-  abrirFicha: id => abrirFicha(id), toast: m => toast(m)
+  abrirFicha: id => abrirFicha(id), toast: m => toast(m),
+  abaAv: () => S.aba==='aventuras', irAba: k => { entrarAba(k); render(true); window.scrollTo(0,0); }
 };
 const MAS = (function(M){
 'use strict';
@@ -3916,7 +4020,7 @@ function playerCopy(d){
       if (!s.verTes) delete s.tesouro;
       return s; });
     delete a.armCorr; });
-  delete c.armCorr; delete c.errantes; delete c.chefe; return c;
+  delete c.armCorr; delete c.errantes; delete c.chefe; delete c.aventura; return c;
 }
 
 function makeLocalStore(){
@@ -4161,7 +4265,7 @@ function encHtml(e, extra, jog){
   if (!e) return '';
   if (jog) return `<div class="panel"><h3>Monstros</h3><div class="mon">${e.grupos.map(g=>`<div class="m"><span><span class="q num">${g.qtd}×</span> ${h(g.pt)}</span></div>`).join('')}</div></div>`;
   return `<div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:8px"><h3 style="margin:0">Encontro · dificuldade ${h(DIFS[e.dif])}</h3>${extra||''}</div>
-    <div class="mon">${e.grupos.map(g=>`<div class="m"><span><span class="q num">${g.qtd}×</span> <button class="rl" data-act="mon" data-en="${h(g.en)}">${h(g.pt)}</button> <span class="en">(${h(g.en)})</span></span><span class="muted small num">ND ${h(g.cr)} · ${fmt(g.xp)} XP cada</span>${tracosHtml(g)}</div>`).join('')}</div>
+    <div class="mon">${e.grupos.map(g=>`<div class="m"><span><span class="q num">${g.qtd}×</span> ${MON_BY_EN[g.en] ? `<button class="rl" data-act="mon" data-en="${h(g.en)}">${h(g.pt)}</button> <span class="en">(${h(g.en)})</span>` : `${h(g.pt)} <span class="en">(ficha nas anotações)</span>`}</span><span class="muted small num">ND ${h(g.cr)} · ${fmt(g.xp)} XP cada</span>${tracosHtml(g)}</div>`).join('')}</div>
     <p class="small muted num" style="margin:8px 0 0">Total ${fmt(e.xp)} XP · orçamento ${fmt(e.orcamento)} XP</p>
     ${e.comport?`<p style="margin:8px 0 0">${h(e.comport)}</p>`:''}</div>`;
 }
@@ -4223,7 +4327,7 @@ function overview(d, edit){
   return `<div class="panel" style="display:flex;flex-direction:column;gap:10px">
       <div class="row"><span class="badge gold">${h(TEMAS[p.tema].nome)}</span><span class="badge">Nível ${p.nivel}</span><span class="badge">${p.jogadores} personagens</span>${d.andares?`<span class="badge gold">Andar ${d.andar+1} de ${d.andares.length}</span>${d.andar?`<span class="badge" style="color:var(--orange);border-color:var(--orange)">Desafio de nível ${pa.nivel}</span>`:''}`:''}<span class="badge">${vis.length} ${W_.p}${d.andares?' neste andar':''}${edit&&nSec?` (${nSec} secreta${nSec>1?'s':''})`:''}</span></div>
       <h3 style="margin:0">Gancho</h3><p class="prose" style="margin:0">${h(d.gancho)}</p>
-      <dl class="kv">${ondeGrupo(d)}${edit ? `<dt>${d.chefe?'Chefe':'Mente por trás'}</dt><dd>${h(cap(d.vilao))}${d.chefe&&MON_BY_EN[d.chefe.en]?`, <button class="rl" data-act="mon" data-en="${h(d.chefe.en)}">${h(d.chefe.b)}</button>`:''}</dd><dt>XP dos encontros</dt><dd>${fmt(xpTot)} XP ${d.andares?'neste andar':'no total'}</dd>` : ''}${d.andares?`<dt>Andares</dt><dd>${d.andares.length} · o chefe está no andar ${d.andares.length}. Cada andar abaixo do primeiro tem desafio de 1 nível a mais (${d.andares.map((_,k)=>'andar '+(k+1)+': nível '+nivelAndar(p.nivel,k)).join(', ')}).</dd>`:''}
+      <dl class="kv">${ondeGrupo(d)}${edit && d.aventura ? `<dt>Aventura</dt><dd>${h(d.aventura.titulo)}, capítulo ${h(d.aventura.n)}</dd>` : ''}${edit ? `<dt>${d.chefe||d.aventura?'Chefe':'Mente por trás'}</dt><dd>${h(cap(d.vilao))}${d.chefe&&MON_BY_EN[d.chefe.en]?`, <button class="rl" data-act="mon" data-en="${h(d.chefe.en)}">${h(d.chefe.b)}</button>`:''}</dd><dt>XP dos encontros</dt><dd>${fmt(xpTot)} XP ${d.andares?'neste andar':'no total'}</dd>` : ''}${d.andares?`<dt>Andares</dt><dd>${d.andares.length} · o chefe está no andar ${d.andares.length}. Cada andar abaixo do primeiro tem desafio de 1 nível a mais (${d.andares.map((_,k)=>'andar '+(k+1)+': nível '+nivelAndar(p.nivel,k)).join(', ')}).</dd>`:''}
         ${TEMAS[p.tema].aberto || !edit ?'':`<dt>Portas</dt><dd>${portas.normal||0} comuns · ${portas.trancada||0} trancadas (Destreza (Prestidigitação) CD ${TDC.det[tierOf(pa.nivel)-1]}) · ${portas.emperrada||0} emperradas (Força (Atletismo) CD ${TDC.det[tierOf(pa.nivel)-1]-2})${edit?` · ${portas.secreta||0} secretas`:''}</dd>`}</dl>
     </div>
     ${edit ? nevoaHtml(d) : ''}
@@ -4518,8 +4622,798 @@ function start(db){
 }
 function reset(){ S.sel = null; S.openPub = null; S.pop = null; S.popEdit = false; }
 const autores = () => Object.values(S.lista).map(d=>d.autor).filter(x=>typeof x==='string');
-return {view, depois, start, papel, reset, autores};
+/* usado pela aba Aventuras: gerar a planta, guardar e abrir a masmorra de um capítulo */
+const av = {
+  dados:{BUD, CRXP, MON},
+  temas: () => Object.fromEntries(Object.entries(TEMAS).map(([k,t])=>[k,{nome:t.nome, aberto:!!t.aberto}])),
+  tipos: () => TIPOS, pool: tema => poolFor(tema), gerar: p => genDungeon(p),
+  async guardar(d){ d.id = newId(); if (M.myId()) d.autor = M.myId(); d.atualizada = Date.now(); const c = paraSalvar(d); S.lista[d.id] = prepar(clone(c)); await store.save(c); return d.id; },
+  existe: id => !!S.lista[id], nome: id => S.lista[id] ? S.lista[id].nome : '',
+  abrir(id, forcar){ const d = S.lista[id]; if (!d) return 'sumiu'; const exemplo = S.cur && !S.cur.id && S.cur.semente==='exemplo-cripta'; /* a masmorra de exemplo do Gerador não conta como trabalho não salvo */
+    if (!forcar && S.dirty && S.cur && !exemplo && S.cur.id!==id) return 'sujo';
+    S.cur = prepar(clone(d)); S.sel = null; S.dirty = false; S.tab = 'gerar'; return ''; }
+};
+return {view, depois, start, papel, reset, autores, av};
 })(MESA_API);
+
+/* ============ AVENTURAS (gerador de aventuras; só mestres) ============
+   Veio da pasta GERADOR DE AVENTURAS. Usa a lista de monstros e o gerador de masmorras da Mesa (MAS.av). */
+const AV = (function(M, X){
+const {BUD, CRXP, MON} = X.dados;
+/* ================= utilidades ================= */
+const $ = s => document.querySelector(s);
+const h = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* texto vindo do Claude: escapa, marca [Inventado] e mantém quebras de linha */
+const tx = s => h(s).replace(/\[\s*inventad[oa]\s*\]/gi, '<span class="chip inv" title="Não vem da história original">Inventado</span>').replace(/\n/g, '<br>');
+const arr = x => Array.isArray(x) ? x : [];
+const str = x => (x === null || x === undefined) ? '' : (typeof x === 'object' ? JSON.stringify(x) : String(x));
+const int = (x, d) => { const n = parseInt(x, 10); return Number.isFinite(n) ? n : d; };
+const fmt = n => Number(n || 0).toLocaleString('pt-BR');
+const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const DIFN = ['Baixa', 'Moderada', 'Alta', 'Acima de Alta'];
+const difIdx = s => { s = norm(s); return s.startsWith('baix') ? 0 : s.startsWith('mod') ? 1 : s.startsWith('alt') ? 2 : -1; };
+const orc = (nivel, jog) => BUD[clamp(int(nivel, 1), 1, 20)].map(v => v * jog);
+const MON_IDX = {}; MON.forEach(m => { MON_IDX[norm(m.en)] = m; MON_IDX[norm(m.pt)] = m; });
+const crXp = cr => CRXP[String(cr ?? '').trim().replace(/^nd\s*/i, '')] ?? null;
+const FIDEL = {fiel:'fiel: siga a trama e a ordem dos acontecimentos da história', adaptada:'adaptada: mantenha o essencial da trama e ajuste o resto ao grupo', livre:'livre: use só a premissa, os locais e os personagens como inspiração'};
+const PAPEIS = ['PNJs contratantes', 'Aliados do grupo', 'Antagonistas', 'Ausentes (só citados)', 'Misturado: alguns aliados, alguns antagonistas'];
+const TIERS = {complex:'Mais completa (mais lenta)', default:'Mais rápida'};
+
+/* ================= estado ================= */
+const S = {
+  tela:'lista', atual:null, lista:{}, caps:{}, carregou:false, avisoDb:'',
+  db:null, sample:null, dl:null, semIa:false, semDb:false, iaNegada:false,
+  ger:null, excluir:false, msg:'', mz:null, mzForm:{}, abrirArm:null, dbRaw:null,
+  form:{historia:'', jogadores:4, nivel:3, sessoes:4, fidelidade:'adaptada', papel:PAPEIS[0], obs:'', tier:'complex'}
+};
+try { const f = JSON.parse(localStorage.getItem('aventuras-form') || 'null'); if (f) Object.assign(S.form, f); } catch {}
+const guardarForm = () => { try { localStorage.setItem('aventuras-form', JSON.stringify(S.form)); } catch {} };
+const capsDe = id => (id === EXEMPLO.id ? EXEMPLO.caps : S.caps[id]) || {};
+const aventura = id => id === EXEMPLO.id ? EXEMPLO : S.lista[id];
+
+/* ================= conferência de XP ================= */
+function fichaDe(fichas, nome){ const n = norm(nome); return arr(fichas).find(f => norm(f.nome) === n) || arr(fichas).find(f => n && (norm(f.nome).startsWith(n) || n.startsWith(norm(f.nome)))); }
+function avaliar(c, nivel, jog, fichas){
+  const linhas = arr(c.inimigos).map(i => {
+    const q = Math.max(1, int(i.qtd, 1)), nome = str(i.nome).trim(), f = fichaDe(fichas, nome);
+    if (f){ const xp = crXp(f.nd); return {nome:f.nome, det:'ND '+f.nd+' · ficha nos apêndices', q, xp:xp||0, ok:xp!==null}; }
+    const m = MON_IDX[norm(nome)];
+    if (m) return {nome:m.pt, en:m.en, det:'ND '+m.cr, q, xp:m.xp, ok:true};
+    return {nome, det:'não está na lista de monstros', q, xp:0, ok:false};
+  });
+  const total = linhas.reduce((t, l) => t + l.xp*l.q, 0), B = orc(nivel, jog);
+  const cls = total <= B[0] ? 0 : total <= B[1] ? 1 : total <= B[2] ? 2 : 3, dec = difIdx(c.dificuldade);
+  const achou = linhas.every(l => l.ok);
+  return {linhas, total, B, cls, dec, achou, ok: achou && cls === dec};
+}
+
+/* ================= normalização das respostas ================= */
+function normPlano(r, p){
+  r = (r && typeof r === 'object' && !Array.isArray(r)) ? r : {};
+  const caps = arr(r.capitulos).slice(0, p.sessoes);
+  let nv = p.nivel;
+  const capitulos = Array.from({length:p.sessoes}, (_, i) => { const c = caps[i] || {};
+    nv = clamp(int(c.nivel, nv), nv, 20); const x = {n:i+1, titulo:str(c.titulo)||'Capítulo '+(i+1), nivel:i===0?p.nivel:nv, dificuldade:DIFN[difIdx(c.dificuldade)]||'Moderada', resumo:str(c.resumo), segredo:str(c.segredo), local:str(c.local)}; nv = x.nivel; return x; });
+  const em = r.escolha_moral && typeof r.escolha_moral === 'object' ? r.escolha_moral : {};
+  return {
+    titulo:str(r.titulo)||'Aventura sem título', cenario:str(r.cenario), temas:arr(r.temas).map(str), origem:str(r.origem), dificuldade:str(r.dificuldade),
+    premissa:str(r.premissa), gancho:str(r.gancho),
+    contratante:{nome:str(r.contratante?.nome), quem:str(r.contratante?.quem), sabe:str(r.contratante?.sabe), esconde:str(r.contratante?.esconde)},
+    antagonistas:arr(r.antagonistas).map(a => ({nome:str(a.nome), papel:str(a.papel), nd:str(a.nd), capitulos:arr(a.capitulos).map(x=>int(x,0)).filter(Boolean), foge:str(a.foge)})).filter(a => a.nome),
+    aliados:arr(r.aliados).map(a => ({nome:str(a.nome), quem:str(a.quem), personalidade:str(a.personalidade), ficha:str(a.ficha)})).filter(a => a.nome),
+    capitulos, escolha:{capitulo:int(em.capitulo,0), descricao:str(em.descricao), consequencia_capitulo:int(em.consequencia_capitulo,0), consequencia:str(em.consequencia)},
+    marcos:str(r.marcos)
+  };
+}
+const normLista = x => arr(x).map(t => typeof t === 'string' ? {nome:'', texto:t} : {nome:str(t.nome), texto:str(t.texto ?? t.descricao)}).filter(t => t.nome || t.texto);
+function normFichas(r){
+  return arr(Array.isArray(r) ? r : r?.fichas).map(f => ({
+    nome:str(f.nome), tipo:str(f.tipo), nd:str(f.nd).replace(/^nd\s*/i,''), ca:str(f.ca), pv:str(f.pv), deslocamento:str(f.deslocamento),
+    atributos:Object.fromEntries(['FOR','DES','CON','INT','SAB','CAR'].map(k => [k, int(f.atributos?.[k], 10)])),
+    salvaguardas:str(f.salvaguardas), pericias:str(f.pericias), resistencias:str(f.resistencias), imunidades:str(f.imunidades), sentidos:str(f.sentidos), idiomas:str(f.idiomas),
+    tracos:normLista(f.tracos), acoes:normLista(f.acoes), acoes_bonus:normLista(f.acoes_bonus), reacoes:normLista(f.reacoes), lendarias:normLista(f.lendarias)
+  })).filter(f => f.nome);
+}
+function normCap(r, n, nivel){
+  r = (r && typeof r === 'object' && !Array.isArray(r)) ? r : {};
+  return {
+    n, titulo:str(r.titulo)||'Capítulo '+n, nivel:clamp(int(r.nivel, nivel), 1, 20), resumo:str(r.resumo), abertura:str(r.abertura),
+    cenas:arr(r.cenas).map(c => ({nome:str(c.nome), objetivo:str(c.objetivo), testes:arr(c.testes).map(t => ({pericia:str(t.pericia), cd:int(t.cd,0), uso:str(t.uso)})), sucesso:str(c.sucesso), falha:str(c.falha)})),
+    combates:arr(r.combates).map(c => ({nome:str(c.nome), principal:!!c.principal, dificuldade:DIFN[difIdx(c.dificuldade)]||str(c.dificuldade), inimigos:arr(c.inimigos).map(i => ({nome:str(i.nome), qtd:Math.max(1,int(i.qtd,1))})), terreno:str(c.terreno), objetivo:str(c.objetivo), tatica:str(c.tatica), fuga:str(c.fuga)})),
+    evento:str(r.evento), gancho:str(r.gancho), subida:str(r.subida), recompensas:arr(r.recompensas).map(str), ouro:str(r.ouro), masmorra:normMz(r.masmorra)
+  };
+}
+
+/* ================= prompts ================= */
+const REGRAS = `1. Os jogadores usam os próprios personagens. Os protagonistas da história original viram PNJs, conforme o papel indicado. Nunca deixe um PNJ resolver o conflito no lugar dos jogadores.
+2. Use a trama, os locais e os personagens da história, mas escreva todo o texto com palavras suas. Não copie falas nem trechos do original.
+3. Cada capítulo equivale a uma sessão e tem pelo menos um combate principal.
+4. Distribua as reviravoltas e os segredos da história, no máximo um por capítulo.
+5. Antagonistas recorrentes podem fugir em capítulos iniciais. Sempre explique como.
+6. Inclua pelo menos uma escolha moral com consequência mecânica num capítulo posterior (se houver só um capítulo, a consequência vem no fim dele).
+7. Se faltar informação na história, invente de forma coerente e marque com [Inventado].`;
+function cabecalho(p){
+  return `Você é um designer de aventuras de D&D 5.5 (regras de 2024: Livro do Jogador, Livro do Mestre e Livro dos Monstros de 2024). Sua tarefa é transformar uma história numa aventura jogável. Escreva em português do Brasil.
+
+## Entrada
+- História ou conto: ${p.historia}
+- Número de jogadores: ${p.jogadores}
+- Nível inicial do grupo: ${p.nivel}
+- Número de sessões (um capítulo por sessão): ${p.sessoes}
+- Fidelidade à história: ${FIDEL[p.fidelidade] || p.fidelidade}
+- Papel dos protagonistas originais: ${p.papel}
+- Observações do mestre: ${p.obs || 'nenhuma'}
+
+## Regras de adaptação
+${REGRAS}`;
+}
+const linhaOrc = (nv, jog) => { const B = orc(nv, jog); return `Nível ${nv}: Baixa até ${fmt(B[0])} XP · Moderada de ${fmt(B[0]+1)} a ${fmt(B[1])} XP · Alta de ${fmt(B[1]+1)} a ${fmt(B[2])} XP`; };
+const planoDif = n => n === 1 ? 'Alta' : n === 2 ? 'Moderada no capítulo 1 e Alta no capítulo 2' : 'Moderada nos primeiros capítulos, Alta em um ou dois capítulos do meio e Alta no último, contra o chefe';
+function promptPlano(p){
+  const niveis = []; for (let n = p.nivel; n <= Math.min(20, p.nivel + p.sessoes); n++) niveis.push('- ' + linhaOrc(n, p.jogadores));
+  return cabecalho(p) + `
+
+## Progressão e dificuldade
+- Defina o nível do grupo em cada capítulo. O capítulo 1 é no nível ${p.nivel}. O grupo sobe no máximo 1 nível por capítulo, em marcos coerentes com a história, e nunca passa do nível 20.
+- Dificuldade do combate principal de cada capítulo: ${planoDif(p.sessoes)}.
+- Orçamento de XP do grupo inteiro (Livro do Mestre 2024, já multiplicado pelos ${p.jogadores} jogadores):
+${niveis.join('\n')}
+- Antagonistas nomeados terão ficha própria. Dê a cada um um ND coerente com o papel. Um antagonista sozinho não deve passar do orçamento Alto do capítulo em que luta.
+
+## Esta etapa
+Escreva só o PLANO da aventura. Os capítulos serão escritos depois, um por vez, a partir dele.
+
+## Formato
+Responda somente com um objeto JSON, sem texto antes ou depois, neste formato:
+{
+  "titulo": "nome da aventura",
+  "cenario": "mundo e região onde se passa",
+  "temas": ["2 a 4 temas, ex.: horror, intriga, viagem"],
+  "origem": "de qual história, e de qual parte dela, a aventura vem",
+  "dificuldade": "Baixa, Moderada ou Alta (geral)",
+  "premissa": "2 a 4 frases",
+  "gancho": "como os personagens entram na história",
+  "contratante": {"nome": "", "quem": "quem é", "sabe": "o que ele sabe", "esconde": "o que ele esconde"},
+  "antagonistas": [{"nome": "", "papel": "", "nd": "ex.: 3 ou 1/2", "capitulos": [1, 2], "foge": "em que capítulo e como escapa, ou vazio"}],
+  "aliados": [{"nome": "", "quem": "", "personalidade": "", "ficha": "criatura do Livro dos Monstros 2024 sugerida, nome em inglês"}],
+  "capitulos": [{"n": 1, "titulo": "", "nivel": ${p.nivel}, "dificuldade": "Moderada", "resumo": "uma frase", "segredo": "reviravolta ou segredo revelado neste capítulo (no máximo um), ou vazio", "local": "onde acontece"}],
+  "escolha_moral": {"capitulo": 1, "descricao": "a escolha", "consequencia_capitulo": 2, "consequencia": "efeito mecânico concreto"},
+  "marcos": "quando e por que o grupo sobe de nível"
+}
+Use exatamente ${p.sessoes} capítulo(s). Marque com [Inventado] o que não vem da história.`;
+}
+function promptFichas(A){
+  const P = A.plano;
+  return `Você é um designer de monstros de D&D 5.5 (regras de 2024). Crie as fichas de estatísticas dos antagonistas nomeados da aventura "${P.titulo}". Escreva em português do Brasil.
+
+## Contexto
+${P.premissa}
+Grupo: ${A.params.jogadores} jogadores, do nível ${A.params.nivel} ao ${P.capitulos[P.capitulos.length-1].nivel}.
+
+## Antagonistas
+${P.antagonistas.map(a => `- ${a.nome} (ND ${a.nd}): ${a.papel}. Aparece nos capítulos ${a.capitulos.join(', ') || '?'}.${a.foge ? ' Foge: ' + a.foge : ''}`).join('\n')}
+
+## Regras
+- Use o ND indicado. CA, PV, bônus de ataque, dano por rodada e CD de salvaguarda seguem os valores típicos desse ND no Livro dos Monstros e no Livro do Mestre de 2024.
+- Escreva traços e ações com palavras suas.
+- Dano sempre com média e dados, ex.: "13 (2d8 + 4) de dano cortante".
+- Ações lendárias só para o chefe final, e só se o ND for 5 ou mais.
+- Quem foge precisa de um meio de fuga na ficha (ação, magia, item ou traço).
+
+## Formato
+Responda somente com um array JSON, uma ficha por antagonista, sem texto antes ou depois:
+[{"nome": "", "tipo": "Humanoide Médio (humano), Neutro e Mau", "nd": "3", "ca": "15 (cota de malha)", "pv": "58 (9d8 + 18)", "deslocamento": "9 m", "atributos": {"FOR": 14, "DES": 12, "CON": 14, "INT": 10, "SAB": 13, "CAR": 16}, "salvaguardas": "Sab +3", "pericias": "Enganação +5", "resistencias": "", "imunidades": "", "sentidos": "Percepção passiva 11", "idiomas": "Comum", "tracos": [{"nome": "", "texto": ""}], "acoes": [{"nome": "", "texto": ""}], "acoes_bonus": [], "reacoes": [], "lendarias": []}]`;
+}
+function promptCapitulo(A, n){
+  const P = A.plano, p = A.params, pc = P.capitulos[n-1], caps = capsDe(A.id), B = orc(pc.nivel, p.jogadores);
+  const ant = [];
+  for (let k = 1; k < n; k++){ const c = caps[k]; ant.push(c ? `- Capítulo ${k}, ${c.titulo}: ${c.resumo} Evento: ${c.evento} Gancho: ${c.gancho}` : `- Capítulo ${k}, ${P.capitulos[k-1].titulo} (ainda não escrito): ${P.capitulos[k-1].resumo}`); }
+  const fichas = arr(A.fichas).map(f => `- ${f.nome} · ND ${f.nd} · ${fmt(crXp(f.nd)||0)} XP`).join('\n') || '- nenhum';
+  const mons = MON.filter(m => m.xp <= B[2]).map(m => `${m.en} · ${m.pt} · ND ${m.cr} · ${m.xp} XP`).join('\n');
+  const em = P.escolha, extra = [];
+  if (em.capitulo === n) extra.push(`- Este capítulo apresenta a escolha moral do plano: ${em.descricao}`);
+  if (em.consequencia_capitulo === n) extra.push(`- Neste capítulo aparece a consequência da escolha moral: ${em.consequencia}`);
+  if (pc.segredo) extra.push(`- Segredo ou reviravolta a revelar neste capítulo: ${pc.segredo}`);
+  const planoCurto = {titulo:P.titulo, cenario:P.cenario, premissa:P.premissa, gancho:P.gancho, contratante:P.contratante, antagonistas:P.antagonistas, aliados:P.aliados.map(a=>a.nome+': '+a.quem), capitulos:P.capitulos, escolha_moral:P.escolha, marcos:P.marcos};
+  return cabecalho(p) + `
+
+## Plano da aventura (já definido; siga-o)
+${JSON.stringify(planoCurto)}
+
+## Antagonistas com ficha própria
+${fichas}
+
+## Capítulos anteriores
+${ant.length ? ant.join('\n') : '- Este é o primeiro capítulo.'}
+
+## Escreva agora o capítulo ${n} de ${p.sessoes}
+Plano deste capítulo: ${JSON.stringify(pc)}
+Nível do grupo: ${pc.nivel}. Orçamento do grupo inteiro: Baixa até ${fmt(B[0])} XP; Moderada de ${fmt(B[0]+1)} a ${fmt(B[1])} XP; Alta de ${fmt(B[1]+1)} a ${fmt(B[2])} XP.
+- Pelo menos um combate principal ("principal": true) com dificuldade ${pc.dificuldade}. Pode haver até 2 combates secundários, mais leves.
+- A soma de XP de cada combate precisa cair na faixa da dificuldade declarada. A página que recebe a resposta soma o XP e marca os combates fora da faixa.
+- Inimigos: use só criaturas da lista abaixo, com o nome em inglês escrito exatamente como está, ou os antagonistas com ficha, com o nome exato da ficha.
+- Cada combate tem um elemento de terreno interativo e um objetivo além de "matar todos" (resgatar, impedir um ritual, proteger alguém, cronômetro).
+- Antagonista recorrente que foge neste capítulo: explique como, no campo "fuga".
+- 2 a 4 cenas, cada uma com objetivo, testes (perícia em português e CD) e consequências de sucesso e de falha.
+- Recompensas: itens mágicos do Livro do Mestre 2024 adequados ao nível, mais ouro.
+- Se algum combate deste capítulo acontece num lugar explorável (cripta, caverna, forte, templo, esgoto, covil, ruína, floresta, pântano, montanha, estrada), descreva esse lugar em "masmorra": a Mesa vai desenhar o mapa dele. Se nenhum combate acontece num lugar assim (ex.: briga numa taverna), use null.
+${extra.join('\n')}
+Marque com [Inventado] o que não vem da história.
+
+## Criaturas permitidas (nome em inglês · nome em português · ND · XP cada)
+${mons}
+
+## Formato
+Responda somente com um objeto JSON, sem texto antes ou depois:
+{"titulo": "", "nivel": ${pc.nivel}, "resumo": "uma frase", "abertura": "texto para ler em voz alta, 2 a 4 frases", "cenas": [{"nome": "", "objetivo": "", "testes": [{"pericia": "Percepção", "cd": 13, "uso": "para que serve"}], "sucesso": "", "falha": ""}], "combates": [{"nome": "", "principal": true, "dificuldade": "${pc.dificuldade}", "inimigos": [{"nome": "Ghoul", "qtd": 2}], "terreno": "", "objetivo": "", "tatica": "tática dos inimigos", "fuga": "condição de fuga ou rendição"}], "evento": "reviravolta ou escolha do capítulo", "gancho": "gancho para o próximo capítulo", "subida": "subida de nível ao fim do capítulo, ou vazio", "recompensas": ["item ou tesouro"], "ouro": "ex.: 150 po", "masmorra": {"nome": "nome do lugar", "tema": "um destes: ${Object.keys(TEMAS_AV).join(', ')}", "tamanho": "pequena ou media", "descricao": "como é o lugar, 1 a 2 frases", "combates": ["nomes exatos dos combates que acontecem lá"]}}`;
+}
+
+/* ================= banco de dados ================= */
+const semCampos = A => { const {id, exemplo, ...r} = A; return JSON.parse(JSON.stringify(r)); };
+async function salvarAv(A){ A.atualizada = Date.now(); S.lista[A.id] = A; if (S.db) await S.db.collection('aventuras').doc(A.id).set(semCampos(A)); }
+async function salvarCap(id, n, dados){ (S.caps[id] ||= {})[n] = dados; if (S.db) await S.db.collection('capitulos').doc(id+'--'+n).set({aventura:id, n, dados}); }
+async function excluirAv(id){
+  const n = Object.keys(S.caps[id] || {});
+  delete S.lista[id]; delete S.caps[id];
+  if (S.db){ for (const k of n) await S.db.collection('capitulos').doc(id+'--'+k).delete(); await S.db.collection('aventuras').doc(id).delete(); }
+}
+function assinar(){
+  const t = setTimeout(() => { if (!S.carregou){ S.avisoDb = 'Ainda não consegui ler as aventuras salvas. Elas aparecem assim que a conexão responder.'; render(); } }, 10000);
+  unsubs.push(S.db.collection('aventuras').onSnapshot(snap => {
+    const novo = {}; snap.docs.forEach(d => { novo[d.id] = {id:d.id, ...d.data()}; });
+    S.lista = novo; if (!snap.metadata.fromCache){ clearTimeout(t); S.carregou = true; S.avisoDb = ''; } render();
+  }, e => { clearTimeout(t); S.carregou = true; S.avisoDb = 'Não consegui ler as aventuras salvas (' + e.code + '). Recarregue a página mais tarde.'; render(); }));
+  unsubs.push(S.db.collection('capitulos').onSnapshot(snap => {
+    const novo = {}; snap.docs.forEach(d => { const x = d.data(); if (x && x.aventura) (novo[x.aventura] ||= {})[x.n] = x.dados; });
+    S.caps = novo; render();
+  }, () => {}));
+}
+
+/* ================= geração ================= */
+const ERROS = {
+  not_granted:'O Claude não foi liberado para esta página. Para gerar aventuras, permita o uso do Claude no menu de permissões da Mesa.',
+  sampling_disabled:'O Claude não está disponível nesta conta.', rate_limited:'Limite de uso do Claude atingido por agora. Espere um pouco e clique em Continuar.',
+  refused:'O Claude recusou esta etapa. Mude a história ou as observações e tente de novo.', invalid_json:'A resposta veio num formato que a página não entendeu. Clique em Continuar para tentar de novo.',
+  prompt_too_large:'O texto da história está grande demais. Encurte o resumo.', session_expired:'Sua sessão expirou. Entre de novo no claude.ai e recarregue.',
+  empty_completion:'O Claude não respondeu nada nesta etapa. Clique em Continuar para tentar de novo.'
+};
+const msgErro = e => ERROS[e?.code] || (e?.code === 'cancelled' ? 'Geração parada. O que já ficou pronto está salvo; clique em Continuar para seguir.' : 'Falha de conexão com o Claude (' + (e?.code || e?.message || 'erro') + '). Clique em Continuar para tentar de novo.');
+function pedir(prompt, ctl){
+  return S.sample.json(prompt, {modelTier:S.form.tier === 'default' ? 'default' : 'complex', cache:false, signal:ctl.signal,
+    onText:({text}) => { if (S.ger){ S.ger.chars = text.length; const el = $('#chars'); if (el) el.textContent = fmt(text.length) + ' caracteres recebidos'; } }});
+}
+function passosFaltando(A){
+  const p = [], caps = capsDe(A.id);
+  if (!A.plano) p.push({k:'plano', rot:'Plano da aventura'});
+  if (!A.fichas) p.push({k:'fichas', rot:'Fichas dos antagonistas'});
+  for (let i = 1; i <= A.params.sessoes; i++) if (!caps[i]) p.push({k:'cap', n:i, rot:'Capítulo ' + i});
+  return p;
+}
+async function gerar(id, so){
+  if (ocupado()) return;
+  const A = S.lista[id]; if (!A || !S.sample) return;
+  const passos = so ? [{k:'cap', n:so, rot:'Capítulo ' + so + ' (de novo)'}] : passosFaltando(A);
+  if (!passos.length) return;
+  S.ger = {id, passos:passos.map(x => ({...x, st:'pend'})), chars:0, ctl:null, erro:'', fim:false};
+  render();
+  for (const ps of S.ger.passos){
+    ps.st = 'run'; S.ger.chars = 0; render();
+    const ctl = S.ger.ctl = new AbortController();
+    try {
+      if (ps.k === 'plano'){ A.plano = normPlano(await pedir(promptPlano(A.params), ctl), A.params); A.titulo = A.plano.titulo; await salvarAv(A); }
+      else if (ps.k === 'fichas'){ A.fichas = A.plano.antagonistas.length ? normFichas(await pedir(promptFichas(A), ctl)) : []; await salvarAv(A); }
+      else { const nv = A.plano.capitulos[ps.n-1].nivel; await salvarCap(id, ps.n, normCap(await pedir(promptCapitulo(A, ps.n), ctl), ps.n, nv)); await salvarAv(A); }
+      ps.st = 'ok';
+    } catch (e){
+      ps.st = 'erro'; S.ger.erro = e && e.code ? msgErro(e) : 'Erro ao salvar: ' + (e?.message || e); if (e?.code === 'not_granted') S.iaNegada = true; break;
+    }
+  }
+  S.ger.fim = true; S.ger.ctl = null;
+  if (!S.ger.erro) S.msg = so ? 'Capítulo ' + so + ' gerado de novo.' : 'Aventura pronta. Confira as verificações de XP antes de jogar.';
+  if (!S.ger.erro) S.ger = null;
+  render();
+}
+
+/* ================= exportação em Markdown ================= */
+function markdown(A){
+  const P = A.plano, p = A.params, caps = capsDe(A.id), L = [];
+  const lista = (t, xs) => { if (xs.length){ L.push('**' + t + '**', ''); xs.forEach(x => L.push('- ' + x)); L.push(''); } };
+  L.push('# ' + P.titulo, '', '## Metadados', '',
+    '- Título: ' + P.titulo, '- Mundo/cenário: ' + P.cenario, '- Nível: ' + p.nivel + ' → ' + P.capitulos[P.capitulos.length-1].nivel,
+    '- Jogadores: ' + p.jogadores, '- Sessões: ' + p.sessoes, '- Dificuldade geral: ' + P.dificuldade, '- Temas: ' + P.temas.join(', '), '- História de origem: ' + P.origem, '',
+    '## Visão geral', '', P.premissa, '', '**Gancho.** ' + P.gancho, '',
+    '**Contratante: ' + P.contratante.nome + '.** ' + P.contratante.quem, '', '- Sabe: ' + P.contratante.sabe, '- Esconde: ' + P.contratante.esconde, '',
+    '| Antagonista | Papel | ND | Capítulos |', '|---|---|---|---|', ...P.antagonistas.map(a => `| ${a.nome} | ${a.papel} | ${a.nd} | ${a.capitulos.join(', ')} |`), '',
+    '| Capítulo | Nível | Orçamento Moderado | Orçamento Alto | Combate principal |', '|---|---|---|---|---|',
+    ...P.capitulos.map(c => { const B = orc(c.nivel, p.jogadores); return `| ${c.n}. ${c.titulo} | ${c.nivel} | ${fmt(B[1])} XP | ${fmt(B[2])} XP | ${c.dificuldade} |`; }), '',
+    '**Marcos de nível.** ' + P.marcos, '', '**Escolha moral (capítulo ' + P.escolha.capitulo + ').** ' + P.escolha.descricao + ' Consequência no capítulo ' + P.escolha.consequencia_capitulo + ': ' + P.escolha.consequencia, '');
+  P.capitulos.forEach(pc => {
+    const c = caps[pc.n]; L.push('## Capítulo ' + pc.n + ' — ' + (c ? c.titulo : pc.titulo), '');
+    if (!c){ L.push('_Ainda não gerado._ ' + pc.resumo, ''); return; }
+    L.push('*Nível ' + c.nivel + ' · Sessão ' + pc.n + '.* ' + c.resumo, '', '> ' + c.abertura.replace(/\n/g, '\n> '), '', '### Cenas', '');
+    c.cenas.forEach(s => { L.push('#### ' + s.nome, '', '- Objetivo: ' + s.objetivo); s.testes.forEach(t => L.push('- Teste: ' + t.pericia + ' CD ' + t.cd + (t.uso ? ' (' + t.uso + ')' : ''))); L.push('- Sucesso: ' + s.sucesso, '- Falha: ' + s.falha, ''); });
+    L.push('### Combates', '');
+    c.combates.forEach(cb => { const v = avaliar(cb, c.nivel, p.jogadores, A.fichas);
+      L.push('#### ' + cb.nome + (cb.principal ? ' (principal)' : '') + ' · ' + cb.dificuldade, '', '| Inimigo | Qtd | XP | Total |', '|---|---|---|---|',
+        ...v.linhas.map(l => `| ${l.nome}${l.en ? ' (' + l.en + ')' : ''} | ${l.q} | ${fmt(l.xp)} | ${fmt(l.xp*l.q)} |`), `| **Total** | | | **${fmt(v.total)}** |`, '',
+        'Faixa do grupo no nível ' + c.nivel + ': Baixa até ' + fmt(v.B[0]) + ' · Moderada até ' + fmt(v.B[1]) + ' · Alta até ' + fmt(v.B[2]) + ' XP. Resultado: ' + DIFN[v.cls] + '.', '',
+        '- Terreno: ' + cb.terreno, '- Objetivo: ' + cb.objetivo, '- Tática: ' + cb.tatica, '- Fuga ou rendição: ' + cb.fuga, ''); });
+    L.push('### Evento', '', c.evento, '', '### Fim do capítulo', '', '- Gancho: ' + c.gancho);
+    if (c.subida) L.push('- Subida de nível: ' + c.subida);
+    L.push('- Ouro: ' + c.ouro, ''); lista('Recompensas', c.recompensas);
+  });
+  L.push('## Apêndices', '', '### Fichas dos inimigos personalizados', '');
+  arr(A.fichas).forEach(f => {
+    L.push('#### ' + f.nome, '', '*' + f.tipo + '*', '', '- CA ' + f.ca + ' · PV ' + f.pv + ' · Deslocamento ' + f.deslocamento,
+      '- ' + Object.entries(f.atributos).map(([k, v]) => k + ' ' + v + ' (' + mod(v) + ')').join(' · '));
+    [['Salvaguardas', f.salvaguardas], ['Perícias', f.pericias], ['Resistências', f.resistencias], ['Imunidades', f.imunidades], ['Sentidos', f.sentidos], ['Idiomas', f.idiomas]].forEach(([k, v]) => v && L.push('- ' + k + ': ' + v));
+    L.push('- ND ' + f.nd + ' (' + fmt(crXp(f.nd)||0) + ' XP)', '');
+    [['Traços', f.tracos], ['Ações', f.acoes], ['Ações bônus', f.acoes_bonus], ['Reações', f.reacoes], ['Ações lendárias', f.lendarias]].forEach(([k, xs]) => { if (xs.length){ L.push('**' + k + '**', ''); xs.forEach(x => L.push('- ' + (x.nome ? '***' + x.nome + '.*** ' : '') + x.texto)); L.push(''); } });
+  });
+  L.push('### PNJs aliados', '', '| Nome | Quem é | Personalidade | Ficha sugerida |', '|---|---|---|---|', ...P.aliados.map(a => `| ${a.nome} | ${a.quem} | ${a.personalidade} | ${a.ficha} |`), '');
+  return L.join('\n');
+}
+const mod = v => { const m = Math.floor((v - 10) / 2); return (m >= 0 ? '+' : '') + m; };
+
+/* ================= telas ================= */
+function view(){
+  if (!M.isMestre()) return '';
+  const n = Object.keys(S.lista).length;
+  const sub = `<div class="subnav" role="group" aria-label="Aventuras">${[['lista', 'Aventuras criadas' + (n ? ' (' + n + ')' : '')], ['nova', 'Nova aventura']].map(([k, l]) => { const on = S.tela === k || (k === 'lista' && S.tela === 'ver'); return `<button class="${on ? 'on' : ''}" data-act="av-${k}" ${on ? 'aria-current="page"' : ''}>${h(l)}</button>`; }).join('')}</div>`;
+  const avisos = [];
+  if (S.semIa && S.tela !== 'ver') avisos.push(`<div class="notice"><b>Gerar aventuras só funciona dentro do claude.ai.</b> Aqui dá para ver o exemplo e as aventuras salvas.</div>`);
+  if (S.semDb && !S.semIa) avisos.push(`<div class="notice"><b>Não dá para salvar nesta visualização.</b> A aventura fica só nesta aba; baixe o arquivo antes de fechar.</div>`);
+  if (S.avisoDb) avisos.push(`<div class="notice bad">${h(S.avisoDb)}</div>`);
+  if (S.msg) avisos.push(`<div class="notice" role="status"><b>${h(S.msg)}</b></div>`);
+  const corpo = S.tela === 'nova' ? telaNova() : S.tela === 'ver' && aventura(S.atual) ? telaVer(aventura(S.atual)) : telaLista();
+  return `<div class="av">${sub}<div class="stack">${avisos.join('')}${corpo}</div></div>`;
+}
+const render = () => M.render();
+
+function telaLista(){
+  const xs = Object.values(S.lista).sort((a, b) => (b.atualizada||0) - (a.atualizada||0));
+  const card = (A, ex) => { const caps = capsDe(A.id), feitos = Object.keys(caps).length, n = A.params.sessoes, P = A.plano;
+    const st = ex ? '<span class="chip gold">Exemplo</span>' : !P ? '<span class="chip warn">Sem plano</span>' : feitos >= n && A.fichas ? '<span class="chip ok">Completa</span>' : `<span class="chip warn">${feitos} de ${n} capítulos</span>`;
+    return `<button class="panel card" data-act="av-abrir" data-id="${h(A.id)}"><div class="row between"><span class="eyebrow">${P && P.cenario ? h(P.cenario.slice(0, 40)) : 'Aventura'}</span>${st}</div>
+      <h3>${h(A.titulo || 'Nova aventura')}</h3>
+      <span class="muted small">${A.params.jogadores} jogadores · nível ${A.params.nivel}${P ? ' → ' + P.capitulos[P.capitulos.length-1].nivel : ''} · ${A.params.sessoes} ${A.params.sessoes > 1 ? 'sessões' : 'sessão'}</span>
+      ${P ? `<span class="small">${tx(P.premissa.slice(0, 180))}${P.premissa.length > 180 ? '…' : ''}</span>` : ''}</button>`; };
+  const vazio = !xs.length ? `<div class="panel empty"><h2>Nenhuma aventura ainda</h2><p>Conte uma história, de um livro, de uma série ou sua, e o gerador monta a aventura: plano, capítulos com cenas e combates, fichas dos vilões e a conferência de XP de cada combate. Abaixo há um exemplo pronto para você ver como fica.</p><button class="btn pri" data-act="av-nova">Criar a primeira aventura</button></div>` : '';
+  return `${vazio}<div class="cards">${xs.map(A => card(A)).join('')}${!xs.length ? card(EXEMPLO, true) : ''}</div>`;
+}
+
+function telaNova(){
+  const f = S.form, ok = !S.semIa && !S.iaNegada;
+  const opt = (o, v) => Object.entries(o).map(([k, t]) => `<option value="${h(k)}"${k === v ? ' selected' : ''}>${h(t)}</option>`).join('');
+  return `<form class="panel stack" id="av-form-nova"><h3 style="margin:0">Nova aventura</h3>
+    <div class="form">
+      <div class="f wide"><label for="f-historia">História ou conto</label>
+        <textarea id="f-historia" data-avf="historia" rows="6" required placeholder="Ex.: Vox Machina, arco de Briarwood: o grupo volta a Whitestone para enfrentar os Briarwood. Pode colar um resumo com os acontecimentos, locais e personagens.">${h(f.historia)}</textarea>
+        <span class="hint">O Claude conhece histórias famosas, mas pode errar detalhes. Um resumo colado aqui deixa a aventura mais fiel.</span></div>
+      <div class="f"><label for="f-jogadores">Jogadores</label><input id="f-jogadores" data-avf="jogadores" type="number" min="1" max="8" value="${f.jogadores}"></div>
+      <div class="f"><label for="f-nivel">Nível inicial</label><input id="f-nivel" data-avf="nivel" type="number" min="1" max="20" value="${f.nivel}"></div>
+      <div class="f"><label for="f-sessoes">Sessões (capítulos)</label><input id="f-sessoes" data-avf="sessoes" type="number" min="1" max="8" value="${f.sessoes}"></div>
+      <div class="f"><label for="f-fidelidade">Fidelidade à história</label><select id="f-fidelidade" data-avf="fidelidade">${opt({fiel:'Fiel', adaptada:'Adaptada', livre:'Livre'}, f.fidelidade)}</select></div>
+      <div class="f half"><label for="f-papel">Papel dos protagonistas originais</label><input id="f-papel" data-avf="papel" list="papeis" value="${h(f.papel)}"><datalist id="papeis">${PAPEIS.map(x => `<option value="${h(x)}">`).join('')}</datalist></div>
+      <div class="f half"><label for="f-tier">Geração</label><select id="f-tier" data-avf="tier">${opt(TIERS, f.tier)}</select></div>
+      <div class="f wide"><label for="f-obs">Observações para o Claude (opcional)</label><textarea id="f-obs" data-avf="obs" rows="3" placeholder="Ex.: o grupo tem um paladino e um bardo; evitar aranhas; quero mais intriga do que combate.">${h(f.obs)}</textarea></div>
+    </div>
+    <p class="muted small" style="margin:0">A aventura sai em <span id="n-etapas">${2 + clamp(int(f.sessoes, 1), 1, 8)}</span> etapas: plano, fichas dos vilões e um pedido por capítulo. Cada etapa leva de 1 a 3 minutos e usa o limite de uso da sua conta do Claude. O que fica pronto é salvo na hora.</p>
+    <div class="row"><button class="btn pri" type="submit"${ok ? '' : ' disabled'}>Gerar aventura</button><button class="btn" type="button" data-act="av-lista">Cancelar</button>
+    ${ok ? '' : `<span class="muted small">${S.iaNegada ? 'O Claude não foi liberado para esta página. Libere no menu de permissões da Mesa e recarregue.' : 'Disponível só dentro do claude.ai.'}</span>`}</div></form>`;
+}
+
+/* ---------- leitura ---------- */
+function telaVer(A){
+  const P = A.plano, p = A.params, caps = capsDe(A.id), ex = !!A.exemplo, g = S.ger && S.ger.id === A.id ? S.ger : null;
+  const falta = !ex && passosFaltando(A).length, ativo = S.ger && !S.ger.fim;
+  const acoes = [];
+  if (S.dl && P) acoes.push(`<button class="btn" data-act="av-baixar">Baixar (.md)</button>`);
+  if (!ex && falta && !ativo && S.sample && !S.iaNegada) acoes.push(`<button class="btn pri" data-act="av-continuar">${P ? 'Continuar geração' : 'Gerar'}</button>`);
+  if (!ex && !ativo) acoes.push(`<button class="btn danger" data-act="av-excluir">Excluir</button>`);
+  const conf = S.excluir ? `<div class="confirm"><span>Excluir “${h(A.titulo)}” para sempre?</span><button class="btn sm danger" data-act="av-excluir-sim">Excluir</button><button class="btn sm" data-act="av-excluir-nao">Manter</button></div>` : '';
+  const prog = g ? `<div class="panel" aria-live="polite"><div class="row between"><h3 style="margin:0">${g.fim ? 'Geração interrompida' : 'Gerando a aventura'}</h3>${g.fim ? `<button class="btn sm" data-act="av-fechar-ger">Fechar</button>` : `<button class="btn sm danger" data-act="av-parar">Parar</button>`}</div>
+    <ol class="passos" style="margin-top:10px">${g.passos.map(x => `<li><span class="st ${x.st}">${{pend:'Na fila', run:'Gerando', ok:'Pronto', erro:'Falhou'}[x.st]}</span><span>${h(x.rot)}${x.st === 'run' ? ` <span class="muted small" id="chars">${g.chars ? fmt(g.chars) + ' caracteres recebidos' : 'o Claude está pensando…'}</span>` : ''}</span></li>`).join('')}</ol>
+    ${g.erro ? `<p class="small" style="color:var(--red);margin:10px 0 0">${h(g.erro)}</p>` : ''}</div>` : '';
+  if (!P) return `${conf}${prog}<div class="panel empty"><h2>${h(A.titulo || 'Nova aventura')}</h2><p>${tx(p.historia.slice(0, 300))}</p><p>O plano ainda não foi gerado.</p><div class="row">${acoes.join('')}</div></div>`;
+  const nvF = P.capitulos[P.capitulos.length-1].nivel;
+  const toc = [['visao', 'Visão geral'], ['verif', 'Verificações'], ...P.capitulos.map(c => ['cap-' + c.n, c.n + '. ' + ((caps[c.n] || c).titulo)]), ['apend', 'Apêndices']];
+  return `${conf}${prog}
+  <div class="panel titulo stack">
+    <div class="row between"><span class="eyebrow">${ex ? 'Exemplo · ' : ''}${h(P.origem.slice(0, 90))}</span><div class="row">${acoes.join('')}</div></div>
+    <h2>${h(P.titulo)}</h2>
+    <dl class="meta">
+      <div><dt>Cenário</dt><dd>${tx(P.cenario)}</dd></div>
+      <div><dt>Nível</dt><dd class="num">${p.nivel} → ${nvF}</dd></div>
+      <div><dt>Jogadores</dt><dd class="num">${p.jogadores}</dd></div>
+      <div><dt>Sessões</dt><dd class="num">${p.sessoes}</dd></div>
+      <div><dt>Dificuldade geral</dt><dd>${h(P.dificuldade)}</dd></div>
+      <div><dt>Temas</dt><dd>${h(P.temas.join(', '))}</dd></div>
+    </dl>
+  </div>
+  <div class="leitura">
+    <nav class="toc" aria-label="Sumário">${toc.map(([k, t]) => `<button data-act="av-ir" data-k="${k}">${h(t)}</button>`).join('')}</nav>
+    <div class="stack">${secVisao(A)}${secVerif(A)}${P.capitulos.map(c => secCap(A, c)).join('')}${secApend(A)}</div>
+  </div>`;
+}
+
+function secVisao(A){
+  const P = A.plano, p = A.params, caps = capsDe(A.id);
+  const prog = P.capitulos.map(c => { const B = orc(c.nivel, p.jogadores), cap = caps[c.n], pr = cap && cap.combates.find(x => x.principal) || cap && cap.combates[0];
+    const v = pr ? avaliar(pr, cap.nivel, p.jogadores, A.fichas) : null;
+    return `<tr><td>${c.n}. ${h((cap || c).titulo)}</td><td class="n">${c.nivel}</td><td class="n">${fmt(B[1])}</td><td class="n">${fmt(B[2])}</td><td>${h(c.dificuldade)}</td><td class="n">${v ? fmt(v.total) + ' ' + chipXp(v) : '<span class="muted">—</span>'}</td></tr>`; }).join('');
+  return `<section class="panel cap" id="visao"><span class="eyebrow">Visão geral</span>
+    <div class="prosa"><p>${tx(P.premissa)}</p><p><b>Gancho.</b> ${tx(P.gancho)}</p></div>
+    <div class="prosa"><p><b>${h(P.contratante.nome || 'Contratante')}.</b> ${tx(P.contratante.quem)}</p><p><b>O que sabe.</b> ${tx(P.contratante.sabe)}</p><p><b>O que esconde.</b> ${tx(P.contratante.esconde)}</p></div>
+    <h3>Antagonistas</h3>
+    <div class="tabwrap"><table><thead><tr><th>Nome</th><th>Papel</th><th class="n">ND</th><th>Capítulos</th><th>Fuga</th></tr></thead><tbody>
+      ${P.antagonistas.map(a => `<tr><td>${h(a.nome)}</td><td>${tx(a.papel)}</td><td class="n">${h(a.nd)}</td><td class="num">${a.capitulos.join(', ')}</td><td class="small">${tx(a.foge) || '<span class="muted">—</span>'}</td></tr>`).join('')}</tbody></table></div>
+    <h3>Progressão</h3>
+    <div class="tabwrap"><table><thead><tr><th>Capítulo</th><th class="n">Nível</th><th class="n">Moderado</th><th class="n">Alto</th><th>Combate principal</th><th class="n">XP real</th></tr></thead><tbody>${prog}</tbody></table></div>
+    <p class="muted small" style="margin:0">Orçamentos do grupo inteiro (${p.jogadores} jogadores), pelo Livro do Mestre 2024.</p>
+    <div class="prosa"><p><b>Marcos de nível.</b> ${tx(P.marcos)}</p>
+    <p><b>Escolha moral, capítulo ${P.escolha.capitulo}.</b> ${tx(P.escolha.descricao)}</p><p><b>Consequência, capítulo ${P.escolha.consequencia_capitulo}.</b> ${tx(P.escolha.consequencia)}</p></div>
+  </section>`;
+}
+const chipXp = v => !v.achou ? '<span class="chip bad">Criatura desconhecida</span>' : v.ok ? `<span class="chip ok">${DIFN[v.cls]}</span>` : `<span class="chip warn" title="Declarada: ${DIFN[v.dec] || '?'}">${DIFN[v.cls]}</span>`;
+
+function verificacoes(A){
+  const P = A.plano, p = A.params, caps = capsDe(A.id), out = [];
+  const feitos = P.capitulos.filter(c => caps[c.n]);
+  if (feitos.length < P.capitulos.length) out.push(['warn', `${P.capitulos.length - feitos.length} capítulo(s) ainda não gerado(s).`]);
+  let fora = [], desc = [], semPrincipal = [];
+  feitos.forEach(c => { const cap = caps[c.n]; if (!cap.combates.some(x => x.principal)) semPrincipal.push(c.n);
+    cap.combates.forEach(cb => { const v = avaliar(cb, cap.nivel, p.jogadores, A.fichas);
+      v.linhas.filter(l => !l.ok).forEach(l => desc.push(l.nome + ' (cap. ' + c.n + ')'));
+      if (v.achou && v.cls !== v.dec) fora.push(`${cb.nome} (cap. ${c.n}): declarado ${DIFN[v.dec] || '?'}, soma ${fmt(v.total)} XP = ${DIFN[v.cls]}`); }); });
+  if (feitos.length) out.push(fora.length ? ['warn', 'Combates fora da faixa declarada: ' + fora.join('; ') + '.'] : ['ok', 'Todos os combates gerados batem com a dificuldade declarada.']);
+  if (desc.length) out.push(['bad', 'Criaturas que não estão na lista de monstros nem nas fichas: ' + desc.join(', ') + '.']);
+  if (semPrincipal.length) out.push(['warn', 'Capítulo(s) sem combate principal: ' + semPrincipal.join(', ') + '.']);
+  let sobe = true; P.capitulos.forEach((c, i) => { if (i && (c.nivel < P.capitulos[i-1].nivel || c.nivel > P.capitulos[i-1].nivel + 1)) sobe = false; });
+  out.push(sobe && P.capitulos[0].nivel === p.nivel ? ['ok', `Progressão de nível coerente: ${P.capitulos.map(c => c.nivel).join(' → ')}.`] : ['warn', `Progressão de nível estranha: ${P.capitulos.map(c => c.nivel).join(' → ')}.`]);
+  const fogem = P.antagonistas.filter(a => a.foge);
+  fogem.forEach(a => { const ult = Math.max(0, ...a.capitulos); const primeiro = Math.min(...a.capitulos.length ? a.capitulos : [0]);
+    out.push(ult > primeiro ? ['ok', `${a.nome} foge e reaparece no capítulo ${ult}.`] : ['warn', `${a.nome} foge, mas o plano não mostra ele voltando depois.`]); });
+  const em = P.escolha;
+  if (!em.descricao) out.push(['warn', 'O plano não tem escolha moral.']);
+  else out.push(em.consequencia_capitulo > em.capitulo || (p.sessoes === 1 && em.consequencia_capitulo === 1) ? ['ok', `Escolha moral no capítulo ${em.capitulo}, com consequência no capítulo ${em.consequencia_capitulo}.`] : ['warn', `A consequência da escolha moral (capítulo ${em.consequencia_capitulo}) não vem depois da escolha (capítulo ${em.capitulo}).`]);
+  const semFicha = P.antagonistas.filter(a => !fichaDe(A.fichas, a.nome));
+  if (A.fichas && semFicha.length) out.push(['warn', 'Antagonistas sem ficha: ' + semFicha.map(a => a.nome).join(', ') + '.']);
+  return out;
+}
+function secVerif(A){
+  const xs = verificacoes(A), rot = {ok:'Certo', warn:'Atenção', bad:'Problema'};
+  return `<section class="panel cap" id="verif"><span class="eyebrow">Verificações feitas pela página</span>
+    <ul class="checks">${xs.map(([t, m]) => `<li><span class="chip ${t}">${rot[t]}</span><span>${h(m)}</span></li>`).join('')}</ul>
+    <p class="muted small" style="margin:0">A página soma o XP de cada combate com a lista de monstros da Mesa e as fichas dos antagonistas. Se um combate sair da faixa, ajuste as quantidades na mesa ou gere o capítulo de novo.</p></section>`;
+}
+
+function secCap(A, pc){
+  const c = capsDe(A.id)[pc.n], p = A.params, pode = !A.exemplo && S.sample && !S.iaNegada && !ocupado() && A.fichas;
+  if (!c) return `<section class="panel cap" id="cap-${pc.n}"><div class="caphead"><span class="eyebrow">Capítulo ${pc.n} · Nível ${pc.nivel} · ainda não gerado</span><h2>${h(pc.titulo)}</h2><p class="muted" style="margin:0">${tx(pc.resumo)}</p></div>
+    ${pode ? `<div><button class="btn" data-act="av-gerar-cap" data-n="${pc.n}">Gerar este capítulo</button></div>` : ''}</section>`;
+  const cenas = c.cenas.map(s => `<div class="cena"><h4>${h(s.nome)}</h4>
+      <p style="margin:0"><b style="color:var(--gold2)">Objetivo.</b> ${tx(s.objetivo)}</p>
+      ${s.testes.length ? `<ul class="testes">${s.testes.map(t => `<li><span class="chip gold">${h(t.pericia)} CD ${t.cd || '?'}</span> ${tx(t.uso)}</li>`).join('')}</ul>` : ''}
+      <p style="margin:0"><b style="color:var(--green)">Sucesso.</b> ${tx(s.sucesso)}</p><p style="margin:0"><b style="color:var(--red)">Falha.</b> ${tx(s.falha)}</p></div>`).join('');
+  const combates = c.combates.map(cb => { const v = avaliar(cb, c.nivel, p.jogadores, A.fichas);
+    return `<div class="combate${v.ok ? '' : ' fora'}"><div class="row between"><h4>${h(cb.nome)}</h4><div class="row">${cb.principal ? '<span class="chip gold">Principal</span>' : ''}<span class="chip">Declarado: ${h(cb.dificuldade)}</span>${chipXp(v)}</div></div>
+      <div class="tabwrap"><table><thead><tr><th>Inimigo</th><th class="n">Qtd</th><th class="n">XP cada</th><th class="n">Total</th></tr></thead><tbody>
+        ${v.linhas.map(l => `<tr><td>${h(l.nome)}${l.en ? ` <span class="muted small">(${h(l.en)})</span>` : ''}<div class="small ${l.ok ? 'muted' : ''}" ${l.ok ? '' : 'style="color:var(--red)"'}>${h(l.det)}</div></td><td class="n">${l.q}</td><td class="n">${fmt(l.xp)}</td><td class="n">${fmt(l.xp*l.q)}</td></tr>`).join('')}</tbody>
+        <tfoot><tr><td colspan="3">Soma</td><td class="n">${fmt(v.total)} XP</td></tr></tfoot></table></div>
+      <div class="faixa" aria-label="Faixa de dificuldade do grupo">${['Baixa até ' + fmt(v.B[0]), 'Moderada até ' + fmt(v.B[1]), 'Alta até ' + fmt(v.B[2]), 'Acima de ' + fmt(v.B[2])].map((t, i) => `<span class="${i === v.cls ? 'aqui' : ''}">${t}</span>`).join('')}</div>
+      <div class="prosa small"><p><b>Terreno.</b> ${tx(cb.terreno)}</p><p><b>Objetivo.</b> ${tx(cb.objetivo)}</p><p><b>Tática.</b> ${tx(cb.tatica)}</p><p><b>Fuga ou rendição.</b> ${tx(cb.fuga)}</p></div></div>`; }).join('');
+  return `<section class="panel cap" id="cap-${pc.n}">
+    <div class="row between" style="align-items:flex-start"><div class="caphead"><span class="eyebrow">Capítulo ${pc.n} · Sessão ${pc.n} · Nível ${c.nivel}</span><h2>${h(c.titulo)}</h2><p class="muted" style="margin:0">${tx(c.resumo)}</p></div>
+      ${pode ? `<button class="btn sm" data-act="av-gerar-cap" data-n="${pc.n}">Gerar de novo</button>` : ''}</div>
+    <blockquote class="ler"><span class="eyebrow">Leia em voz alta</span>${tx(c.abertura)}</blockquote>
+    <h3>Cenas</h3>${cenas || '<p class="muted">Sem cenas.</p>'}
+    <h3>Combates</h3>${combates || '<p class="muted">Sem combates.</p>'}
+    ${secMz(A, pc, c)}
+    <h3>Evento</h3><div class="prosa"><p>${tx(c.evento)}</p></div>
+    <h3>Fim do capítulo</h3><div class="prosa"><p><b>Gancho.</b> ${tx(c.gancho)}</p>${c.subida ? `<p><b>Subida de nível.</b> ${tx(c.subida)}</p>` : ''}
+      <p><b>Recompensas.</b> ${c.recompensas.map(tx).join(' · ') || '—'}${c.ouro ? ' · ' + tx(c.ouro) : ''}</p></div>
+  </section>`;
+}
+
+function fichaHtml(f){
+  const bloco = (t, xs) => xs.length ? `<h5>${t}</h5>${xs.map(x => `<p>${x.nome ? `<b><i>${h(x.nome)}.</i></b> ` : ''}${tx(x.texto)}</p>`).join('')}` : '';
+  const linhas = [['Salvaguardas', f.salvaguardas], ['Perícias', f.pericias], ['Resistências', f.resistencias], ['Imunidades', f.imunidades], ['Sentidos', f.sentidos], ['Idiomas', f.idiomas]].filter(x => x[1]);
+  return `<div class="ficha"><div><h4>${h(f.nome)}</h4><span class="muted small"><i>${h(f.tipo)}</i></span></div>
+    <p class="linha"><b>CA</b> ${h(f.ca)} · <b>PV</b> ${h(f.pv)} · <b>Deslocamento</b> ${h(f.deslocamento)}</p>
+    <div class="attrs num">${Object.entries(f.atributos).map(([k, v]) => `<div><b>${k}</b>${v} (${mod(v)})</div>`).join('')}</div>
+    ${linhas.map(([k, v]) => `<p class="linha"><b>${k}</b> ${tx(v)}</p>`).join('')}
+    <p class="linha"><b>ND</b> ${h(f.nd)} <span class="muted num">(${fmt(crXp(f.nd) || 0)} XP)</span></p>
+    ${bloco('Traços', f.tracos)}${bloco('Ações', f.acoes)}${bloco('Ações bônus', f.acoes_bonus)}${bloco('Reações', f.reacoes)}${bloco('Ações lendárias', f.lendarias)}</div>`;
+}
+function secApend(A){
+  const P = A.plano;
+  return `<section class="panel cap" id="apend"><span class="eyebrow">Apêndices</span>
+    <h3>Fichas dos inimigos personalizados</h3>
+    ${A.fichas ? (A.fichas.length ? `<div class="cards">${A.fichas.map(fichaHtml).join('')}</div>` : '<p class="muted">Esta aventura não tem antagonistas com ficha própria.</p>') : '<p class="muted">As fichas ainda não foram geradas.</p>'}
+    <h3>PNJs aliados</h3>
+    <div class="tabwrap"><table><thead><tr><th>Nome</th><th>Quem é</th><th>Personalidade</th><th>Ficha sugerida</th></tr></thead><tbody>
+      ${P.aliados.map(a => { const m = MON_IDX[norm(a.ficha)]; return `<tr><td>${h(a.nome)}</td><td>${tx(a.quem)}</td><td>${tx(a.personalidade)}</td><td>${h(a.ficha)}${m ? ` <span class="muted small">(${h(m.pt)}, ND ${m.cr})</span>` : ''}</td></tr>`; }).join('') || '<tr><td colspan="4" class="muted">Nenhum.</td></tr>'}</tbody></table></div>
+  </section>`;
+}
+
+/* ================= eventos ================= */
+document.addEventListener('click', async e => {
+  if (!M.abaAv()) return;
+  const t = e.target.closest('[data-act]'); if (!t || t.tagName === 'SELECT') return;
+  const a = t.dataset.act; if (!a.startsWith('av-')) return;
+  if (a !== 'av-ir') S.msg = '';
+  if (a === 'av-nova'){ S.tela = 'nova'; S.excluir = false; render(); window.scrollTo(0, 0); }
+  else if (a === 'av-lista'){ S.tela = 'lista'; S.excluir = false; render(); }
+  else if (a === 'av-abrir'){ S.tela = 'ver'; S.atual = t.dataset.id; S.excluir = false; render(); window.scrollTo(0, 0); }
+  else if (a === 'av-ir'){ const el = document.getElementById(t.dataset.k); if (el) el.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block:'start'}); }
+  else if (a === 'av-continuar'){ gerar(S.atual); }
+  else if (a === 'av-gerar-cap'){ gerar(S.atual, int(t.dataset.n, 1)); }
+  else if (a === 'av-parar'){ S.ger?.ctl?.abort(); }
+  else if (a === 'av-fechar-ger'){ S.ger = null; render(); }
+  else if (a === 'av-excluir'){ S.excluir = true; render(); }
+  else if (a === 'av-excluir-nao'){ S.excluir = false; render(); }
+  else if (a === 'av-excluir-sim'){ const id = S.atual; S.excluir = false; S.tela = 'lista'; render();
+    try { await excluirAv(id); S.msg = 'Aventura excluída.'; } catch (x){ S.msg = 'Não consegui excluir agora (' + (x.code || x.message) + ').'; } render(); }
+  else if (a === 'av-mz-criar'){ S.abrirArm = null; criarMz(S.atual, int(t.dataset.n, 1)); }
+  else if (a === 'av-mz-parar'){ S.mz?.ctl?.abort(); }
+  else if (a === 'av-mz-abrir'){ const A = aventura(S.atual), n = int(t.dataset.n, 1), mid = A && (A.masmorras || {})[n]; if (!mid) return;
+    const r = X.abrir(mid, S.abrirArm === mid); S.abrirArm = null;
+    if (r === 'sujo'){ S.abrirArm = mid; S.msg = 'A masmorra aberta no Gerador de masmorras tem alterações não salvas. Clique de novo em Abrir para trocar por esta mesmo assim.'; render(); return; }
+    if (r === 'sumiu'){ S.msg = 'Essa masmorra foi excluída. Crie outra.'; render(); return; }
+    M.irAba('masmorras'); }
+  else if (a === 'av-baixar'){ const A = aventura(S.atual); if (!A || !S.dl) return;
+    const nome = (A.titulo || 'aventura').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^\w -]+/g, '').trim().replace(/\s+/g, '-').toLowerCase() || 'aventura';
+    try { await S.dl.save({filename:nome + '.md', data:markdown(A)}); S.msg = 'Arquivo salvo.'; }
+    catch (x){ S.msg = x.code === 'declined' ? '' : 'Não consegui baixar o arquivo (' + x.code + ').'; } render(); }
+});
+document.addEventListener('input', e => { if (!M.abaAv()) return; const k = e.target.dataset?.avf; if (!k) return; S.form[k] = e.target.value; guardarForm();
+  if (k === 'sessoes'){ const el = $('#n-etapas'); if (el) el.textContent = String(2 + clamp(int(e.target.value, 1), 1, 8)); } });
+document.addEventListener('change', e => { if (!M.abaAv()) return;
+  const mz = e.target.dataset?.mz; if (mz){ const A = S.lista[S.atual], n = int(String(e.target.dataset.k).split('--').pop(), 0), c = A && capsDe(A.id)[n]; if (!c) return;
+    const cfg = {...mzCfg(A, n, c), [mz]:mz === 'andares' ? int(e.target.value, 1) : e.target.value}; S.mzForm[e.target.dataset.k] = cfg; if (mz === 'tema') render(); return; }
+  const k = e.target.dataset?.avf; if (k){ S.form[k] = e.target.value; guardarForm(); } });
+document.addEventListener('submit', async e => {
+  if (e.target.id !== 'av-form-nova') return; e.preventDefault();
+  const f = S.form, historia = String(f.historia || '').trim();
+  if (!historia){ $('#f-historia')?.focus(); return; }
+  const params = {historia, jogadores:clamp(int(f.jogadores, 4), 1, 8), nivel:clamp(int(f.nivel, 1), 1, 20), sessoes:clamp(int(f.sessoes, 3), 1, 8), fidelidade:f.fidelidade, papel:String(f.papel || PAPEIS[0]).trim(), obs:String(f.obs || '').trim()};
+  const id = 'av' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  const A = {id, titulo:'Nova aventura', params, plano:null, fichas:null, criada:Date.now(), atualizada:Date.now()};
+  try { await salvarAv(A); } catch (x){ S.msg = 'Não consegui salvar a aventura (' + (x.code || x.message) + ').'; render(); return; }
+  S.tela = 'ver'; S.atual = id; render(); window.scrollTo(0, 0);
+  gerar(id);
+});
+
+/* ================= exemplo (aventura original, só para mostrar o formato) ================= */
+const EXEMPLO = {id:'exemplo', exemplo:true, titulo:'O Sino Afogado de Vau-Cinzento',
+  params:{historia:'Exemplo: um vilarejo à beira de um lago onde um sino afundado volta a tocar à noite.', jogadores:4, nivel:3, sessoes:2, fidelidade:'livre', papel:'Ausentes (só citados)', obs:''},
+  plano:{titulo:'O Sino Afogado de Vau-Cinzento', cenario:'Vau-Cinzento, vilarejo de pescadores à beira do Lago Turvo', temas:['horror', 'mistério'], origem:'Aventura de exemplo, criada para mostrar o formato do gerador', dificuldade:'Moderada',
+    premissa:'Há vinte anos, o sino da capela de Vau-Cinzento afundou no lago durante uma tempestade. Agora ele toca toda noite, debaixo da água, e quem escuta o som sonha com afogados. Na terceira noite, os mortos do lago começaram a sair para a margem.',
+    gancho:'O alcaide oferece 200 po para quem descobrir por que o sino toca e fazer os mortos voltarem para o fundo.',
+    contratante:{nome:'Alcaide Oswin Darrow', quem:'Velho pescador que comanda o vilarejo há duas décadas.', sabe:'Que o sino não afundou sozinho: foi derrubado de propósito.', esconde:'Foi ele quem derrubou o sino, para esconder no fundo do lago o corpo de um rival que ele matou. [Inventado]'},
+    antagonistas:[{nome:'Irmã Maren', papel:'Sacerdotisa afogada que voltou como morta-viva e quer que o vilarejo pague pelo crime do alcaide.', nd:'3', capitulos:[1, 2], foge:'No capítulo 1, mergulha no lago e some na neblina quando perde metade dos PV.'}],
+    aliados:[{nome:'Tilda Vaurel', quem:'Filha do homem que o alcaide matou.', personalidade:'Desconfiada, corajosa e boa de barco.', ficha:'Scout'}],
+    capitulos:[{n:1, titulo:'Os Afogados da Margem', nivel:3, dificuldade:'Moderada', resumo:'O grupo defende o vilarejo dos mortos que saem do lago e vê Irmã Maren pela primeira vez.', segredo:'O sino foi derrubado de propósito.', local:'Margem do Lago Turvo'},
+      {n:2, titulo:'A Capela Submersa', nivel:4, dificuldade:'Alta', resumo:'O grupo desce até a capela afundada para silenciar o sino e enfrentar Irmã Maren.', segredo:'O alcaide é o assassino.', local:'Capela no fundo do lago'}],
+    escolha:{capitulo:1, descricao:'Entregar o alcaide para Irmã Maren em troca de paz, ou protegê-lo até o julgamento.', consequencia_capitulo:2, consequencia:'Se o grupo protegeu o alcaide, Maren tem vantagem nas jogadas de ataque contra quem o defendeu. Se o entregou, Tilda se junta ao grupo e dá vantagem nos testes de Sobrevivência no lago.'},
+    marcos:'O grupo sobe para o nível 4 ao fim do capítulo 1, depois de salvar o vilarejo na primeira noite.'},
+  fichas:[{nome:'Irmã Maren', tipo:'Morto-vivo Médio, Neutro e Mau', nd:'3', ca:'14 (vestes encharcadas, escudo)', pv:'60 (11d8 + 11)', deslocamento:'9 m, natação 9 m', atributos:{FOR:12, DES:14, CON:12, INT:11, SAB:16, CAR:15},
+    salvaguardas:'Sab +5', pericias:'Religião +2, Intimidação +4', resistencias:'Necrótico', imunidades:'Veneno; Envenenado, Exaustão', sentidos:'Visão no escuro 18 m, Percepção passiva 13', idiomas:'Comum',
+    tracos:[{nome:'Anfíbia', texto:'Respira ar e água.'}, {nome:'Badalo do Fundo', texto:'Enquanto o sino estiver tocando, Maren recupera 5 PV no início de cada turno dela, se tiver pelo menos 1 PV.'}],
+    acoes:[{nome:'Ataques Múltiplos', texto:'Maren faz dois ataques de Toque Gélido.'}, {nome:'Toque Gélido', texto:'Ataque corpo a corpo: +5 para acertar, alcance 1,5 m. Acerto: 7 (1d8 + 3) de dano necrótico.'}, {nome:'Chamado das Águas (Recarga 5–6)', texto:'Cada criatura num raio de 3 m faz uma salvaguarda de Força CD 13. Falha: 10 (3d6) de dano de concussão e fica Caída. Sucesso: metade do dano.'}],
+    acoes_bonus:[{nome:'Mergulho na Neblina', texto:'Se estiver a até 1,5 m de água, Maren some debaixo dela e fica Invisível até o início do próximo turno dela.'}], reacoes:[], lendarias:[]}],
+  caps:{
+    1:{n:1, titulo:'Os Afogados da Margem', nivel:3, resumo:'Na primeira noite, os mortos saem do lago e o grupo precisa proteger o vilarejo.',
+      abertura:'A neblina cobre o lago como um lençol molhado. Debaixo da água, um sino bate devagar, e cada badalada parece mais perto. Na margem, alguém grita: as redes estão se mexendo sozinhas.',
+      cenas:[{nome:'A taverna do Anzol Torto', objetivo:'Descobrir o que os moradores sabem sobre o sino.', testes:[{pericia:'Persuasão', cd:12, uso:'convencer o taverneiro a contar a história do naufrágio'}, {pericia:'Intuição', cd:14, uso:'perceber que o alcaide mente sobre a tempestade'}], sucesso:'O grupo descobre que não houve tempestade na noite em que o sino afundou.', falha:'Os moradores se fecham, e o grupo só ouve boatos.'},
+        {nome:'As redes da margem', objetivo:'Achar a origem dos mortos.', testes:[{pericia:'Sobrevivência', cd:13, uso:'seguir as pegadas molhadas até a água'}], sucesso:'O grupo encontra o ponto onde o sino está, a 20 metros da margem.', falha:'Os mortos chegam antes, e o grupo começa o combate cercado.'}],
+      combates:[{nome:'A primeira maré', principal:true, dificuldade:'Moderada', inimigos:[{nome:'Ghoul', qtd:2}, {nome:'Zombie', qtd:6}], terreno:'Píer de madeira podre: quem passar de 2 criaturas num mesmo trecho faz salvaguarda de Destreza CD 12 ou cai na água.', objetivo:'Impedir que os mortos cheguem às casas por 5 rodadas.', tatica:'Os zumbis avançam em linha; os carniçais esperam alguém cair no píer para atacar.', fuga:'Com o amanhecer, os mortos voltam para o lago. Irmã Maren aparece na neblina e mergulha quando perde metade dos PV.'}],
+      evento:'Irmã Maren fala com o grupo de dentro da água: “Tragam o homem que me afogou, e o sino se cala.” Começa a escolha moral.', gancho:'Tilda Vaurel procura o grupo à noite e diz saber onde fica a capela afundada.', subida:'O grupo sobe para o nível 4.', recompensas:['Poção de Respirar na Água', 'Amuleto de prata da capela (25 po)'], ouro:'200 po do alcaide'},
+    2:{n:2, titulo:'A Capela Submersa', nivel:4, resumo:'O grupo desce até a capela no fundo do lago para silenciar o sino.',
+      abertura:'A água é fria e escura, e a luz da superfície some depois de poucos metros. Lá embaixo, entre as algas, a torre da capela ainda está de pé, e o sino balança sem que ninguém o toque.',
+      cenas:[{nome:'A descida', objetivo:'Chegar à capela sem se perder.', testes:[{pericia:'Atletismo', cd:13, uso:'nadar contra a correnteza'}, {pericia:'Percepção', cd:14, uso:'ver a entrada pela janela quebrada'}], sucesso:'O grupo entra pela janela e pega os mortos de surpresa.', falha:'Cada personagem fica com 1 nível de Exaustão ao chegar.'},
+        {nome:'O corpo no sino', objetivo:'Descobrir o segredo do alcaide.', testes:[{pericia:'Investigação', cd:13, uso:'achar o corpo do pai de Tilda preso no sino'}], sucesso:'O grupo encontra o broche do alcaide junto ao corpo: a prova do crime.', falha:'A prova só aparece depois do combate.'}],
+      combates:[{nome:'O altar afogado', principal:true, dificuldade:'Alta', inimigos:[{nome:'Irmã Maren', qtd:1}, {nome:'Ghoul', qtd:3}, {nome:'Zombie', qtd:6}], terreno:'O sino pode ser preso com uma ação e um teste de Atletismo CD 15; isso desliga o traço Badalo do Fundo.', objetivo:'Silenciar o sino antes que Maren recupere toda a vida.', tatica:'Os carniçais protegem o sino; Maren usa Chamado das Águas quando 3 ou mais personagens estão juntos.', fuga:'Maren não foge: com o sino calado, ela pede para o grupo levar a prova ao vilarejo e se desfaz na água.'}],
+      evento:'A consequência da escolha moral entra em jogo, e o grupo decide o que fazer com a prova contra o alcaide.', gancho:'Com o alcaide preso ou fugido, Vau-Cinzento precisa de um novo líder.', subida:'', recompensas:['Tridente +1', 'Sino de prata recuperado (vale 250 po)'], ouro:'120 po no altar'}}
+};
+
+/* ================= masmorra do capítulo =================
+   A Mesa desenha a planta (gerador de masmorras); o Claude dá nome e descrição às salas, e a página põe nelas os combates do capítulo. */
+const TEMAS_AV = X.temas(), TIPOS_AV = X.tipos();
+const TAMS = {pequena:'Pequena (6–8 salas)', media:'Média (10–13 salas)', grande:'Grande (15–19 salas)'};
+function temaDe(t){
+  const n = norm(t); if (!n) return '';
+  if (TEMAS_AV[n]) return n;
+  return Object.keys(TEMAS_AV).find(k => n.includes(k) || norm(TEMAS_AV[k].nome).includes(n) || n.includes(norm(TEMAS_AV[k].nome))) || '';
+}
+function normMz(m){
+  if (!m || typeof m !== 'object' || Array.isArray(m)) return null;
+  const tam = norm(m.tamanho);
+  return {nome:str(m.nome), tema:temaDe(m.tema), tamanho:TAMS[tam] ? tam : '', descricao:str(m.descricao), combates:arr(m.combates).map(str).filter(Boolean)};
+}
+const mzChave = (id, n) => id + '--' + n;
+function mzCfg(A, n, c){
+  const sv = S.mzForm[mzChave(A.id, n)]; if (sv) return sv;
+  const m = c.masmorra, nc = combatesMz(c).length;
+  return {tema:(m && m.tema) || 'caverna', tamanho:(m && m.tamanho) || (nc > 2 ? 'media' : 'pequena'), andares:1};
+}
+/* combates do capítulo que acontecem na masmorra (os que o Claude listou; sem lista, todos) */
+function combatesMz(c){
+  const ns = c.masmorra && c.masmorra.combates.length ? c.masmorra.combates.map(norm).filter(Boolean) : null;
+  const cbs = ns ? c.combates.filter(cb => { const x = norm(cb.nome); return ns.some(y => x === y || x.includes(y) || y.includes(x)); }) : c.combates.slice();
+  return cbs.length ? cbs : c.combates.slice();
+}
+function grupoDe(nome, qtd, fichas){
+  const f = fichaDe(fichas, nome);
+  if (f){ const xp = crXp(f.nd); return xp === null ? null : {pt:f.nome, en:'', cr:f.nd, xp, qtd, ficha:true}; }
+  const m = MON_IDX[norm(nome)]; return m ? {pt:m.pt, en:m.en, cr:m.cr, xp:m.xp, qtd} : null;
+}
+function encDe(inimigos, nivel, jog, fichas, comport){
+  const grupos = arr(inimigos).map(i => grupoDe(str(i.nome), clamp(int(i.qtd, 1), 1, 20), fichas)).filter(Boolean);
+  if (!grupos.length) return null;
+  const xp = grupos.reduce((t, g) => t + g.xp*g.qtd, 0), B = orc(nivel, jog), dif = xp <= B[0] ? 0 : xp <= B[1] ? 1 : 2;
+  return {dif, orcamento:B[dif], xp, grupos, comport:comport || ''};
+}
+const fichaTexto = f => `Ficha de ${f.nome} (${f.tipo}) · ND ${f.nd} · CA ${f.ca} · PV ${f.pv} · Deslocamento ${f.deslocamento}\n`
+  + Object.entries(f.atributos).map(([k, v]) => k + ' ' + v + ' (' + mod(v) + ')').join(' · ')
+  + [['Traços', f.tracos], ['Ações', f.acoes], ['Ações bônus', f.acoes_bonus], ['Reações', f.reacoes], ['Ações lendárias', f.lendarias]]
+      .filter(([, xs]) => xs.length).map(([t, xs]) => '\n' + t + ': ' + xs.map(x => (x.nome ? x.nome + '. ' : '') + x.texto).join(' | ')).join('');
+/* todas as salas da masmorra, de todos os andares */
+function salasMz(d){
+  const fl = d.andares ? d.andares.map(a => ({salas:a.salas, mapa:a.mapa})) : [{salas:d.salas, mapa:d.mapa}];
+  const out = [];
+  fl.forEach((F, k) => F.salas.forEach((s, i) => out.push({ref:fl.length > 1 ? (k+1) + '.' + (i+1) : String(i+1), andar:k, i, s, sec:(F.mapa.secretas||[]).some(x => x.sala === i), cb:null})));
+  return out;
+}
+/* põe os combates do capítulo nas salas: o principal (ou o mais forte) na sala do chefe, os outros espalhados pelas salas de combate */
+function distribuir(A, c, d){
+  const xs = salasMz(d), cbs = combatesMz(c);
+  const xpDe = cb => avaliar(cb, c.nivel, A.params.jogadores, A.fichas).total;
+  const boss = cbs.find(x => x.principal) || [...cbs].sort((a, b) => xpDe(b) - xpDe(a))[0] || null;
+  const chefe = xs.find(x => x.s.tipo === 'chefe'); if (boss && chefe) chefe.cb = boss;
+  const resto = cbs.filter(x => x !== boss);
+  resto.forEach((cb, j) => {
+    const livres = xs.filter(x => x.s.tipo === 'combate' && !x.cb);
+    let alvo = livres.length ? livres[Math.min(livres.length - 1, Math.floor(livres.length * (j + 1) / (resto.length + 1)))] : null;
+    if (!alvo){ alvo = xs.find(x => !x.cb && !x.sec && ['descanso', 'misterio', 'vazia'].includes(x.s.tipo)); if (alvo){ alvo.s.tipo = 'combate'; alvo.s.misterio = ''; alvo.s.descanso = ''; alvo.s.pista = ''; } }
+    if (alvo) alvo.cb = cb;
+  });
+  return {xs, boss, cbs};
+}
+function promptMz(A, c, d, pl){
+  const P = A.plano, p = A.params, B = orc(c.nivel, p.jogadores), m = c.masmorra, T = TEMAS_AV[d.params.tema];
+  const doCap = pl.cbs.flatMap(cb => cb.inimigos).map(i => MON_IDX[norm(i.nome)]).filter(Boolean);
+  const perm = [...new Map([...doCap, ...X.pool(d.params.tema).filter(x => x.xp <= B[2])].map(x => [x.en, x])).values()];
+  const inim = cb => cb.inimigos.map(i => i.qtd + '× ' + i.nome).join(', ');
+  const linha = x => { const s = x.s, e = s.encontro, ps = [`${x.ref}. ${TIPOS_AV[s.tipo] || s.tipo}${x.sec ? ' (sala secreta)' : ''}`];
+    if (x.cb) ps.push(`combate do capítulo: "${x.cb.nome}" (${inim(x.cb)})`);
+    else if (e) ps.push(`monstros sorteados: ${e.grupos.map(g => g.qtd + '× ' + g.en).join(', ')} (${fmt(e.xp)} XP)`);
+    if (s.armadilha) ps.push('armadilha: ' + s.armadilha.nome);
+    if (s.tesouro) ps.push('tem tesouro');
+    if (s.misterio) ps.push('mistério: ' + s.misterio);
+    if (s.descanso) ps.push('lugar seguro para descansar');
+    return '- ' + ps.join(' · '); };
+  return `Você é um mestre de D&D 5.5 preparando uma masmorra para a mesa. Escreva em português do Brasil.
+
+## A aventura
+"${P.titulo}". Cenário: ${P.cenario}. ${P.premissa}
+
+## Capítulo ${c.n}: ${c.titulo}
+Grupo de ${p.jogadores} jogadores, nível ${c.nivel}. ${c.resumo}
+Lugar: ${m ? m.nome + '. ' + m.descricao : (P.capitulos[c.n-1] || {}).local || ''}
+Combates deste capítulo que acontecem aqui:
+${pl.cbs.map(cb => `- "${cb.nome}": ${inim(cb)}. Terreno: ${cb.terreno} Objetivo: ${cb.objetivo} Tática: ${cb.tatica}`).join('\n') || '- nenhum'}
+
+## A planta (já desenhada pela Mesa; tema ${T.nome}${d.andares ? ', ' + d.andares.length + ' andares; ref = andar.sala' : ''})
+A sala 1 é a entrada. A sala do chefe é o fim da masmorra.
+${pl.xs.map(linha).join('\n')}
+
+## O que fazer
+Dê a cada sala um nome e uma descrição que combinem com a história e com o lugar.
+- "desc": 1 a 3 frases sobre o que os personagens veem ao entrar. Os jogadores leem este texto: não revele segredos, armadilhas nem quem está escondido.
+- "notas": só para o mestre: o que a sala tem a ver com a história (pistas, PNJs, segredos). Pode ficar vazio.
+- "comport": nas salas com monstros, o que eles fazem quando o grupo chega e como lutam. Nas salas com combate do capítulo, siga a tática do combate.
+- Nas salas com "monstros sorteados", você pode trocar os monstros por outros da lista abaixo que façam mais sentido na história, com XP parecido (de 60% a 140% do total da sala). Para manter os sorteados, deixe "inimigos" fora.
+- Não mude os inimigos das salas com combate do capítulo.
+- Responda uma entrada para cada sala da planta, com o mesmo "ref". Não crie salas novas.
+Marque com [Inventado] o que não vem da história.
+
+## Criaturas permitidas nas trocas (nome em inglês · ND · XP cada)
+${perm.map(x => `${x.en} · ND ${x.cr} · ${x.xp} XP`).join('\n')}
+
+## Formato
+Responda somente com um objeto JSON, sem texto antes ou depois:
+{"nome": "nome da masmorra", "gancho": "1 a 2 frases, para os jogadores: por que o grupo entra aqui", "salas": [{"ref": "1", "nome": "", "desc": "", "notas": "", "comport": "", "inimigos": [{"nome": "Zombie", "qtd": 3}]}]}`;
+}
+function aplicarMz(A, c, d, pl, r){
+  r = r && typeof r === 'object' && !Array.isArray(r) ? r : {};
+  const por = {}; arr(r.salas).forEach(x => { if (x && x.ref != null) por[String(x.ref).trim()] = x; });
+  const jog = A.params.jogadores, B = orc(c.nivel, jog), limpa = t => str(t).replace(/\[\s*inventad[oa]\s*\]/gi, '').replace(/\s{2,}/g, ' ').trim();
+  pl.xs.forEach(x => {
+    const s = x.s, q = por[x.ref] || {}, notas = [];
+    if (limpa(q.nome)) s.nome = limpa(q.nome).slice(0, 80);
+    if (limpa(q.desc)) s.desc = limpa(q.desc);
+    if (str(q.notas)) notas.push(str(q.notas));
+    if (x.cb){
+      const e = encDe(x.cb.inimigos, c.nivel, jog, A.fichas, limpa(q.comport) || x.cb.tatica);
+      if (e){ s.encontro = e;
+        notas.push(`Combate do capítulo ${c.n}: ${x.cb.nome}.${x.cb.objetivo ? ' Objetivo: ' + x.cb.objetivo : ''}${x.cb.terreno ? ' Terreno: ' + x.cb.terreno : ''}${x.cb.fuga ? ' Fuga ou rendição: ' + x.cb.fuga : ''}`);
+        e.grupos.filter(g => g.ficha).forEach(g => { const f = fichaDe(A.fichas, g.pt); if (f) notas.push(fichaTexto(f)); }); }
+    } else if (s.encontro){
+      const qi = arr(q.inimigos), e = qi.length ? encDe(qi, c.nivel, jog, [], '') : null;
+      const xp0 = s.encontro.xp || 0; /* troca só com XP parecido (de 60% a 140% do sorteado) e dentro do orçamento Alto */
+      if (e && e.grupos.length === qi.length && e.xp <= B[2] && e.xp >= xp0*.6 && e.xp <= xp0*1.4){ e.comport = limpa(q.comport) || s.encontro.comport; s.encontro = e; }
+      else if (limpa(q.comport)) s.encontro.comport = limpa(q.comport);
+    }
+    s.notas = notas.join('\n\n');
+  });
+  d.nome = limpa(r.nome) || (c.masmorra && c.masmorra.nome) || d.nome;
+  if (limpa(r.gancho)) d.gancho = limpa(r.gancho);
+  const b = pl.boss;
+  if (b){ const f = b.inimigos.map(i => fichaDe(A.fichas, i.nome)).find(Boolean), g = b.inimigos[0] && grupoDe(b.inimigos[0].nome, 1, A.fichas); d.vilao = f ? f.nome : g ? g.pt : d.vilao; }
+  d.chefe = null; /* o chefe agora é o da aventura */
+  d.aventura = {id:A.id, n:c.n, titulo:A.plano.titulo};
+}
+const ocupado = () => (S.ger && !S.ger.fim) || (S.mz && S.mz.st === 'run');
+async function criarMz(id, n){
+  const A = S.lista[id], c = capsDe(id)[n]; if (!A || !c || !S.sample || ocupado()) return;
+  const cfg = mzCfg(A, n, c), p = A.params;
+  const ctl = new AbortController();
+  S.mz = {id, n, st:'run', erro:'', chars:0, ctl}; render();
+  try {
+    const d = X.gerar({tema:TEMAS_AV[cfg.tema] ? cfg.tema : 'caverna', tamanho:TAMS[cfg.tamanho] ? cfg.tamanho : 'pequena', andares:clamp(int(cfg.andares, 1), 1, 3), nivel:c.nivel, jogadores:p.jogadores,
+      ritmo:'padrao', itens:'normal', semente:'av-' + id + '-' + n + '-' + Date.now().toString(36), nome:(c.masmorra && c.masmorra.nome) || ''});
+    const pl = distribuir(A, c, d);
+    const r = await S.sample.json(promptMz(A, c, d, pl), {modelTier:S.form.tier === 'default' ? 'default' : 'complex', cache:false, signal:ctl.signal,
+      onText:({text}) => { if (S.mz){ S.mz.chars = text.length; const el = $('#mz-chars'); if (el) el.textContent = fmt(text.length) + ' caracteres recebidos'; } }});
+    aplicarMz(A, c, d, pl, r);
+    const mid = await X.guardar(d);
+    A.masmorras = {...(A.masmorras || {}), [n]:mid}; await salvarAv(A);
+    S.mz = null; S.msg = 'Masmorra criada: ' + d.nome + '. Ela fica na aba Masmorras, em Masmorras salvas, escondida dos jogadores até você mostrar.';
+  } catch (e){
+    S.mz = {id, n, st:'erro', erro:e && e.code ? msgErro(e).replace('Clique em Continuar', 'Clique em Criar masmorra').replace('clique em Continuar para seguir', 'clique em Criar masmorra para tentar de novo') : 'Erro ao criar a masmorra: ' + (e?.message || e)};
+    if (e?.code === 'not_granted') S.iaNegada = true;
+  }
+  render();
+}
+function secMz(A, pc, c){
+  const m = c.masmorra, cbs = combatesMz(c), mid = (A.masmorras || {})[pc.n], existe = mid && X.existe(mid);
+  const z = S.mz && S.mz.id === A.id && S.mz.n === pc.n ? S.mz : null, pode = !A.exemplo && S.sample && !S.iaNegada && !ocupado();
+  const cfg = mzCfg(A, pc.n, c), k = h(mzChave(A.id, pc.n));
+  const sel = (campo, ops, v, rot) => `<div class="f"><label for="mz-${campo}-${pc.n}">${rot}</label><select id="mz-${campo}-${pc.n}" data-mz="${campo}" data-k="${k}">${Object.entries(ops).map(([o, t]) => `<option value="${h(o)}"${String(o) === String(v) ? ' selected' : ''}>${h(t)}</option>`).join('')}</select></div>`;
+  const temas = Object.fromEntries(Object.entries(TEMAS_AV).map(([t, T]) => [t, T.nome]));
+  const desc = m ? `<p style="margin:0"><b>${h(m.nome || 'Lugar do capítulo')}.</b> ${tx(m.descricao)}</p>` : `<p class="muted" style="margin:0">O Claude não marcou um lugar explorável neste capítulo. Mesmo assim, dá para criar uma masmorra para ele.</p>`;
+  const prog = z ? (z.st === 'run'
+      ? `<div class="row" aria-live="polite"><span class="st run">Gerando</span><span class="small muted" id="mz-chars">${z.chars ? fmt(z.chars) + ' caracteres recebidos' : 'a Mesa desenhou a planta; o Claude está vestindo as salas…'}</span><button class="btn sm danger" data-act="av-mz-parar">Parar</button></div>`
+      : `<p class="small" style="color:var(--red);margin:0" role="alert">${h(z.erro)}</p>`) : '';
+  const form = A.exemplo ? '<p class="muted small" style="margin:0">Nas aventuras criadas por você, aqui aparece o botão para criar a masmorra deste capítulo.</p>'
+    : `<div class="form">${sel('tema', temas, cfg.tema, 'Tema')}${sel('tamanho', TAMS, cfg.tamanho, 'Tamanho')}${TEMAS_AV[cfg.tema] && TEMAS_AV[cfg.tema].aberto ? '' : sel('andares', {1:'1 andar', 2:'2 andares', 3:'3 andares'}, cfg.andares, 'Andares')}</div>
+      <div class="row"><button class="btn${existe ? '' : ' pri'}" data-act="av-mz-criar" data-n="${pc.n}"${pode ? '' : ' disabled'}>${existe ? 'Criar outra masmorra' : 'Criar masmorra'}</button>
+      ${existe ? `<button class="btn pri" data-act="av-mz-abrir" data-n="${pc.n}">Abrir “${h(X.nome(mid))}”</button>` : ''}</div>
+      <p class="muted small" style="margin:0">A Mesa desenha a planta e o Claude dá nome e descrição às salas, com ${cbs.length === 1 ? 'o combate' : 'os ' + cbs.length + ' combates'} deste capítulo dentro dela${cbs.length ? ' (o principal fica na sala do chefe)' : ''}. Usa mais um pedido ao Claude, uns 5 a 10 mil tokens.</p>`;
+  return `<h3>Masmorra</h3><div class="combate">${desc}${m && m.combates.length ? `<p class="small muted" style="margin:0">Combates que acontecem lá: ${m.combates.map(h).join(', ')}.</p>` : ''}${form}${prog}</div>`;
+}
+
+/* ================= início (chamado pela Mesa) ================= */
+let unsubs = [];
+function papel(){
+  const pode = M.podeMestrar();
+  if (pode && S.dbRaw && !unsubs.length){ S.db = S.dbRaw; S.carregou = false; assinar(); }
+  if (!pode && unsubs.length){ unsubs.forEach(u => { try { typeof u === 'function' && u(); } catch {} }); unsubs = []; S.lista = {}; S.caps = {}; S.db = null; S.tela = 'lista'; }
+}
+function start(db){
+  S.dbRaw = db || null;
+  if (!db){ S.semDb = true; S.carregou = true; }
+  if (window.claude && typeof window.claude.use === 'function'){
+    Promise.resolve(window.claude.use('sample')).then(x => { S.sample = x; S.semIa = !x; render(); }, () => { S.semIa = true; render(); });
+    Promise.resolve(window.claude.use('downloads')).then(x => { S.dl = x; render(); }, () => {});
+  } else S.semIa = true;
+  papel();
+}
+return {view, start, papel};
+})(MESA_API, MAS.av);
 
 /* ============ INICIALIZAÇÃO ============ */
 function subscribe(){
@@ -4546,7 +5440,7 @@ function applyRole(){
   if (pode!==eraMestre){ S.viewAs = pode ? 'mestre' : 'jogador'; eraMestre=pode; S.aba = lsGet('mesa-aba')||''; }
   const m = pode && S.viewAs==='mestre';
   if (m!==S.isMaster){ S.isMaster=m; MAS.reset(); if (S.mode==='db') resubRoles(); }
-  MAS.papel(); loadNames(); render();
+  MAS.papel(); AV.papel(); loadNames(); render();
 }
 function resubRoles(){
   roleUnsubs.forEach(u=>{ try{ typeof u==='function' && u(); }catch{} }); roleUnsubs=[];
@@ -4578,6 +5472,7 @@ async function init(){
     store=makeLocalStore();
   }
   MAS.start(S.mode==='db' ? db : null);
+  AV.start(S.mode==='db' ? db : null);
   subscribe(); render();
 }
 init();
