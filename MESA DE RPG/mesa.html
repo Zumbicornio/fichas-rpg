@@ -193,6 +193,30 @@ textarea{min-height:70px;resize:vertical}
   .hide-cel{display:none}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* ===== Eventos (aba de eventos aleatórios; usa o CSS .av) ===== */
+.ev .btn svg{width:18px;height:18px}
+.ev .ev-cats{gap:6px}
+.ev .ev-sorteio{display:flex;flex-direction:column;gap:10px}
+.ev .ev-sortear{font-size:16px;padding:10px 20px}
+.ev .ev-grupo{flex:1 1 240px;max-width:360px}
+.ev .lnk{background:none;border:0;padding:0;color:var(--gold2);text-decoration:underline;text-underline-offset:3px;cursor:pointer;font:inherit;text-align:left}
+.ev .ev-cartao{border-color:var(--gold);display:flex;flex-direction:column;gap:12px}
+.ev .ev-cartao h2{font-size:22px;color:var(--gold2);margin:0}
+.ev .ev-texto{font-size:15.5px;line-height:1.65;margin:0;max-width:70ch}
+.ev .ev-dado{background:var(--panel2);border:1px solid var(--gold);color:var(--gold2);border-radius:6px;padding:0 6px;font:inherit;cursor:pointer}
+.ev .ev-dado:hover{background:var(--gold);color:#1a140c}
+.ev .ev-cd{color:var(--gold2)}
+.ev .ev-alvo,.ev .ev-mons{display:flex;flex-direction:column;gap:6px}
+.ev .ev-hist{margin:8px 0 0;padding-left:22px;display:flex;flex-direction:column;gap:5px}
+.ev .ev-lista{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.ev .ev-item{display:grid;grid-template-columns:2.2em minmax(0,1fr);gap:8px;padding:12px 0;border-top:1px solid var(--line)}
+.ev .ev-item>.ev-form:first-child{grid-column:1/-1}
+.ev .ev-n{color:var(--gold);font-family:var(--display);font-weight:700;text-align:right}
+.ev .ev-form{display:flex;flex-direction:column;gap:10px}
+.ev .ev-catform{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:10px}
+.ev .ev-catform .row{grid-column:1/-1}
+.ev .ev-catform p{grid-column:1/-1}
+@media (max-width:720px){.ev .ev-catform{grid-template-columns:minmax(0,1fr)}.ev .ev-grupo{max-width:none}}
 /* ===== Aventuras (gerador de aventuras dentro da Mesa) ===== */
 .av{--ink-on-gold:#1a140c;--quote:#211b15}
 .av .subnav{margin-bottom:14px}
@@ -1846,7 +1870,8 @@ const ICON = {
   grupo:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><circle cx="17" cy="9" r="2.5"/><path d="M16 15c3 0 5 2 5 5"/>',
   coroa:'<path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/>',
   livro:'<path d="M4 5c3-1.5 5.5-1.5 8 0v15c-2.5-1.5-5-1.5-8 0z"/><path d="M12 5c2.5-1.5 5-1.5 8 0v15c-3-1.5-5.5-1.5-8 0"/>',
-  frasco:'<path d="M9 3h6M10 3v6L5 18a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/><path d="M7.5 14h9"/>'
+  frasco:'<path d="M9 3h6M10 3v6L5 18a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/><path d="M7.5 14h9"/>',
+  dado:'<rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1.2" fill="currentColor"/><circle cx="15" cy="15" r="1.2" fill="currentColor"/><circle cx="15" cy="9" r="1.2" fill="currentColor"/><circle cx="9" cy="15" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/>'
 };
 /* aviso perto dos botões de enviar imagem: no app do Claude no celular o seletor de arquivos não abre (no navegador funciona). Só aparece em telas de toque. */
 const AVISO_APP = '<p class="aviso-app">No app do Claude no celular, este botão pode não abrir a galeria. Se acontecer, abra a Mesa pelo navegador do celular (Chrome, Samsung Internet ou Safari).</p>';
@@ -1854,7 +1879,7 @@ const icon = k => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" st
 function podeMestrar(){ return S.isOwner || (!!S.myId && S.mestres.includes(S.myId)); }
 function abas(){
   if (S.isMaster){
-    const t = [['fichas','Fichas','ficha',pendingList().length],['masmorras','Masmorras','masmorra'],['aventuras','Aventuras','livro'],['homebrew','Homebrew','frasco']];
+    const t = [['fichas','Fichas','ficha',pendingList().length],['masmorras','Masmorras','masmorra'],['aventuras','Aventuras','livro'],['homebrew','Homebrew','frasco'],['eventos','Eventos','dado']];
     if (S.isOwner && S.mode==='db') t.push(['mestres','Mestres','coroa',0]);
     return t;
   }
@@ -1906,6 +1931,7 @@ function viewAba(){
     case 'masmorras': case 'masmorra': return MAS.view();
     case 'aventuras': return AV.view();
     case 'homebrew': return HB.view();
+    case 'eventos': return EV.view();
     case 'mestres': return S.isOwner ? `<div class="stack">${viewMestres()}<div class="panel" style="max-width:680px"><h3>Andamento da união</h3>${etapas()}</div></div>` : '';
   }
   return '';
@@ -2615,7 +2641,7 @@ function setPath(obj,path,val){ const ks=path.split('.'); let o=obj; ks.slice(0,
 document.addEventListener('click', async e=>{
   const t=e.target.closest('[data-act]'); if(!t || t.tagName==='SELECT') return;
   const a=t.dataset.act;
-  if ((MESA_API.ativo() || S.aba==='aventuras' || S.aba==='homebrew') && a!=='aba' && a!=='ver-como') return;
+  if ((MESA_API.ativo() || S.aba==='aventuras' || S.aba==='homebrew' || S.aba==='eventos') && a!=='aba' && a!=='ver-como') return;
   if (a==='regra'){ openPop(t); return; }
   if (a==='pop-close'){ closePop(); return; }
   if (a==='pop-edit'){ S.pop.edit=true; renderPop(true); $('#pop-txt')?.focus(); return; }
@@ -2799,7 +2825,7 @@ const MESA_API = {
   candidatos: (camp, extras) => candidatosGrupo(camp||'', extras||[]),
   mudarPv: (id, modo, n) => { const c=S.chars.find(x=>x.id===id); if (c) aplicarPv(c, modo, n); },
   abrirFicha: id => abrirFicha(id), toast: m => toast(m),
-  abaAv: () => S.aba==='aventuras', abaHb: () => S.aba==='homebrew', irAba: k => { entrarAba(k); render(true); window.scrollTo(0,0); }
+  abaAv: () => S.aba==='aventuras', abaHb: () => S.aba==='homebrew', abaEv: () => S.aba==='eventos', irAba: k => { entrarAba(k); render(true); window.scrollTo(0,0); }
 };
 const MAS = (function(M){
 'use strict';
@@ -4283,6 +4309,8 @@ function imgPopView(){
     <figure class="mon-img grande"><img src="${h(imgSrc(im))}" alt="Imagem de ${h(nome)}"></figure></div></div>`;
 }
 const imgMini = g => { const im = imgDe(g.en); return im && (isMestre() || im.jogadores) ? `<button class="mon-mini" data-act="img-ver" data-en="${h(g.en)}" aria-label="Ver a imagem de ${h(g.pt)}"><img src="${h(imgSrc(im))}" alt=""></button>` : ''; };
+/* ações da janela de ficha (usadas também na aba Eventos, que abre as fichas dos monstros ligados aos eventos) */
+const POP_ACTS = new Set(['mon','item','noop','pop-close','pop-bg','img-zoom','img-ver','img-jog','img-del','mon-edit','mon-cancel','mon-save','mon-reset']);
 function popView(){
   if (typeof S.pop==='string' && S.pop.startsWith('img:')) return imgPopView();
   if (isItemPop()) return itemPopView();
@@ -4402,7 +4430,7 @@ async function salvar(){
 document.addEventListener('click', e=>{
   const t = e.target.closest('[data-act]'); if (!t) return;
   const a = t.dataset.act;
-  if (!M.ativo() || a==='aba' || a==='ver-como') return;
+  if (!(M.ativo() || (M.abaEv() && POP_ACTS.has(a))) || a==='aba' || a==='ver-como') return;
   if (a!=='excluir') S.delArm = null;
   if (a!=='mon-reset') S.popResetArm = false;
   if (a==='noop') return;
@@ -4474,7 +4502,7 @@ document.addEventListener('click', e=>{
 /* abrir uma masmorra salva por cima de alterações não salvas: segundo clique confirma */
 let leaveArm = 0;
 function confirmLeave(){ if (Date.now()-leaveArm < 4000) return true; leaveArm = Date.now(); S.notice = 'A masmorra aberta no Gerador tem alterações não salvas. Clique de novo na masmorra para abri-la mesmo assim.'; render(); return false; }
-document.addEventListener('keydown', e=>{ if (!M.ativo()) return; if (e.key==='Escape' && S.pop){ S.pop = null; S.popEdit = false; render(); return; }if ((e.key==='Enter'||e.key===' ') && e.target.classList && e.target.classList.contains('card')){ e.preventDefault(); e.target.click(); } });
+document.addEventListener('keydown', e=>{ if (!M.ativo() && !(M.abaEv() && e.key==='Escape')) return; if (e.key==='Escape' && S.pop){ S.pop = null; S.popEdit = false; render(); return; }if ((e.key==='Enter'||e.key===' ') && e.target.classList && e.target.classList.contains('card')){ e.preventDefault(); e.target.click(); } });
 document.addEventListener('input', e=>{
   const t = e.target; if (!M.ativo()) return;
   if (t.dataset.p){ S.params[t.dataset.p] = t.value; return; }
@@ -4482,7 +4510,7 @@ document.addEventListener('input', e=>{
   if (t.dataset.nome!==undefined && S.cur){ S.cur.nome = t.value; if (!S.dirty){ S.dirty = true; render(); } }
 });
 document.addEventListener('change', e=>{
-  const t = e.target; if (!M.ativo()) return;
+  const t = e.target; if (!M.ativo() && !(M.abaEv() && t.dataset.imgMon)) return;
   if (t.dataset.imgMon){ const f = t.files && t.files[0]; const en = t.dataset.imgMon; t.value = ''; imgDoArquivo(en, f); return; }
   if (t.dataset.actChange==='grupo-incluir' && S.cur){ if (!t.value) return; const ex = S.cur.params.extras = S.cur.params.extras||[]; if (!ex.includes(t.value)) ex.push(t.value);
     S.dirty = true; render(); M.toast(S.cur.publicada ? 'Incluído. Salve para os jogadores verem.' : 'Incluído no grupo desta masmorra.'); return; }
@@ -4575,7 +4603,7 @@ const av = {
 };
 /* colar imagem com Ctrl+V na ficha aberta de um monstro (mestre) */
 document.addEventListener('paste', e=>{
-  if (!M.ativo() || !S.pop || isItemPop() || S.popEdit || !isMestre() || !podeImg() || !MON_BY_EN[S.pop]) return;
+  if (!(M.ativo() || M.abaEv()) || !S.pop || isItemPop() || S.popEdit || !isMestre() || !podeImg() || !MON_BY_EN[S.pop]) return;
   const f = Array.from((e.clipboardData && e.clipboardData.files) || []).find(x=>String(x.type).startsWith('image/'));
   if (f){ e.preventDefault(); imgDoArquivo(S.pop, f); }
 });
@@ -4592,7 +4620,7 @@ const hb = {
       if (x.tipo==='item' ? s.tesouro && s.tesouro.itens.some(it=>itemNome(it)===nome) : s.encontro && s.encontro.grupos.some(g=>g.en===nome)) n++; })));
     return n; }
 };
-return {view, depois, start, papel, reset, autores, av, hb};
+return {view, depois, start, papel, reset, autores, av, hb, pop: () => S.pop ? '<div class="mas">'+popView()+'</div>' : ''};
 })(MESA_API);
 
 /* ============ AVENTURAS (gerador de aventuras; só mestres) ============
@@ -5830,7 +5858,7 @@ function start(db){
   else {
     const t = setTimeout(() => { if (!S.carregou){ S.aviso = 'Ainda não consegui ler o catálogo de homebrew. Ele aparece assim que a conexão responder.'; render(); } }, 10000);
     db.collection('homebrew').onSnapshot(snap => {
-      const novo = {}; snap.docs.forEach(d => { novo[d.id] = {id:d.id, ...d.data()}; });
+      const novo = {}; snap.docs.forEach(d => { const v = d.data(); if (v && v.tipo === 'eventos') return; /* eventos (aba Eventos) moram nesta coleção */ novo[d.id] = {id:d.id, ...v}; });
       S.lista = novo; if (!snap.metadata || !snap.metadata.fromCache){ clearTimeout(t); S.carregou = true; S.aviso = ''; }
       aplicar(); render();
     }, err => { clearTimeout(t); S.carregou = true; S.aviso = 'Não consegui ler o catálogo de homebrew (' + ((err && err.code) || 'erro') + ').'; render(); });
@@ -5845,6 +5873,352 @@ function start(db){
 }
 return {view, start};
 })(MESA_API, MAS.hb, AV);
+
+/* ================= EVENTOS (aba só de mestres) =================
+   Eventos aleatórios por categoria (cidade, estrada...). O mestre sorteia (sem repetir até sair tudo), vê o personagem
+   do grupo envolvido, rola os dados do texto e abre a ficha dos monstros ligados ao evento.
+   A base vem embutida (EV_BASE). O que o mestre edita fica na coleção "homebrew", doc ev-<categoria> {tipo:'eventos', ...};
+   a aba Homebrew ignora esses docs. Sorteio e histórico ficam só neste navegador (localStorage). */
+const EV_BASE = (() => {
+  const E = (t, x, o) => ({t, x, m:(o && o.m) || [], p:!!(o && o.p)});
+  const cidade = [
+    E('Carroça desgovernada', 'Uma carroça puxada por cavalos dispara por uma rua lotada sem condutor. Um teste de Destreza (Acrobacia) CD 13 bem-sucedido permite que um personagem salte a bordo e agarre as rédeas antes que alguém se machuque.', {m:['Draft Horse']}),
+    E('A pessoa errada', 'Um estranho cumprimenta um membro do grupo com entusiasmo, chamando-o por outro nome e insistindo que os dois dividiram uma refeição ainda ontem. O estranho fica visivelmente confuso quando é corrigido.', {p:1}),
+    E('Uma bolsa sumida', 'Um mercador acusa em voz alta uma criança próxima de ter roubado sua bolsa. Na verdade, a bolsa está presa debaixo da própria capa do mercador, mas a multidão que se junta já está tomando partido.'),
+    E('Apresentação de rua', 'Uma trupe talentosa encena uma elaborada luta de espadas na praça da cidade. Durante o final, um ator golpeia outro por acidente com uma lâmina de verdade, e a apresentação vira uma emergência.'),
+    E('Um desfile inesperado', 'Uma procissão colorida de músicos, dançarinos e moradores fantasiados bloqueia a rua. Ninguém na multidão parece concordar sobre o que estão comemorando.'),
+    E('A fonte quebrada', 'Uma fonte pública de repente começa a lançar água bem alto, encharcando quem passa por perto. Um teste de Inteligência (Investigação) CD 12 bem-sucedido revela um pequeno dispositivo mecânico enfiado no encanamento.'),
+    E('Uma entrega estranha', 'Um mensageiro carregado demais oferece 5 po ao grupo para ajudar a levar um caixote de madeira lacrado até o outro lado da cidade. De vez em quando, algo lá dentro bate três vezes contra a tampa.'),
+    E('Criança perdida', 'Uma criança assustada se aproxima do grupo pedindo ajuda para encontrar os pais. Ela só se lembra de uma porta azul bem marcante e do cheiro de pão saindo do forno.'),
+    E('Um cliente furioso', 'Um cliente furioso discute com um artesão por causa de uma compra que parece defeituosa. A discussão piora quando o objeto começa a se mexer sozinho.'),
+    E('Proclamação pública', 'Um arauto anuncia uma mudança repentina na lei local: a partir do pôr do sol, andar com armas à mostra dentro das muralhas será proibido, e os infratores pagarão multa de 10 po.'),
+    E('Uma moeda estranha', 'Um mendigo oferece a um personagem uma moeda de prata desconhecida em troca de um favor simples: entregar um recado curto a alguém que o personagem nunca viu. A moeda traz o rosto de um monarca que ninguém reconhece.', {p:1}),
+    E('O animal fujão', 'Um bode grande e assustado dispara pelo mercado, arrastando uma corda arrebentada e derrubando bancas de verduras. O dono, desesperado, oferece 2 po a quem pegar o animal sem machucá-lo.', {m:['Goat']}),
+    E('Uma conversa entreouvida', 'Dois guardas da cidade discutem baixinho na entrada de um beco. Um insiste que eles têm de relatar um crime grave; o outro exige que esqueçam o que viram. Os dois se calam quando notam o grupo.', {m:['Guard']}),
+    E('Pé-d\'água', 'Uma chuva forte cai sem aviso, e as pessoas correm em busca de abrigo. Um taverneiro convida todos para debaixo de um terraço coberto, onde vários estranhos começam a trocar boatos.'),
+    E('O artista de rua', 'Um pintor se oferece para fazer um retrato rápido de um membro do grupo por 3 pp. A pintura pronta mostra uma figura sombria de pé logo atrás do personagem, embora não houvesse ninguém ali.', {p:1}),
+    E('Um pacote suspeito', 'Um mensageiro nervoso enfia uma carta lacrada na mão de um personagem, sussurra "Não deixe que eles a encontrem" e some na multidão. Momentos depois, dois oficiais de uniforme começam a interrogar quem passa.', {p:1, m:['Guard']}),
+    E('Andaime desabando', 'O andaime de madeira em volta de um prédio cede de repente. Personagens a até 3 m precisam passar numa salvaguarda de Destreza CD 13 ou sofrem 2d6 de dano Contundente. Trabalhadores ficam presos sob os escombros.'),
+    E('Um desafio amistoso', 'Um grupo de moradores convida o grupo para um jogo de rua em que se atiram pedras em alvos pintados. O vencedor ganha 5 pp e a admiração entusiasmada da vizinhança.'),
+    E('O vendedor insistente', 'Um vendedor de rua agitado insiste que um membro do grupo precisa desesperadamente de um objeto comum. Ele se recusa a explicar por quê, mas faz o objeto pela metade do preço.', {p:1}),
+    E('Um rosto conhecido', 'Um personagem avista alguém idêntico a uma pessoa do seu passado. O estranho não tem ligação aparente com essa pessoa, mas carrega um objeto pessoal inconfundível, que o personagem reconhece.', {p:1}),
+    E('O debate público', 'Um debate acalorado atrai dezenas de espectadores. Dois cidadãos respeitados discutem se a cidade deve gastar o tesouro em defesas ou em melhorias no bairro mais pobre.'),
+    E('Um mensageiro ferido', 'Um mensageiro ferido desaba perto do grupo, agarrado a um documento oficial. Com as últimas forças, pede que o documento chegue ao quartel da guarda da cidade antes do anoitecer.'),
+    E('O músico viajante', 'Um músico solitário toca uma melodia assombrosa debaixo de um arco. Um teste de Sabedoria (Percepção) CD 13 bem-sucedido revela que vários ouvintes estão chorando em silêncio, embora nenhum saiba explicar por quê.'),
+    E('Um cruzamento travado', 'Duas carroças ficaram presas num cruzamento estreito, bloqueando o trânsito em todas as direções. Os condutores, frustrados, oferecem 1 po cada a quem conseguir separá-las sem estragar a carga.'),
+    E('Revista inesperada', 'Guardas da cidade montam um posto de controle provisório e começam a revistar os pertences dos viajantes. Dizem procurar joias roubadas, mas a descrição dos itens sumidos muda a cada vez.', {m:['Guard']}),
+    E('A cartomante', 'Uma cartomante idosa oferece a um personagem uma leitura grátis. Em vez de prever o futuro, ela descreve com precisão um acontecimento íntimo do passado dele e, de repente, encerra a conversa.', {p:1}),
+    E('Uma recompensa sem dono', 'Um aviso pregado num quadro público promete 50 po pela devolução de uma herança de família desaparecida. Alguém riscou várias vezes o endereço de contato e o trocou por outro.'),
+    E('O prisioneiro fugido', 'Um prisioneiro acorrentado irrompe de uma rua lateral, perseguido por dois guardas exaustos. Ele implora proteção ao grupo, dizendo que foi preso por um crime que ainda não aconteceu.', {m:['Guard']}),
+    E('Óleo na rua', 'Um trabalhador derruba um grande barril de óleo escorregadio nos paralelepípedos. Quem se mover pela área afetada, de 4,5 m de lado, precisa passar numa salvaguarda de Destreza CD 11 ou fica na condição Caído.'),
+    E('Um casamento em disputa', 'Um cortejo de casamento para de repente quando duas famílias começam a discutir por causa de uma tradição antiga. Os dois lados pedem que o grupo, supostamente imparcial, decida.'),
+    E('A estátua sumida', 'Uma multidão se junta em volta de um pedestal vazio na praça central. Uma querida estátua de pedra sumiu durante a noite, deixando a base perfeitamente intacta e um rastro de pegadas de lama.'),
+    E('Uma oferta incomum', 'Um nobre bem vestido faz ao grupo um pedido estranho: acompanhá-lo por um bairro específico fingindo serem velhos amigos dele. Ele oferece 20 po, mas se recusa a explicar o motivo.', {m:['Noble']}),
+    E('Perseguição nos telhados', 'Um ladrão corre pelos telhados enquanto vários guardas o perseguem pelas ruas. Ele tenta um salto perigoso de 4,5 m e quase perde o equilíbrio no telhado do outro lado.', {m:['Spy', 'Guard']}),
+    E('O cão de rua', 'Um cão de rua amigável começa a seguir o grupo. Recusa comida, mas tenta, ansioso, levá-los até um prédio próximo. A coleira gasta traz um endereço riscado no metal.', {m:['Mastiff']}),
+    E('Um apagão repentino', 'Todos os lampiões mágicos de uma rua se apagam de uma vez. Eles voltam a acender 1 minuto depois, mas vários moradores insistem que alguém desapareceu durante a escuridão.'),
+    E('O cobrador de impostos', 'Um funcionário municipal para o grupo e exige o pagamento de uma obscura taxa de visitante de 2 pp por pessoa. Moradores próximos comentam baixinho que essa taxa foi abolida há anos.'),
+    E('O duelo público', 'Dois cidadãos se preparam para resolver uma desavença num duelo formal. Uma multidão se forma, e um dos participantes, inesperadamente, pede a um membro do grupo que seja seu padrinho.', {p:1}),
+    E('Carga despencando', 'Uma corda arrebenta enquanto trabalhadores içam caixotes até o andar de cima de um armazém. Criaturas debaixo da carga precisam passar numa salvaguarda de Destreza CD 14 ou sofrem 2d8 de dano Contundente.'),
+    E('Um bichinho exótico', 'O bicho de estimação exótico de um nobre escapa do cuidador e se esconde entre os pertences do grupo. A criaturinha é inofensiva, mas de vez em quando fica invisível por 1d4 rodadas.'),
+    E('O festival esquecido', 'Os moradores começam a enfeitar as portas com fitas coloridas e lanternas. Quando perguntados, ninguém lembra a origem do costume, só que não participar dá muito azar.'),
+    E('Um aprendiz desesperado', 'Um jovem aprendiz implora ao grupo que ajude a recuperar um documento importante de uma oficina trancada antes que o mestre dele volte. Ele insiste que o documento é dele, mas não consegue provar.'),
+    E('O pregador de rua', 'Um pregador inflamado fala para uma multidão cada vez maior, avisando que um grande desastre vai atingir a cidade em 3 dias. Um teste de Sabedoria (Intuição) CD 12 bem-sucedido revela medo genuíno, e não uma farsa.'),
+    E('Um convite perdido', 'Um convite lindamente decorado voa pela rua e cai aos pés de um personagem. Ele dá acesso a um evento exclusivo marcado para esta noite, mas o nome do convidado foi apagado de propósito.', {p:1}),
+    E('A ponte quebrada', 'Uma pequena ponte de pedestres sobre um canal desaba em parte sob o peso de várias pessoas. Um teste de Força (Atletismo) CD 13 bem-sucedido permite que um personagem puxe alguém para um lugar seguro antes que caia na água.'),
+    E('Um reflexo estranho', 'Quando o grupo passa por uma vitrine polida, um personagem nota seu reflexo se mexendo sozinho por um instante. Ninguém mais percebe, e o reflexo se comporta normalmente quando é examinado de novo.', {p:1}),
+    E('O contador de histórias', 'Um contador de histórias entretém a multidão com um relato dramático de feitos heroicos recentes. A história descreve as aventuras do próprio grupo com uma precisão surpreendente, incluindo detalhes que nunca foram contados em público.'),
+    E('Um uniforme roubado', 'Um guarda da cidade sem fôlego se aproxima do grupo dizendo que alguém roubou seu uniforme e sua identidade. Momentos depois, um guarda idêntico aparece e acusa o primeiro de ser um impostor.', {m:['Guard', 'Doppelganger']}),
+    E('O sino fora de hora', 'Um sino grave toca numa torre abandonada que estava em silêncio havia décadas. Os moradores param assustados, e um idoso que passa começa a contar as badaladas.'),
+    E('Um achado valioso', 'Um varredor de rua encontra, debaixo de paralelepípedos soltos, uma bolsinha escondida com 2d10 po e um anel de sinete. Várias testemunhas começam na hora a discutir quem tem direito a ficar com ela.'),
+    E('A celebração inesperada', 'Uma multidão animada cerca o grupo de repente, aplaudindo e jogando pétalas de flores. Um oficial da cidade anuncia com orgulho que um dos personagens foi escolhido como convidado de honra de uma importante cerimônia local, sem explicar qual é o papel dele.', {p:1})
+  ];
+  cidade.forEach((e, i) => { e.id = 'c' + String(i + 1).padStart(2, '0'); });
+  return [{id:'cidade', nome:'Cidade', fonte:'City Encounters (tabela d100), @dnd_elementalawakening; traduzido para a Mesa', eventos:cidade}];
+})();
+
+const EV = (function(M, X){
+const $ = s => document.querySelector(s);
+const h = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const arr = x => Array.isArray(x) ? x : [];
+const str = x => (x === null || x === undefined) ? '' : String(x).trim();
+const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+const render = () => M.render();
+const DEMO = 'mesa-eventos-demo', LOCAL = 'mesa-eventos-sorteio';
+const MAX_HIST = 12;
+
+const S = {tela:'sortear', db:null, docs:{}, carregou:false, aviso:'', erro:'',
+  cat:'cidade', camp:'', atual:null, usados:{}, hist:[], aviso2:'',
+  edEv:null, rasc:null, apagarEv:null, apagarCat:false, restaurar:false, salvando:false};
+
+/* ---------- guardado neste navegador: categoria, grupo, eventos já sorteados e histórico ---------- */
+function lerLocal(){ try { const o = JSON.parse(localStorage.getItem(LOCAL) || '{}') || {};
+  if (o.cat) S.cat = o.cat; if (typeof o.camp === 'string') S.camp = o.camp;
+  if (o.usados && typeof o.usados === 'object') S.usados = o.usados; if (Array.isArray(o.hist)) S.hist = o.hist.slice(0, MAX_HIST);
+  if (o.atual && typeof o.atual === 'object') S.atual = o.atual; } catch {} }
+function gravarLocal(){ try { localStorage.setItem(LOCAL, JSON.stringify({cat:S.cat, camp:S.camp, usados:S.usados, hist:S.hist, atual:S.atual})); } catch {} }
+
+/* ---------- categorias = base embutida + o que o mestre salvou ---------- */
+function categorias(){
+  const out = [], vistos = new Set();
+  EV_BASE.forEach((b, i) => { vistos.add(b.id); const d = S.docs[b.id];
+    if (d && d.apagada) return;
+    out.push(d ? {...d, id:b.id, base:true, ordem:d.ordem ?? i, editada:true} : {...b, base:true, ordem:i, editada:false}); });
+  Object.values(S.docs).forEach(d => { if (!vistos.has(d.id) && !d.apagada) out.push({...d, base:false, ordem:d.ordem ?? 100}); });
+  return out.sort((a, b) => a.ordem - b.ordem || String(a.nome).localeCompare(String(b.nome), 'pt'));
+}
+const catDe = id => categorias().find(c => c.id === id) || null;
+function catAtual(){ const cs = categorias(); let c = cs.find(x => x.id === S.cat); if (!c && cs.length){ c = cs[0]; S.cat = c.id; } return c || null; }
+
+function lerDemo(){ try { return JSON.parse(localStorage.getItem(DEMO) || '{}') || {}; } catch { return {}; } }
+function gravarDemo(){ try { localStorage.setItem(DEMO, JSON.stringify(S.docs)); } catch {} }
+async function salvarCat(c){
+  const doc = {tipo:'eventos', nome:str(c.nome).slice(0, 60) || 'Sem nome', fonte:str(c.fonte).slice(0, 200), ordem:c.ordem ?? 100,
+    eventos:arr(c.eventos).map(e => ({id:e.id, t:str(e.t).slice(0, 80), x:str(e.x).slice(0, 2000), m:arr(e.m).slice(0, 8), p:!!e.p})),
+    at:Date.now(), autor:M.myId() || ''};
+  S.docs = {...S.docs, [c.id]:{id:c.id, ...doc}};
+  if (S.db) await S.db.collection('homebrew').doc('ev-' + c.id).set(doc); else gravarDemo();
+}
+async function apagarDoc(id, marcar){
+  const novo = {...S.docs};
+  if (marcar){ novo[id] = {id, tipo:'eventos', apagada:true, at:Date.now()}; S.docs = novo;
+    if (S.db) await S.db.collection('homebrew').doc('ev-' + id).set({tipo:'eventos', apagada:true, at:Date.now()}); else gravarDemo(); return; }
+  delete novo[id]; S.docs = novo;
+  if (S.db) await S.db.collection('homebrew').doc('ev-' + id).delete(); else gravarDemo();
+}
+
+/* ---------- monstros, dados e grupo ---------- */
+const monEn = en => X.dados.MON.find(m => m.en === en) || null;
+function monDeNome(nome){ const n = norm(nome); return X.dados.MON.find(m => norm(m.pt) === n || norm(m.en) === n) || null; }
+function rolar(expr){
+  const m = /^(\d+)d(\d+)$/.exec(expr); if (!m) return null;
+  const n = Math.min(+m[1], 100), f = Math.max(+m[2], 1), buf = new Uint32Array(n); crypto.getRandomValues(buf);
+  const dados = [...buf].map(x => 1 + (x % f)); return {dados, total:dados.reduce((a, b) => a + b, 0)};
+}
+const sorteio = n => { const b = new Uint32Array(1); crypto.getRandomValues(b); return b[0] % n; };
+const grupo = () => arr(M.grupo(S.camp, []));
+function alvoNovo(evitar){
+  const g = grupo(); if (!g.length) return null;
+  const op = g.length > 1 && evitar ? g.filter(x => x.id !== evitar) : g;
+  const x = op[sorteio(op.length)]; return {id:x.id, nome:x.nome};
+}
+/* texto do evento: dados viram botões de rolar, CDs em destaque */
+function textoHtml(x, rol){
+  let k = 0;
+  return h(x).replace(/\b(\d+)d(\d+)\b/g, (s) => { const i = k++, r = rol && rol[i];
+      return `<button class="ev-dado" data-act="ev-rolar" data-i="${i}" data-e="${s}" title="Rolar ${s}">${s}</button>${r ? `<span class="ev-res" aria-live="polite"> = <b>${r.total}</b> <span class="muted small">[${r.dados.join(', ')}]</span></span>` : ''}`; })
+    .replace(/\bCD \d+/g, s => `<b class="ev-cd">${s}</b>`);
+}
+
+/* ---------- sorteio ---------- */
+function sortear(){
+  const c = catAtual(); if (!c || !c.eventos.length) return;
+  const usados = new Set(arr(S.usados[c.id]).filter(id => c.eventos.some(e => e.id === id)));
+  let livres = c.eventos.filter(e => !usados.has(e.id));
+  S.aviso2 = '';
+  if (!livres.length){ usados.clear(); livres = c.eventos.slice(); S.aviso2 = 'Todos os eventos desta categoria já tinham saído. A lista recomeçou.'; }
+  const e = livres[sorteio(livres.length)]; usados.add(e.id); S.usados[c.id] = [...usados];
+  mostrar(c.id, e.id);
+}
+function mostrar(catId, evId, alvo){
+  const c = catDe(catId), e = c && c.eventos.find(x => x.id === evId); if (!e) return;
+  S.atual = {cat:catId, id:evId, alvo:alvo !== undefined ? alvo : (e.p ? alvoNovo() : null), rol:{}};
+  S.hist = [{cat:catId, id:evId, t:e.t, alvo:S.atual.alvo, at:Date.now()}, ...S.hist.filter(x => !(x.cat === catId && x.id === evId))].slice(0, MAX_HIST);
+  gravarLocal();
+}
+
+/* ---------- telas ---------- */
+const sub = () => `<div class="subnav" role="group" aria-label="Eventos">${[['sortear', 'Sortear'], ['editar', 'Editar eventos']].map(([k, l]) => { const on = S.tela === k; return `<button class="${on ? 'on' : ''}" data-act="ev-tela" data-t="${k}" ${on ? 'aria-current="page"' : ''}>${l}</button>`; }).join('')}</div>`;
+function catBotoes(acao){
+  return `<div class="row ev-cats" role="group" aria-label="Categoria">${categorias().map(c => `<button class="btn sm${c.id === S.cat ? ' pri' : ''}" data-act="${acao}" data-c="${h(c.id)}" aria-pressed="${c.id === S.cat}">${h(c.nome)} <span class="num">(${c.eventos.length})</span></button>`).join('')}</div>`;
+}
+function grupoSel(){
+  const cs = arr(M.campanhas()), g = grupo();
+  return `<label class="f ev-grupo"><span class="small muted">Grupo (para os eventos que envolvem um personagem)</span>
+    <select data-ev-camp aria-label="Grupo"><option value="">Todos os personagens ativos</option>${cs.map(c => `<option value="${h(c)}" ${c === S.camp ? 'selected' : ''}>${h(c)}</option>`).join('')}</select>
+    <span class="small muted">${g.length ? g.length + (g.length === 1 ? ' personagem: ' : ' personagens: ') + g.map(x => h(x.nome)).join(', ') : 'Nenhum personagem ativo neste grupo.'}</span></label>`;
+}
+function cartao(){
+  const a = S.atual; if (!a) return '';
+  const c = catDe(a.cat), e = c && c.eventos.find(x => x.id === a.id);
+  if (!e) return `<div class="panel muted">O último evento sorteado não existe mais (foi apagado ou editado).</div>`;
+  const pos = c.eventos.indexOf(e) + 1;
+  const alvo = e.p ? (a.alvo ? `<div class="ev-alvo"><span class="muted small">Personagem envolvido</span>
+        <div class="row"><button class="btn sm" data-act="ev-ficha" data-id="${h(a.alvo.id)}" title="Abrir a ficha">${h(a.alvo.nome)}</button>${grupo().length > 1 ? `<button class="btn sm" data-act="ev-alvo">Sortear outro personagem</button>` : ''}</div></div>`
+      : `<p class="small muted" style="margin:0">Este evento envolve um personagem, mas não há personagens ativos no grupo escolhido.</p>`) : '';
+  const mons = arr(e.m).map(en => monEn(en)).filter(Boolean);
+  return `<div class="panel ev-cartao" aria-live="polite">
+    <div class="eyebrow">${h(c.nome)} · evento ${pos} de ${c.eventos.length}</div>
+    <h2>${h(e.t)}</h2>
+    <p class="ev-texto">${textoHtml(e.x, a.rol)}</p>
+    ${alvo}
+    ${mons.length ? `<div class="ev-mons"><span class="muted small">Fichas ligadas a este evento</span><div class="row">${mons.map(m => `<button class="btn sm" data-act="mon" data-en="${h(m.en)}">${h(m.pt)} <span class="muted">ND ${h(m.cr)}</span></button>`).join('')}</div></div>` : ''}
+  </div>`;
+}
+function telaSortear(){
+  const c = catAtual();
+  if (!c) return `<div class="panel empty"><h2>Nenhuma categoria de eventos</h2><p>Crie uma categoria em Editar eventos.</p><button class="btn pri" data-act="ev-tela" data-t="editar">Editar eventos</button></div>`;
+  const usados = arr(S.usados[c.id]).filter(id => c.eventos.some(e => e.id === id)).length, faltam = c.eventos.length - usados;
+  const hist = S.hist.filter(x => catDe(x.cat));
+  return `${catBotoes('ev-cat')}
+    <div class="panel ev-sorteio">
+      <div class="row between" style="align-items:flex-end">
+        <div class="row"><button class="btn pri ev-sortear" data-act="ev-sortear" ${c.eventos.length ? '' : 'disabled'}>${icon('dado')} Sortear evento</button>
+          <span class="small muted">${c.eventos.length ? `${faltam} de ${c.eventos.length} ainda não saíram` : 'Esta categoria não tem eventos.'}${usados ? ` · <button class="lnk" data-act="ev-recomecar">recomeçar</button>` : ''}</span></div>
+        ${grupoSel()}
+      </div>
+      ${S.aviso2 ? `<p class="small" style="margin:0;color:var(--orange)">${h(S.aviso2)}</p>` : ''}
+    </div>
+    ${cartao()}
+    ${hist.length ? `<div class="panel"><div class="row between"><h3 style="margin:0">Sorteados nesta mesa</h3><button class="btn sm" data-act="ev-limpar">Limpar</button></div>
+      <ol class="ev-hist">${hist.map(x => { const ca = catDe(x.cat); const ev = ca && ca.eventos.find(e => e.id === x.id);
+        return `<li><button class="lnk" data-act="ev-abrir" data-c="${h(x.cat)}" data-id="${h(x.id)}">${h(ev ? ev.t : x.t)}</button> <span class="muted small">${h(ca.nome)}${x.alvo ? ' · ' + h(x.alvo.nome) : ''}</span></li>`; }).join('')}</ol>
+      <p class="small muted" style="margin:6px 0 0">O histórico e os eventos já sorteados ficam guardados só neste navegador.</p></div>` : ''}`;
+}
+function formEvento(c, e){
+  const r = S.rasc; /* o que o mestre digitou continua no formulário quando aparece um erro */
+  const mons = r ? r.m : arr(e.m).map(en => { const m = monEn(en); return m ? m.pt : en; }).join(', ');
+  if (r) e = {t:r.t, x:r.x, p:r.p};
+  return `<div class="ev-form" data-ev-form>
+    <label class="f"><span class="small muted">Título</span><input id="ev-t" value="${h(e.t)}" maxlength="80"></label>
+    <label class="f"><span class="small muted">O que acontece</span><textarea id="ev-x" rows="5" maxlength="2000">${h(e.x)}</textarea>
+      <span class="hint">Dados escritos no texto (2d6, 1d4…) viram botões de rolar. "CD 13" aparece em destaque.</span></label>
+    <label class="f"><span class="small muted">Monstros ligados (fichas que fazem sentido no evento), separados por vírgula</span><input id="ev-m" value="${h(mons)}" list="ev-mon-lista" placeholder="ex.: Guarda, Mastim"></label>
+    <label class="row small"><input type="checkbox" id="ev-p" ${e.p ? 'checked' : ''}> Envolve um personagem do grupo (sorteia quem)</label>
+    ${S.erro ? `<p class="small" role="alert" style="margin:0;color:var(--red)">${h(S.erro)}</p>` : ''}
+    <div class="row"><button class="btn pri" data-act="ev-salvar-ev" ${S.salvando ? 'disabled' : ''}>${S.salvando ? 'Salvando…' : 'Salvar evento'}</button><button class="btn" data-act="ev-cancelar">Cancelar</button></div>
+  </div>`;
+}
+function telaEditar(){
+  const c = catAtual();
+  const lista = `<datalist id="ev-mon-lista">${X.dados.MON.map(m => `<option value="${h(m.pt)}">`).join('')}</datalist>`;
+  const topo = `${catBotoes('ev-cat')}<div class="row"><button class="btn sm" data-act="ev-nova-cat">+ Nova categoria</button></div>`;
+  if (!c) return topo + lista;
+  const novo = S.edEv === '__novo';
+  return `${topo}${lista}
+    <div class="panel stack">
+      <div class="ev-catform">
+        <label class="f"><span class="small muted">Nome da categoria</span><input id="ev-cat-nome" value="${h(c.nome)}" maxlength="60"></label>
+        <label class="f"><span class="small muted">Fonte (de onde vieram os eventos)</span><input id="ev-cat-fonte" value="${h(c.fonte || '')}" maxlength="200"></label>
+        <div class="row"><button class="btn sm" data-act="ev-salvar-cat" ${S.salvando ? 'disabled' : ''}>Salvar nome e fonte</button>
+          ${c.base && c.editada ? `<button class="btn sm" data-act="ev-restaurar">${S.restaurar ? 'Confirmar: voltar ao original' : 'Voltar à lista original'}</button>` : ''}
+          <button class="btn sm danger" data-act="ev-apagar-cat">${S.apagarCat ? 'Confirmar: apagar a categoria' : 'Apagar categoria'}</button>
+          ${S.apagarCat || S.restaurar ? `<button class="btn sm" data-act="ev-nao">Cancelar</button>` : ''}</div>
+        ${S.restaurar ? `<p class="small" style="margin:0;color:var(--orange)">Os eventos que você mudou, criou ou apagou nesta categoria voltam a ser os da base.</p>` : ''}
+      </div>
+      <div class="row between"><h3 style="margin:0">${c.eventos.length} ${c.eventos.length === 1 ? 'evento' : 'eventos'}</h3><button class="btn sm pri" data-act="ev-novo">+ Novo evento</button></div>
+      ${novo ? `<div class="ev-item aberto">${formEvento(c, {t:'', x:'', m:[], p:false})}</div>` : ''}
+      <ol class="ev-lista">${c.eventos.map((e, i) => {
+        if (S.edEv === e.id) return `<li class="ev-item aberto"><span class="ev-n num">${i + 1}</span>${formEvento(c, e)}</li>`;
+        const mons = arr(e.m).map(en => { const m = monEn(en); return m ? m.pt : en; });
+        const arm = S.apagarEv === e.id;
+        return `<li class="ev-item"><span class="ev-n num">${i + 1}</span><div class="ev-corpo"><b>${h(e.t)}</b>
+          <p class="small" style="margin:2px 0 0">${h(e.x)}</p>
+          ${e.p || mons.length ? `<div class="row" style="gap:6px;margin-top:4px">${e.p ? '<span class="chip gold">Personagem do grupo</span>' : ''}${mons.map(m => `<span class="chip">${h(m)}</span>`).join('')}</div>` : ''}
+          <div class="row" style="margin-top:6px"><button class="btn sm" data-act="ev-usar" data-id="${h(e.id)}">Usar agora</button><button class="btn sm" data-act="ev-editar" data-id="${h(e.id)}">Editar</button>
+            <button class="btn sm danger" data-act="ev-apagar" data-id="${h(e.id)}">${arm ? 'Confirmar exclusão' : 'Apagar'}</button>${arm ? '<button class="btn sm" data-act="ev-nao">Cancelar</button>' : ''}</div></div></li>`;
+      }).join('')}</ol>
+    </div>`;
+}
+function view(){
+  let corpo;
+  if (!S.carregou) corpo = `<div class="panel muted">Carregando os eventos…</div>`;
+  else corpo = S.tela === 'editar' ? telaEditar() : telaSortear();
+  return `<div class="av ev">${sub()}${S.aviso ? `<p class="notice bad">${h(S.aviso)}</p>` : ''}<div class="stack">${corpo}</div></div>${X.pop()}`;
+}
+
+/* ---------- ações ---------- */
+const copiaCat = c => ({...c, eventos:c.eventos.map(e => ({...e, m:arr(e.m).slice()}))});
+const erroSalvar = err => 'Não foi possível salvar (' + ((err && err.code) || 'erro') + ').';
+async function salvarEvento(){
+  const c = catAtual(); if (!c) return;
+  const t = str($('#ev-t') && $('#ev-t').value), x = str($('#ev-x') && $('#ev-x').value);
+  const mTxt = str($('#ev-m') && $('#ev-m').value), nomes = mTxt.split(/[,;]/).map(str).filter(Boolean), p = !!($('#ev-p') && $('#ev-p').checked);
+  S.rasc = {t, x, m:mTxt, p};
+  if (!t || !x){ S.erro = 'Escreva o título e o que acontece.'; render(); return; }
+  const m = [], faltam = [];
+  nomes.forEach(n => { const mo = monDeNome(n); if (mo){ if (!m.includes(mo.en)) m.push(mo.en); } else faltam.push(n); });
+  if (faltam.length){ S.erro = 'Não achei estes monstros na Mesa: ' + faltam.join(', ') + '. Use o nome da lista (em português ou inglês).'; render(); return; }
+  const nc = copiaCat(c);
+  if (S.edEv === '__novo') nc.eventos.push({id:'e' + Date.now().toString(36), t, x, m, p});
+  else { const e = nc.eventos.find(y => y.id === S.edEv); if (!e) return; Object.assign(e, {t, x, m, p}); }
+  S.salvando = true; render();
+  try { await salvarCat(nc); S.edEv = null; S.erro = ''; S.rasc = null; M.toast('Evento salvo.'); } catch (err){ S.erro = erroSalvar(err); }
+  S.salvando = false; render();
+}
+document.addEventListener('click', async e => {
+  const t = e.target.closest('[data-act]'); if (!t || !M.abaEv()) return;
+  const a = t.dataset.act; if (!a.startsWith('ev-')) return;
+  if (a !== 'ev-apagar') S.apagarEv = null;
+  if (a !== 'ev-apagar-cat') S.apagarCat = false;
+  if (a !== 'ev-restaurar') S.restaurar = false;
+  if (a === 'ev-tela'){ S.tela = t.dataset.t; S.edEv = null; S.erro = ''; S.rasc = null; render(); window.scrollTo(0, 0); return; }
+  if (a === 'ev-cat'){ S.cat = t.dataset.c; S.edEv = null; S.erro = ''; S.rasc = null; S.aviso2 = ''; gravarLocal(); render(); return; }
+  if (a === 'ev-sortear'){ sortear(); render(); const c = document.querySelector('.ev-cartao'); if (c && c.scrollIntoView) c.scrollIntoView({block:'nearest', behavior:'smooth'}); return; }
+  if (a === 'ev-recomecar'){ S.usados[S.cat] = []; S.aviso2 = ''; gravarLocal(); render(); return; }
+  if (a === 'ev-limpar'){ S.hist = []; S.atual = null; S.aviso2 = ''; gravarLocal(); render(); return; }
+  if (a === 'ev-abrir'){ const x = S.hist.find(y => y.cat === t.dataset.c && y.id === t.dataset.id); mostrar(t.dataset.c, t.dataset.id, x ? x.alvo : undefined); render(); window.scrollTo(0, 0); return; }
+  if (a === 'ev-rolar' && S.atual){ const r = rolar(t.dataset.e); if (r){ S.atual.rol = {...S.atual.rol, [t.dataset.i]:r}; gravarLocal(); render(); } return; }
+  if (a === 'ev-alvo' && S.atual){ S.atual.alvo = alvoNovo(S.atual.alvo && S.atual.alvo.id); if (S.hist[0] && S.hist[0].id === S.atual.id) S.hist[0].alvo = S.atual.alvo; gravarLocal(); render(); return; }
+  if (a === 'ev-ficha'){ M.abrirFicha(t.dataset.id); return; }
+  if (a === 'ev-usar'){ mostrar(S.cat, t.dataset.id); S.tela = 'sortear'; render(); window.scrollTo(0, 0); return; }
+  if (a === 'ev-novo'){ S.edEv = '__novo'; S.erro = ''; S.rasc = null; render(); const i = $('#ev-t'); if (i) i.focus(); return; }
+  if (a === 'ev-editar'){ S.edEv = t.dataset.id; S.erro = ''; S.rasc = null; render(); const i = $('#ev-t'); if (i) i.focus(); return; }
+  if (a === 'ev-cancelar'){ S.edEv = null; S.erro = ''; S.rasc = null; render(); return; }
+  if (a === 'ev-nao'){ render(); return; }
+  if (a === 'ev-salvar-ev'){ await salvarEvento(); return; }
+  if (a === 'ev-apagar'){
+    if (S.apagarEv !== t.dataset.id){ S.apagarEv = t.dataset.id; render(); return; }
+    const c = catAtual(); S.apagarEv = null; if (!c) return;
+    const nc = copiaCat(c); nc.eventos = nc.eventos.filter(y => y.id !== t.dataset.id);
+    try { await salvarCat(nc); M.toast('Evento apagado.'); } catch (err){ M.toast(erroSalvar(err)); }
+    render(); return;
+  }
+  if (a === 'ev-salvar-cat'){
+    const c = catAtual(); if (!c) return; const nc = copiaCat(c);
+    nc.nome = str($('#ev-cat-nome') && $('#ev-cat-nome').value) || c.nome; nc.fonte = str($('#ev-cat-fonte') && $('#ev-cat-fonte').value);
+    S.salvando = true; render();
+    try { await salvarCat(nc); M.toast('Categoria salva.'); } catch (err){ M.toast(erroSalvar(err)); }
+    S.salvando = false; render(); return;
+  }
+  if (a === 'ev-nova-cat'){
+    const id = 'k' + Date.now().toString(36), ordem = Math.max(0, ...categorias().map(c => c.ordem)) + 1;
+    try { await salvarCat({id, nome:'Nova categoria', fonte:'', ordem, eventos:[]}); S.cat = id; S.edEv = '__novo'; gravarLocal(); M.toast('Categoria criada. Dê um nome e adicione eventos.'); }
+    catch (err){ M.toast(erroSalvar(err)); }
+    render(); const i = $('#ev-cat-nome'); if (i){ i.focus(); i.select(); } return;
+  }
+  if (a === 'ev-apagar-cat'){
+    if (!S.apagarCat){ S.apagarCat = true; render(); return; }
+    const c = catAtual(); S.apagarCat = false; if (!c) return;
+    try { await apagarDoc(c.id, c.base); delete S.usados[c.id]; S.cat = (categorias()[0] || {}).id || ''; gravarLocal(); M.toast('Categoria apagada.'); } catch (err){ M.toast(erroSalvar(err)); }
+    render(); return;
+  }
+  if (a === 'ev-restaurar'){
+    if (!S.restaurar){ S.restaurar = true; render(); return; }
+    const c = catAtual(); S.restaurar = false; if (!c) return;
+    try { await apagarDoc(c.id, false); M.toast('A categoria voltou à lista original.'); } catch (err){ M.toast(erroSalvar(err)); }
+    render(); return;
+  }
+});
+document.addEventListener('change', e => {
+  if (!M.abaEv()) return;
+  if (e.target.hasAttribute('data-ev-camp')){ S.camp = e.target.value; if (S.atual && S.atual.alvo){ /* o personagem sorteado continua; o próximo sai do grupo novo */ } gravarLocal(); render(); }
+});
+
+/* ---------- início ---------- */
+function start(db){
+  S.db = db || null; lerLocal();
+  if (!db){ const o = lerDemo(); S.docs = Object.fromEntries(Object.entries(o).map(([id, x]) => [id, {...x, id}])); S.carregou = true; return; }
+  const tm = setTimeout(() => { if (!S.carregou){ S.carregou = true; S.aviso = 'Ainda não consegui ler os eventos salvos. Por enquanto aparece a lista original.'; render(); } }, 10000);
+  db.collection('homebrew').onSnapshot(snap => {
+    const novo = {};
+    snap.docs.forEach(d => { const v = d.data(); if (v && v.tipo === 'eventos' && d.id.startsWith('ev-')){ const id = d.id.slice(3); novo[id] = {...v, id, eventos:arr(v.eventos)}; } });
+    S.docs = novo; if (!snap.metadata || !snap.metadata.fromCache){ clearTimeout(tm); S.carregou = true; S.aviso = ''; }
+    if (M.abaEv() && !S.edEv) render();
+  }, err => { clearTimeout(tm); S.carregou = true; S.aviso = 'Não consegui ler os eventos salvos (' + ((err && err.code) || 'erro') + '). Aparece a lista original.'; render(); });
+}
+return {view, start};
+})(MESA_API, {dados:MAS.av.dados, pop:() => MAS.pop()});
 
 /* ============ INICIALIZAÇÃO ============ */
 function subscribe(){
@@ -5905,6 +6279,7 @@ async function init(){
   MAS.start(S.mode==='db' ? db : null);
   AV.start(S.mode==='db' ? db : null);
   HB.start(S.mode==='db' ? db : null);
+  EV.start(S.mode==='db' ? db : null);
   subscribe(); render();
 }
 init();
