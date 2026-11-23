@@ -63,6 +63,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .card h2{font-size:17px;margin-bottom:2px}
 .muted{color:var(--muted)}
 .small{font-size:12px}
+.aviso-app{display:none;margin:6px 0 0;font-size:12px;line-height:1.4;color:var(--muted)}
+@media (pointer:coarse){.aviso-app{display:block}}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .between{justify-content:space-between}
 .hpbar{height:8px;background:#2c241d;border-radius:99px;overflow:hidden;margin:10px 0 6px}
@@ -1846,6 +1848,8 @@ const ICON = {
   livro:'<path d="M4 5c3-1.5 5.5-1.5 8 0v15c-2.5-1.5-5-1.5-8 0z"/><path d="M12 5c2.5-1.5 5-1.5 8 0v15c-3-1.5-5.5-1.5-8 0"/>',
   frasco:'<path d="M9 3h6M10 3v6L5 18a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/><path d="M7.5 14h9"/>'
 };
+/* aviso perto dos botões de enviar imagem: no app do Claude no celular o seletor de arquivos não abre (no navegador funciona). Só aparece em telas de toque. */
+const AVISO_APP = '<p class="aviso-app">No app do Claude no celular, este botão pode não abrir a galeria. Se acontecer, abra a Mesa pelo navegador do celular (Chrome, Samsung Internet ou Safari).</p>';
 const icon = k => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">${ICON[k]}</svg>`;
 function podeMestrar(){ return S.isOwner || (!!S.myId && S.mestres.includes(S.myId)); }
 function abas(){
@@ -2028,7 +2032,7 @@ function viewCreate(){
           <div><label>Imagem do personagem (opcional)</label>
             <div class="small muted" style="margin-bottom:8px">Uma foto ou ilustração. Ela é reduzida automaticamente antes de ser salva.</div>
             <div class="img-actions" style="justify-content:flex-start;margin:0"><label class="btn sm" style="color:var(--text);margin:0">${d.retrato?'Trocar imagem':'Escolher imagem'}<input type="file" accept="image/*" data-img="draft"></label>
-            ${d.retrato?`<button type="button" class="btn sm" data-act="img-clear-draft">Remover</button>`:''}</div></div>
+            ${d.retrato?`<button type="button" class="btn sm" data-act="img-clear-draft">Remover</button>`:''}</div>${AVISO_APP}</div>
         </div>
         <div class="cols2"><div class="f"><label>Nome do personagem</label><div class="row" style="gap:6px;flex-wrap:nowrap"><input data-f="nome" data-live value="${h(d.nome)}" maxlength="60" placeholder="Ex.: Lyra Ventoalto" style="flex:1;min-width:0"><button type="button" class="btn sm" data-act="nome-rand" title="Sugere um nome e sobrenome de acordo com a espécie escolhida">🎲 Sugerir nome</button></div></div>
         <div class="f"><label>Alinhamento (opcional)</label><input data-f="alinhamento" data-live value="${h(d.alinhamento)}" maxlength="40"></div></div>
@@ -2301,7 +2305,7 @@ function viewSheet(){
       <div class="stack">
         <div class="panel">${portrait(c.retrato, c.nome, 'lg')}
           ${ro?'':`<div class="img-actions"><label class="btn sm" style="color:var(--text);margin:0">${c.retrato?'Trocar imagem':'Enviar imagem'}<input type="file" accept="image/*" data-img="sheet"></label>
-          ${c.retrato?`<button class="btn sm" data-act="img-remove">${S.delArm==='img:'+c.id?'Confirmar remoção':'Remover'}</button>`:''}</div>
+          ${c.retrato?`<button class="btn sm" data-act="img-remove">${S.delArm==='img:'+c.id?'Confirmar remoção':'Remover'}</button>`:''}</div>${AVISO_APP}
           ${!S.isMaster?'<div class="small muted" style="margin-top:8px;text-align:center">A imagem entra na ficha depois que o mestre aprovar.</div>':''}`}
         </div>
         <div class="abil">${AB.map(a=>{ const s=d.saves.find(x=>x.a===a); return `<div class="ab"><div><div class="n">${AB_NOME[a]}</div><div class="s">valor ${c.atributos[a]} · <span class="dot ${s.prof?'on':''}"></span>resist. ${sg(s.v)}</div></div><div class="m">${sg(d.m[a])}</div></div>`; }).join('')}</div>
@@ -4265,7 +4269,7 @@ function imgBloco(m){
       <label class="btn sm">${S.imgBusy?'Enviando…':im?'Trocar imagem':'Adicionar imagem'}<input type="file" class="vh" accept="image/png,image/jpeg,image/webp,image/gif" data-img-mon="${h(m.en)}" ${S.imgBusy?'disabled':''}></label>
       ${im?`<button class="btn sm" data-act="img-jog">${im.jogadores?'Esconder dos jogadores':'Mostrar aos jogadores'}</button>
       <button class="btn sm danger" data-act="img-del">${S.imgDelArm?'Confirmar: remover':'Remover imagem'}</button>
-      ${im.jogadores?'<span class="badge gold">Os jogadores veem</span>':'<span class="badge">Só o mestre vê</span>'}`:'<span class="small muted">ou cole com Ctrl+V</span>'}</div>
+      ${im.jogadores?'<span class="badge gold">Os jogadores veem</span>':'<span class="badge">Só o mestre vê</span>'}`:'<span class="small muted">ou cole com Ctrl+V</span>'}</div>${AVISO_APP}
     ${S.imgMsg?`<p class="small" role="alert" style="margin:0;color:var(--red)">${S.imgMsg}</p>`:''}`;
   return fig + ctl;
 }
@@ -5660,7 +5664,7 @@ function novo(){
       ${mon ? `<label class="hb-check"><input type="checkbox" data-hbc="soChefe" ${f.soChefe ? 'checked' : ''}> <span><b>Só chefe de masmorra</b><br><span class="muted small">Ele nunca aparece como monstro comum: só pode ser sorteado para a sala do chefe.</span></span></label>` : ''}</div>
     <div class="panel"><h3>2. Material</h3>
       ${podeImg ? `<label class="hb-drop" id="hb-drop"><input type="file" data-hb-file multiple accept="${h(arr(S.lim.images.mediaTypes).join(',') || 'image/*')}">
-        <b>Escolher prints</b><span class="muted small">ou arraste para cá, ou cole com Ctrl+V · até ${max} imagens, podem ser partes da mesma ficha</span></label>
+        <b>Escolher prints</b><span class="muted small">ou arraste para cá, ou cole com Ctrl+V · até ${max} imagens, podem ser partes da mesma ficha</span></label>${AVISO_APP}
         ${f.imgs.length ? `<div class="hb-thumbs">${f.imgs.map((im, i) => `<figure><img src="${im.mini}" alt="Print ${i + 1}: ${h(im.nome)}"><button class="btn sm" data-act="hb-img-del" data-i="${i}" aria-label="Tirar o print ${i + 1}">✕</button><figcaption class="small muted">${i + 1}</figcaption></figure>`).join('')}</div>` : ''}`
         : `<p class="notice">${S.lim ? 'Esta visualização não consegue enviar imagens ao Claude.' : 'Prints ficam disponíveis quando o Claude estiver liberado nesta página.'} Cole o texto da ficha abaixo.</p>`}
       <div class="form" style="margin-top:12px">
@@ -5685,7 +5689,7 @@ function imgPainel(r){
       <p class="small muted" style="margin:0">${im.achou ? 'O Claude marcou onde está a ilustração. Se o recorte não ficou bom, ajuste as bordas.' : 'Ajuste as bordas para deixar só a ilustração.'}</p>`;
     queueMicrotask(desenharRecorte);
   } else if (im.modo === 'arquivo'){
-    corpo = `<label class="hb-drop"><input type="file" data-hb-imgfile accept="image/png,image/jpeg,image/webp,image/gif"><b>${im.arquivo ? 'Trocar arquivo' : 'Escolher imagem'}</b><span class="muted small">PNG, JPG ou WebP</span></label>${im.mini ? `<img class="hb-img" src="${im.mini}" alt="Imagem escolhida">` : ''}`;
+    corpo = `<label class="hb-drop"><input type="file" data-hb-imgfile accept="image/png,image/jpeg,image/webp,image/gif"><b>${im.arquivo ? 'Trocar arquivo' : 'Escolher imagem'}</b><span class="muted small">PNG, JPG ou WebP</span></label>${AVISO_APP}${im.mini ? `<img class="hb-img" src="${im.mini}" alt="Imagem escolhida">` : ''}`;
   } else if (im.modo === 'atual' && atual) corpo = `<img class="hb-img" src="${h(atual.src)}" alt="Imagem atual">`;
   return `<div class="panel"><h3>Imagem do monstro</h3><div class="stack" style="gap:10px">
     <div class="row" style="gap:6px">${atual ? bt('atual', 'Manter a atual') : ''}${prints.length ? bt('recorte', 'Recorte do print') : ''}${bt('arquivo', atual ? 'Trocar por outro arquivo' : 'Outro arquivo')}${bt('nenhuma', atual ? 'Remover a imagem' : 'Sem imagem')}</div>
