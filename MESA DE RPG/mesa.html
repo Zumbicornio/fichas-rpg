@@ -3121,6 +3121,12 @@ const ARMADILHAS = [
 /* armadilhas de corredor: mesmas armadilhas das salas, com gatilho de corredor */
 const GAT_CORR = {'Fosso com estacas':'Placa de pressão no meio do corredor','Dardos envenenados':'Fio esticado na altura do tornozelo','Lâmina pendular':'Ladrilho solto no corredor','Bloco que despenca':'Pedra solta no piso do corredor','Runa de fogo':'Pisar sobre a runa gravada no chão','Rede com sino':'Fio esticado no corredor','Jato de ácido':'Placa de pressão junto à parede','Rampa escorregadia':'Placa de pressão numa descida do corredor'};
 const ARMADILHAS_CORR = ARMADILHAS.filter(a=>GAT_CORR[a.nome]).map(a=>({...a, gat:GAT_CORR[a.nome]}));
+/* armadilhas do Homebrew (HB_ARM, preenchida por aplicarHb) entram no fim da lista dos temas escolhidos;
+   as marcadas "só nas salas" não vão para os corredores. Sem homebrew, as listas são as de sempre (masmorras iguais pela semente). */
+const armSalas = tema => { const base = TEMAS[tema].aberto ? ARMADILHAS_AB : ARMADILHAS, hb = HB_ARM.filter(a=>a.temas.includes(tema)); return hb.length ? base.concat(hb) : base; };
+const armCorrDe = tema => { const base = TEMAS[tema].aberto ? ARMADILHAS_AB : ARMADILHAS_CORR, hb = HB_ARM.filter(a=>!a.soSalas && a.temas.includes(tema)); return hb.length ? base.concat(hb) : base; };
+/* armadilha sorteada: gatilho próprio (ou o pedido), efeito com {sv}/{dano}/{leve}/{det} trocados; CD do homebrew, se tiver, senão a da faixa de nível */
+const armDe = (a, ctx, gat) => ({nome:a.nome, gatilho:gat || a.gat, efeito:fill(a.ef, ctx), det:a.cd || ctx.det, ...(a.des ? {desarmar:a.des} : {})});
 /* chance de armadilha por corredor, conforme a quantidade de tesouro (campo Itens mágicos); nunca mais de 1 a cada 5 corredores */
 const ARM_CORR = {poucos:.08, normal:.12, muitos:.16, fartura:.2};
 /* campo aberto: armadilhas, mistérios, descansos, pistas e comportamentos sem paredes nem portas */
@@ -3634,7 +3640,7 @@ function destinoPorta(m, dr, i){
   return -1;
 }
 function genSala(rng, d, i, tipo, nomeUsado){
-  const p=paramsAndar(d), T=TEMAS[p.tema], AB=!!T.aberto, ARM=AB?ARMADILHAS_AB:ARMADILHAS, t=tierOf(p.nivel), r=d.mapa.rooms[i], ns=d.mapa.rooms.length;
+  const p=paramsAndar(d), T=TEMAS[p.tema], AB=!!T.aberto, ARM=armSalas(p.tema), t=tierOf(p.nivel), r=d.mapa.rooms[i], ns=d.mapa.rooms.length;
   const US = usadosNa(d, i);
   const nsv = ns - (d.mapa.secretas||[]).length; /* {k} só aponta salas comuns */
   let k = rng.int(1,nsv); if (k===i+1) k = (k % nsv)+1;
@@ -3657,12 +3663,12 @@ function genSala(rng, d, i, tipo, nomeUsado){
   if (tipo==='combate'){ s.encontro = enc(false); if (rng.chance(.5)) s.tesouro = genTesouro(rng,t,'individual',p.itens,US); }
   if (tipo==='chefe'){ s.encontro = enc(true); s.tesouro = genTesouro(rng,t,'chefe',p.itens,US); }
   if (tipo==='entrada' && rng.chance(.35)){ s.encontro = buildEncounter(rng,p,0,false); s.encontro.comport = 'Vigiam a entrada; um deles corre para dar o alarme na '+(AB?'área ':'sala ')+Math.min(2,ns)+'.'; }
-  if (tipo==='armadilha'){ const a=rng.pick(ARM); s.armadilha = {nome:a.nome, gatilho:a.gat, efeito:fill(a.ef,ctx), det:ctx.det}; if (rng.chance(.35)) s.tesouro = genTesouro(rng,t,'individual',p.itens,US); }
-  if (tipo==='tesouro'){ s.tesouro = genTesouro(rng,t,'tesouro',p.itens,US); if (rng.chance(.4)){ const a=rng.pick(ARM); s.armadilha={nome:a.nome, gatilho:'Mexer no tesouro', efeito:fill(a.ef,ctx), det:ctx.det}; } }
+  if (tipo==='armadilha'){ s.armadilha = armDe(rng.pick(ARM), ctx); if (rng.chance(.35)) s.tesouro = genTesouro(rng,t,'individual',p.itens,US); }
+  if (tipo==='tesouro'){ s.tesouro = genTesouro(rng,t,'tesouro',p.itens,US); if (rng.chance(.4)) s.armadilha = armDe(rng.pick(ARM), ctx, 'Mexer no tesouro'); }
   if (tipo==='secreta'){
     s.tesouro = genTesouro(rng,t,'tesouro',p.itens,US);
     if (rng.chance(.6)){ s.encontro = buildEncounter(rng,p,1,false); s.encontro.comport = fill(rng.pick(SECRETA_GUARDA), ctx); }
-    else if (rng.chance(.5)){ const a=rng.pick(ARM); s.armadilha={nome:a.nome, gatilho:'Mexer no tesouro', efeito:fill(a.ef,ctx), det:ctx.det}; }
+    else if (rng.chance(.5)) s.armadilha = armDe(rng.pick(ARM), ctx, 'Mexer no tesouro');
   }
   const sec = portasSecretas(d.mapa);
   if (tipo==='misterio'){
@@ -3705,12 +3711,12 @@ function genArmCorr(d, rng){
   const n = Math.min(max, Math.floor(N*(ARM_CORR[d.params.itens] ?? ARM_CORR.normal) + rng.f()));
   if (n<=0) return [];
   const cand = rng.shuffle(info.filter(o=>o.livres.length)).sort((a,b)=>(b.livres.length>=3)-(a.livres.length>=3));
-  const lista = T.aberto ? ARMADILHAS_AB : ARMADILHAS_CORR, usadas = new Set();
+  const lista = armCorrDe(d.params.tema), usadas = new Set();
   return cand.slice(0,n).map(o=>{
     const c = o.livres[Math.floor(o.livres.length/2)], x=c%W, y=(c-x)/W;
     const livres = lista.filter(z=>!usadas.has(z.nome)), a = rng.pick(livres.length ? livres : lista); usadas.add(a.nome);
     const nv = paramsAndar(d).nivel, ctx = {det:TDC.det[t-1], sv:TDC.sv[t-1], dano:danoArm(nv,'forte'), leve:danoArm(nv,'leve'), k:o.salas[o.salas.length-1]+1, n:d.vilao, pouco:''};
-    return {x, y, salas:o.salas.map(s=>s+1), nome:a.nome, gatilho:a.gat, efeito:fill(a.ef, ctx), det:ctx.det};
+    return {x, y, salas:o.salas.map(s=>s+1), ...armDe(a, ctx)};
   });
 }
 function genErrantes(rng, d){
@@ -4072,7 +4078,7 @@ function armCorrHtml(d, i){
   const tit = lista.length>1 ? (ab ? 'Armadilhas nas trilhas' : 'Armadilhas nos corredores') : (ab ? 'Armadilha na trilha' : 'Armadilha no corredor');
   return `<div class="panel"><h3>${tit}</h3>
     ${lista.map(a=>`<div style="margin-top:8px"><b>${h(a.nome)}</b> <span class="muted small">· ${W_.c} ${lig(a.salas)}</span>
-      <dl class="kv" style="margin-top:6px"><dt>Gatilho</dt><dd>${h(a.gatilho)}</dd><dt>Perceber</dt><dd>Sabedoria (Percepção) CD ${a.det}</dd><dt>Desarmar</dt><dd>${ab?'Sabedoria (Sobrevivência) ou Destreza (Prestidigitação)':'Destreza (Prestidigitação) com Ferramentas de Ladrão'} CD ${a.det}</dd></dl>
+      <dl class="kv" style="margin-top:6px"><dt>Gatilho</dt><dd>${h(a.gatilho)}</dd><dt>Perceber</dt><dd>Sabedoria (Percepção) CD ${a.det}</dd><dt>Desarmar</dt><dd>${a.desarmar ? h(a.desarmar)+' (CD '+a.det+')' : (ab?'Sabedoria (Sobrevivência) ou Destreza (Prestidigitação)':'Destreza (Prestidigitação) com Ferramentas de Ladrão')+' CD '+a.det}</dd></dl>
       <p style="margin:6px 0 0">${h(a.efeito)}</p></div>`).join('')}
     <p class="muted small" style="margin:8px 0 0">Os jogadores não veem este quadro nem o ▲ no mapa.</p></div>`;
 }
@@ -4140,7 +4146,7 @@ function roomView(d, i, edit){
     ${portasSec.length ? `<div class="panel"><h3>Porta secreta</h3><ul class="plain">${portasSec.map(t=>`<li>${h(t)}</li>`).join('')}</ul><p class="muted small" style="margin:6px 0 0">Sabedoria (Percepção) CD ${det} para encontrar. Os jogadores não veem este quadro.</p></div>` : ''}
     ${encHtml(s.encontro, edit ? verCtl('enc', i, s.verEnc) : '', !edit)}
     ${grupoHtml(d, edit)}
-    ${s.armadilha?`<div class="panel"><h3>Armadilha · ${h(s.armadilha.nome)}</h3><dl class="kv"><dt>Gatilho</dt><dd>${h(s.armadilha.gatilho)}</dd><dt>Perceber</dt><dd>Sabedoria (Percepção) CD ${s.armadilha.det}</dd><dt>Desarmar</dt><dd>Destreza (Prestidigitação) com Ferramentas de Ladrão CD ${s.armadilha.det}</dd></dl><p style="margin:8px 0 0">${h(s.armadilha.efeito)}</p></div>`:''}
+    ${s.armadilha?`<div class="panel"><h3>Armadilha · ${h(s.armadilha.nome)}</h3><dl class="kv"><dt>Gatilho</dt><dd>${h(s.armadilha.gatilho)}</dd><dt>Perceber</dt><dd>Sabedoria (Percepção) CD ${s.armadilha.det}</dd><dt>Desarmar</dt><dd>${s.armadilha.desarmar ? h(s.armadilha.desarmar)+' (CD '+s.armadilha.det+')' : 'Destreza (Prestidigitação) com Ferramentas de Ladrão CD '+s.armadilha.det}</dd></dl><p style="margin:8px 0 0">${h(s.armadilha.efeito)}</p></div>`:''}
     ${s.misterio?`<div class="panel"><h3>Mistério</h3><p class="prose" style="margin:0">${h(s.misterio)}</p></div>`:''}
     ${s.descanso?`<div class="panel"><h3>Lugar seguro</h3><p style="margin:0">${h(s.descanso)}</p></div>`:''}
     ${s.pista?`<div class="panel"><h3>Pista</h3><p style="margin:0">${h(s.pista)}</p></div>`:''}
@@ -4552,18 +4558,23 @@ function reset(){ S.sel = null; S.openPub = null; S.pop = null; S.popEdit = fals
 const autores = () => Object.values(S.lista).map(d=>d.autor).filter(x=>typeof x==='string');
 /* ===== homebrew (aba Homebrew): monstros e itens do mestre entram nas listas da Mesa =====
    Coleção "homebrew": monstro {tipo, pt, en, cr, soChefe, temas[], ficha{tipo,ca,pv,desl,ini,atr,info,linhas}, fonte{nome,pagina,link}}
-   item {tipo, nome, raridade, categoria, sint, linhas[], tesouro, fonte}. Nomes que já existem na Mesa ficam de fora. */
-const HB_MON = {}, HB_ITEM = {};
+   item {tipo, nome, raridade, categoria, sint, linhas[], tesouro, fonte}
+   armadilha {tipo, nome, original, gatilho, efeito, cd, temas[], soSalas, fonte}. Nomes que já existem na Mesa ficam de fora. */
+const HB_MON = {}, HB_ITEM = {}, HB_ARM = [];
+const nomesArm = () => [...ARMADILHAS, ...ARMADILHAS_AB].map(a=>a.nome);
 let hbFeitos = [];
 const fonteTxt = f => { f = f || {}; const n = String(f.nome||'').trim() || 'não informada'; return n + (String(f.pagina||'').trim() ? ', p. '+String(f.pagina).trim() : ''); };
 function hbConflito(tipo, nomes, ignorar){
   const lim = s => String(s||'').trim().toLowerCase();
   const alvo = nomes.map(lim).filter(Boolean);
   if (tipo==='item') return alvo.some(n => Object.keys(ITEM_DESC).some(k => lim(k)===n && !(HB_ITEM[k] && HB_ITEM[k].id===ignorar)));
+  if (tipo==='armadilha') return alvo.some(n => nomesArm().some(k => lim(k)===n) || HB_ARM.some(a => lim(a.nome)===n && a.id!==ignorar));
   return alvo.some(n => MON.some(m => (lim(m.pt)===n || lim(m.en)===n) && !(m.hb && HB_MON[m.en] && HB_MON[m.en].id===ignorar)));
 }
 function aplicarHb(lista){
+  HB_ARM.length = 0;
   hbFeitos.forEach(x => {
+    if (x.arm) return;
     if (x.m){ const i = MON.indexOf(x.m); if (i>=0) MON.splice(i,1); delete MON_BY_EN[x.m.en]; delete MON_BY_PT[x.m.pt]; delete STATS[x.m.en]; delete HB_MON[x.m.en]; }
     else { if (x.rar){ const L = ITENS[x.rar], i = L.indexOf(x.nome); if (i>=0) L.splice(i,1); } delete ITEM_DESC[x.nome]; delete HB_ITEM[x.nome]; }
   });
@@ -4586,6 +4597,12 @@ function aplicarHb(lista){
       const entra = rar && x.tesouro!==false && ITENS[rar];
       if (entra) ITENS[rar].push(nome);
       HB_ITEM[nome] = x; hbFeitos.push({nome, rar:entra?rar:null});
+    } else if (x.tipo==='armadilha'){
+      const nome = String(x.nome||'').trim(), ef = String(x.efeito||'').trim(), lim = s => s.toLowerCase();
+      const temas = (Array.isArray(x.temas)?x.temas:[]).filter(t=>TEMAS[t]), cd = String(x.cd??'').trim();
+      if (!nome || !ef || !temas.length || nomesArm().some(k=>lim(k)===lim(nome)) || HB_ARM.some(a=>lim(a.nome)===lim(nome))) continue;
+      HB_ARM.push({id:x.id, nome, gat:String(x.gatilho||'').trim() || 'A critério do mestre', ef, cd:/^\d{1,2}$/.test(cd) ? +cd : null, des:String(x.desarmar||'').trim(), temas, soSalas:!!x.soSalas});
+      hbFeitos.push({arm:x.id});
     }
   }
   remontarMonRe();
@@ -4612,10 +4629,13 @@ const hb = {
   img: {pode:podeImg, de:en=>{ const x = imgDe(en); return x ? {src:imgSrc(x), jogadores:!!x.jogadores} : null; }, recortar:recortarImg, salvar:salvarImg, remover:removerImg, jogadores:imgJogadores, mover:moverImg, erro:erroImg},
   temas: () => Object.fromEntries(Object.entries(TEMAS).map(([k,t])=>[k,{nome:t.nome, aberto:!!t.aberto}])),
   CRXP, RAR_NOME, conflito: hbConflito, fonteTxt,
-  ativo: id => hbFeitos.some(f => f.m ? HB_MON[f.m.en] && HB_MON[f.m.en].id===id : HB_ITEM[f.nome] && HB_ITEM[f.nome].id===id),
+  ativo: id => hbFeitos.some(f => f.arm ? f.arm===id : f.m ? HB_MON[f.m.en] && HB_MON[f.m.en].id===id : HB_ITEM[f.nome] && HB_ITEM[f.nome].id===id),
   aplicar(lista){ aplicarHb(lista); if (!S.popEdit) render(); },
   /* monstros ou itens que já estão em masmorras salvas (para avisar antes de excluir) */
-  emUso(x){ const nome = x.tipo==='item' ? x.nome : x.en; let n = 0;
+  emUso(x){ const nome = x.tipo==='monstro' ? x.en : x.nome; let n = 0;
+    if (x.tipo==='armadilha'){
+      Object.values(S.lista).forEach(d => (d.andares||[d]).forEach(A => { (A.salas||[]).forEach(s => { if (s.armadilha && s.armadilha.nome===nome) n++; }); (A.armCorr||[]).forEach(a => { if (a.nome===nome) n++; }); }));
+      return n; }
     Object.values(S.lista).forEach(d => (d.andares||[d]).forEach(A => (A.salas||[]).forEach(s => {
       if (x.tipo==='item' ? s.tesouro && s.tesouro.itens.some(it=>itemNome(it)===nome) : s.encontro && s.encontro.grupos.some(g=>g.en===nome)) n++; })));
     return n; }
@@ -5424,7 +5444,10 @@ const ATR = ['FOR', 'DES', 'CON', 'INT', 'SAB', 'CAR'];
 const mod = v => { const m = Math.floor((v - 10) / 2); return (m >= 0 ? '+' : '−') + Math.abs(m); };
 const DEMO = 'mesa-homebrew-demo';
 
-const formVazio = () => ({tipo:'monstro', imgs:[], texto:'', link:'', fonte:'', soChefe:false});
+const formVazio = () => ({tipo:'monstro', imgs:[], texto:'', link:'', fonte:'', soChefe:false, soSalas:false});
+const UM = {monstro:'um monstro', item:'um item mágico', armadilha:'uma armadilha'};
+const ORDEM = {monstro:0, item:1, armadilha:2};
+const nomeDe = x => x.tipo === 'monstro' ? x.pt : x.nome;
 const S = {tela:'catalogo', filtro:'todos', lista:{}, carregou:false, aviso:'', msg:'', erro:'', db:null, sample:null, lim:null,
   form:formVazio(), ger:null, rev:null, apagar:null, aberto:null, salvando:false};
 
@@ -5465,22 +5488,26 @@ function prompt(f){
   if (str(f.texto)) mat.push('- Texto colado pelo mestre:\n"""\n' + str(f.texto).slice(0, 12000) + '\n"""');
   if (str(f.link)) mat.push('- Link de onde o conteúdo veio (você não consegue abrir; use só o endereço como pista da fonte): ' + str(f.link).slice(0, 500));
   if (str(f.fonte)) mat.push('- Fonte informada pelo mestre: ' + str(f.fonte).slice(0, 200));
-  const mon = f.tipo === 'monstro';
+  const mon = f.tipo === 'monstro', arm = f.tipo === 'armadilha';
   const imgFmt = mon && f.imgs.length ? ', "imagem": {"print": 1, "caixa": [0.05, 0.1, 0.5, 0.6]}' : '';
-  const formato = mon
+  const fonteFmt = '"fonte": {"nome": "", "pagina": "", "certeza": "alta, media ou baixa", "como": "uma frase dizendo como identificou"}';
+  const formato = arm
+    ? `{"nome": "nome em português", "original": "nome original, como está na fonte", "gatilho": "o que dispara a armadilha", "efeito": "o que acontece, com salvaguardas, CDs e dano", "cd": "CD para perceber e desarmar, só o número, ou vazio", "desarmar": "como desarmar, se a fonte disser, ou vazio", "temas": ["chaves dos temas"], ${fonteFmt}}`
+    : mon
     ? `{"pt": "nome em português", "en": "nome original, como está na fonte", "cr": "Nível de Desafio só com o número: 0, 1/8, 1/4, 1/2, 1 a 30", "tipo": "Tamanho, tipo e tendência, ex.: Médio Morto-Vivo, Neutro e Mau", "ca": "16", "pv": "45 (6d10+12)", "desl": "9 m, voo 18 m", "ini": "+2 (12), ou vazio", "atr": [FOR, DES, CON, INT, SAB, CAR], "info": [["Salvaguardas", "..."], ["Perícias", "..."], ["Resistências", "..."], ["Imunidades", "..."], ["Sentidos", "..."], ["Idiomas", "..."]], "linhas": ["— Traços —", "Nome do traço. Texto.", "— Ações —", "Ataque Múltiplo. Texto.", "Nome do ataque. Corpo a corpo +5 (1,5 m). Acerto: 8 (1d10+3) Perfurante."], "temas": ["chaves dos temas"], "fonte": {"nome": "", "pagina": "", "certeza": "alta, media ou baixa", "como": "uma frase dizendo como identificou"}${imgFmt}}`
     : `{"nome": "nome em português", "original": "nome original, como está na fonte", "raridade": "comum, incomum, rara, muitorara, lendaria ou artefato", "categoria": "ex.: Arma (espada longa), Anel, Poção, Item Maravilhoso", "sint": "Exige sintonia (e por quem), ou vazio se não exige", "linhas": ["Nome da propriedade. Texto.", "..."], "fonte": {"nome": "", "pagina": "", "certeza": "alta, media ou baixa", "como": "uma frase dizendo como identificou"}}`;
-  return `Você ajuda um mestre de D&D 5ª edição (regras de 2024) a cadastrar ${mon ? 'um monstro' : 'um item mágico'} na Mesa de RPG dele.
+  const oQue = mon ? 'a ficha do monstro' : arm ? 'a descrição da armadilha' : 'a descrição do item', ser = mon ? 'a ficha de um monstro' : arm ? 'uma armadilha' : 'um item';
+  return `Você ajuda um mestre de D&D 5ª edição (regras de 2024) a cadastrar ${UM[f.tipo] || UM.monstro} na Mesa de RPG dele.
 
 ## Material
 ${mat.join('\n')}
 
 ## O que fazer
-1. Leia ${mon ? 'a ficha do monstro' : 'a descrição do item'} e transcreva todo o conteúdo em português do Brasil, com os termos oficiais do D&D 2024 em português (Classe de Armadura, Pontos de Vida, Vantagem, Ação Bônus, Reação, salvaguarda, Força, Destreza, Constituição, Inteligência, Sabedoria, Carisma, condições e tipos de dano com inicial maiúscula). Converta distâncias para metros (5 pés = 1,5 m).
-2. Não invente nada. Se uma parte estiver ilegível ou cortada, escreva [ilegível] no lugar. Se o material não for ${mon ? 'a ficha de um monstro' : 'um item'}, devolva os campos vazios e explique em fonte.como.
-3. Cada linha de "linhas" começa com o nome do traço, ação ou propriedade seguido de ponto. Use linhas de seção como "— Ações —" quando a ficha tiver seções.
+1. Leia ${oQue} e transcreva todo o conteúdo em português do Brasil, com os termos oficiais do D&D 2024 em português (Classe de Armadura, Pontos de Vida, Vantagem, Ação Bônus, Reação, salvaguarda, Força, Destreza, Constituição, Inteligência, Sabedoria, Carisma, condições e tipos de dano com inicial maiúscula). Converta distâncias para metros (5 pés = 1,5 m).
+2. Não invente nada. Se uma parte estiver ilegível ou cortada, escreva [ilegível] no lugar. Se o material não for ${ser}, devolva os campos vazios e explique em fonte.como.
+3. ${arm ? 'Em "efeito", escreva em texto corrido o que acontece (salvaguardas, CDs, dano, condições, duração). Em "cd", ponha só o número da CD para perceber ou desarmar a armadilha; as outras CDs ficam no efeito. Se a fonte disser como desarmar, explique em "desarmar".' : 'Cada linha de "linhas" começa com o nome do traço, ação ou propriedade seguido de ponto. Use linhas de seção como "— Ações —" quando a ficha tiver seções.'}
 4. Fonte: diga de onde o conteúdo foi tirado (livro, suplemento, revista, site ou autor). Use logotipos, rodapé, número de página, marca d'água, o estilo da diagramação, o endereço do link e o seu conhecimento. Dê a página só se ela aparecer no material ou se você tiver certeza. Se não conseguir identificar, use o nome do site do link; sem link, escreva "Homebrew (fonte não identificada)" com certeza baixa. Se o mestre informou a fonte, use a dele.
-${mon ? `5. Escolha de 1 a 3 temas de masmorra em que esta criatura faz sentido, usando só estas chaves: ${temas}.\n` : ''}${mon && f.imgs.length ? `6. Se algum print mostrar a ilustração da criatura (desenho ou arte), diga em qual print ela está (1 = o primeiro) e a caixa que contém só a ilustração, em frações da largura e da altura da imagem: [esquerda, topo, direita, base], de 0 a 1. Sem ilustração, use "print": 0.\n` : ''}
+${mon || arm ? `5. Escolha de 1 a 3 temas de masmorra em que ${mon ? 'esta criatura' : 'esta armadilha'} faz sentido, usando só estas chaves: ${temas}.\n` : ''}${mon && f.imgs.length ? `6. Se algum print mostrar a ilustração da criatura (desenho ou arte), diga em qual print ela está (1 = o primeiro) e a caixa que contém só a ilustração, em frações da largura e da altura da imagem: [esquerda, topo, direita, base], de 0 a 1. Sem ilustração, use "print": 0.\n` : ''}
 ## Formato
 Responda somente com um objeto JSON, sem texto antes ou depois:
 ${formato}`;
@@ -5503,6 +5530,11 @@ function imgInicial(r, f){
 }
 function revDe(r, f){
   r = r && typeof r === 'object' ? r : {};
+  if (f.tipo === 'armadilha'){
+    const cd = str(r.cd).match(/\d{1,2}/);
+    return {tipo:'armadilha', nome:str(r.nome), original:str(r.original), gatilho:str(r.gatilho), efeito:str(r.efeito), cd:cd ? cd[0] : '', desarmar:str(r.desarmar),
+      temas:arr(r.temas).map(str).filter(t => X.temas()[t]).slice(0, 4), soSalas:!!f.soSalas, fonte:fonteDe(r, f)};
+  }
   if (f.tipo === 'monstro'){
     const atr = arr(r.atr).length === 6 ? arr(r.atr).map(v => str(v)) : ['', '', '', '', '', ''];
     const temas = arr(r.temas).map(str).filter(t => X.temas()[t]).slice(0, 4);
@@ -5569,6 +5601,15 @@ function montar(r){
   const fonte = {nome:str(r.fonte.nome), pagina:str(r.fonte.pagina), link:str(r.fonte.link), certeza:r.fonte.certeza || '', como:str(r.fonte.como)};
   if (!fonte.nome) return {erro:'Diga de onde veio o conteúdo (campo Fonte). Se foi você que criou, escreva "Criação do mestre".'};
   if (fonte.link && !/^https?:\/\//i.test(fonte.link)) return {erro:'O link precisa começar com http:// ou https://.'};
+  if (r.tipo === 'armadilha'){
+    const nome = str(r.nome), cd = str(r.cd);
+    if (!nome) return {erro:'Dê um nome à armadilha.'};
+    if (!str(r.efeito)) return {erro:'Escreva o efeito da armadilha (o que acontece quando ela dispara).'};
+    if (cd && !(/^\d{1,2}$/.test(cd) && +cd >= 1 && +cd <= 30)) return {erro:'A CD precisa ser um número de 1 a 30, ou fique vazia (aí a Mesa usa a CD do nível do grupo).'};
+    if (!r.temas.length) return {erro:'Escolha pelo menos um tema de masmorra.'};
+    if (X.conflito('armadilha', [nome], r.id)) return {erro:'Já existe uma armadilha chamada "' + h(nome) + '" na Mesa. Mude o nome.'};
+    return {doc:{tipo:'armadilha', nome, original:str(r.original), gatilho:str(r.gatilho), efeito:str(r.efeito), cd, desarmar:str(r.desarmar), temas:r.temas, soSalas:!!r.soSalas, fonte}};
+  }
   if (r.tipo === 'monstro'){
     const pt = str(r.pt), en = str(r.en) || pt;
     if (!pt) return {erro:'Dê um nome em português ao monstro.'};
@@ -5592,14 +5633,16 @@ async function salvar(){
   const r = S.rev; if (!r || S.salvando) return;
   const m = montar(r); if (m.erro){ S.erro = m.erro; render(); return; }
   const antigo = r.id && S.lista[r.id];
-  const id = r.id || (r.tipo === 'item' ? 'i-' : 'm-') + slug(r.tipo === 'item' ? m.doc.nome : m.doc.pt) + '-' + Math.random().toString(36).slice(2, 6);
+  const id = r.id || ({item:'i-', armadilha:'a-'}[r.tipo] || 'm-') + slug(nomeDe(m.doc)) + '-' + Math.random().toString(36).slice(2, 6);
   const doc = {...m.doc, autor:(antigo && antigo.autor) || M.myId() || '', criado:(antigo && antigo.criado) || Date.now(), atualizado:Date.now()};
   S.salvando = true; S.erro = ''; render();
   try {
     await salvarDoc(id, doc);
     const avisoImg = doc.tipo === 'monstro' ? await gravarImg(r, antigo, doc) : '';
-    const nome = doc.tipo === 'item' ? doc.nome : doc.pt;
-    S.msg = h(nome) + (antigo ? ' foi atualizado.' : ' entrou no catálogo.') + ' ' + (doc.tipo === 'monstro'
+    const nome = nomeDe(doc), temasTxt = () => arr(doc.temas).map(t => (X.temas()[t] || {}).nome || t).join(', ');
+    S.msg = h(nome) + (antigo ? (doc.tipo === 'armadilha' ? ' foi atualizada.' : ' foi atualizado.') : ' entrou no catálogo.') + ' ' + (doc.tipo === 'armadilha'
+      ? 'Ela já pode aparecer ' + (doc.soSalas ? 'nas salas' : 'nas salas e nos corredores') + ' das masmorras novas de ' + temasTxt() + '.'
+      : doc.tipo === 'monstro'
       ? (doc.soChefe ? 'Ele só aparece como chefe, nas masmorras novas de ' : 'Ele já pode aparecer nas masmorras novas de ') + doc.temas.map(t => (X.temas()[t] || {}).nome || t).join(', ') + '.'
       : (doc.tesouro ? 'Ele já pode aparecer nos tesouros das masmorras novas (itens ' + RAR_PL[doc.raridade] + ').' : 'Ele fica só no catálogo, fora dos tesouros sorteados.')) + avisoImg;
     S.rev = null; S.form = formVazio(); S.tela = 'catalogo'; S.aberto = id;
@@ -5627,7 +5670,8 @@ function editar(id){
         infoTxt:arr(f.info).map(i => i[0] + ': ' + i[1]).join('\n'), linhasTxt:arr(f.linhas).join('\n')}, fonte:{...(x.fonte || {})}};
     const a = X.img.de(x.en || x.pt);
     S.rev.img = {modo:a ? 'atual' : 'nenhuma', i:0, caixa:[0, 0, 1, 1], achou:false, jogadores:!!(a && a.jogadores), arquivo:null};
-  } else S.rev = {id, tipo:'item', nome:x.nome || '', original:x.original || '', raridade:x.raridade || '', categoria:x.categoria || '', sint:x.sint || '', linhasTxt:arr(x.linhas).join('\n'), tesouro:x.tesouro !== false, fonte:{...(x.fonte || {})}};
+  } else if (x.tipo === 'armadilha') S.rev = {id, tipo:'armadilha', nome:x.nome || '', original:x.original || '', gatilho:x.gatilho || '', efeito:x.efeito || '', cd:str(x.cd), desarmar:x.desarmar || '', temas:arr(x.temas).slice(), soSalas:!!x.soSalas, fonte:{...(x.fonte || {})}};
+  else S.rev = {id, tipo:'item', nome:x.nome || '', original:x.original || '', raridade:x.raridade || '', categoria:x.categoria || '', sint:x.sint || '', linhasTxt:arr(x.linhas).join('\n'), tesouro:x.tesouro !== false, fonte:{...(x.fonte || {})}};
   S.rev.fonte = {nome:'', pagina:'', link:'', certeza:'', como:'', ...S.rev.fonte};
   S.tela = 'revisar'; S.erro = ''; S.msg = ''; render(); window.scrollTo(0, 0);
 }
@@ -5640,6 +5684,10 @@ function manual(){
 /* ---------- telas ---------- */
 const fonteHtml = f => { f = f || {}; const t = h(X.fonteTxt(f)); return f.link ? `<a href="${h(f.link)}" target="_blank" rel="noopener noreferrer">${t} ↗</a>` : t; };
 function fichaHtml(x){
+  if (x.tipo === 'armadilha') return `<div class="ficha">${x.original && x.original !== x.nome ? `<p class="muted small">${h(x.original)}</p>` : ''}
+    <p><b>Gatilho.</b> ${h(x.gatilho || 'A critério do mestre.')}</p>
+    <p><b>Perceber e desarmar.</b> ${x.cd ? 'CD ' + h(x.cd) : 'CD da faixa de nível do grupo'}${x.desarmar ? '. ' + h(x.desarmar) : ''}</p>
+    <p><b>Efeito.</b> ${h(x.efeito)}</p></div>`;
   if (x.tipo === 'item') return `<div class="ficha">${x.categoria || x.sint ? `<p class="muted small">${h([x.categoria, x.sint || 'Não exige sintonia'].filter(Boolean).join(' · '))}</p>` : ''}${arr(x.linhas).map(linhaHtml).join('')}</div>`;
   const f = x.ficha || {}, im = X.img.de(x.en || x.pt);
   const kv = [['CA', f.ca], ['PV', f.pv], ['Deslocamento', f.desl], ['Iniciativa', f.ini]].filter(([, v]) => str(v));
@@ -5652,21 +5700,25 @@ function fichaHtml(x){
 const linhaHtml = l => { l = String(l); if (/^—.*—$/.test(l.trim())) return `<h5>${h(l.replace(/—/g, '').trim())}</h5>`; const i = l.indexOf('. '); return i > 0 && i < 70 ? `<p><b>${h(l.slice(0, i + 1))}</b> ${h(l.slice(i + 2))}</p>` : `<p>${h(l)}</p>`; };
 const sub = n => `<div class="subnav" role="group" aria-label="Homebrew">${[['catalogo', 'Catálogo' + (n ? ' (' + n + ')' : '')], ['novo', 'Adicionar']].map(([k, l]) => { const on = S.tela === k || (k === 'novo' && S.tela === 'revisar'); return `<button class="${on ? 'on' : ''}" data-act="hb-${k}" ${on ? 'aria-current="page"' : ''}>${h(l)}</button>`; }).join('')}</div>`;
 function catalogo(){
-  const todos = Object.values(S.lista).sort((a, b) => (a.tipo === b.tipo ? 0 : a.tipo === 'monstro' ? -1 : 1) || String(a.pt || a.nome).localeCompare(String(b.pt || b.nome), 'pt'));
-  const nM = todos.filter(x => x.tipo === 'monstro').length, nI = todos.length - nM;
-  const lista = todos.filter(x => S.filtro === 'todos' || (S.filtro === 'monstros' ? x.tipo === 'monstro' : x.tipo === 'item'));
+  const todos = Object.values(S.lista).sort((a, b) => ((ORDEM[a.tipo] ?? 9) - (ORDEM[b.tipo] ?? 9)) || String(nomeDe(a) || '').localeCompare(String(nomeDe(b) || ''), 'pt'));
+  const nM = todos.filter(x => x.tipo === 'monstro').length, nI = todos.filter(x => x.tipo === 'item').length, nA = todos.filter(x => x.tipo === 'armadilha').length;
+  const FT = {monstros:'monstro', itens:'item', armadilhas:'armadilha'};
+  const lista = todos.filter(x => S.filtro === 'todos' || x.tipo === FT[S.filtro]);
   if (!S.carregou) return `<div class="panel muted">Carregando o catálogo…</div>`;
-  if (!todos.length) return `<div class="panel empty"><h2>Nenhum homebrew ainda</h2><p>Mande prints de uma ficha de monstro ou de um item mágico (de um livro, de um site ou criado por você). O Claude lê, traduz e anota de onde veio; você revisa e salva. Os monstros entram no sorteio das masmorras dos temas escolhidos, e os itens nos tesouros.</p><button class="btn pri" data-act="hb-novo">Adicionar o primeiro</button></div>`;
+  if (!todos.length) return `<div class="panel empty"><h2>Nenhum homebrew ainda</h2><p>Mande prints de uma ficha de monstro, de um item mágico ou de uma armadilha (de um livro, de um site ou criado por você). O Claude lê, traduz e anota de onde veio; você revisa e salva. Os monstros e as armadilhas entram no sorteio das masmorras dos temas escolhidos, e os itens nos tesouros.</p><button class="btn pri" data-act="hb-novo">Adicionar o primeiro</button></div>`;
   const temas = X.temas();
   const card = x => {
-    const mon = x.tipo === 'monstro', nome = mon ? x.pt : x.nome, ok = X.ativo(x.id), aberto = S.aberto === x.id, arm = S.apagar === x.id;
+    const mon = x.tipo === 'monstro', ehArm = x.tipo === 'armadilha', nome = nomeDe(x), ok = X.ativo(x.id), aberto = S.aberto === x.id, arm = S.apagar === x.id;
     const uso = arm ? X.emUso(x) : 0;
-    const linha2 = mon ? `Monstro · ND ${h(x.cr)} · ${fmt(X.CRXP[x.cr])} XP${x.en && x.en !== x.pt ? ' · ' + h(x.en) : ''}` : `Item mágico · ${h((RARS[x.raridade] || '').toLowerCase())}${x.categoria ? ' · ' + h(x.categoria) : ''}`;
+    const linha2 = mon ? `Monstro · ND ${h(x.cr)} · ${fmt(X.CRXP[x.cr])} XP${x.en && x.en !== x.pt ? ' · ' + h(x.en) : ''}`
+      : ehArm ? `Armadilha · ${x.cd ? 'CD ' + h(x.cd) : 'CD pelo nível'}${x.original && x.original !== x.nome ? ' · ' + h(x.original) : ''}`
+      : `Item mágico · ${h((RARS[x.raridade] || '').toLowerCase())}${x.categoria ? ' · ' + h(x.categoria) : ''}`;
     const chips = [];
-    if (!ok) chips.push('<span class="chip bad" title="Outro monstro ou item da Mesa já usa este nome">Fora das listas: nome repetido</span>');
+    if (!ok) chips.push(`<span class="chip bad" title="Outro monstro, item ou armadilha da Mesa já usa este nome">${ehArm ? 'Fora do sorteio: nome repetido ou campos faltando' : 'Fora das listas: nome repetido'}</span>`);
     if (mon && x.soChefe) chips.push('<span class="chip gold">Só chefe de masmorra</span>');
-    if (mon) arr(x.temas).forEach(t => chips.push(`<span class="chip">${h((temas[t] || {}).nome || t)}</span>`));
-    if (!mon) chips.push(x.tesouro !== false ? '<span class="chip">Nos tesouros</span>' : '<span class="chip">Fora dos tesouros</span>');
+    if (ehArm) chips.push(x.soSalas ? '<span class="chip gold">Só nas salas</span>' : '<span class="chip">Salas e corredores</span>');
+    if (mon || ehArm) arr(x.temas).forEach(t => chips.push(`<span class="chip">${h((temas[t] || {}).nome || t)}</span>`));
+    if (x.tipo === 'item') chips.push(x.tesouro !== false ? '<span class="chip">Nos tesouros</span>' : '<span class="chip">Fora dos tesouros</span>');
     return `<div class="panel hb-card" data-busca="${h(norm([nome, x.en, x.original, x.fonte && x.fonte.nome].join(' ')))}">
       <div class="row between" style="align-items:flex-start"><div style="min-width:0"><h3>${h(nome)}</h3><p class="muted small" style="margin:2px 0 0">${linha2}</p></div></div>
       ${chips.length ? `<div class="row" style="gap:6px">${chips.join('')}</div>` : ''}
@@ -5674,22 +5726,24 @@ function catalogo(){
       ${aberto ? fichaHtml(x) : ''}
       <div class="row"><button class="btn sm" data-act="hb-ver" data-id="${h(x.id)}" aria-expanded="${aberto}">${aberto ? 'Fechar ficha' : 'Ver ficha'}</button><button class="btn sm" data-act="hb-editar" data-id="${h(x.id)}">Editar</button>
         <button class="btn sm danger" data-act="hb-excluir" data-id="${h(x.id)}">${arm ? 'Confirmar exclusão' : 'Excluir'}</button>${arm ? `<button class="btn sm" data-act="hb-nao">Cancelar</button>` : ''}</div>
-      ${arm ? `<p class="small" style="margin:0;color:var(--orange)">${uso ? `Está em ${uso} ${uso === 1 ? 'sala' : 'salas'} de masmorras salvas: o nome continua lá, mas a ficha some.` : 'Sai do catálogo e das masmorras novas.'}</p>` : ''}
+      ${arm ? `<p class="small" style="margin:0;color:var(--orange)">${uso ? (ehArm ? `Está em ${uso} ${uso === 1 ? 'lugar' : 'lugares'} de masmorras salvas: lá ela continua como está; só sai das masmorras novas.` : `Está em ${uso} ${uso === 1 ? 'sala' : 'salas'} de masmorras salvas: o nome continua lá, mas a ficha some.`) : 'Sai do catálogo e das masmorras novas.'}</p>` : ''}
     </div>`;
   };
   const f = (k, l) => `<button class="btn sm${S.filtro === k ? ' pri' : ''}" data-act="hb-filtro" data-f="${k}" aria-pressed="${S.filtro === k}">${l}</button>`;
-  return `<div class="row between"><div class="row" style="gap:6px">${f('todos', 'Todos (' + todos.length + ')')}${f('monstros', 'Monstros (' + nM + ')')}${f('itens', 'Itens (' + nI + ')')}</div>
+  return `<div class="row between"><div class="row" style="gap:6px">${f('todos', 'Todos (' + todos.length + ')')}${f('monstros', 'Monstros (' + nM + ')')}${f('itens', 'Itens (' + nI + ')')}${f('armadilhas', 'Armadilhas (' + nA + ')')}</div>
       <div class="f" style="flex:1 1 200px;max-width:320px"><input id="hb-busca" data-hb-busca type="search" placeholder="Buscar por nome ou fonte" aria-label="Buscar no catálogo"></div></div>
     ${lista.length ? `<div class="cards" id="hb-cards">${lista.map(card).join('')}</div><p class="muted small" id="hb-nada" hidden>Nada encontrado.</p>` : '<p class="muted">Nada nesta categoria.</p>'}`;
 }
+const soSalasChk = (k, on) => `<label class="hb-check"><input type="checkbox" data-hbc="${k}" ${on ? 'checked' : ''}> <span><b>Só nas salas</b><br><span class="muted small">Ela nunca é sorteada nos corredores (nem nas trilhas, nos temas ao ar livre): só dentro das salas.</span></span></label>`;
 function novo(){
   const f = S.form, mon = f.tipo === 'monstro', podeImg = !!(S.lim && S.lim.images), max = podeImg && S.lim.images.maxCount ? S.lim.images.maxCount : 5;
   const semIa = !S.sample || S.negado;
   const tipoBtn = (k, l) => `<button class="btn${f.tipo === k ? ' pri' : ''}" data-act="hb-tipo" data-t="${k}" aria-pressed="${f.tipo === k}">${l}</button>`;
   const ger = S.ger ? `<div class="row" aria-live="polite"><span class="st run">Lendo</span><span class="small muted" id="hb-chars">${S.ger.chars ? fmt(S.ger.chars) + ' caracteres recebidos' : 'o Claude está lendo a ficha…'}</span><button class="btn sm" data-act="hb-parar">Parar</button></div>` : '';
   return `<div class="stack">
-    <div class="panel"><h3>1. O que você vai adicionar</h3><div class="row">${tipoBtn('monstro', 'Monstro')}${tipoBtn('item', 'Item mágico')}</div>
-      ${mon ? `<label class="hb-check"><input type="checkbox" data-hbc="soChefe" ${f.soChefe ? 'checked' : ''}> <span><b>Só chefe de masmorra</b><br><span class="muted small">Ele nunca aparece como monstro comum: só pode ser sorteado para a sala do chefe.</span></span></label>` : ''}</div>
+    <div class="panel"><h3>1. O que você vai adicionar</h3><div class="row">${tipoBtn('monstro', 'Monstro')}${tipoBtn('item', 'Item mágico')}${tipoBtn('armadilha', 'Armadilha')}</div>
+      ${mon ? `<label class="hb-check"><input type="checkbox" data-hbc="soChefe" ${f.soChefe ? 'checked' : ''}> <span><b>Só chefe de masmorra</b><br><span class="muted small">Ele nunca aparece como monstro comum: só pode ser sorteado para a sala do chefe.</span></span></label>` : ''}
+      ${f.tipo === 'armadilha' ? soSalasChk('soSalas', f.soSalas) : ''}</div>
     <div class="panel"><h3>2. Material</h3>
       ${podeImg ? `<label class="hb-drop" id="hb-drop"><input type="file" data-hb-file multiple accept="${h(arr(S.lim.images.mediaTypes).join(',') || 'image/*')}">
         <b>Escolher prints</b><span class="muted small">ou arraste para cá, ou cole com Ctrl+V · até ${max} imagens, podem ser partes da mesma ficha</span></label>${AVISO_APP}
@@ -5743,7 +5797,18 @@ function revisar(){
   const ta = (path, rot, val, hint) => `<div class="f wide"><label for="hb-r-${path}">${rot}</label><textarea id="hb-r-${path}" data-hbf="${path}" rows="${Math.min(18, Math.max(4, String(val).split('\n').length + 1))}">${h(val)}</textarea>${hint ? `<span class="hint">${hint}</span>` : ''}</div>`;
   const cert = fo.certeza ? `<span class="chip ${fo.certeza === 'alta' ? 'ok' : fo.certeza === 'media' ? 'warn' : 'bad'}">certeza ${fo.certeza === 'media' ? 'média' : fo.certeza}</span>` : '';
   const temas = X.temas();
-  const corpo = mon ? `<div class="panel"><h3>Monstro</h3><div class="form">
+  const temaBtns = () => `<div class="row" style="gap:6px">${Object.entries(temas).map(([k, t]) => `<button class="btn sm${r.temas.includes(k) ? ' pri' : ''}" data-act="hb-tema" data-t="${k}" aria-pressed="${r.temas.includes(k)}">${h(t.nome)}</button>`).join('')}</div>`;
+  const corpo = r.tipo === 'armadilha' ? `<div class="panel"><h3>Armadilha</h3><div class="form">
+      ${inp('nome', 'Nome em português *', r.nome, 'half')}${inp('original', 'Nome original', r.original, 'half')}
+      ${ta('gatilho', 'Gatilho', r.gatilho, 'O que dispara a armadilha. Nas armadilhas sobre um tesouro, a Mesa troca por "Mexer no tesouro".')}
+      ${ta('efeito', 'Efeito *', r.efeito, 'O que acontece quando dispara. Para o dano e as CDs acompanharem o nível do grupo, escreva {dano} (dano forte), {leve} (dano leve) e {sv} (CD da salvaguarda); números escritos ficam fixos.')}
+      <div class="f"><label for="hb-r-cd">CD para perceber e desarmar</label><input id="hb-r-cd" data-hbf="cd" inputmode="numeric" value="${h(r.cd)}" placeholder="pelo nível"><span class="hint">Vazio = CD da faixa de nível do grupo.</span></div>
+      ${inp('desarmar', 'Como desarmar (opcional)', r.desarmar, 'half')}
+    </div></div>
+    <div class="panel"><h3>Onde ela aparece</h3>
+      <p class="small muted" style="margin:0 0 8px">Temas de masmorra *</p>${temaBtns()}
+      ${soSalasChk('rev.soSalas', r.soSalas)}</div>`
+    : mon ? `<div class="panel"><h3>Monstro</h3><div class="form">
       ${inp('pt', 'Nome em português *', r.pt, 'half')}${inp('en', 'Nome original', r.en, 'half')}
       <div class="f"><label for="hb-r-cr">Nível de Desafio *</label><select id="hb-r-cr" data-hbf="cr"><option value="">—</option>${CRS.map(c => `<option value="${c}"${c === r.cr ? ' selected' : ''}>ND ${c} (${fmt(X.CRXP[c])} XP)</option>`).join('')}</select></div>
       ${inp('ficha.tipo', 'Tamanho, tipo e tendência', r.ficha.tipo, 'half')}${inp('ficha.ca', 'Classe de Armadura', r.ficha.ca)}
