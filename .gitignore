@@ -1,6 +1,6 @@
 REFERENCIAS/*.pdf
-GERADOR DE MASMORRAS/ferramentas-srd/raw.txt
-GERADOR DE MASMORRAS/ferramentas-srd/srd.json
-GERADOR DE MASMORRAS/ferramentas-srd/srd-line.js
-GERADOR DE MASMORRAS/ferramentas-srd/traducao.json
-GERADOR DE MASMORRAS/ferramentas-srd/magias.json
+FERRAMENTAS/srd/raw.txt
+FERRAMENTAS/srd/srd.json
+FERRAMENTAS/srd/srd-line.js
+FERRAMENTAS/srd/traducao.json
+FERRAMENTAS/srd/magias.json
