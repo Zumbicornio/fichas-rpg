@@ -3728,13 +3728,15 @@ function genArmCorr(d, rng){
     return {x, y, salas:o.salas.map(s=>s+1), ...armDe(a, ctx)};
   });
 }
-/* perigos do Homebrew em todos os andares: s.perigo nas salas e perCorr (A.perCorr) nos corredores. Só roda se houver perigo do tema. */
+/* perigos do Homebrew em todos os andares: s.perigo nas salas e perCorr (A.perCorr) nos corredores. Só roda se houver perigo do tema;
+   em cada andar só entram os perigos cuja faixa de níveis inclui o nível daquele andar. */
 function genPerigos(d, rng){
-  const lista = HB_PER.filter(x=>x.temas.includes(d.params.tema)); if (!lista.length) return;
-  const corr = lista.filter(x=>!x.soSalas);
+  const doTema = HB_PER.filter(x=>x.temas.includes(d.params.tema)); if (!doTema.length) return;
   (d.andares || [d]).forEach((A, k)=>{
     if (d.andares) irAndar(d, k);
-    const p = paramsAndar(d), t = tierOf(p.nivel), m = d.mapa, W = m.w, ns = m.rooms.length, nsv = ns - (m.secretas||[]).length;
+    const p = paramsAndar(d), lista = doTema.filter(x=>p.nivel>=x.min && p.nivel<=x.max), corr = lista.filter(x=>!x.soSalas);
+    if (!lista.length){ A.perCorr = []; d.perCorr = A.perCorr; return; }
+    const t = tierOf(p.nivel), m = d.mapa, W = m.w, ns = m.rooms.length, nsv = ns - (m.secretas||[]).length;
     const ctx = kk => ({det:TDC.det[t-1], sv:TDC.sv[t-1], dano:danoArm(p.nivel,'forte'), leve:danoArm(p.nivel,'leve'), k:kk, n:d.vilao, pouco:''});
     const maxS = Math.max(1, Math.floor(ns/4)); let n = 0;
     rng.shuffle(d.salas.map((_,i)=>i)).forEach(i=>{
@@ -4615,7 +4617,7 @@ const autores = () => Object.values(S.lista).map(d=>d.autor).filter(x=>typeof x=
    Coleção "homebrew": monstro {tipo, pt, en, cr, soChefe, temas[], ficha{tipo,ca,pv,desl,ini,atr,info,linhas}, fonte{nome,pagina,link}}
    item {tipo, nome, raridade, categoria, sint, linhas[], tesouro, fonte}
    armadilha {tipo, nome, original, gatilho, efeito, cd, temas[], soSalas, fonte}
-   perigo {tipo, nome, original, descricao, efeito, cd, lidar, temas[], soSalas, fonte}. Nomes que já existem na Mesa ficam de fora. */
+   perigo {tipo, nome, original, descricao, efeito, cd, lidar, temas[], soSalas, nivelMin, nivelMax (vazio = 1 e 20), fonte}. Nomes que já existem na Mesa ficam de fora. */
 const HB_MON = {}, HB_ITEM = {}, HB_ARM = [], HB_PER = [];
 const nomesArm = () => [...ARMADILHAS, ...ARMADILHAS_AB].map(a=>a.nome);
 let hbFeitos = [];
@@ -4664,7 +4666,9 @@ function aplicarHb(lista){
       const nome = String(x.nome||'').trim(), ef = String(x.efeito||'').trim(), lim = s => s.toLowerCase();
       const temas = (Array.isArray(x.temas)?x.temas:[]).filter(t=>TEMAS[t]), cd = String(x.cd??'').trim();
       if (!nome || !ef || !temas.length || HB_PER.some(a=>lim(a.nome)===lim(nome))) continue;
-      HB_PER.push({id:x.id, nome, desc:String(x.descricao||'').trim(), ef, cd:/^d{1,2}$/.test(cd) ? +cd : null, lidar:String(x.lidar||'').trim(), temas, soSalas:!!x.soSalas});
+      const nv = (v, d) => { const n = parseInt(v, 10); return n>=1 && n<=20 ? n : d; }, min = nv(x.nivelMin, 1), max = nv(x.nivelMax, 20);
+      if (min > max) continue;
+      HB_PER.push({id:x.id, nome, desc:String(x.descricao||'').trim(), ef, cd:/^\d{1,2}$/.test(cd) ? +cd : null, lidar:String(x.lidar||'').trim(), temas, soSalas:!!x.soSalas, min, max});
       hbFeitos.push({per:x.id});
     }
   }
@@ -5555,7 +5559,7 @@ function prompt(f){
   const imgFmt = mon && f.imgs.length ? ', "imagem": {"print": 1, "caixa": [0.05, 0.1, 0.5, 0.6]}' : '';
   const fonteFmt = '"fonte": {"nome": "", "pagina": "", "certeza": "alta, media ou baixa", "como": "uma frase dizendo como identificou"}';
   const formato = per
-    ? `{"nome": "nome em português", "original": "nome original, como está na fonte", "descricao": "como o perigo é e onde costuma estar", "efeito": "o que acontece com quem entra em contato, com salvaguardas, CDs e dano", "cd": "CD para perceber ou identificar o perigo, só o número, ou vazio", "lidar": "como evitar, destruir ou remover, se a fonte disser, ou vazio", "temas": ["chaves dos temas"], ${fonteFmt}}`
+    ? `{"nome": "nome em português", "original": "nome original, como está na fonte", "descricao": "como o perigo é e onde costuma estar", "efeito": "o que acontece com quem entra em contato, com salvaguardas, CDs e dano", "cd": "CD para perceber ou identificar o perigo, só o número, ou vazio", "lidar": "como evitar, destruir ou remover, se a fonte disser, ou vazio", "niveis": [nível mínimo, nível máximo do grupo, de 1 a 20], "temas": ["chaves dos temas"], ${fonteFmt}}`
     : arm
     ? `{"nome": "nome em português", "original": "nome original, como está na fonte", "gatilho": "o que dispara a armadilha", "efeito": "o que acontece, com salvaguardas, CDs e dano", "cd": "CD para perceber e desarmar, só o número, ou vazio", "desarmar": "como desarmar, se a fonte disser, ou vazio", "temas": ["chaves dos temas"], ${fonteFmt}}`
     : mon
@@ -5570,7 +5574,7 @@ ${mat.join('\n')}
 ## O que fazer
 1. Leia ${oQue} e transcreva todo o conteúdo em português do Brasil, com os termos oficiais do D&D 2024 em português (Classe de Armadura, Pontos de Vida, Vantagem, Ação Bônus, Reação, salvaguarda, Força, Destreza, Constituição, Inteligência, Sabedoria, Carisma, condições e tipos de dano com inicial maiúscula). Converta distâncias para metros (5 pés = 1,5 m).
 2. Não invente nada. Se uma parte estiver ilegível ou cortada, escreva [ilegível] no lugar. Se o material não for ${ser}, devolva os campos vazios e explique em fonte.como.
-3. ${per ? 'Em "descricao", diga como o perigo é (aparência, onde fica). Em "efeito", escreva em texto corrido o que acontece (salvaguardas, CDs, dano, condições, duração). Em "cd", ponha só o número da CD para perceber ou identificar o perigo; as outras CDs ficam no efeito. Se a fonte disser como evitar, destruir ou remover (ex.: fogo, luz do sol, frio), explique em "lidar".' : arm ? 'Em "efeito", escreva em texto corrido o que acontece (salvaguardas, CDs, dano, condições, duração). Em "cd", ponha só o número da CD para perceber ou desarmar a armadilha; as outras CDs ficam no efeito. Se a fonte disser como desarmar, explique em "desarmar".' : 'Cada linha de "linhas" começa com o nome do traço, ação ou propriedade seguido de ponto. Use linhas de seção como "— Ações —" quando a ficha tiver seções.'}
+3. ${per ? 'Em "descricao", diga como o perigo é (aparência, onde fica). Em "efeito", escreva em texto corrido o que acontece (salvaguardas, CDs, dano, condições, duração). Em "cd", ponha só o número da CD para perceber ou identificar o perigo; as outras CDs ficam no efeito. Se a fonte disser como evitar, destruir ou remover (ex.: fogo, luz do sol, frio), explique em "lidar". Em "niveis", ponha a faixa de níveis do grupo para a qual a fonte indica o perigo (se ela disser como escalar para níveis mais altos, vá até 20; se não disser nada, use [1, 20]); se houver tabela de níveis mais altos, inclua os valores dela no efeito.' : arm ? 'Em "efeito", escreva em texto corrido o que acontece (salvaguardas, CDs, dano, condições, duração). Em "cd", ponha só o número da CD para perceber ou desarmar a armadilha; as outras CDs ficam no efeito. Se a fonte disser como desarmar, explique em "desarmar".' : 'Cada linha de "linhas" começa com o nome do traço, ação ou propriedade seguido de ponto. Use linhas de seção como "— Ações —" quando a ficha tiver seções.'}
 4. Fonte: diga de onde o conteúdo foi tirado (livro, suplemento, revista, site ou autor). Use logotipos, rodapé, número de página, marca d'água, o estilo da diagramação, o endereço do link e o seu conhecimento. Dê a página só se ela aparecer no material ou se você tiver certeza. Se não conseguir identificar, use o nome do site do link; sem link, escreva "Homebrew (fonte não identificada)" com certeza baixa. Se o mestre informou a fonte, use a dele.
 ${mon || arm || per ? `5. Escolha de 1 a 3 temas de masmorra em que ${mon ? 'esta criatura' : arm ? 'esta armadilha' : 'este perigo'} faz sentido, usando só estas chaves: ${temas}.\n` : ''}${mon && f.imgs.length ? `6. Se algum print mostrar a ilustração da criatura (desenho ou arte), diga em qual print ela está (1 = o primeiro) e a caixa que contém só a ilustração, em frações da largura e da altura da imagem: [esquerda, topo, direita, base], de 0 a 1. Sem ilustração, use "print": 0.\n` : ''}
 ## Formato
@@ -5602,7 +5606,9 @@ function revDe(r, f){
   }
   if (f.tipo === 'perigo'){
     const cd = str(r.cd).match(/\d{1,2}/);
+    const nv = arr(r.niveis).map(v => parseInt(v, 10)).filter(n => n >= 1 && n <= 20);
     return {tipo:'perigo', nome:str(r.nome), original:str(r.original), descricao:str(r.descricao), efeito:str(r.efeito), cd:cd ? cd[0] : '', lidar:str(r.lidar),
+      nivelMin:nv.length === 2 ? String(Math.min(...nv)) : '', nivelMax:nv.length === 2 ? String(Math.max(...nv)) : '',
       temas:arr(r.temas).map(str).filter(t => X.temas()[t]).slice(0, 4), soSalas:!!f.soSalas, fonte:fonteDe(r, f)};
   }
   if (f.tipo === 'monstro'){
@@ -5685,9 +5691,12 @@ function montar(r){
     if (!nome) return {erro:'Dê um nome ao perigo.'};
     if (!str(r.efeito)) return {erro:'Escreva o efeito do perigo (o que acontece com quem entra em contato).'};
     if (cd && !(/^\d{1,2}$/.test(cd) && +cd >= 1 && +cd <= 30)) return {erro:'A CD precisa ser um número de 1 a 30, ou fique vazia (aí a Mesa usa a CD do nível do grupo).'};
+    const nMin = str(r.nivelMin), nMax = str(r.nivelMax), okN = v => !v || (/^\d{1,2}$/.test(v) && +v >= 1 && +v <= 20);
+    if (!okN(nMin) || !okN(nMax)) return {erro:'Os níveis precisam ser números de 1 a 20 (ou fiquem vazios: de 1 até 20).'};
+    if ((+nMin || 1) > (+nMax || 20)) return {erro:'O nível mínimo não pode ser maior que o máximo.'};
     if (!r.temas.length) return {erro:'Escolha pelo menos um tema de masmorra.'};
     if (X.conflito('perigo', [nome], r.id)) return {erro:'Já existe um perigo chamado "' + h(nome) + '" no catálogo. Mude o nome.'};
-    return {doc:{tipo:'perigo', nome, original:str(r.original), descricao:str(r.descricao), efeito:str(r.efeito), cd, lidar:str(r.lidar), temas:r.temas, soSalas:!!r.soSalas, fonte}};
+    return {doc:{tipo:'perigo', nome, original:str(r.original), descricao:str(r.descricao), efeito:str(r.efeito), cd, lidar:str(r.lidar), nivelMin:nMin ? +nMin : 1, nivelMax:nMax ? +nMax : 20, temas:r.temas, soSalas:!!r.soSalas, fonte}};
   }
   if (r.tipo === 'monstro'){
     const pt = str(r.pt), en = str(r.en) || pt;
@@ -5720,7 +5729,7 @@ async function salvar(){
     const avisoImg = doc.tipo === 'monstro' ? await gravarImg(r, antigo, doc) : '';
     const nome = nomeDe(doc), temasTxt = () => arr(doc.temas).map(t => (X.temas()[t] || {}).nome || t).join(', ');
     S.msg = h(nome) + (antigo ? (doc.tipo === 'armadilha' ? ' foi atualizada.' : ' foi atualizado.') : ' entrou no catálogo.') + ' ' + (doc.tipo === 'armadilha' || doc.tipo === 'perigo'
-      ? (doc.tipo === 'perigo' ? 'Ele' : 'Ela') + ' já pode aparecer ' + (doc.soSalas ? 'nas salas' : 'nas salas e nos corredores') + ' das masmorras novas de ' + temasTxt() + '.'
+      ? (doc.tipo === 'perigo' ? 'Ele' : 'Ela') + ' já pode aparecer ' + (doc.soSalas ? 'nas salas' : 'nas salas e nos corredores') + ' das masmorras novas de ' + temasTxt() + (doc.tipo === 'perigo' && niveisTxt(doc) !== 'qualquer nível' ? ', para grupos de ' + niveisTxt(doc) : '') + '.'
       : doc.tipo === 'monstro'
       ? (doc.soChefe ? 'Ele só aparece como chefe, nas masmorras novas de ' : 'Ele já pode aparecer nas masmorras novas de ') + doc.temas.map(t => (X.temas()[t] || {}).nome || t).join(', ') + '.'
       : (doc.tesouro ? 'Ele já pode aparecer nos tesouros das masmorras novas (itens ' + RAR_PL[doc.raridade] + ').' : 'Ele fica só no catálogo, fora dos tesouros sorteados.')) + avisoImg;
@@ -5750,7 +5759,7 @@ function editar(id){
     const a = X.img.de(x.en || x.pt);
     S.rev.img = {modo:a ? 'atual' : 'nenhuma', i:0, caixa:[0, 0, 1, 1], achou:false, jogadores:!!(a && a.jogadores), arquivo:null};
   } else if (x.tipo === 'armadilha') S.rev = {id, tipo:'armadilha', nome:x.nome || '', original:x.original || '', gatilho:x.gatilho || '', efeito:x.efeito || '', cd:str(x.cd), desarmar:x.desarmar || '', temas:arr(x.temas).slice(), soSalas:!!x.soSalas, fonte:{...(x.fonte || {})}};
-  else if (x.tipo === 'perigo') S.rev = {id, tipo:'perigo', nome:x.nome || '', original:x.original || '', descricao:x.descricao || '', efeito:x.efeito || '', cd:str(x.cd), lidar:x.lidar || '', temas:arr(x.temas).slice(), soSalas:!!x.soSalas, fonte:{...(x.fonte || {})}};
+  else if (x.tipo === 'perigo') S.rev = {id, tipo:'perigo', nome:x.nome || '', original:x.original || '', descricao:x.descricao || '', efeito:x.efeito || '', cd:str(x.cd), lidar:x.lidar || '', nivelMin:str(x.nivelMin), nivelMax:str(x.nivelMax), temas:arr(x.temas).slice(), soSalas:!!x.soSalas, fonte:{...(x.fonte || {})}};
   else S.rev = {id, tipo:'item', nome:x.nome || '', original:x.original || '', raridade:x.raridade || '', categoria:x.categoria || '', sint:x.sint || '', linhasTxt:arr(x.linhas).join('\n'), tesouro:x.tesouro !== false, fonte:{...(x.fonte || {})}};
   S.rev.fonte = {nome:'', pagina:'', link:'', certeza:'', como:'', ...S.rev.fonte};
   S.tela = 'revisar'; S.erro = ''; S.msg = ''; render(); window.scrollTo(0, 0);
@@ -5771,6 +5780,7 @@ function fichaHtml(x){
   if (x.tipo === 'perigo') return `<div class="ficha">${x.original && x.original !== x.nome ? `<p class="muted small">${h(x.original)}</p>` : ''}
     ${x.descricao ? `<p><b>Como é.</b> ${h(x.descricao)}</p>` : ''}
     <p><b>Perceber.</b> ${x.cd ? 'CD ' + h(x.cd) : 'CD da faixa de nível do grupo'}</p>
+    <p><b>Níveis.</b> ${niveisTxt(x)}</p>
     <p><b>Efeito.</b> ${h(x.efeito)}</p>${x.lidar ? `<p><b>Como lidar.</b> ${h(x.lidar)}</p>` : ''}</div>`;
   if (x.tipo === 'item') return `<div class="ficha">${x.categoria || x.sint ? `<p class="muted small">${h([x.categoria, x.sint || 'Não exige sintonia'].filter(Boolean).join(' · '))}</p>` : ''}${arr(x.linhas).map(linhaHtml).join('')}</div>`;
   const f = x.ficha || {}, im = X.img.de(x.en || x.pt);
@@ -5781,6 +5791,7 @@ function fichaHtml(x){
     ${arr(f.info).map(([k, v]) => `<p><b>${h(k)}.</b> ${h(v)}</p>`).join('')}
     ${arr(f.linhas).map(linhaHtml).join('')}</div>`;
 }
+const niveisTxt = x => { const a = +x.nivelMin || 1, b = +x.nivelMax || 20; return a === 1 && b === 20 ? 'qualquer nível' : a === b ? 'nível ' + a : 'níveis ' + a + ' a ' + b; };
 const linhaHtml = l => { l = String(l); if (/^—.*—$/.test(l.trim())) return `<h5>${h(l.replace(/—/g, '').trim())}</h5>`; const i = l.indexOf('. '); return i > 0 && i < 70 ? `<p><b>${h(l.slice(0, i + 1))}</b> ${h(l.slice(i + 2))}</p>` : `<p>${h(l)}</p>`; };
 const sub = n => `<div class="subnav" role="group" aria-label="Homebrew">${[['catalogo', 'Catálogo' + (n ? ' (' + n + ')' : '')], ['novo', 'Adicionar']].map(([k, l]) => { const on = S.tela === k || (k === 'novo' && S.tela === 'revisar'); return `<button class="${on ? 'on' : ''}" data-act="hb-${k}" ${on ? 'aria-current="page"' : ''}>${h(l)}</button>`; }).join('')}</div>`;
 function catalogo(){
@@ -5800,6 +5811,7 @@ function catalogo(){
     const chips = [];
     if (!ok) chips.push(`<span class="chip bad" title="Outro monstro, item, armadilha ou perigo da Mesa já usa este nome">${ehArm || ehPer ? 'Fora do sorteio: nome repetido ou campos faltando' : 'Fora das listas: nome repetido'}</span>`);
     if (mon && x.soChefe) chips.push('<span class="chip gold">Só chefe de masmorra</span>');
+    if (ehPer) chips.push(`<span class="chip gold">${h(niveisTxt(x).replace(/^./, c => c.toUpperCase()))}</span>`);
     if (ehArm || ehPer) chips.push(x.soSalas ? '<span class="chip gold">Só nas salas</span>' : '<span class="chip">Salas e corredores</span>');
     if (mon || ehArm || ehPer) arr(x.temas).forEach(t => chips.push(`<span class="chip">${h((temas[t] || {}).nome || t)}</span>`));
     if (x.tipo === 'item') chips.push(x.tesouro !== false ? '<span class="chip">Nos tesouros</span>' : '<span class="chip">Fora dos tesouros</span>');
@@ -5890,6 +5902,9 @@ function revisar(){
       ${inp('lidar', 'Como lidar (opcional)', r.lidar, 'half')}
     </div></div>
     <div class="panel"><h3>Onde ele aparece</h3>
+      <div class="form" style="margin-bottom:10px"><div class="f"><label for="hb-r-nivelMin">Nível do grupo: de</label><input id="hb-r-nivelMin" data-hbf="nivelMin" inputmode="numeric" value="${h(r.nivelMin)}" placeholder="1"></div>
+        <div class="f"><label for="hb-r-nivelMax">até</label><input id="hb-r-nivelMax" data-hbf="nivelMax" inputmode="numeric" value="${h(r.nivelMax)}" placeholder="20"></div>
+        <span class="hint" style="flex-basis:100%">Ele só é sorteado quando o nível do grupo (ou do andar) está nesta faixa. Vazio = de 1 até 20.</span></div>
       <p class="small muted" style="margin:0 0 8px">Temas de masmorra *</p>${temaBtns()}
       ${soSalasChk('rev.soSalas', r.soSalas, true)}</div>`
     : r.tipo === 'armadilha' ? `<div class="panel"><h3>Armadilha</h3><div class="form">
