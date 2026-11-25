@@ -4677,6 +4677,7 @@ function aplicarHb(lista){
 /* usado pela aba Aventuras: gerar a planta, guardar e abrir a masmorra de um capítulo */
 const av = {
   dados:{BUD, CRXP, MON},
+  hbFicha: en => HB_MON[en] ? HB_MON[en].ficha : null,
   temas: () => Object.fromEntries(Object.entries(TEMAS).map(([k,t])=>[k,{nome:t.nome, aberto:!!t.aberto}])),
   tipos: () => TIPOS, pool: tema => poolFor(tema), gerar: p => genDungeon(p),
   async guardar(d){ d.id = newId(); if (M.myId()) d.autor = M.myId(); d.atualizada = Date.now(); const c = paraSalvar(d); S.lista[d.id] = prepar(clone(c)); await store.save(c); return d.id; },
@@ -4732,6 +4733,40 @@ const MON_IDX = {}; /* refeito quando chegam monstros homebrew (reindexar) */
 function reindexar(){ Object.keys(MON_IDX).forEach(k => delete MON_IDX[k]); MON.forEach(m => { MON_IDX[norm(m.en)] = m; MON_IDX[norm(m.pt)] = m; }); }
 reindexar();
 const crXp = cr => CRXP[String(cr ?? '').trim().replace(/^nd\s*/i, '')] ?? null;
+/* monstros do Homebrew: o gerador reconhece pelo nome (completo, sem artigo ou só a parte antes da vírgula) e usa a ficha do mestre */
+const semArt = s => s.replace(/^(o|a|os|as|the)\s+/, '');
+const nomesHb = m => [...new Set([m.pt, m.en, m.pt.split(',')[0], m.en.split(',')[0]].map(x => semArt(norm(x))).filter(x => x.length >= 4))];
+const hbMons = () => MON.filter(m => m.hb);
+const hbDe = nome => { const n = semArt(norm(nome)), n1 = semArt(norm(String(nome).split(',')[0])); return hbMons().find(m => { const ns = nomesHb(m); return ns.includes(n) || ns.includes(n1); }) || null; };
+const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const hbCitados = texto => { const t = norm(texto); return hbMons().filter(m => nomesHb(m).some(n => new RegExp('(^|[^a-z0-9])' + escRe(n) + '([^a-z0-9]|$)').test(t))); };
+const linhaNome = l => { const k = String(l).trim().match(/^([^.]{1,70})\.\s+([\s\S]+)$/); return k ? {nome:k[1].trim(), texto:k[2].trim()} : {nome:'', texto:String(l).trim()}; };
+function hbResumo(m){
+  const f = X.hbFicha(m.en) || {}, ls = arr(f.linhas).map(str);
+  const lore = ls.map(linhaNome).find(x => /^(lore|descri|hist)/i.test(norm(x.nome)));
+  const habs = ls.filter(l => !/^—/.test(l.trim())).map(l => linhaNome(l).nome).filter(n => n && !/^(\d|lore|descri|hist|chefe)/i.test(norm(n))).slice(0, 8);
+  return `- ${m.pt} · ND ${m.cr} · ${fmt(m.xp)} XP${f.tipo ? ' · ' + f.tipo : ''}${m.soChefe ? ' · só como chefe' : ''}${lore ? '. Quem é: ' + lore.texto.slice(0, 600).replace(/[.\s]+$/, '') : ''}${habs.length ? '. Habilidades: ' + habs.join(', ') : ''}`;
+}
+/* ficha do Homebrew no formato das fichas da aventura */
+function fichaHb(a){
+  const f = X.hbFicha(a.hb); if (!f) return null;
+  const info = {}; arr(f.info).forEach(x => { if (Array.isArray(x)) info[norm(x[0])] = str(x[1]); });
+  const at = Array.isArray(f.atr) && f.atr.length === 6 ? f.atr : [10,10,10,10,10,10];
+  const secs = {tracos:[], acoes:[], acoes_bonus:[], reacoes:[], lendarias:[]}; let cur = 'tracos';
+  arr(f.linhas).map(str).forEach(l => {
+    const t = l.trim(); if (!t) return;
+    const sec = t.match(/^—\s*(.+?)\s*—$/);
+    if (sec){ const k = norm(sec[1]); cur = k.startsWith('acoes lend') ? 'lendarias' : k.startsWith('acoes bonus') || k.startsWith('acao bonus') ? 'acoes_bonus' : k.startsWith('aco') || k.startsWith('acao') ? 'acoes' : k.startsWith('reac') ? 'reacoes' : 'tracos'; return; }
+    secs[cur].push(linhaNome(t));
+  });
+  const vul = info['vulnerabilidades'];
+  return {nome:a.nome, tipo:str(f.tipo), nd:a.nd, ca:str(f.ca), pv:str(f.pv), deslocamento:str(f.desl),
+    atributos:Object.fromEntries(['FOR','DES','CON','INT','SAB','CAR'].map((k, i) => [k, int(at[i], 10)])),
+    salvaguardas:info['salvaguardas'] || '', pericias:info['pericias'] || '', resistencias:[info['resistencias'], vul ? 'Vulnerabilidades: ' + vul : ''].filter(Boolean).join('; '),
+    imunidades:info['imunidades'] || '', sentidos:info['sentidos'] || '', idiomas:info['idiomas'] || '', ...secs, hb:true};
+}
+/* antagonista com nome de monstro do Homebrew: usa o ND dele */
+const marcarHb = P => { arr(P && P.antagonistas).forEach(a => { const m = hbDe(a.nome); if (m){ a.hb = m.en; a.nd = m.cr; } else delete a.hb; }); };
 const FIDEL = {fiel:'fiel: siga a trama e a ordem dos acontecimentos da história', adaptada:'adaptada: mantenha o essencial da trama e ajuste o resto ao grupo', livre:'livre: use só a premissa, os locais e os personagens como inspiração'};
 const PAPEIS = ['PNJs contratantes', 'Aliados do grupo', 'Antagonistas', 'Ausentes (só citados)', 'Misturado: alguns aliados, alguns antagonistas'];
 const TIERS = {complex:'Mais completa (mais lenta)', default:'Mais rápida'};
@@ -4828,7 +4863,12 @@ const linhaOrc = (nv, jog) => { const B = orc(nv, jog); return `Nível ${nv}: Ba
 const planoDif = n => n === 1 ? 'Alta' : n === 2 ? 'Moderada no capítulo 1 e Alta no capítulo 2' : 'Moderada nos primeiros capítulos, Alta em um ou dois capítulos do meio e Alta no último, contra o chefe';
 function promptPlano(p){
   const niveis = []; for (let n = p.nivel; n <= Math.min(20, p.nivel + p.sessoes); n++) niveis.push('- ' + linhaOrc(n, p.jogadores));
-  return cabecalho(p) + `
+  const hb = hbCitados(p.historia + '\n' + (p.obs || ''));
+  return cabecalho(p) + (hb.length ? `
+
+## Monstros do Homebrew do mestre citados no pedido
+Estes monstros já têm ficha pronta na Mesa. Quando um deles for antagonista, use exatamente o nome abaixo e o ND indicado: não mude o ND nem invente outra criatura com o mesmo nome. Se o XP dele passar do orçamento Alto do capítulo em que luta, coloque-o num capítulo de nível maior ou dê ao grupo uma vantagem clara na cena (aliado, fraqueza, terreno), sem mudar o ND.
+${hb.map(hbResumo).join('\n')}` : '') + `
 
 ## Progressão e dificuldade
 - Defina o nível do grupo em cada capítulo. O capítulo 1 é no nível ${p.nivel}. O grupo sobe no máximo 1 nível por capítulo, em marcos coerentes com a história, e nunca passa do nível 20.
@@ -4859,7 +4899,7 @@ Responda somente com um objeto JSON, sem texto antes ou depois, neste formato:
 }
 Use exatamente ${p.sessoes} capítulo(s). Marque com [Inventado] o que não vem da história.`;
 }
-function promptFichas(A){
+function promptFichas(A, lista){
   const P = A.plano;
   return `Você é um designer de monstros de D&D 5.5 (regras de 2024). Crie as fichas de estatísticas dos antagonistas nomeados da aventura "${P.titulo}". Escreva em português do Brasil.
 
@@ -4868,7 +4908,7 @@ ${P.premissa}
 Grupo: ${A.params.jogadores} jogadores, do nível ${A.params.nivel} ao ${P.capitulos[P.capitulos.length-1].nivel}.
 
 ## Antagonistas
-${P.antagonistas.map(a => `- ${a.nome} (ND ${a.nd}): ${a.papel}. Aparece nos capítulos ${a.capitulos.join(', ') || '?'}.${a.foge ? ' Foge: ' + a.foge : ''}`).join('\n')}
+${lista.map(a => `- ${a.nome} (ND ${a.nd}): ${a.papel}. Aparece nos capítulos ${a.capitulos.join(', ') || '?'}.${a.foge ? ' Foge: ' + a.foge : ''}`).join('\n')}
 
 ## Regras
 - Use o ND indicado. CA, PV, bônus de ataque, dano por rodada e CD de salvaguarda seguem os valores típicos desse ND no Livro dos Monstros e no Livro do Mestre de 2024.
@@ -4962,7 +5002,7 @@ function pedir(prompt, ctl){
 function passosFaltando(A){
   const p = [], caps = capsDe(A.id);
   if (!A.plano) p.push({k:'plano', rot:'Plano da aventura'});
-  if (!A.fichas) p.push({k:'fichas', rot:'Fichas dos antagonistas'});
+  if (!A.fichas) p.push({k:'fichas', rot:'Fichas dos antagonistas (as do Homebrew vêm prontas)'});
   for (let i = 1; i <= A.params.sessoes; i++) if (!caps[i]) p.push({k:'cap', n:i, rot:'Capítulo ' + i});
   return p;
 }
@@ -4977,8 +5017,10 @@ async function gerar(id, so){
     ps.st = 'run'; S.ger.chars = 0; render();
     const ctl = S.ger.ctl = new AbortController();
     try {
-      if (ps.k === 'plano'){ A.plano = normPlano(await pedir(promptPlano(A.params), ctl), A.params); A.titulo = A.plano.titulo; await salvarAv(A); }
-      else if (ps.k === 'fichas'){ A.fichas = A.plano.antagonistas.length ? normFichas(await pedir(promptFichas(A), ctl)) : []; await salvarAv(A); }
+      if (ps.k === 'plano'){ A.plano = normPlano(await pedir(promptPlano(A.params), ctl), A.params); marcarHb(A.plano); A.titulo = A.plano.titulo; await salvarAv(A); }
+      else if (ps.k === 'fichas'){
+        marcarHb(A.plano); const ants = A.plano.antagonistas, deHb = ants.filter(a => a.hb).map(fichaHb).filter(Boolean), resto = ants.filter(a => !a.hb || !deHb.some(f => f.nome === a.nome));
+        A.fichas = [...deHb, ...(resto.length ? normFichas(await pedir(promptFichas(A, resto), ctl)) : [])]; await salvarAv(A); }
       else { const nv = A.plano.capitulos[ps.n-1].nivel; await salvarCap(id, ps.n, normCap(await pedir(promptCapitulo(A, ps.n), ctl), ps.n, nv)); await salvarAv(A); }
       ps.st = 'ok';
     } catch (e){
@@ -5154,6 +5196,10 @@ function verificacoes(A){
   const em = P.escolha;
   if (!em.descricao) out.push(['warn', 'O plano não tem escolha moral.']);
   else out.push(em.consequencia_capitulo > em.capitulo || (p.sessoes === 1 && em.consequencia_capitulo === 1) ? ['ok', `Escolha moral no capítulo ${em.capitulo}, com consequência no capítulo ${em.consequencia_capitulo}.`] : ['warn', `A consequência da escolha moral (capítulo ${em.consequencia_capitulo}) não vem depois da escolha (capítulo ${em.capitulo}).`]);
+  P.antagonistas.filter(a => a.hb).forEach(a => { const xp = crXp(a.nd) || 0;
+    const caps = (a.capitulos.length ? a.capitulos : []).map(n => P.capitulos[n-1]).filter(Boolean), alem = caps.filter(c => xp > orc(c.nivel, p.jogadores)[2]);
+    out.push(alem.length ? ['warn', `${a.nome} (Homebrew, ND ${a.nd}, ${fmt(xp)} XP) passa do orçamento Alto ${alem.map(c => `do capítulo ${c.n} (nível ${c.nivel}: até ${fmt(orc(c.nivel, p.jogadores)[2])} XP)`).join(' e ')}. Pense em subir o nível ${alem.length > 1 ? 'desses capítulos' : 'desse capítulo'} ou dar ao grupo uma vantagem na luta.`]
+      : ['ok', `${a.nome} usa a ficha do Homebrew (ND ${a.nd}).`]); });
   const semFicha = P.antagonistas.filter(a => !fichaDe(A.fichas, a.nome));
   if (A.fichas && semFicha.length) out.push(['warn', 'Antagonistas sem ficha: ' + semFicha.map(a => a.nome).join(', ') + '.']);
   return out;
@@ -5196,7 +5242,7 @@ function secCap(A, pc){
 function fichaHtml(f){
   const bloco = (t, xs) => xs.length ? `<h5>${t}</h5>${xs.map(x => `<p>${x.nome ? `<b><i>${h(x.nome)}.</i></b> ` : ''}${tx(x.texto)}</p>`).join('')}` : '';
   const linhas = [['Salvaguardas', f.salvaguardas], ['Perícias', f.pericias], ['Resistências', f.resistencias], ['Imunidades', f.imunidades], ['Sentidos', f.sentidos], ['Idiomas', f.idiomas]].filter(x => x[1]);
-  return `<div class="ficha"><div><h4>${h(f.nome)}</h4><span class="muted small"><i>${h(f.tipo)}</i></span></div>
+  return `<div class="ficha"><div><h4>${h(f.nome)}${f.hb ? ' <span class="chip gold" title="Ficha cadastrada no Homebrew">Homebrew</span>' : ''}</h4><span class="muted small"><i>${h(f.tipo)}</i></span></div>
     <p class="linha"><b>CA</b> ${h(f.ca)} · <b>PV</b> ${h(f.pv)} · <b>Deslocamento</b> ${h(f.deslocamento)}</p>
     <div class="attrs num">${Object.entries(f.atributos).map(([k, v]) => `<div><b>${k}</b>${v} (${mod(v)})</div>`).join('')}</div>
     ${linhas.map(([k, v]) => `<p class="linha"><b>${k}</b> ${tx(v)}</p>`).join('')}
