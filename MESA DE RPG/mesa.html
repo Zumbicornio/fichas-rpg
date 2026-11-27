@@ -3952,6 +3952,71 @@ function makeDbStore(db){
 }
 
 /* ================= desenho do mapa ================= */
+/* texturas do mapa por ambiente: só visual (não muda a geração nem as masmorras salvas).
+   tons = variação do piso por quadrado; det/risco/agua/osso/brilho = detalhes desenhados quando o quadrado tem 5 px ou mais */
+const TEX = {
+  cripta:   {tipo:'lajes',    rocha:'#15161b', hach:'#2e3039', parede:'#1e1f26', grade:'rgba(30,32,42,.20)', tons:['#bdbbb2','#b2b0a7','#c7c5bc','#aba9a0'], risco:'rgba(50,50,58,.55)'},
+  caverna:  {tipo:'rocha',    rocha:'#1b150f', hach:'#3a2d20', parede:'#2c2015', grade:'rgba(60,42,24,.16)', tons:['#c0a884','#b59d78','#c9b28f','#ab9370'], det:['#8f7859','#d6c3a2','#7d684c'], mancha:'rgba(90,70,45,.22)'},
+  fortaleza:{tipo:'blocos',   rocha:'#17150f', hach:'#35301f', parede:'#26221a', grade:'rgba(50,44,30,.10)', tons:['#c6bb9f','#bcb194','#cfc5aa','#b4a98c'], risco:'rgba(70,60,42,.40)', quebra:'rgba(60,50,35,.28)'},
+  templo:   {tipo:'ladrilhos',rocha:'#170d0d', hach:'#3d1f1f', parede:'#2a1414', grade:'rgba(70,30,28,.25)', tons:['#bc9d92','#a9877c'], det:['#7a3b33','#c9a64f']},
+  esgoto:   {tipo:'umido',    rocha:'#0f1512', hach:'#25352c', parede:'#1a241f', grade:'rgba(30,48,38,.20)', tons:['#a9b096','#a0a78c','#b2b9a0','#98a084'], det:['#6f8550','#5f7a48'], agua:'rgba(54,92,86,.55)'},
+  covil:    {tipo:'terra',    rocha:'#16110b', hach:'#382a1a', parede:'#2a1e12', grade:'rgba(70,48,22,.14)', tons:['#c3a878','#b89c6c','#cbb184','#ae9262'], det:['#e0c97f','#d2b768'], osso:'#efe6d0', mancha:'rgba(80,55,30,.22)'},
+  arcana:   {tipo:'runas',    rocha:'#111122', hach:'#2a2a4a', parede:'#1c1c33', grade:'rgba(40,40,80,.18)', tons:['#b8b8c8','#afafc0','#c1c1d0','#a8a8ba'], risco:'rgba(80,80,130,.35)', brilho:'rgba(70,120,220,.75)'},
+  floresta: {tipo:'grama',    det:['#7d8a4c','#8f9a55','#6c7a40'], flor:['#d9c45a','#c97a8a']},
+  pantano:  {tipo:'lama',     det:['#7c7c55','#6b6e4a'], agua:'rgba(60,88,78,.55)'},
+  montanha: {tipo:'cascalho', det:['#9f9580','#b3a990','#857c68']},
+  ermos:    {tipo:'estrada',  det:['#b9a671','#a8945f'], mancha:'rgba(120,100,60,.18)'}
+};
+const texHash = (i,j) => { let k = (i*374761393 + j*668265263)|0; k = Math.imul(k ^ (k>>>13), 1274126177); return (k ^ (k>>>16))>>>0; };
+function texCelula(x, c, i, j, T, v){
+  const k = texHash(i,j), px = i*c, py = j*c, lw = Math.max(1, c*.07), r = n => ((k>>>n)&255)/255;
+  if (T.tons){ x.fillStyle = T.tipo==='ladrilhos' ? T.tons[(i+j)&1] : T.tons[k%T.tons.length]; x.fillRect(px, py, c+.5, c+.5); }
+  if (c < 5) return;
+  const ponto = (cor, rr) => { x.fillStyle = cor; x.beginPath(); x.arc(px+c*(.15+r(4)*.7), py+c*(.15+r(12)*.7), rr, 0, Math.PI*2); x.fill(); };
+  switch (T.tipo){
+    case 'lajes':
+      if (k%7===0){ x.strokeStyle = T.risco; x.lineWidth = lw; x.beginPath(); x.moveTo(px+c*(.1+r(3)*.5), py+c*.1); x.lineTo(px+c*(.35+r(9)*.3), py+c*.5); x.lineTo(px+c*(.3+r(17)*.6), py+c*.92); x.stroke(); }
+      break;
+    case 'blocos':
+      x.strokeStyle = T.risco; x.lineWidth = lw; x.beginPath();
+      x.moveTo(px, py+c/2); x.lineTo(px+c, py+c/2);
+      if (j&1){ x.moveTo(px+c/2, py+c/2); x.lineTo(px+c/2, py+c); } else { x.moveTo(px+c/2, py); x.lineTo(px+c/2, py+c/2); }
+      x.stroke();
+      if (k%13===0){ x.fillStyle = T.quebra; x.fillRect(px+(k&2?c/2:0), py+(k&4?c/2:0), c/2, c/2); }
+      break;
+    case 'ladrilhos':
+      if (k%6===0){ x.fillStyle = T.det[k%11===0?1:0]; const cx = px+c/2, cy = py+c/2, s = c*.16; x.beginPath(); x.moveTo(cx, cy-s); x.lineTo(cx+s, cy); x.lineTo(cx, cy+s); x.lineTo(cx-s, cy); x.closePath(); x.fill(); }
+      break;
+    case 'rocha': case 'cascalho':
+      if (T.mancha && k%9===0){ x.fillStyle = T.mancha; x.beginPath(); x.ellipse(px+c/2, py+c/2, c*.55, c*.35, r(6)*3, 0, Math.PI*2); x.fill(); }
+      if (k%(T.tipo==='rocha'?3:2)===0) ponto(T.det[k%T.det.length], c*(.06+r(20)*.08));
+      if (T.tipo==='cascalho' && k%5===0) ponto(T.det[(k>>3)%T.det.length], c*(.05+r(24)*.06));
+      break;
+    case 'umido': case 'lama':
+      if (k%(T.tipo==='umido'?11:6)===0){ x.fillStyle = T.agua; x.beginPath(); x.ellipse(px+c*(.3+r(5)*.4), py+c*(.3+r(13)*.4), c*(.35+r(21)*.3), c*(.22+r(7)*.15), r(15)*3, 0, Math.PI*2); x.fill(); }
+      if (k%4===0) ponto(T.det[k%T.det.length], c*.07);
+      break;
+    case 'terra':
+      if (T.mancha && k%10===0){ x.fillStyle = T.mancha; x.beginPath(); x.ellipse(px+c/2, py+c/2, c*.5, c*.3, r(6)*3, 0, Math.PI*2); x.fill(); }
+      if (k%3===0){ x.strokeStyle = T.det[k%T.det.length]; x.lineWidth = lw; x.beginPath(); const a = r(9)*Math.PI, cx = px+c*(.25+r(3)*.5), cy = py+c*(.25+r(17)*.5), l = c*.3; x.moveTo(cx-Math.cos(a)*l, cy-Math.sin(a)*l); x.lineTo(cx+Math.cos(a)*l, cy+Math.sin(a)*l); x.moveTo(cx-Math.cos(a+.5)*l*.7, cy-Math.sin(a+.5)*l*.7); x.lineTo(cx+Math.cos(a+.5)*l*.7, cy+Math.sin(a+.5)*l*.7); x.stroke(); }
+      if (k%23===0){ x.strokeStyle = x.fillStyle = T.osso; x.lineWidth = lw*1.6; const a = r(5)*Math.PI, cx = px+c/2, cy = py+c/2, l = c*.28; x.beginPath(); x.moveTo(cx-Math.cos(a)*l, cy-Math.sin(a)*l); x.lineTo(cx+Math.cos(a)*l, cy+Math.sin(a)*l); x.stroke(); [-1,1].forEach(s => { x.beginPath(); x.arc(cx+s*Math.cos(a)*l, cy+s*Math.sin(a)*l, lw*1.4, 0, Math.PI*2); x.fill(); }); }
+      break;
+    case 'runas':
+      if (k%8===0){ x.strokeStyle = T.risco; x.lineWidth = lw; x.beginPath(); x.moveTo(px, py+c*r(3)); x.quadraticCurveTo(px+c*r(11), py+c*r(19), px+c, py+c*r(27)); x.stroke(); }
+      if (k%29===0){ x.strokeStyle = T.brilho; x.lineWidth = lw; const cx = px+c/2, cy = py+c/2, s = c*.28; x.beginPath(); x.arc(cx, cy, s, 0, Math.PI*2); x.moveTo(cx, cy-s); x.lineTo(cx, cy+s); x.moveTo(cx-s*.6, cy-s*.3); x.lineTo(cx+s*.6, cy+s*.3); x.stroke(); }
+      break;
+    case 'grama':
+      if (v===1 && k%2===0){ x.strokeStyle = T.det[k%T.det.length]; x.lineWidth = lw; const bx = px+c*(.2+r(4)*.6), by = py+c*(.55+r(12)*.3), hh = c*.3; x.beginPath(); x.moveTo(bx, by); x.lineTo(bx-c*.1, by-hh); x.moveTo(bx, by); x.lineTo(bx, by-hh*1.1); x.moveTo(bx, by); x.lineTo(bx+c*.1, by-hh); x.stroke(); }
+      if (v===1 && k%37===0) ponto(T.flor[k%2], c*.09);
+      if (v===2 && k%5===0) ponto('rgba(90,70,40,.35)', c*.06);
+      break;
+    case 'estrada':
+      if (T.mancha && k%8===0){ x.fillStyle = T.mancha; x.beginPath(); x.ellipse(px+c/2, py+c/2, c*.5, c*.3, r(6)*3, 0, Math.PI*2); x.fill(); }
+      if (k%3===0) ponto(T.det[k%T.det.length], c*.06);
+      if (v===2 && k%4===0){ x.strokeStyle = 'rgba(90,70,40,.30)'; x.lineWidth = lw; x.beginPath(); x.moveTo(px+c*.1, py+c*.3); x.lineTo(px+c*.9, py+c*.3); x.moveTo(px+c*.1, py+c*.7); x.lineTo(px+c*.9, py+c*.7); x.stroke(); }
+      break;
+  }
+}
 function drawMap(d){
   const cv = document.getElementById('mapa'); if (!cv || !d) return;
   const wrap = cv.parentElement, m = d.mapa;
@@ -3962,11 +4027,13 @@ function drawMap(d){
   const css = getComputedStyle(document.documentElement), col = n => css.getPropertyValue(n).trim();
   const G = m.grid, oculto = celulasOcultas(d), at = (i,j) => (i<0||j<0||i>=m.w||j>=m.h||(oculto&&oculto.has(j*m.w+i))) ? 0 : +G[j*m.w+i];
   const TA = TEMAS[d.params.tema];
-  if (TA && TA.aberto) desenhaAberto(x, c, cssW, cssH, m, at, TA.cores);
+  const TX = TEX[d.params.tema];
+  if (TA && TA.aberto) desenhaAberto(x, c, cssW, cssH, m, at, TA.cores, TX);
   else {
-  x.fillStyle = col('--rock'); x.fillRect(0,0,cssW,cssH);
+  const cor = n => TX ? TX[{'--rock':'rocha','--hatch':'hach','--wall':'parede','--floorgrid':'grade'}[n]] || col(n) : col(n);
+  x.fillStyle = cor('--rock'); x.fillRect(0,0,cssW,cssH);
   /* hachura da rocha junto às paredes */
-  x.strokeStyle = col('--hatch'); x.lineWidth = 1; x.beginPath();
+  x.strokeStyle = cor('--hatch'); x.lineWidth = 1; x.beginPath();
   for(let j=0;j<m.h;j++) for(let i=0;i<m.w;i++){
     if (at(i,j)) continue; let near=false; for(let dy=-1;dy<=1&&!near;dy++) for(let dx=-1;dx<=1;dx++) if (at(i+dx,j+dy)){ near=true; break; }
     if (!near) continue; const px=i*c, py=j*c;
@@ -3975,12 +4042,12 @@ function drawMap(d){
   }
   x.stroke();
   x.fillStyle = col('--floor');
-  for(let j=0;j<m.h;j++) for(let i=0;i<m.w;i++) if (at(i,j)) x.fillRect(i*c, j*c, c+.5, c+.5);
-  x.strokeStyle = col('--floorgrid'); x.lineWidth = 1; x.beginPath();
+  for(let j=0;j<m.h;j++) for(let i=0;i<m.w;i++) if (at(i,j)){ if (TX) texCelula(x, c, i, j, TX, 1); else x.fillRect(i*c, j*c, c+.5, c+.5); }
+  x.strokeStyle = cor('--floorgrid'); x.lineWidth = 1; x.beginPath();
   if (c >= 5) for(let j=0;j<m.h;j++) for(let i=0;i<m.w;i++) if (at(i,j)) x.rect(i*c+.5, j*c+.5, c-1, c-1); /* quadrados muito pequenos (celular): sem linhas da grade */
   x.stroke();
   /* paredes */
-  x.strokeStyle = col('--wall'); x.lineWidth = Math.max(2, c*.18); x.lineCap='square'; x.beginPath();
+  x.strokeStyle = cor('--wall'); x.lineWidth = Math.max(2, c*.18); x.lineCap='square'; x.beginPath();
   for(let j=0;j<m.h;j++) for(let i=0;i<m.w;i++){
     if (!at(i,j)) continue; const px=i*c, py=j*c;
     if (!at(i,j-1)){ x.moveTo(px,py); x.lineTo(px+c,py); }
@@ -3996,14 +4063,14 @@ function drawMap(d){
     const revelada = !showSecret && dr.t==='secreta' && (m.secretas||[]).some(x=>x.x===dr.x&&x.y===dr.y);
     const cx=dr.x*c+c/2, cy=dr.y*c+c/2, horiz = dr.o==='h'; const dw = horiz? c*.32 : c*.86, dh = horiz? c*.86 : c*.32;
     if (dr.t==='secreta' && !revelada){
-      x.strokeStyle = col('--wall'); x.lineWidth = Math.max(2,c*.18); x.beginPath();
+      x.strokeStyle = cor('--wall'); x.lineWidth = Math.max(2,c*.18); x.beginPath();
       if (horiz){ x.moveTo(cx,dr.y*c); x.lineTo(cx,dr.y*c+c); } else { x.moveTo(dr.x*c,cy); x.lineTo(dr.x*c+c,cy); } x.stroke();
       if (showSecret){ x.fillStyle = col('--sel'); x.font = `700 ${Math.max(8,c*.7)}px ${col('--display')}`; x.textAlign='center'; x.textBaseline='middle'; x.fillText('S', cx + (horiz? c*.32:0), cy + (horiz?0:-c*.32)); }
       return;
     }
-    x.fillStyle = dr.t==='trancada' ? col('--wall') : col('--floor');
+    x.fillStyle = dr.t==='trancada' ? cor('--wall') : (TX && TX.tons ? TX.tons[0] : col('--floor'));
     x.fillRect(cx-dw/2, cy-dh/2, dw, dh);
-    x.strokeStyle = col('--wall'); x.lineWidth = Math.max(1, c*.08); x.strokeRect(cx-dw/2, cy-dh/2, dw, dh);
+    x.strokeStyle = cor('--wall'); x.lineWidth = Math.max(1, c*.08); x.strokeRect(cx-dw/2, cy-dh/2, dw, dh);
     if (dr.t==='emperrada'){ x.beginPath(); x.moveTo(cx-dw/2,cy-dh/2); x.lineTo(cx+dw/2,cy+dh/2); x.stroke(); }
   });
   /* escada na entrada */
@@ -4139,7 +4206,7 @@ function perCorrHtml(d, i){
     <p class="muted small" style="margin:8px 0 0">Os jogadores não veem este quadro nem o ◆ no mapa.</p></div>`;
 }
 /* campo aberto: vegetação ou rochas em volta, clareiras e trilhas, sem paredes nem portas */
-function desenhaAberto(x, c, cssW, cssH, m, at, cor){
+function desenhaAberto(x, c, cssW, cssH, m, at, cor, TX){
   x.fillStyle = cor.fundo; x.fillRect(0,0,cssW,cssH);
   const hs = (i,j) => ((i*73856093) ^ (j*19349663)) >>> 0;
   const perto = (i,j) => { for(let dy=-2;dy<=2;dy++) for(let dx=-2;dx<=2;dx++) if (at(i+dx,j+dy)) return true; return false; };
@@ -4150,6 +4217,7 @@ function desenhaAberto(x, c, cssW, cssH, m, at, cor){
     x.arc((i+.5+((k>>3)%5-2)*.08)*c, (j+.5+((k>>6)%5-2)*.08)*c, c*(.55+((k>>9)%3)*.15), 0, Math.PI*2); x.fill();
   }
   for(let j=0;j<m.h;j++) for(let i=0;i<m.w;i++){ const v = at(i,j); if (!v) continue; x.fillStyle = v===2 ? cor.trilha : cor.chao; x.fillRect(i*c, j*c, c+.5, c+.5); }
+  if (TX) for(let j=0;j<m.h;j++) for(let i=0;i<m.w;i++){ const v = at(i,j); if (v) texCelula(x, c, i, j, TX, v); }
   x.strokeStyle = 'rgba(40,32,20,.14)'; x.lineWidth = 1; x.beginPath();
   if (c >= 5) for(let j=0;j<m.h;j++) for(let i=0;i<m.w;i++) if (at(i,j)) x.rect(i*c+.5, j*c+.5, c-1, c-1);
   x.stroke();
