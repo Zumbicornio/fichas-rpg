@@ -4042,6 +4042,26 @@ function texBorda(x, c, m, at, B){
     }
   }
 }
+/* estilo do mapa: escuro (padrão) ou pergaminho (papel claro, traços a tinta). Preferência guardada só neste aparelho */
+let MAPA_ESTILO = (() => { try { return localStorage.getItem('mesa-mapa-estilo') || 'escuro'; } catch { return 'escuro'; } })();
+const PAPEL = '#e9dec4', TINTA = '#2a2018';
+const mixCor = (a, b, t) => { if (!/^#[0-9a-f]{6}$/i.test(a||'')) return a; const p = s => [1,3,5].map(i => parseInt(s.slice(i,i+2),16)), A = p(a), B = p(b); return '#'+A.map((v,i) => Math.round(v+(B[i]-v)*t).toString(16).padStart(2,'0')).join(''); };
+const PERG_CACHE = new Map();
+function texPergaminho(T){
+  if (!T) return T; if (PERG_CACHE.has(T)) return PERG_CACHE.get(T);
+  const B = T.borda, P = {...T,
+    rocha:PAPEL, hach:'#8a7a60', parede:'#1d150f', grade:'rgba(60,45,30,.22)',
+    tons: T.tons ? (T.tipo==='ladrilhos' ? ['#f3ead6','#e0d2b4'] : ['#f6f0e1','#f1e9d6','#f4edde','#ede4cd']) : undefined,
+    det: T.det && T.det.map(c => mixCor(c, '#f4edde', .3)),
+    borda: B && {...B, cor:TINTA, cor2:mixCor(B.cor2||B.cor, PAPEL, .4), cor3:B.cor3 && mixCor(B.cor3, PAPEL, .3), osso:B.osso && '#fbf7ec'}};
+  PERG_CACHE.set(T, P); return P;
+}
+const coresPergaminho = cor => ({fundo:PAPEL, blob:cor.blob.map(b => mixCor(b, PAPEL, .72)), chao:'#f6f0e1', trilha:'#e2d0a8', borda:TINTA});
+/* manchas de papel envelhecido */
+function manchasPapel(x, c, m){
+  for(let j=0; j<m.h; j+=6) for(let i=0; i<m.w; i+=6){ const k = texHash(i+71, j+13); if (k%3) continue;
+    x.fillStyle = 'rgba(150,115,60,'+(.025+((k>>>8)&7)/200)+')'; x.beginPath(); x.ellipse((i+3)*c, (j+3)*c, c*(3+((k>>>4)&7)*.6), c*(2+((k>>>12)&7)*.5), ((k>>>16)&7)*.4, 0, Math.PI*2); x.fill(); }
+}
 const texHash = (i,j) => { let k = (i*374761393 + j*668265263)|0; k = Math.imul(k ^ (k>>>13), 1274126177); return (k ^ (k>>>16))>>>0; };
 function texCelula(x, c, i, j, T, v){
   const k = texHash(i,j), px = i*c, py = j*c, lw = Math.max(1, c*.07), r = n => ((k>>>n)&255)/255;
@@ -4102,11 +4122,12 @@ function drawMap(d){
   const css = getComputedStyle(document.documentElement), col = n => css.getPropertyValue(n).trim();
   const G = m.grid, oculto = celulasOcultas(d), at = (i,j) => (i<0||j<0||i>=m.w||j>=m.h||(oculto&&oculto.has(j*m.w+i))) ? 0 : +G[j*m.w+i];
   const TA = TEMAS[d.params.tema];
-  const TX = TEX[d.params.tema];
-  if (TA && TA.aberto) desenhaAberto(x, c, cssW, cssH, m, at, TA.cores, TX);
+  const PG = MAPA_ESTILO==='pergaminho', TX = PG ? texPergaminho(TEX[d.params.tema]) : TEX[d.params.tema];
+  if (TA && TA.aberto) desenhaAberto(x, c, cssW, cssH, m, at, PG ? coresPergaminho(TA.cores) : TA.cores, TX, PG);
   else {
   const cor = n => TX ? TX[{'--rock':'rocha','--hatch':'hach','--wall':'parede','--floorgrid':'grade'}[n]] || col(n) : col(n);
-  x.fillStyle = cor('--rock'); x.fillRect(0,0,cssW,cssH);
+  x.fillStyle = PG ? PAPEL : cor('--rock'); x.fillRect(0,0,cssW,cssH);
+  if (PG) manchasPapel(x, c, m);
   /* hachura da rocha junto às paredes (com textura: faixa própria do ambiente) */
   if (TX && TX.borda) texBorda(x, c, m, at, TX.borda);
   else {
@@ -4170,7 +4191,7 @@ function drawMap(d){
     m.rooms.forEach((r,i)=>{ if (d.salas[i] && d.salas[i].perigo && salaVisivel(d,i)) dia(r.x, r.y); });
   }
   /* névoa: para o mestre, as salas que os jogadores ainda não veem ficam escurecidas */
-  if (isMestre() && d.nevoa===true) m.rooms.forEach((r,i)=>{ if (!reveladaJog(d,i)){ x.fillStyle = 'rgba(12,10,8,.5)'; x.fillRect(r.x*c, r.y*c, r.w*c, r.h*c); } });
+  if (isMestre() && d.nevoa===true) m.rooms.forEach((r,i)=>{ if (!reveladaJog(d,i)){ x.fillStyle = MAPA_ESTILO==='pergaminho' ? 'rgba(60,45,30,.32)' : 'rgba(12,10,8,.5)'; x.fillRect(r.x*c, r.y*c, r.w*c, r.h*c); } });
   /* números das salas */
   x.textAlign='center'; x.textBaseline='middle';
   m.rooms.forEach((r,i)=>{
@@ -4284,8 +4305,9 @@ function perCorrHtml(d, i){
     <p class="muted small" style="margin:8px 0 0">Os jogadores não veem este quadro nem o ◆ no mapa.</p></div>`;
 }
 /* campo aberto: vegetação ou rochas em volta, clareiras e trilhas, sem paredes nem portas */
-function desenhaAberto(x, c, cssW, cssH, m, at, cor, TX){
+function desenhaAberto(x, c, cssW, cssH, m, at, cor, TX, PG){
   x.fillStyle = cor.fundo; x.fillRect(0,0,cssW,cssH);
+  if (PG) manchasPapel(x, c, m);
   const hs = (i,j) => ((i*73856093) ^ (j*19349663)) >>> 0;
   const perto = (i,j) => { for(let dy=-2;dy<=2;dy++) for(let dx=-2;dx<=2;dx++) if (at(i+dx,j+dy)) return true; return false; };
   for(let j=0;j<m.h;j++) for(let i=0;i<m.w;i++){
@@ -4581,7 +4603,7 @@ function viewMesa(d, edit){
     : `<div class="toolbar"><h2 style="color:var(--gold2);font-size:20px">${h(d.nome)}</h2><button class="btn" data-act="voltar">← Todas as masmorras</button></div>`;
   return `${toolbar}<div class="mesa">
     <div class="mapbox">${andaresHtml(d)}<div class="mapwrap ${S.zoom?'zoom':''}"><canvas id="mapa" role="img" aria-label="Mapa da masmorra ${h(d.nome)}"></canvas></div>
-      <div class="legend"><span>${legenda(d, edit)}</span><button class="btn sm" data-act="zoom">${S.zoom?'Ajustar à tela':'Ampliar mapa'}</button></div></div>
+      <div class="legend"><span>${legenda(d, edit)}</span><span class="row" style="gap:6px"><button class="btn sm" data-act="estilo-mapa" title="Estilo do mapa (fica guardado neste aparelho)">${MAPA_ESTILO==='pergaminho'?'Mapa escuro':'Mapa pergaminho'}</button><button class="btn sm" data-act="zoom">${S.zoom?'Ajustar à tela':'Ampliar mapa'}</button></span></div></div>
     <aside class="side">${S.sel==null || !salaVisivel(d,S.sel) ? overview(d,edit) : roomView(d,S.sel,edit)}</aside></div>`;
 }
 function cards(map, actOpen, master){
@@ -4682,6 +4704,7 @@ document.addEventListener('click', e=>{
     const sv = t.dataset.sel; S.sel = sv==='0' ? 0 : sv==='desce' ? Math.max(0, d.salas.findIndex(x=>ehEscada(x,'descida'))) : null; render(); }
   else if (a==='sel'){ e.stopPropagation(); S.sel = t.dataset.i===''?null:+t.dataset.i; render(); }
   else if (a==='zoom'){ S.zoom = !S.zoom; render(); }
+  else if (a==='estilo-mapa'){ MAPA_ESTILO = MAPA_ESTILO==='pergaminho' ? 'escuro' : 'pergaminho'; try { localStorage.setItem('mesa-mapa-estilo', MAPA_ESTILO); } catch {} render(); }
   else if (a==='revelar'){ const sl = S.cur && S.cur.salas[+t.dataset.i]; if (!sl) return; sl.revelada = !sl.revelada; mudouVisao(); }
   else if (a==='ver-enc' || a==='ver-tes'){ const sl = S.cur && S.cur.salas[+t.dataset.i]; if (!sl) return; const k = a==='ver-enc' ? 'verEnc' : 'verTes'; sl[k] = !sl[k]; if (sl[k]) sl.revelada = true; mudouVisao(); }
   else if (a==='grupo-aqui'){ const d = S.cur, i = +t.dataset.i; if (!d || !d.salas[i]) return; d.grupoEm = {andar:d.andar||0, sala:i}; d.salas[i].revelada = true; mudouVisao(); }
