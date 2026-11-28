@@ -388,7 +388,9 @@ const SKILLS = [
 const SKILL_NOME = Object.fromEntries(SKILLS.map(s=>[s[0],s[1]]));
 const ALL_SKILLS = SKILLS.map(s=>s[0]);
 
-const CLASSES = {
+/* classe do Homebrew ainda não carregada (ou excluída): a ficha abre com estes valores neutros */
+const HB_CLS_VAZIA = {nome:'Classe do Homebrew (não encontrada)', dado:8, saves:[], n:0, skills:[], magia:null, hb:true, feats:[]};
+const CLASSES = new Proxy({
   barbaro:{nome:'Bárbaro',dado:12,saves:['FOR','CON'],n:2,skills:['adestrar','atletismo','intimidacao','natureza','percepcao','sobrevivencia'],magia:null,sem:'CON'},
   bardo:{nome:'Bardo',dado:8,saves:['DES','CAR'],n:3,skills:ALL_SKILLS,magia:{tipo:'total',ab:'CAR'}},
   bruxo:{nome:'Bruxo',dado:8,saves:['SAB','CAR'],n:2,skills:['arcanismo','enganacao','historia','intimidacao','investigacao','natureza','religiao'],magia:{tipo:'pacto',ab:'CAR'}},
@@ -401,7 +403,7 @@ const CLASSES = {
   monge:{nome:'Monge',dado:8,saves:['FOR','DES'],n:2,skills:['acrobacia','atletismo','historia','intuicao','religiao','furtividade'],magia:null,sem:'SAB'},
   paladino:{nome:'Paladino',dado:10,saves:['SAB','CAR'],n:2,skills:['atletismo','intuicao','intimidacao','medicina','persuasao','religiao'],magia:{tipo:'meia',ab:'CAR'}},
   patrulheiro:{nome:'Patrulheiro',dado:10,saves:['FOR','DES'],n:3,skills:['adestrar','atletismo','intuicao','investigacao','natureza','percepcao','furtividade','sobrevivencia'],magia:{tipo:'meia',ab:'SAB'}}
-};
+}, {get:(t,k) => k in t ? t[k] : (typeof k==='string' && k.startsWith('hb_') ? HB_CLS_VAZIA : undefined)});
 /* nomes para o botão "Sugerir nome": [prenomes, sobrenomes] por espécie */
 const NOMES = {"humano":[["Aldric","Bianca","Caio","Dália","Elias","Fiona","Gaspar","Helena","Iago","Joana","Lucas","Marina","Nicolau","Olívia","Rafael","Selene","Tomás","Vera","Lorena","Bruno","Clara","Davi","Isadora","Mateus"],["Ventoalto","Pedrafria","Montebranco","Valeverde","Ferreira","Corvalho","Lunardi","Brasaforte","Rocha","Quintela","Tavares","Marvento","Solano","Albuquerque","Andrade","Torrenegra","Vilaboa","Monteclaro"]],"anao":[["Thorin","Brunna","Dagran","Helga","Korrin","Vistra","Balder","Eldra","Gimrik","Torbera","Rurik","Dagny","Harbek","Ilde","Brottor","Amber"],["Martelo-de-Ferro","Barbacinza","Forjafunda","Pedraviva","Escudo-de-Bronze","Machadorrubro","Veiadeouro","Rocha-Antiga","Bigorna-Firme","Picofundo"]],"elfo":[["Aelar","Lyra","Thamior","Sariel","Faelan","Naivara","Erevan","Shava","Varis","Ilyana","Quarion","Elandra","Riardon","Sylvaris","Galinndan","Mialee"],["Folhaprata","Luaserena","Brisaclara","Estrelamar","Ventoalto","Galhodourado","Orvalhoazul","Sombraverde","Riodaurora","Canção-da-Noite"]],"halfling":[["Pipo","Rosie","Merric","Lidda","Cade","Seraphina","Wendel","Trym","Calla","Milo","Bree","Osborn","Kithri","Perrin"],["Bolotafeliz","Pé-Leve","Colinaverde","Folhadechá","Tortamorna","Bom-Barril","Moitalta","Mel-do-Vale","Fumacinha","Riachinho"]],"gnomo":[["Fizzwick","Nim","Boddy","Ellyjobell","Zook","Orla","Tink","Wrenn","Gimble","Carlin","Sindri","Bimpnottin","Frug","Lilli"],["Engrenagem","Faíscadoce","Rodaveloz","Pedregulho","Cobrebrilho","Molatorta","Lâmpadaviva","Parafuso-Rubro","Bolhafina","Relojoeiro"]],"draconato":[["Arjhan","Sora","Kriv","Biri","Medrash","Daar","Torinn","Nala","Ghesh","Perra","Rhogar","Kava","Balasar","Mishann"],["Kerrhylon","Clethtinthiallor","Daardendrian","Myastan","Yarjerit","Prexijandilin","Turnuroth","Fenkenkabradon","Norixius","Ophinshtalajiir"]],"golias":[["Aukan","Thalai","Gauthak","Orilo","Keothi","Nalla","Pethani","Vaunea","Maveith","Ilikan","Eglath","Kuori"],["Pico-do-Trovão","Mão-de-Pedra","Passo-Firme","Olho-de-Gelo","Ombro-de-Montanha","Caçador-de-Ventos","Voz-do-Cume","Salta-Abismos"]],"orc":[["Grushk","Shautha","Dench","Baggi","Krusk","Ovak","Holg","Emen","Thokk","Yevelda","Mhurren","Sutha","Feng","Kansif"],["Dente-Partido","Punho-Rubro","Lâminanegra","Uivo-da-Noite","Osso-Duro","Sangue-de-Ferro","Cicatriz-Longa","Rugido-Alto"]],"tiefling":[["Akmenos","Damaia","Barakas","Kallista","Mordai","Nemeia","Skamos","Orianna","Leucis","Rieta","Ekemon","Makaria"],["Cinzarrubra","Brasa-Eterna","Sombrafunda","Espinho-Negro","Chamaviva","Lua-de-Sangue","Penumbra","Ferrão-Escarlate"]]};
 const sorteia = a => a[Math.floor(Math.random()*a.length)];
@@ -513,7 +515,7 @@ function weaponProf(classe,w){
   return false;
 }
 /* Magias: truques conhecidos e magias preparadas por nível (tabelas das classes, PHB 2024) */
-const truquesDe = (classe,l) => ({bardo:[2,3,4],druida:[2,3,4],bruxo:[2,3,4],clerigo:[3,4,5],mago:[3,4,5],feiticeiro:[4,5,6]}[classe]||[0,0,0])[l<4?0:l<10?1:2];
+const truquesDe = (classe,l) => ({bardo:[2,3,4],druida:[2,3,4],bruxo:[2,3,4],clerigo:[3,4,5],mago:[3,4,5],feiticeiro:[4,5,6]}[classe]||CLASSES[classe]?.truques||[0,0,0])[l<4?0:l<10?1:2];
 const PREP_A=[4,5,6,7,9,10,11,12,14,15,16,16,17,17,18,18,19,20,21,22];
 const PREP = {bardo:PREP_A,clerigo:PREP_A,druida:PREP_A,
   feiticeiro:[2,4,6,7,9,10,11,12,14,15,16,16,17,17,18,18,19,20,21,22],
@@ -611,7 +613,8 @@ const SUB_RES = {
 const SUB_FEATS = window.MESA_SUBCLASSES || {}; /* características de subclasse: arquivo dados-regras.js */
 
 const subFeats = c => { const si=subInfo(c); return si ? (SUB_FEATS[si.n]||[]).filter(([l])=>l<=c.nivel) : []; };
-const subInfo = c => { const nm=ruleKey(c.subclasse||''); return nm ? (SUB_RES[c.classe]||[]).find(x=>x.re.test(nm)) || null : null; };
+const subInfo = c => { const nm=ruleKey(c.subclasse||''), L=SUB_RES[c.classe]||[]; return nm ? L.find(x=>ruleKey(x.n)===nm) || L.find(x=>x.re.test(nm)) || null : null; };
+const clsFeats = c => (CLASSES[c.classe].feats||[]).filter(([l])=>l<=c.nivel); /* só classes do Homebrew têm a lista */
 const subRes = c => { const e=subInfo(c); return e ? e.res.map(r=>({...r, sub:true})) : []; };
 const classRes = c => [...(CLASS_RES[c.classe]||[]), ...subRes(c)].map(r=>({...r, total:r.qtd(c.nivel,c), curto:typeof r.curto==='function'?r.curto(c.nivel):r.curto, txt:typeof r.txt==='function'?r.txt(c.nivel):r.txt})).filter(r=>r.total>0);
 /* munição: o inventário guarda o total; o estado do jogador guarda quantas foram gastas (chave = nome em minúsculas) */
@@ -841,6 +844,69 @@ const talAtr = t => (/[(][+]1 (FOR|DES|CON|INT|SAB|CAR)[)]/.exec(String(t||''))|
 function featAbsOptions(f, c, sel){
   if (!f || !f.abs.length) return '';
   return `<option value="">Atributo +1…</option>`+f.abs.map(a=>`<option value="${a}" ${a===sel?'selected':''} ${(c.atributos[a]||0)>=f.max?'disabled':''}>${AB_NOME[a]} (${c.atributos[a]||0})</option>`).join('');
+}
+
+/* ============ CLASSES, SUBCLASSES E TALENTOS DO HOMEBREW ============
+   Docs da coleção "homebrew" (aba Homebrew), aplicados pelo aplicarHb do gerador a cada mudança no catálogo.
+   classe {nome, original, dado, saves[], pericias[], nPericias, armaduras, armas ('s'|'sm'), magia {tipo,ab}|null, truques[3], caracteristicas[[nível,nome,texto]]}
+     → chave 'hb_' + id do doc (não muda quando o nome muda), nas mesmas tabelas das classes do livro.
+   subclasse {nome, original, classe (chave), caracteristicas[[nível,nome,texto]]} → SUB_RES[classe] + SUB_FEATS.
+   talento {nome, original, categoria, atributos[], reqAtr[], reqMin, reqMagia, reqOutro, repetivel, texto} → FEATS/FEAT_LIST.
+   Nomes que já existem na Mesa ficam de fora. */
+let hbRegrasFeitas = [];
+const hbClasseKey = id => 'hb_' + String(id||'').toLowerCase().replace(/[^a-z0-9]+/g,'_');
+const hbFeatsDe = L => (Array.isArray(L)?L:[]).map(f => Array.isArray(f) ? [parseInt(f[0],10), String(f[1]||'').trim(), String(f[2]||'').trim()] : null)
+  .filter(f => f && f[0]>=1 && f[0]<=20 && f[1]).sort((a,b)=>a[0]-b[0]);
+function aplicarHbRegras(docs){
+  hbRegrasFeitas.forEach(x => {
+    if (x.cls){ delete CLASSES[x.cls]; delete CLASS_ARMAS[x.cls]; delete TREINO_ARMADURA[x.cls]; delete PREP[x.cls]; delete SUB_RES[x.cls]; const i = ESTILO_CLASSES.indexOf(x.cls); if (i>=0) ESTILO_CLASSES.splice(i,1); }
+    else if (x.sub){ const L = SUB_RES[x.sub.classe]; if (L){ const i = L.indexOf(x.sub.e); if (i>=0) L.splice(i,1); } delete SUB_FEATS[x.sub.e.n]; }
+    else if (x.tal){ const i = FEAT_LIST.indexOf(x.tal); if (i>=0) FEAT_LIST.splice(i,1); Object.keys(FEATS).forEach(k => { if (FEATS[k]===x.tal) delete FEATS[k]; }); }
+    x.rules.forEach(k => delete RULES[k]);
+  });
+  hbRegrasFeitas = [];
+  const str = v => v==null ? '' : String(v).trim(), arr = v => Array.isArray(v) ? v : [];
+  const por = t => (docs||[]).filter(x => x && x.tipo===t);
+  const regra = (k, v, L) => { if (!RULES[k]){ RULES[k] = v; L.push(k); } };
+  const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for (const x of por('classe')){
+    const nome = str(x.nome), k = hbClasseKey(x.id);
+    if (!nome || Object.values(CLASSES).some(c => ruleKey(c.nome)===ruleKey(nome))) continue;
+    const mg = x.magia && ['total','meia','pacto'].includes(x.magia.tipo) && AB.includes(x.magia.ab) ? {tipo:x.magia.tipo, ab:x.magia.ab} : null;
+    const tr = arr(x.truques).map(v => Math.max(0, Math.min(10, parseInt(v,10)||0)));
+    const skills = arr(x.pericias).filter(s => SKILL_NOME[s]), feats = hbFeatsDe(x.caracteristicas);
+    CLASSES[k] = {nome, dado:[6,8,10,12].includes(+x.dado) ? +x.dado : 8, saves:arr(x.saves).filter(a => AB.includes(a)).slice(0,2),
+      n:Math.max(0, Math.min(8, parseInt(x.nPericias,10)||0)), skills:skills.length ? skills : ALL_SKILLS, magia:mg, hb:true, id:x.id, feats,
+      truques:tr.length===3 ? tr : mg && mg.tipo!=='meia' ? [2,3,4] : [0,0,0]};
+    CLASS_ARMAS[k] = x.armas==='sm' ? 'sm' : 's';
+    TREINO_ARMADURA[k] = str(x.armaduras) || 'Nenhuma';
+    if (mg) PREP[k] = mg.tipo==='total' ? PREP_A : mg.tipo==='meia' ? PREP.paladino : PREP.bruxo;
+    SUB_RES[k] = [];
+    if (feats.some(f => /estilo de luta|fighting style/i.test(f[1]))) ESTILO_CLASSES.push(k);
+    const rules = []; feats.forEach(([l,n,t]) => regra(ruleKey(n)+'|classe', ['Característica de classe · '+nome+' · nível '+l, t], rules));
+    hbRegrasFeitas.push({cls:k, rules});
+  }
+  for (const x of por('subclasse')){
+    const nome = str(x.nome), cl = str(x.classe);
+    if (!nome || !cl || !(cl in SUB_RES || CLASSES[cl] && !CLASSES[cl].hb)) continue;
+    const L = SUB_RES[cl] ||= [];
+    if (L.some(e => ruleKey(e.n)===ruleKey(nome)) || SUB_FEATS[nome]) continue;
+    const e = {n:nome, re:new RegExp('^(' + [nome, str(x.original)].map(ruleKey).filter(Boolean).map(esc).join('|') + ')$'), res:[], hb:true, id:x.id};
+    L.push(e); const feats = SUB_FEATS[nome] = hbFeatsDe(x.caracteristicas);
+    const rules = []; feats.forEach(([l,n,t]) => regra(ruleKey(n)+'|subclasse', ['Característica de subclasse · '+nome+' · nível '+l, t], rules));
+    hbRegrasFeitas.push({sub:{classe:cl, e}, rules});
+  }
+  for (const x of por('talento')){
+    const nome = str(x.nome), orig = str(x.original);
+    if (!nome || FEATS[ruleKey(nome)] || (orig && FEATS[ruleKey(orig)])) continue;
+    const cat = FEAT_CAT[x.categoria] ? x.categoria : 'geral', abs = AB.filter(a => arr(x.atributos).includes(a)), ra = AB.filter(a => arr(x.reqAtr).includes(a));
+    const req = {}; if (ra.length){ req.ab = ra; req.min = Math.max(1, Math.min(30, parseInt(x.reqMin,10)||13)); } if (x.reqMagia) req.mag = true;
+    const f = F(nome, orig || nome, cat, abs.length===6 ? '*' : abs.join(','), req, str(x.texto), {rep:!!x.repetivel, pre:str(x.reqOutro)});
+    f.hb = true; f.id = x.id;
+    const pre = featPre(f), corpo = f.txt + (f.abs.length ? `\nAumento de atributo: +1 em ${f.abs.length===6?'um atributo à sua escolha':f.abs.map(a=>AB_NOME[a]).join(' ou ')} (máximo ${f.max}). A ficha aplica ao escolher o talento na subida de nível.` : '');
+    const rules = []; [f.nome, f.en].forEach(n => regra(ruleKey(n)+'|talento', [`${FEAT_CAT[f.cat]} · Homebrew${pre?' · Pré-requisito: '+pre:''}`, corpo], rules));
+    hbRegrasFeitas.push({tal:f, rules});
+  }
 }
 
 /* ============ MAGIAS DO SRD 5.2 (truques ao 3º círculo) ============
@@ -1361,7 +1427,7 @@ function derive(c){
     const slots = cls.magia.tipo==='total' ? FULL_SLOTS[c.nivel] : cls.magia.tipo==='meia' ? FULL_SLOTS[Math.ceil(c.nivel/2)] : null;
     const pacto = cls.magia.tipo==='pacto' ? PACT(c.nivel) : null;
     magia = {ab, cd:8+P+m[ab], atk:P+m[ab], tipo:cls.magia.tipo, slots, pacto,
-      truques: truquesDe(c.classe,c.nivel), preparadas: PREP[c.classe][c.nivel-1], maxCirc: pacto ? pacto.circ : slots.length};
+      truques: truquesDe(c.classe,c.nivel), preparadas: (PREP[c.classe]||PREP_A)[c.nivel-1], maxCirc: pacto ? pacto.circ : slots.length};
   }
   const d = {cls, sp, m, P, max:hpMax(c), ac, init:m.DES+(alerta?P:0), desl:sp.desl, saves, skills, passiva:10+perc, magia};
   d.ataques = attacks(c,d);
@@ -2174,7 +2240,7 @@ function actionForm(c,d){
     if (c.nivel>=20){ body=`<div class="muted">Nível máximo atingido.</div>`; bloqueia=true; }
     else { const nl=c.nivel+1; const asi=isAsiLevel(d.cls,nl); const media=d.cls.dado/2+1;
       const nd = d.magia ? derive({...c, nivel:nl}).magia : null;
-      body=`<div class="small muted" style="margin-bottom:8px">Nível ${c.nivel} → ${nl}. Proficiência ${sg(profBonus(nl))}.${nl===3?' Escolha da subclasse.':''}${asi?(nl===19?' Dádiva épica ou Melhoria de Atributo.':' Melhoria de Atributo ou talento.'):''}${nd?` Magia: ${nd.truques} truques, ${nd.preparadas} preparadas, até ${nd.maxCirc}º círculo.`:''}</div>
+      body=`<div class="small muted" style="margin-bottom:8px">Nível ${c.nivel} → ${nl}. Proficiência ${sg(profBonus(nl))}.${nl===3?' Escolha da subclasse.':''}${(d.cls.feats||[]).some(([l])=>l===nl)?' Novas características de classe: '+h(d.cls.feats.filter(([l])=>l===nl).map(f=>f[1]).join(', '))+'.':''}${asi?(nl===19?' Dádiva épica ou Melhoria de Atributo.':' Melhoria de Atributo ou talento.'):''}${nd?` Magia: ${nd.truques} truques, ${nd.preparadas} preparadas, até ${nd.maxCirc}º círculo.`:''}</div>
       ${(()=>{ const lr=lvlRollFor(c);
         if (lr) return `<input type="hidden" name="hp" value="rolado"><input type="hidden" name="rolado" value="${lr.v}">
         <div class="lvl-box" style="margin:0 0 12px"><b>Pontos de vida: rolou ${lr.v} no d${d.cls.dado}</b> <span class="small muted">· rolado no app em ${fmtDate(lr.at)}</span>
@@ -2352,7 +2418,7 @@ function viewSheet(){
         <div class="cols2">
           <div class="stack">
             ${spellPanel(c,d)}
-            <div class="panel"><h3>Traços e talentos</h3><div class="small">${d.sp.tracos.map(t=>`<div>• ${ruleLink(t,'traco')}</div>`).join('')}${(c.talentos||[]).map(t=>`<div>• ${ruleLink(t,'talento')}</div>`).join('')}${(()=>{ const sf=subFeats(c); return sf.length?`<div class="muted" style="margin-top:8px">Subclasse · ${h(subInfo(c).n)}</div>${sf.map(([l,n])=>`<div>• ${ruleLink(n,'subclasse')} <span class="muted">(nível ${l})</span></div>`).join('')}`:''; })()}</div></div>
+            <div class="panel"><h3>Traços e talentos</h3><div class="small">${d.sp.tracos.map(t=>`<div>• ${ruleLink(t,'traco')}</div>`).join('')}${(c.talentos||[]).map(t=>`<div>• ${ruleLink(t,'talento')}</div>`).join('')}${(()=>{ const cf=clsFeats(c); return cf.length?`<div class="muted" style="margin-top:8px">Classe · ${h(d.cls.nome)}</div>${cf.map(([l,n])=>`<div>• ${ruleLink(n,'classe')} <span class="muted">(nível ${l})</span></div>`).join('')}`:''; })()}${(()=>{ const sf=subFeats(c); return sf.length?`<div class="muted" style="margin-top:8px">Subclasse · ${h(subInfo(c).n)}</div>${sf.map(([l,n])=>`<div>• ${ruleLink(n,'subclasse')} <span class="muted">(nível ${l})</span></div>`).join('')}`:''; })()}</div></div>
           </div>
           <div class="stack">
             <div class="panel"><h3>Equipamento</h3><div class="small">${ARMORS[c.armadura]?ruleLink(ARMORS[c.armadura].nome,'armadura',` data-arm="${h(c.armadura)}"`):''}${c.escudo?` · ${ruleLink('Escudo','armadura')}`:''}${+c.caBonus?` · bônus ${sg(+c.caBonus)} CA`:''}${(c.talentos||[]).some(t=>/^ *(?:defesa|defense) *$/i.test(t))?` · ${ruleLink('Defesa','talento')} ${c.armadura!=='nenhuma'?'+1 CA':'(sem armadura, não soma)'}`:''}</div></div>
@@ -2502,7 +2568,7 @@ td{padding:2.5px 3px;border-bottom:1px solid #d3cbc1;font-size:9.5px;vertical-al
     </div>
     <div style="display:flex;flex-direction:column;gap:7px">
       <div class="sec"><h3>Armas e truques de dano</h3><table><tr><th>Nome</th><th>Bônus / CD</th><th>Dano e tipo</th><th>Notas</th></tr>${armas}</table></div>
-      <div class="sec grow"><h3>Características de classe</h3><div class="txt">${c.subclasse?`Subclasse: ${h(c.subclasse)}\n`:''}</div>${'<div class="blank"></div>'.repeat(6)}</div>
+      <div class="sec grow"><h3>Características de classe</h3><div class="txt">${clsFeats(c).map(([l,n])=>'• '+h(n)+' ('+l+')\n').join('')}${c.subclasse?`Subclasse: ${h(c.subclasse)}\n`:''}${subFeats(c).map(([l,n])=>'• '+h(n)+' ('+l+')\n').join('')}</div>${'<div class="blank"></div>'.repeat(6)}</div>
       <div class="row">
         <div class="sec grow"><h3>Traços da espécie</h3><div class="txt">${d.sp.tracos.map(t=>'• '+h(t)).join('\n')}</div></div>
         <div class="sec grow"><h3>Talentos</h3><div class="txt">${(c.talentos||[]).map(t=>'• '+h(t)).join('\n')||'&nbsp;'}</div></div>
@@ -2593,7 +2659,7 @@ function popData(p){
     srd=true;
   } else add(ruleBuiltin(p.n, p.ctx));
   if (p.ctx==='prop') titulo = titulo.charAt(0).toUpperCase()+titulo.slice(1);
-  if (!tipo) tipo = {magia:'Magia', item:'Item', talento:'Talento', traco:'Traço', subclasse:'Característica de subclasse'}[p.ctx] || 'Regra';
+  if (!tipo) tipo = {magia:'Magia', item:'Item', talento:'Talento', traco:'Traço', subclasse:'Característica de subclasse', classe:'Característica de classe'}[p.ctx] || 'Regra';
   return {titulo, tipo, corpo, srd, comp, slug:ruleSlug(comp)};
 }
 function renderPop(force){
@@ -2825,7 +2891,7 @@ const MESA_API = {
   grupo: (camp, extras) => grupoFichas(camp||'', extras||[]), campanhas: () => campaigns(elegiveis()),
   candidatos: (camp, extras) => candidatosGrupo(camp||'', extras||[]),
   mudarPv: (id, modo, n) => { const c=S.chars.find(x=>x.id===id); if (c) aplicarPv(c, modo, n); },
-  abrirFicha: id => abrirFicha(id), toast: m => toast(m),
+  abrirFicha: id => abrirFicha(id), toast: m => toast(m), fichas: () => S.chars,
   abaAv: () => S.aba==='aventuras', abaHb: () => S.aba==='homebrew', abaEv: () => S.aba==='eventos', irAba: k => { entrarAba(k); render(true); window.scrollTo(0,0); }
 };
 const MAS = (function(M){
@@ -4776,6 +4842,9 @@ function hbConflito(tipo, nomes, ignorar){
   if (tipo==='item') return alvo.some(n => Object.keys(ITEM_DESC).some(k => lim(k)===n && !(HB_ITEM[k] && HB_ITEM[k].id===ignorar)));
   if (tipo==='armadilha') return alvo.some(n => nomesArm().some(k => lim(k)===n) || HB_ARM.some(a => lim(a.nome)===n && a.id!==ignorar));
   if (tipo==='perigo') return alvo.some(n => HB_PER.some(a => lim(a.nome)===n && a.id!==ignorar));
+  if (tipo==='classe') return alvo.some(n => Object.values(CLASSES).some(c => ruleKey(c.nome)===ruleKey(n) && c.id!==ignorar));
+  if (tipo==='talento') return alvo.some(n => { const f = FEATS[ruleKey(n)]; return f && f.id!==ignorar; });
+  if (tipo==='subclasse') return alvo.some(n => Object.values(SUB_RES).some(L => L.some(e => ruleKey(e.n)===ruleKey(n) && e.id!==ignorar)));
   return alvo.some(n => MON.some(m => (lim(m.pt)===n || lim(m.en)===n) && !(m.hb && HB_MON[m.en] && HB_MON[m.en].id===ignorar)));
 }
 function aplicarHb(lista){
@@ -4820,6 +4889,7 @@ function aplicarHb(lista){
       hbFeitos.push({per:x.id});
     }
   }
+  aplicarHbRegras(docs); /* classes, subclasses e talentos vão para as fichas */
   remontarMonRe();
 }
 /* usado pela aba Aventuras: gerar a planta, guardar e abrir a masmorra de um capítulo */
@@ -4845,10 +4915,12 @@ const hb = {
   img: {pode:podeImg, de:en=>{ const x = imgDe(en); return x ? {src:imgSrc(x), jogadores:!!x.jogadores} : null; }, recortar:recortarImg, salvar:salvarImg, remover:removerImg, jogadores:imgJogadores, mover:moverImg, erro:erroImg},
   temas: () => Object.fromEntries(Object.entries(TEMAS).map(([k,t])=>[k,{nome:t.nome, aberto:!!t.aberto}])),
   CRXP, RAR_NOME, conflito: hbConflito, fonteTxt,
-  ativo: id => hbFeitos.some(f => f.arm ? f.arm===id : f.per ? f.per===id : f.m ? HB_MON[f.m.en] && HB_MON[f.m.en].id===id : HB_ITEM[f.nome] && HB_ITEM[f.nome].id===id),
+  ativo: id => hbRegrasFeitas.some(f => f.cls ? CLASSES[f.cls].id===id : f.sub ? f.sub.e.id===id : f.tal.id===id) || hbFeitos.some(f => f.arm ? f.arm===id : f.per ? f.per===id : f.m ? HB_MON[f.m.en] && HB_MON[f.m.en].id===id : HB_ITEM[f.nome] && HB_ITEM[f.nome].id===id),
   aplicar(lista){ aplicarHb(lista); if (!S.popEdit) render(); },
   /* monstros ou itens que já estão em masmorras salvas (para avisar antes de excluir) */
   emUso(x){ const nome = x.tipo==='monstro' ? x.en : x.nome; let n = 0;
+    if (x.tipo==='classe' || x.tipo==='subclasse' || x.tipo==='talento'){ const k = hbClasseKey(x.id), nk = ruleKey(x.nome);
+      return (M.fichas()||[]).filter(c => x.tipo==='classe' ? c.classe===k : x.tipo==='subclasse' ? c.classe===x.classe && ruleKey(c.subclasse)===nk : (c.talentos||[]).some(t => ruleKey(t)===nk)).length; }
     if (x.tipo==='armadilha' || x.tipo==='perigo'){ const k = x.tipo==='perigo' ? 'perigo' : 'armadilha', kc = x.tipo==='perigo' ? 'perCorr' : 'armCorr';
       Object.values(S.lista).forEach(d => (d.andares||[d]).forEach(A => { (A.salas||[]).forEach(s => { if (s[k] && s[k].nome===nome) n++; }); (A[kc]||[]).forEach(a => { if (a.nome===nome) n++; }); }));
       return n; }
@@ -5706,8 +5778,29 @@ const mod = v => { const m = Math.floor((v - 10) / 2); return (m >= 0 ? '+' : '�
 const DEMO = 'mesa-homebrew-demo';
 
 const formVazio = () => ({tipo:'monstro', imgs:[], texto:'', link:'', fonte:'', soChefe:false, soSalas:false});
-const UM = {monstro:'um monstro', item:'um item mágico', armadilha:'uma armadilha', perigo:'um perigo (de ambiente ou de masmorra)'};
-const ORDEM = {monstro:0, item:1, armadilha:2, perigo:3};
+const UM = {monstro:'um monstro', item:'um item mágico', armadilha:'uma armadilha', perigo:'um perigo (de ambiente ou de masmorra)', classe:'uma classe de personagem', subclasse:'uma subclasse de personagem', talento:'um talento de personagem'};
+const ORDEM = {monstro:0, item:1, armadilha:2, perigo:3, classe:4, subclasse:5, talento:6};
+/* classes, subclasses e talentos: vão para as fichas (aplicarHbRegras) */
+const REGRA_T = {classe:1, subclasse:1, talento:1};
+const CLS_EN = {barbaro:'barbarian', bardo:'bard', bruxo:'warlock', clerigo:'cleric', druida:'druid', feiticeiro:'sorcerer', guerreiro:'fighter', ladino:'rogue', mago:'wizard', monge:'monk', paladino:'paladin', patrulheiro:'ranger'};
+const classesLista = () => Object.entries(CLASSES).map(([k, c]) => ({k, nome:c.nome, hb:!!c.hb}));
+const classeDe = v => { const n = norm(v).replace(/^classe\s+(d[eo]\s+)?/, ''); if (!n) return ''; const L = classesLista();
+  return (L.find(c => c.k === str(v)) || L.find(c => norm(c.nome) === n) || L.find(c => CLS_EN[c.k] === n) || L.find(c => n.includes(norm(c.nome))) || {}).k || ''; };
+const classeNome = k => (CLASSES[k] && !(CLASSES[k] === HB_CLS_VAZIA)) ? CLASSES[k].nome : 'classe que não existe mais';
+const periciaDe = v => { const n = norm(v); return (SKILLS.find(s => norm(s[1]) === n || s[0] === n) || [])[0] || ''; };
+const MAGIA_T = {'':'Não conjura', total:'Conjurador completo (como Mago)', meia:'Meio conjurador (como Paladino)', pacto:'Magia de Pacto (como Bruxo)'};
+const CAT_T = {origem:'Origem', geral:'Geral (nível 4+)', estilo:'Estilo de luta', epica:'Dádiva épica (nível 19+)'};
+const featTxt = L => arr(L).map(f => f[0] + ' · ' + f[1] + (f[2] ? '. ' + f[2] : '')).join('\n');
+function featLinhas(t){
+  const ruins = [], fs = [];
+  String(t || '').split('\n').map(s => s.trim()).filter(Boolean).forEach(l => {
+    const m = l.match(/^(?:n[ií]vel\s*)?(\d{1,2})\s*(?:º|°)?\s*[·:\-–—|.)]\s*(.+)$/i);
+    if (!m || +m[1] < 1 || +m[1] > 20){ ruins.push(l); return; }
+    const r = m[2].trim(), i = r.indexOf('. ');
+    fs.push(i > 0 ? [+m[1], r.slice(0, i).trim(), r.slice(i + 2).trim()] : [+m[1], r.replace(/\.$/, '').trim(), '']);
+  });
+  return {fs, ruins};
+}
 const nomeDe = x => x.tipo === 'monstro' ? x.pt : x.nome;
 const S = {tela:'catalogo', filtro:'todos', lista:{}, carregou:false, aviso:'', msg:'', erro:'', db:null, sample:null, lim:null,
   form:formVazio(), ger:null, rev:null, apagar:null, aberto:null, salvando:false};
@@ -5752,14 +5845,25 @@ function prompt(f){
   const mon = f.tipo === 'monstro', arm = f.tipo === 'armadilha', per = f.tipo === 'perigo';
   const imgFmt = mon && f.imgs.length ? ', "imagem": {"print": 1, "caixa": [0.05, 0.1, 0.5, 0.6]}' : '';
   const fonteFmt = '"fonte": {"nome": "", "pagina": "", "certeza": "alta, media ou baixa", "como": "uma frase dizendo como identificou"}';
-  const formato = per
+  const cls = f.tipo === 'classe', scl = f.tipo === 'subclasse', tal = f.tipo === 'talento';
+  const feitos = '"caracteristicas": [[nível de 1 a 20, "Nome da característica", "o que ela faz, completo"], ...]';
+  const formato = cls
+    ? `{"nome": "nome em português", "original": "nome original, como está na fonte", "dado": dado de vida só o número (6, 8, 10 ou 12), "saves": ["os dois atributos de salvaguarda, em siglas FOR DES CON INT SAB CAR"], "pericias": ["perícias que a classe pode escolher, com os nomes oficiais em português"], "nPericias": quantas perícias escolhe, "armaduras": "treino com armaduras, ex.: Leves, médias e escudos (ou Nenhuma)", "armas": "simples ou marciais (marciais = simples e marciais)", "magia": {"tipo": "nenhuma, total, meia ou pacto", "atributo": "sigla do atributo de conjuração, ou vazio"}, "truques": [truques conhecidos no nível 1, no nível 4 e no nível 10], ${feitos}, ${fonteFmt}}`
+    : scl
+    ? `{"nome": "nome em português", "original": "nome original, como está na fonte", "classe": "nome da classe base em português, ex.: Mago", ${feitos}, ${fonteFmt}}`
+    : tal
+    ? `{"nome": "nome em português", "original": "nome original, como está na fonte", "categoria": "origem, geral, estilo ou epica", "atributos": ["siglas dos atributos que o talento pode aumentar em +1, ou vazio"], "prereq": {"atributos": ["siglas, se o pré-requisito for um atributo mínimo"], "minimo": 13, "conjurador": false, "outro": "outro pré-requisito, em texto, ou vazio"}, "repetivel": false, "texto": "o que o talento faz, completo; um benefício por linha, começando com •", ${fonteFmt}}`
+    : per
     ? `{"nome": "nome em português", "original": "nome original, como está na fonte", "descricao": "como o perigo é e onde costuma estar", "efeito": "o que acontece com quem entra em contato, com salvaguardas, CDs e dano", "cd": "CD para perceber ou identificar o perigo, só o número, ou vazio", "lidar": "como evitar, destruir ou remover, se a fonte disser, ou vazio", "niveis": [nível mínimo, nível máximo do grupo, de 1 a 20], "temas": ["chaves dos temas"], ${fonteFmt}}`
     : arm
     ? `{"nome": "nome em português", "original": "nome original, como está na fonte", "gatilho": "o que dispara a armadilha", "efeito": "o que acontece, com salvaguardas, CDs e dano", "cd": "CD para perceber e desarmar, só o número, ou vazio", "desarmar": "como desarmar, se a fonte disser, ou vazio", "temas": ["chaves dos temas"], ${fonteFmt}}`
     : mon
     ? `{"pt": "nome em português", "en": "nome original, como está na fonte", "cr": "Nível de Desafio só com o número: 0, 1/8, 1/4, 1/2, 1 a 30", "tipo": "Tamanho, tipo e tendência, ex.: Médio Morto-Vivo, Neutro e Mau", "ca": "16", "pv": "45 (6d10+12)", "desl": "9 m, voo 18 m", "ini": "+2 (12), ou vazio", "atr": [FOR, DES, CON, INT, SAB, CAR], "info": [["Salvaguardas", "..."], ["Perícias", "..."], ["Resistências", "..."], ["Imunidades", "..."], ["Sentidos", "..."], ["Idiomas", "..."]], "linhas": ["— Traços —", "Nome do traço. Texto.", "— Ações —", "Ataque Múltiplo. Texto.", "Nome do ataque. Corpo a corpo +5 (1,5 m). Acerto: 8 (1d10+3) Perfurante."], "temas": ["chaves dos temas"], "fonte": {"nome": "", "pagina": "", "certeza": "alta, media ou baixa", "como": "uma frase dizendo como identificou"}${imgFmt}}`
     : `{"nome": "nome em português", "original": "nome original, como está na fonte", "raridade": "comum, incomum, rara, muitorara, lendaria ou artefato", "categoria": "ex.: Arma (espada longa), Anel, Poção, Item Maravilhoso", "sint": "Exige sintonia (e por quem), ou vazio se não exige", "linhas": ["Nome da propriedade. Texto.", "..."], "fonte": {"nome": "", "pagina": "", "certeza": "alta, media ou baixa", "como": "uma frase dizendo como identificou"}}`;
-  const oQue = mon ? 'a ficha do monstro' : arm ? 'a descrição da armadilha' : per ? 'a descrição do perigo' : 'a descrição do item', ser = mon ? 'a ficha de um monstro' : arm ? 'uma armadilha' : per ? 'um perigo' : 'um item';
+  const oQue = mon ? 'a ficha do monstro' : arm ? 'a descrição da armadilha' : per ? 'a descrição do perigo' : cls ? 'a descrição da classe' : scl ? 'a descrição da subclasse' : tal ? 'a descrição do talento' : 'a descrição do item', ser = mon ? 'a ficha de um monstro' : arm ? 'uma armadilha' : per ? 'um perigo' : cls ? 'uma classe' : scl ? 'uma subclasse' : tal ? 'um talento' : 'um item';
+  const passo3 = cls ? 'Em "caracteristicas", ponha uma entrada para cada característica da tabela da classe, com o nível em que ela é ganha (inclua as que se repetem com nome diferente, mas não a escolha de subclasse nem as Melhorias de Atributo, que a Mesa já trata). Se a característica melhora em níveis mais altos, explique no próprio texto. Em "truques", use 0 se a classe não conhece truques.'
+    : scl ? 'Em "caracteristicas", ponha uma entrada para cada característica da subclasse, com o nível em que ela é ganha. Se a característica melhora em níveis mais altos, explique no próprio texto.'
+    : tal ? 'Em "categoria": origem (talentos de antecedente, nível 1), geral (pré-requisito nível 4), estilo (Estilo de Luta) ou epica (Dádiva Épica, nível 19). Em "atributos", só os que o próprio talento aumenta; se for qualquer um, ponha as seis siglas. Não repita o aumento de atributo nem o pré-requisito no "texto".' : '';
   return `Você ajuda um mestre de D&D 5ª edição (regras de 2024) a cadastrar ${UM[f.tipo] || UM.monstro} na Mesa de RPG dele.
 
 ## Material
@@ -5768,7 +5872,7 @@ ${mat.join('\n')}
 ## O que fazer
 1. Leia ${oQue} e transcreva todo o conteúdo em português do Brasil, com os termos oficiais do D&D 2024 em português (Classe de Armadura, Pontos de Vida, Vantagem, Ação Bônus, Reação, salvaguarda, Força, Destreza, Constituição, Inteligência, Sabedoria, Carisma, condições e tipos de dano com inicial maiúscula). Converta distâncias para metros (5 pés = 1,5 m).
 2. Não invente nada. Se uma parte estiver ilegível ou cortada, escreva [ilegível] no lugar. Se o material não for ${ser}, devolva os campos vazios e explique em fonte.como.
-3. ${per ? 'Em "descricao", diga como o perigo é (aparência, onde fica). Em "efeito", escreva em texto corrido o que acontece (salvaguardas, CDs, dano, condições, duração). Em "cd", ponha só o número da CD para perceber ou identificar o perigo; as outras CDs ficam no efeito. Se a fonte disser como evitar, destruir ou remover (ex.: fogo, luz do sol, frio), explique em "lidar". Em "niveis", ponha a faixa de níveis do grupo para a qual a fonte indica o perigo (se ela disser como escalar para níveis mais altos, vá até 20; se não disser nada, use [1, 20]); se houver tabela de níveis mais altos, inclua os valores dela no efeito.' : arm ? 'Em "efeito", escreva em texto corrido o que acontece (salvaguardas, CDs, dano, condições, duração). Em "cd", ponha só o número da CD para perceber ou desarmar a armadilha; as outras CDs ficam no efeito. Se a fonte disser como desarmar, explique em "desarmar".' : 'Cada linha de "linhas" começa com o nome do traço, ação ou propriedade seguido de ponto. Use linhas de seção como "— Ações —" quando a ficha tiver seções.'}
+3. ${passo3 ? passo3 : per ? 'Em "descricao", diga como o perigo é (aparência, onde fica). Em "efeito", escreva em texto corrido o que acontece (salvaguardas, CDs, dano, condições, duração). Em "cd", ponha só o número da CD para perceber ou identificar o perigo; as outras CDs ficam no efeito. Se a fonte disser como evitar, destruir ou remover (ex.: fogo, luz do sol, frio), explique em "lidar". Em "niveis", ponha a faixa de níveis do grupo para a qual a fonte indica o perigo (se ela disser como escalar para níveis mais altos, vá até 20; se não disser nada, use [1, 20]); se houver tabela de níveis mais altos, inclua os valores dela no efeito.' : arm ? 'Em "efeito", escreva em texto corrido o que acontece (salvaguardas, CDs, dano, condições, duração). Em "cd", ponha só o número da CD para perceber ou desarmar a armadilha; as outras CDs ficam no efeito. Se a fonte disser como desarmar, explique em "desarmar".' : 'Cada linha de "linhas" começa com o nome do traço, ação ou propriedade seguido de ponto. Use linhas de seção como "— Ações —" quando a ficha tiver seções.'}
 4. Fonte: diga de onde o conteúdo foi tirado (livro, suplemento, revista, site ou autor). Use logotipos, rodapé, número de página, marca d'água, o estilo da diagramação, o endereço do link e o seu conhecimento. Dê a página só se ela aparecer no material ou se você tiver certeza. Se não conseguir identificar, use o nome do site do link; sem link, escreva "Homebrew (fonte não identificada)" com certeza baixa. Se o mestre informou a fonte, use a dele.
 ${mon || arm || per ? `5. Escolha de 1 a 3 temas de masmorra em que ${mon ? 'esta criatura' : arm ? 'esta armadilha' : 'este perigo'} faz sentido, usando só estas chaves: ${temas}.\n` : ''}${mon && f.imgs.length ? `6. Se algum print mostrar a ilustração da criatura (desenho ou arte), diga em qual print ela está (1 = o primeiro) e a caixa que contém só a ilustração, em frações da largura e da altura da imagem: [esquerda, topo, direita, base], de 0 a 1. Sem ilustração, use "print": 0.\n` : ''}
 ## Formato
@@ -5793,6 +5897,23 @@ function imgInicial(r, f){
 }
 function revDe(r, f){
   r = r && typeof r === 'object' ? r : {};
+  const sigla = L => ATR.filter(a => arr(L).map(v => str(v).toUpperCase()).includes(a));
+  const feitas = L => featTxt(arr(L).filter(x => Array.isArray(x) && parseInt(x[0], 10) >= 1 && str(x[1])).map(x => [parseInt(x[0], 10), str(x[1]), str(x[2])]));
+  if (f.tipo === 'classe'){
+    const mt = norm(r.magia && r.magia.tipo), tipo = mt.startsWith('tot') || mt.startsWith('comp') ? 'total' : mt.startsWith('mei') ? 'meia' : mt.startsWith('pac') ? 'pacto' : '';
+    const ab = str(r.magia && r.magia.atributo).toUpperCase(), tr = arr(r.truques).map(v => parseInt(v, 10) || 0);
+    return {tipo:'classe', nome:str(r.nome), original:str(r.original), dado:[6, 8, 10, 12].includes(+r.dado) ? String(+r.dado) : '', saves:sigla(r.saves).slice(0, 2),
+      pericias:[...new Set(arr(r.pericias).map(periciaDe).filter(Boolean))], nPericias:str(r.nPericias).match(/^\d$/) ? str(r.nPericias) : '2',
+      armaduras:str(r.armaduras), armas:/marcia/i.test(str(r.armas)) ? 'sm' : 's', magia:tipo, magiaAb:ATR.includes(ab) ? ab : '',
+      truques:tr.length === 3 && tr.some(Boolean) ? tr.join('/') : '', featsTxt:feitas(r.caracteristicas), fonte:fonteDe(r, f)};
+  }
+  if (f.tipo === 'subclasse') return {tipo:'subclasse', nome:str(r.nome), original:str(r.original), classe:classeDe(r.classe), featsTxt:feitas(r.caracteristicas), fonte:fonteDe(r, f)};
+  if (f.tipo === 'talento'){
+    const c = norm(r.categoria), p = r.prereq && typeof r.prereq === 'object' ? r.prereq : {};
+    return {tipo:'talento', nome:str(r.nome), original:str(r.original), categoria:c.startsWith('orig') ? 'origem' : c.startsWith('est') ? 'estilo' : c.startsWith('ep') ? 'epica' : 'geral',
+      atributos:sigla(r.atributos), reqAtr:sigla(p.atributos), reqMin:parseInt(p.minimo, 10) >= 1 ? String(parseInt(p.minimo, 10)) : '13', reqMagia:!!p.conjurador, reqOutro:str(p.outro),
+      repetivel:!!r.repetivel, texto:str(r.texto), fonte:fonteDe(r, f)};
+  }
   if (f.tipo === 'armadilha'){
     const cd = str(r.cd).match(/\d{1,2}/);
     return {tipo:'armadilha', nome:str(r.nome), original:str(r.original), gatilho:str(r.gatilho), efeito:str(r.efeito), cd:cd ? cd[0] : '', desarmar:str(r.desarmar),
@@ -5871,6 +5992,38 @@ function montar(r){
   const fonte = {nome:str(r.fonte.nome), pagina:str(r.fonte.pagina), link:str(r.fonte.link), certeza:r.fonte.certeza || '', como:str(r.fonte.como)};
   if (!fonte.nome) return {erro:'Diga de onde veio o conteúdo (campo Fonte). Se foi você que criou, escreva "Criação do mestre".'};
   if (fonte.link && !/^https?:\/\//i.test(fonte.link)) return {erro:'O link precisa começar com http:// ou https://.'};
+  const feitas = (t, oQue) => { const {fs, ruins} = featLinhas(t); return ruins.length ? {erro:'Nas características, cada linha começa com o nível, assim: "3 · Nome. O que faz." Confira: ' + h(ruins[0].slice(0, 80))} : !fs.length ? {erro:'Escreva pelo menos uma característica d' + oQue + '.'} : {fs}; };
+  if (r.tipo === 'classe'){
+    const nome = str(r.nome);
+    if (!nome) return {erro:'Dê um nome à classe.'};
+    if (!r.dado) return {erro:'Escolha o dado de vida da classe.'};
+    if (r.saves.length !== 2) return {erro:'Marque os dois atributos de salvaguarda da classe.'};
+    if (!/^\d$/.test(str(r.nPericias))) return {erro:'Diga quantas perícias a classe escolhe (0 a 8).'};
+    if (r.magia && !r.magiaAb) return {erro:'Escolha o atributo de conjuração da classe.'};
+    const tr = str(r.truques) ? str(r.truques).split(/[\/,; ]+/).filter(Boolean).map(Number) : [];
+    if (tr.length && !(tr.length === 3 && tr.every(n => Number.isInteger(n) && n >= 0 && n <= 10))) return {erro:'Truques: escreva três números, nos níveis 1, 4 e 10 (ex.: 2/3/4), ou deixe vazio.'};
+    const ft = feitas(r.featsTxt, 'a classe'); if (ft.erro) return ft;
+    if (X.conflito('classe', [nome], r.id)) return {erro:'Já existe uma classe chamada "' + h(nome) + '" na Mesa. Mude o nome.'};
+    return {doc:{tipo:'classe', nome, original:str(r.original), dado:+r.dado, saves:r.saves, pericias:r.pericias, nPericias:+r.nPericias, armaduras:str(r.armaduras), armas:r.armas === 'sm' ? 'sm' : 's',
+      magia:r.magia ? {tipo:r.magia, ab:r.magiaAb} : null, truques:tr.length ? tr : null, caracteristicas:ft.fs, fonte}};
+  }
+  if (r.tipo === 'subclasse'){
+    const nome = str(r.nome);
+    if (!nome) return {erro:'Dê um nome à subclasse.'};
+    if (!r.classe || !CLASSES[r.classe] || CLASSES[r.classe] === HB_CLS_VAZIA) return {erro:'Escolha a classe da subclasse.'};
+    const ft = feitas(r.featsTxt, 'a subclasse'); if (ft.erro) return ft;
+    if (X.conflito('subclasse', [nome], r.id)) return {erro:'Já existe uma subclasse chamada "' + h(nome) + '" na Mesa. Mude o nome.'};
+    return {doc:{tipo:'subclasse', nome, original:str(r.original), classe:r.classe, caracteristicas:ft.fs, fonte}};
+  }
+  if (r.tipo === 'talento'){
+    const nome = str(r.nome), min = str(r.reqMin);
+    if (!nome) return {erro:'Dê um nome ao talento.'};
+    if (!str(r.texto)) return {erro:'Escreva o que o talento faz.'};
+    if (r.reqAtr.length && !(/^\d{1,2}$/.test(min) && +min >= 1 && +min <= 30)) return {erro:'O valor mínimo do atributo precisa ser um número de 1 a 30.'};
+    if (X.conflito('talento', [nome, str(r.original)].filter(Boolean), r.id)) return {erro:'Já existe um talento chamado "' + h(nome) + '"' + (str(r.original) ? ' ou "' + h(r.original) + '"' : '') + ' na Mesa. Mude o nome.'};
+    return {doc:{tipo:'talento', nome, original:str(r.original), categoria:r.categoria, atributos:r.atributos, reqAtr:r.reqAtr, reqMin:r.reqAtr.length ? +min : null, reqMagia:!!r.reqMagia, reqOutro:str(r.reqOutro),
+      repetivel:!!r.repetivel, texto:str(r.texto), fonte}};
+  }
   if (r.tipo === 'armadilha'){
     const nome = str(r.nome), cd = str(r.cd);
     if (!nome) return {erro:'Dê um nome à armadilha.'};
@@ -5915,14 +6068,18 @@ async function salvar(){
   const r = S.rev; if (!r || S.salvando) return;
   const m = montar(r); if (m.erro){ S.erro = m.erro; render(); return; }
   const antigo = r.id && S.lista[r.id];
-  const id = r.id || ({item:'i-', armadilha:'a-', perigo:'p-'}[r.tipo] || 'm-') + slug(nomeDe(m.doc)) + '-' + Math.random().toString(36).slice(2, 6);
+  const id = r.id || ({item:'i-', armadilha:'a-', perigo:'p-', classe:'c-', subclasse:'s-', talento:'t-'}[r.tipo] || 'm-') + slug(nomeDe(m.doc)) + '-' + Math.random().toString(36).slice(2, 6);
   const doc = {...m.doc, autor:(antigo && antigo.autor) || M.myId() || '', criado:(antigo && antigo.criado) || Date.now(), atualizado:Date.now()};
   S.salvando = true; S.erro = ''; render();
   try {
     await salvarDoc(id, doc);
     const avisoImg = doc.tipo === 'monstro' ? await gravarImg(r, antigo, doc) : '';
     const nome = nomeDe(doc), temasTxt = () => arr(doc.temas).map(t => (X.temas()[t] || {}).nome || t).join(', ');
-    S.msg = h(nome) + (antigo ? (doc.tipo === 'armadilha' ? ' foi atualizada.' : ' foi atualizado.') : ' entrou no catálogo.') + ' ' + (doc.tipo === 'armadilha' || doc.tipo === 'perigo'
+    const fem = doc.tipo === 'armadilha' || doc.tipo === 'classe' || doc.tipo === 'subclasse';
+    S.msg = h(nome) + (antigo ? (fem ? ' foi atualizada.' : ' foi atualizado.') : ' entrou no catálogo.') + ' ' + (REGRA_T[doc.tipo]
+      ? (doc.tipo === 'classe' ? 'Ela já aparece na lista de classes ao criar uma ficha.' : doc.tipo === 'subclasse' ? 'Ela já aparece na escolha de subclasse (nível 3) de ' + h(classeNome(doc.classe)) + '.' : 'Ele já aparece na escolha de talentos das fichas' + (doc.categoria === 'origem' ? '' : ' (na subida de nível)') + '.')
+        + (!antigo ? '' : doc.tipo === 'classe' ? ' As fichas desta classe já pegam a mudança.' : antigo.nome !== doc.nome ? ' Atenção: as fichas que usavam o nome antigo ("' + h(antigo.nome) + '") deixam de reconhecer ' + (doc.tipo === 'talento' ? 'o talento' : 'a subclasse') + '; troque o nome nelas.' : ' As fichas que usam este nome já pegam a mudança.')
+      : doc.tipo === 'armadilha' || doc.tipo === 'perigo'
       ? (doc.tipo === 'perigo' ? 'Ele' : 'Ela') + ' já pode aparecer ' + (doc.soSalas ? 'nas salas' : 'nas salas e nos corredores') + ' das masmorras novas de ' + temasTxt() + (doc.tipo === 'perigo' && niveisTxt(doc) !== 'qualquer nível' ? ', para grupos de ' + niveisTxt(doc) : '') + '.'
       : doc.tipo === 'monstro'
       ? (doc.soChefe ? 'Ele só aparece como chefe, nas masmorras novas de ' : 'Ele já pode aparecer nas masmorras novas de ') + doc.temas.map(t => (X.temas()[t] || {}).nome || t).join(', ') + '.'
@@ -5953,6 +6110,12 @@ function editar(id){
     const a = X.img.de(x.en || x.pt);
     S.rev.img = {modo:a ? 'atual' : 'nenhuma', i:0, caixa:[0, 0, 1, 1], achou:false, jogadores:!!(a && a.jogadores), arquivo:null};
   } else if (x.tipo === 'armadilha') S.rev = {id, tipo:'armadilha', nome:x.nome || '', original:x.original || '', gatilho:x.gatilho || '', efeito:x.efeito || '', cd:str(x.cd), desarmar:x.desarmar || '', temas:arr(x.temas).slice(), soSalas:!!x.soSalas, fonte:{...(x.fonte || {})}};
+  else if (x.tipo === 'classe') S.rev = {id, tipo:'classe', nome:x.nome || '', original:x.original || '', dado:x.dado ? String(x.dado) : '', saves:arr(x.saves).slice(), pericias:arr(x.pericias).slice(),
+    nPericias:str(x.nPericias) || '2', armaduras:x.armaduras || '', armas:x.armas === 'sm' ? 'sm' : 's', magia:x.magia ? x.magia.tipo : '', magiaAb:x.magia ? x.magia.ab : '',
+    truques:arr(x.truques).length === 3 ? x.truques.join('/') : '', featsTxt:featTxt(x.caracteristicas), fonte:{...(x.fonte || {})}};
+  else if (x.tipo === 'subclasse') S.rev = {id, tipo:'subclasse', nome:x.nome || '', original:x.original || '', classe:x.classe || '', featsTxt:featTxt(x.caracteristicas), fonte:{...(x.fonte || {})}};
+  else if (x.tipo === 'talento') S.rev = {id, tipo:'talento', nome:x.nome || '', original:x.original || '', categoria:x.categoria || 'geral', atributos:arr(x.atributos).slice(), reqAtr:arr(x.reqAtr).slice(),
+    reqMin:x.reqMin ? String(x.reqMin) : '13', reqMagia:!!x.reqMagia, reqOutro:x.reqOutro || '', repetivel:!!x.repetivel, texto:x.texto || '', fonte:{...(x.fonte || {})}};
   else if (x.tipo === 'perigo') S.rev = {id, tipo:'perigo', nome:x.nome || '', original:x.original || '', descricao:x.descricao || '', efeito:x.efeito || '', cd:str(x.cd), lidar:x.lidar || '', nivelMin:str(x.nivelMin), nivelMax:str(x.nivelMax), temas:arr(x.temas).slice(), soSalas:!!x.soSalas, fonte:{...(x.fonte || {})}};
   else S.rev = {id, tipo:'item', nome:x.nome || '', original:x.original || '', raridade:x.raridade || '', categoria:x.categoria || '', sint:x.sint || '', linhasTxt:arr(x.linhas).join('\n'), tesouro:x.tesouro !== false, fonte:{...(x.fonte || {})}};
   S.rev.fonte = {nome:'', pagina:'', link:'', certeza:'', como:'', ...S.rev.fonte};
@@ -5966,7 +6129,26 @@ function manual(){
 
 /* ---------- telas ---------- */
 const fonteHtml = f => { f = f || {}; const t = h(X.fonteTxt(f)); return f.link ? `<a href="${h(f.link)}" target="_blank" rel="noopener noreferrer">${t} ↗</a>` : t; };
+const featsHtml = L => arr(L).map(f => `<p><b>Nível ${h(f[0])} · ${h(f[1])}.</b> ${h(f[2])}</p>`).join('');
+const linhasTxtHtml = t => String(t || '').split('\n').filter(s => s.trim()).map(l => `<p>${h(l)}</p>`).join('');
 function fichaHtml(x){
+  const orig = x.original && x.original !== x.nome ? `<p class="muted small">${h(x.original)}</p>` : '';
+  if (x.tipo === 'classe'){
+    const pr = arr(x.pericias).map(k => SKILL_NOME[k] || k);
+    return `<div class="ficha">${orig}
+    <p><b>Dado de vida</b> d${h(x.dado)} · <b>Salvaguardas</b> ${arr(x.saves).map(a => AB_NOME[a] || a).join(' e ')}</p>
+    <p><b>Perícias.</b> Escolha ${h(x.nPericias)} entre ${pr.length ? h(pr.join(', ')) : 'todas'}.</p>
+    <p><b>Armaduras.</b> ${h(x.armaduras || 'Nenhuma')} · <b>Armas.</b> ${x.armas === 'sm' ? 'Simples e marciais' : 'Simples'}</p>
+    <p><b>Magia.</b> ${x.magia ? h(MAGIA_T[x.magia.tipo]) + ', com ' + h(AB_NOME[x.magia.ab]) + (arr(x.truques).length === 3 ? ' · truques ' + x.truques.join('/') + ' (níveis 1, 4 e 10)' : '') : 'Não conjura.'}</p>
+    <h5>Características</h5>${featsHtml(x.caracteristicas)}</div>`;
+  }
+  if (x.tipo === 'subclasse') return `<div class="ficha">${orig}<p><b>Classe.</b> ${h(classeNome(x.classe))}</p><h5>Características</h5>${featsHtml(x.caracteristicas)}</div>`;
+  if (x.tipo === 'talento'){
+    const pre = [x.categoria === 'geral' ? 'nível 4+' : x.categoria === 'epica' ? 'nível 19+' : '', arr(x.reqAtr).length ? x.reqAtr.map(a => AB_NOME[a]).join(' ou ') + ' ' + x.reqMin + '+' : '', x.reqMagia ? 'conjuração ou Magia de Pacto' : '', x.reqOutro].filter(Boolean);
+    return `<div class="ficha">${orig}<p class="muted small">${h(CAT_T[x.categoria] || '')}${x.repetivel ? ' · pode ser escolhido mais de uma vez' : ''}</p>
+    ${pre.length ? `<p><b>Pré-requisito.</b> ${h(pre.join(', '))}</p>` : ''}${arr(x.atributos).length ? `<p><b>Aumento de atributo.</b> +1 em ${x.atributos.length === 6 ? 'um atributo à escolha' : h(x.atributos.map(a => AB_NOME[a]).join(' ou '))}</p>` : ''}
+    ${linhasTxtHtml(x.texto)}</div>`;
+  }
   if (x.tipo === 'armadilha') return `<div class="ficha">${x.original && x.original !== x.nome ? `<p class="muted small">${h(x.original)}</p>` : ''}
     <p><b>Gatilho.</b> ${h(x.gatilho || 'A critério do mestre.')}</p>
     <p><b>Perceber e desarmar.</b> ${x.cd ? 'CD ' + h(x.cd) : 'CD da faixa de nível do grupo'}${x.desarmar ? '. ' + h(x.desarmar) : ''}</p>
@@ -5991,19 +6173,24 @@ const sub = n => `<div class="subnav" role="group" aria-label="Homebrew">${[['ca
 function catalogo(){
   const todos = Object.values(S.lista).sort((a, b) => ((ORDEM[a.tipo] ?? 9) - (ORDEM[b.tipo] ?? 9)) || String(nomeDe(a) || '').localeCompare(String(nomeDe(b) || ''), 'pt'));
   const nM = todos.filter(x => x.tipo === 'monstro').length, nI = todos.filter(x => x.tipo === 'item').length, nA = todos.filter(x => x.tipo === 'armadilha').length, nP = todos.filter(x => x.tipo === 'perigo').length;
-  const FT = {monstros:'monstro', itens:'item', armadilhas:'armadilha', perigos:'perigo'};
+  const nC = todos.filter(x => x.tipo === 'classe').length, nS = todos.filter(x => x.tipo === 'subclasse').length, nT = todos.filter(x => x.tipo === 'talento').length;
+  const FT = {monstros:'monstro', itens:'item', armadilhas:'armadilha', perigos:'perigo', classes:'classe', subclasses:'subclasse', talentos:'talento'};
   const lista = todos.filter(x => S.filtro === 'todos' || x.tipo === FT[S.filtro]);
   if (!S.carregou) return `<div class="panel muted">Carregando o catálogo…</div>`;
-  if (!todos.length) return `<div class="panel empty"><h2>Nenhum homebrew ainda</h2><p>Mande prints de uma ficha de monstro, de um item mágico, de uma armadilha ou de um perigo (de um livro, de um site ou criado por você). O Claude lê, traduz e anota de onde veio; você revisa e salva. Os monstros, as armadilhas e os perigos entram no sorteio das masmorras dos temas escolhidos, e os itens nos tesouros.</p><button class="btn pri" data-act="hb-novo">Adicionar o primeiro</button></div>`;
+  if (!todos.length) return `<div class="panel empty"><h2>Nenhum homebrew ainda</h2><p>Mande prints de uma ficha de monstro, de um item mágico, de uma armadilha, de um perigo, de uma classe, de uma subclasse ou de um talento (de um livro, de um site ou criado por você). O Claude lê, traduz e anota de onde veio; você revisa e salva. Os monstros, as armadilhas e os perigos entram no sorteio das masmorras dos temas escolhidos, os itens nos tesouros, e as classes, subclasses e talentos nas fichas dos personagens.</p><button class="btn pri" data-act="hb-novo">Adicionar o primeiro</button></div>`;
   const temas = X.temas();
   const card = x => {
-    const mon = x.tipo === 'monstro', ehArm = x.tipo === 'armadilha', ehPer = x.tipo === 'perigo', nome = nomeDe(x), ok = X.ativo(x.id), aberto = S.aberto === x.id, arm = S.apagar === x.id;
+    const mon = x.tipo === 'monstro', ehArm = x.tipo === 'armadilha', ehPer = x.tipo === 'perigo', ehRegra = !!REGRA_T[x.tipo], nome = nomeDe(x), ok = X.ativo(x.id), aberto = S.aberto === x.id, arm = S.apagar === x.id;
     const uso = arm ? X.emUso(x) : 0;
-    const linha2 = mon ? `Monstro · ND ${h(x.cr)} · ${fmt(X.CRXP[x.cr])} XP${x.en && x.en !== x.pt ? ' · ' + h(x.en) : ''}`
+    const linha2 = x.tipo === 'classe' ? `Classe · d${h(x.dado)}${x.magia ? ' · conjura com ' + h(AB_NOME[x.magia.ab]) : ''}${x.original && x.original !== x.nome ? ' · ' + h(x.original) : ''}`
+      : x.tipo === 'subclasse' ? `Subclasse de ${h(classeNome(x.classe))}${x.original && x.original !== x.nome ? ' · ' + h(x.original) : ''}`
+      : x.tipo === 'talento' ? `Talento · ${h(CAT_T[x.categoria] || '')}${x.original && x.original !== x.nome ? ' · ' + h(x.original) : ''}`
+      : mon ? `Monstro · ND ${h(x.cr)} · ${fmt(X.CRXP[x.cr])} XP${x.en && x.en !== x.pt ? ' · ' + h(x.en) : ''}`
       : ehArm || ehPer ? `${ehPer ? 'Perigo' : 'Armadilha'} · ${x.cd ? 'CD ' + h(x.cd) : 'CD pelo nível'}${x.original && x.original !== x.nome ? ' · ' + h(x.original) : ''}`
       : `Item mágico · ${h((RARS[x.raridade] || '').toLowerCase())}${x.categoria ? ' · ' + h(x.categoria) : ''}`;
     const chips = [];
-    if (!ok) chips.push(`<span class="chip bad" title="Outro monstro, item, armadilha ou perigo da Mesa já usa este nome">${ehArm || ehPer ? 'Fora do sorteio: nome repetido ou campos faltando' : 'Fora das listas: nome repetido'}</span>`);
+    if (!ok) chips.push(`<span class="chip bad" title="Outro conteúdo da Mesa já usa este nome">${ehArm || ehPer ? 'Fora do sorteio: nome repetido ou campos faltando' : x.tipo === 'subclasse' && !(CLASSES[x.classe] && CLASSES[x.classe] !== HB_CLS_VAZIA) ? 'Fora das fichas: a classe dela não existe mais' : ehRegra ? 'Fora das fichas: nome repetido' : 'Fora das listas: nome repetido'}</span>`);
+    if (ehRegra && ok) chips.push('<span class="chip">Nas fichas</span>');
     if (mon && x.soChefe) chips.push('<span class="chip gold">Só chefe de masmorra</span>');
     if (ehPer) chips.push(`<span class="chip gold">${h(niveisTxt(x).replace(/^./, c => c.toUpperCase()))}</span>`);
     if (ehArm || ehPer) chips.push(x.soSalas ? '<span class="chip gold">Só nas salas</span>' : '<span class="chip">Salas e corredores</span>');
@@ -6016,11 +6203,11 @@ function catalogo(){
       ${aberto ? fichaHtml(x) : ''}
       <div class="row"><button class="btn sm" data-act="hb-ver" data-id="${h(x.id)}" aria-expanded="${aberto}">${aberto ? 'Fechar ficha' : 'Ver ficha'}</button><button class="btn sm" data-act="hb-editar" data-id="${h(x.id)}">Editar</button>
         <button class="btn sm danger" data-act="hb-excluir" data-id="${h(x.id)}">${arm ? 'Confirmar exclusão' : 'Excluir'}</button>${arm ? `<button class="btn sm" data-act="hb-nao">Cancelar</button>` : ''}</div>
-      ${arm ? `<p class="small" style="margin:0;color:var(--orange)">${uso ? (ehArm || ehPer ? `Está em ${uso} ${uso === 1 ? 'lugar' : 'lugares'} de masmorras salvas: lá ${ehPer ? 'ele' : 'ela'} continua como está; só sai das masmorras novas.` : `Está em ${uso} ${uso === 1 ? 'sala' : 'salas'} de masmorras salvas: o nome continua lá, mas a ficha some.`) : 'Sai do catálogo e das masmorras novas.'}</p>` : ''}
+      ${arm ? `<p class="small" style="margin:0;color:var(--orange)">${ehRegra ? (uso ? `${uso} ${uso === 1 ? 'ficha usa' : 'fichas usam'} ${x.tipo === 'talento' ? 'este talento' : 'esta ' + x.tipo}. ${x.tipo === 'classe' ? 'Sem a classe, essas fichas ficam com dado d8, sem salvaguardas e sem magia de classe até você salvar a classe de novo.' : 'O nome continua nas fichas, mas o texto e os recursos somem.'}` : 'Sai do catálogo e das fichas novas. Nenhuma ficha usa agora.') : uso ? (ehArm || ehPer ? `Está em ${uso} ${uso === 1 ? 'lugar' : 'lugares'} de masmorras salvas: lá ${ehPer ? 'ele' : 'ela'} continua como está; só sai das masmorras novas.` : `Está em ${uso} ${uso === 1 ? 'sala' : 'salas'} de masmorras salvas: o nome continua lá, mas a ficha some.`) : 'Sai do catálogo e das masmorras novas.'}</p>` : ''}
     </div>`;
   };
   const f = (k, l) => `<button class="btn sm${S.filtro === k ? ' pri' : ''}" data-act="hb-filtro" data-f="${k}" aria-pressed="${S.filtro === k}">${l}</button>`;
-  return `<div class="row between"><div class="row" style="gap:6px">${f('todos', 'Todos (' + todos.length + ')')}${f('monstros', 'Monstros (' + nM + ')')}${f('itens', 'Itens (' + nI + ')')}${f('armadilhas', 'Armadilhas (' + nA + ')')}${f('perigos', 'Perigos (' + nP + ')')}</div>
+  return `<div class="row between"><div class="row" style="gap:6px">${f('todos', 'Todos (' + todos.length + ')')}${f('monstros', 'Monstros (' + nM + ')')}${f('itens', 'Itens (' + nI + ')')}${f('armadilhas', 'Armadilhas (' + nA + ')')}${f('perigos', 'Perigos (' + nP + ')')}${f('classes', 'Classes (' + nC + ')')}${f('subclasses', 'Subclasses (' + nS + ')')}${f('talentos', 'Talentos (' + nT + ')')}</div>
       <div class="f" style="flex:1 1 200px;max-width:320px"><input id="hb-busca" data-hb-busca type="search" placeholder="Buscar por nome ou fonte" aria-label="Buscar no catálogo"></div></div>
     ${lista.length ? `<div class="cards" id="hb-cards">${lista.map(card).join('')}</div><p class="muted small" id="hb-nada" hidden>Nada encontrado.</p>` : '<p class="muted">Nada nesta categoria.</p>'}`;
 }
@@ -6031,7 +6218,8 @@ function novo(){
   const tipoBtn = (k, l) => `<button class="btn${f.tipo === k ? ' pri' : ''}" data-act="hb-tipo" data-t="${k}" aria-pressed="${f.tipo === k}">${l}</button>`;
   const ger = S.ger ? `<div class="row" aria-live="polite"><span class="st run">Lendo</span><span class="small muted" id="hb-chars">${S.ger.chars ? fmt(S.ger.chars) + ' caracteres recebidos' : 'o Claude está lendo a ficha…'}</span><button class="btn sm" data-act="hb-parar">Parar</button></div>` : '';
   return `<div class="stack">
-    <div class="panel"><h3>1. O que você vai adicionar</h3><div class="row">${tipoBtn('monstro', 'Monstro')}${tipoBtn('item', 'Item mágico')}${tipoBtn('armadilha', 'Armadilha')}${tipoBtn('perigo', 'Perigo')}</div>
+    <div class="panel"><h3>1. O que você vai adicionar</h3><div class="row">${tipoBtn('monstro', 'Monstro')}${tipoBtn('item', 'Item mágico')}${tipoBtn('armadilha', 'Armadilha')}${tipoBtn('perigo', 'Perigo')}${tipoBtn('classe', 'Classe')}${tipoBtn('subclasse', 'Subclasse')}${tipoBtn('talento', 'Talento')}</div>
+      ${REGRA_T[f.tipo] ? `<p class="small muted" style="margin:8px 0 0">${f.tipo === 'classe' ? 'A classe entra na lista de classes da criação de ficha, com dado de vida, salvaguardas, perícias, treino e magia. As características aparecem na ficha conforme o nível.' : f.tipo === 'subclasse' ? 'A subclasse entra na escolha do nível 3 da classe dela. As características aparecem na ficha conforme o nível.' : 'O talento entra na escolha de talentos das fichas, com pré-requisito e aumento de atributo.'}</p>` : ''}
       ${mon ? `<label class="hb-check"><input type="checkbox" data-hbc="soChefe" ${f.soChefe ? 'checked' : ''}> <span><b>Só chefe de masmorra</b><br><span class="muted small">Ele nunca aparece como monstro comum: só pode ser sorteado para a sala do chefe.</span></span></label>` : ''}
       ${f.tipo === 'armadilha' || f.tipo === 'perigo' ? soSalasChk('soSalas', f.soSalas, f.tipo === 'perigo') : ''}</div>
     <div class="panel"><h3>2. Material</h3>
@@ -6088,7 +6276,46 @@ function revisar(){
   const cert = fo.certeza ? `<span class="chip ${fo.certeza === 'alta' ? 'ok' : fo.certeza === 'media' ? 'warn' : 'bad'}">certeza ${fo.certeza === 'media' ? 'média' : fo.certeza}</span>` : '';
   const temas = X.temas();
   const temaBtns = () => `<div class="row" style="gap:6px">${Object.entries(temas).map(([k, t]) => `<button class="btn sm${r.temas.includes(k) ? ' pri' : ''}" data-act="hb-tema" data-t="${k}" aria-pressed="${r.temas.includes(k)}">${h(t.nome)}</button>`).join('')}</div>`;
-  const corpo = r.tipo === 'perigo' ? `<div class="panel"><h3>Perigo</h3><div class="form">
+  const tog = (k, v, l, max) => { const on = r[k].includes(v); return `<button class="btn sm${on ? ' pri' : ''}" data-act="hb-tog" data-k="${k}" data-v="${h(v)}"${max ? ` data-max="${max}"` : ''} aria-pressed="${on}">${h(l)}</button>`; };
+  const togs = (k, L, max) => `<div class="row" style="gap:6px">${L.map(([v, l]) => tog(k, v, l, max)).join('')}</div>`;
+  const sel = (path, rot, val, ops) => `<div class="f"><label for="hb-r-${path}">${rot}</label><select id="hb-r-${path}" data-hbf="${path}">${ops.map(([v, l]) => `<option value="${h(v)}"${String(v) === String(val) ? ' selected' : ''}>${h(l)}</option>`).join('')}</select></div>`;
+  const chk = (path, on, tit, txt) => `<label class="hb-check"><input type="checkbox" data-hbc="rev.${path}" ${on ? 'checked' : ''}> <span><b>${tit}</b>${txt ? `<br><span class="muted small">${txt}</span>` : ''}</span></label>`;
+  const atrs = ATR.map(a => [a, AB_NOME[a]]);
+  const featsHint = 'Uma por linha, começando pelo nível: "3 · Nome. O que faz." O nome vira um link na ficha, com o texto.';
+  const corpo = r.tipo === 'classe' ? `<div class="panel"><h3>Classe</h3><div class="form">
+      ${inp('nome', 'Nome em português *', r.nome, 'half')}${inp('original', 'Nome original', r.original, 'half')}
+      ${sel('dado', 'Dado de vida *', r.dado, [['', '—'], ['6', 'd6'], ['8', 'd8'], ['10', 'd10'], ['12', 'd12']])}
+      ${sel('armas', 'Treino com armas', r.armas, [['s', 'Simples'], ['sm', 'Simples e marciais']])}
+      ${inp('armaduras', 'Treino com armaduras', r.armaduras, 'half')}
+      <div class="f wide"><span class="small muted">Salvaguardas * (duas)</span>${togs('saves', atrs, 2)}</div>
+      <div class="f"><label for="hb-r-nPericias">Perícias a escolher *</label><input id="hb-r-nPericias" data-hbf="nPericias" inputmode="numeric" value="${h(r.nPericias)}"></div>
+      <div class="f wide"><span class="small muted">Lista de perícias da classe (nenhuma marcada = todas)</span>${togs('pericias', SKILLS.map(s => [s[0], s[1]]))}</div>
+    </div></div>
+    <div class="panel"><h3>Magia</h3><div class="form">
+      ${sel('magia', 'Conjuração', r.magia, Object.entries(MAGIA_T))}
+      ${r.magia ? sel('magiaAb', 'Atributo de conjuração *', r.magiaAb, [['', '—'], ...atrs]) : ''}
+      ${r.magia ? `<div class="f"><label for="hb-r-truques">Truques (níveis 1, 4 e 10)</label><input id="hb-r-truques" data-hbf="truques" value="${h(r.truques)}" placeholder="${r.magia === 'meia' ? '0/0/0' : '2/3/4'}"><span class="hint">Vazio = ${r.magia === 'meia' ? 'nenhum' : '2/3/4'}.</span></div>` : ''}
+      ${r.magia ? `<p class="small muted" style="flex-basis:100%;margin:0">Espaços de magia e magias preparadas seguem a tabela ${r.magia === 'total' ? 'do Mago/Clérigo (conjurador completo)' : r.magia === 'meia' ? 'do Paladino (meio conjurador)' : 'do Bruxo (Magia de Pacto)'}.</p>` : ''}
+    </div></div>
+    <div class="panel"><h3>Características *</h3><div class="form">${ta('featsTxt', 'Características por nível', r.featsTxt, featsHint + ' A escolha de subclasse (nível 3) e as Melhorias de Atributo (4, 8, 12, 16 e 19) a Mesa já faz.')}</div></div>`
+    : r.tipo === 'subclasse' ? `<div class="panel"><h3>Subclasse</h3><div class="form">
+      ${inp('nome', 'Nome em português *', r.nome, 'half')}${inp('original', 'Nome original', r.original, 'half')}
+      ${sel('classe', 'Classe *', r.classe, [['', '—'], ...classesLista().map(c => [c.k, c.nome + (c.hb ? ' (Homebrew)' : '')])])}
+      ${ta('featsTxt', 'Características por nível *', r.featsTxt, featsHint)}
+    </div></div>`
+    : r.tipo === 'talento' ? `<div class="panel"><h3>Talento</h3><div class="form">
+      ${inp('nome', 'Nome em português *', r.nome, 'half')}${inp('original', 'Nome original', r.original, 'half')}
+      ${sel('categoria', 'Categoria *', r.categoria, Object.entries(CAT_T))}
+      <div class="f wide"><span class="small muted">Aumento de atributo (+1): quais o talento pode aumentar (nenhum = não aumenta; todos = qualquer um)</span>${togs('atributos', atrs)}</div>
+      ${ta('texto', 'O que o talento faz *', r.texto, 'Um benefício por linha. Não precisa repetir o aumento de atributo nem o pré-requisito.')}
+    </div></div>
+    <div class="panel"><h3>Pré-requisito</h3><div class="form">
+      <div class="f wide"><span class="small muted">Atributo mínimo (basta um dos marcados)</span>${togs('reqAtr', atrs)}</div>
+      ${r.reqAtr.length ? `<div class="f"><label for="hb-r-reqMin">Valor mínimo</label><input id="hb-r-reqMin" data-hbf="reqMin" inputmode="numeric" value="${h(r.reqMin)}"></div>` : ''}
+      ${inp('reqOutro', 'Outro pré-requisito (opcional)', r.reqOutro, 'half')}
+    </div>${chk('reqMagia', r.reqMagia, 'Exige conjuração', 'Só personagens de classe que conjura podem pegar.')}${chk('repetivel', r.repetivel, 'Pode ser escolhido mais de uma vez')}
+      <p class="small muted" style="margin:8px 0 0">${r.categoria === 'geral' ? 'Talentos gerais já exigem nível 4.' : r.categoria === 'epica' ? 'Dádivas épicas já exigem nível 19.' : r.categoria === 'estilo' ? 'Talentos de estilo exigem a característica Estilo de Luta.' : 'Talentos de origem não têm nível mínimo.'}</p></div>`
+    : r.tipo === 'perigo' ? `<div class="panel"><h3>Perigo</h3><div class="form">
       ${inp('nome', 'Nome em português *', r.nome, 'half')}${inp('original', 'Nome original', r.original, 'half')}
       ${ta('descricao', 'Como é', r.descricao, 'Aparência e onde costuma estar (ex.: manchas marrons no teto e nas paredes).')}
       ${ta('efeito', 'Efeito *', r.efeito, 'O que acontece com quem entra em contato. Para o dano e as CDs acompanharem o nível do grupo, escreva {dano} (dano forte), {leve} (dano leve) e {sv} (CD da salvaguarda); números escritos ficam fixos.')}
@@ -6165,6 +6392,8 @@ document.addEventListener('click', e => {
   if (a === 'manual'){ manual(); return; }
   if (a === 'img-modo' && S.rev && S.rev.img){ S.rev.img.modo = t.dataset.m; render(); return; }
   if (a === 'img-print' && S.rev && S.rev.img){ const im = S.rev.img, i = +t.dataset.i; if (im.i !== i){ im.i = i; im.caixa = [0, 0, 1, 1]; im.achou = false; } render(); return; }
+  if (a === 'tog' && S.rev){ const L = S.rev[t.dataset.k], v = t.dataset.v, i = L.indexOf(v), max = +t.dataset.max || 0;
+    if (i >= 0) L.splice(i, 1); else { if (max && L.length >= max) L.shift(); L.push(v); } render(); return; }
   if (a === 'tema'){ const k = t.dataset.t, L = S.rev.temas; const i = L.indexOf(k); if (i >= 0) L.splice(i, 1); else L.push(k); render(); return; }
   if (a === 'salvar'){ salvar(); return; }
   if (a === 'voltar'){ S.tela = 'novo'; S.erro = ''; render(); return; }
@@ -6207,7 +6436,7 @@ document.addEventListener('change', e => {
     miniatura(f).then(mini => { S.rev.img.arquivo = f; S.rev.img.mini = mini; S.erro = ''; render(); }, () => { S.erro = 'Não consegui abrir esta imagem.'; render(); });
     return;
   }
-  if (el.dataset.hbf && S.rev){ setPath(S.rev, el.dataset.hbf, el.value); return; }
+  if (el.dataset.hbf && S.rev){ setPath(S.rev, el.dataset.hbf, el.value); if (el.dataset.hbf === 'magia' || el.dataset.hbf === 'categoria') render(); return; }
   if (el.hasAttribute('data-hb-file')){ const fs = Array.from(el.files || []); el.value = ''; addImgs(fs); }
 });
 document.addEventListener('paste', e => {
